@@ -1,0 +1,44 @@
+ScopeSigMgr:loadpffile /home/bnmfw/benchmark.tr0 1 openonly
+# PF:1
+wm geometry .sigmgr._PF:1 288x349+653+342
+wm geometry .sigmgr._PF:1 288x349+601+289
+wm geometry .sigmgr._PF:1 288x349+558+252
+wm geometry .sigmgr._PF:1 288x349+542+235
+wm geometry .sigmgr._PF:1 288x349+538+229
+wm geometry .sigmgr._PF:1 288x349+534+221
+wm geometry .sigmgr._PF:1 288x349+529+213
+wm geometry .sigmgr._PF:1 288x349+527+210
+pf:read PF:1 v(g2)
+# WF:1:1
+Graph addsignal WF:1:1 -region new -yview real(y) -xview real(x) -tracehi 2
+# Signal0
+wm geometry .sigmgr._PF:1 288x349+537+218
+Mdi:ArrangeIcons
+wm geometry . 1246x648+23+14
+Mdi:ArrangeIcons
+wm geometry . 1246x648+35+14
+Mdi:ArrangeIcons
+wm geometry . 1246x648+74+11
+Mdi:ArrangeIcons
+wm geometry . 1246x648+110+12
+Mdi:ArrangeIcons
+wm geometry . 1246x648+110+15
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+wm geometry . 1246x648+110+14
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+Mdi:ArrangeIcons
+ScopeSigMgr:Reload 0 {{(1) benchmark.tr0}}
+ScopeSigMgr:Reload 0 {{(1) benchmark.tr0}}
+ScopeSigMgr:Reload 0 {{(1) benchmark.tr0}}

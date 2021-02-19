@@ -1,0 +1,8 @@
+***** HSPICE -- H-2013.03-SP1 32-BIT (May 29 2013) RHEL32 ******
+ Input File: c17v1.txt
+ lic:
+ lic: FLEXlm: v10.9.8
+ lic: USER:   bnmfw                HOSTNAME: sagittarius-a
+ lic: HOSTID: 00039988e3a4         PID:      3838
+ **error** stop simulation by signal SIGINT = 2
+

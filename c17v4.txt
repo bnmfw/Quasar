@@ -1,0 +1,43 @@
+Benchmark C17 V4
+
+****** Dispositivos Lógicos ******
+
+.include dis/logica.txt
+
+****** SETs ******
+
+.include SETs.txt
+
+****** HSPICE ******
+
+.option measform = 3
+.option post = 2
+
+****** Fontes de Tensão Geral ******
+
+Vvdd vdd gnd 0.7
+
+****** Fontes de Sinal ******
+
+.include fontes.txt
+
+****** Circuito Limpo ******
+
+Xand11 vdd gnd  a  b i1 AND
+Xnot13 vdd gnd  c nc NOT
+Xand12 vdd gnd  b  d i2 AND
+Xnor11 vdd gnd nc i2 i3 NOR
+Xor11 vdd gnd i1 i3 g1 OR
+Xnor12 vdd gnd  c  e i4 NOR
+Xnor13 vdd gnd i4 i2 g2 NOR
+
+//Representação de um circuito pós benchmark
+xnot11 vdd gnd g1 ng1 NOT
+xnot12 vdd gnd g2 ng2 NOT
+
+****** Controle ******
+
+.tran 0.01n 4n
+
+************
+.end

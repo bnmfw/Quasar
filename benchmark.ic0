@@ -1,0 +1,33 @@
+* "simulator" "HSPICE" 
+* "version" "H-2013.03-SP1 32-BIT"
+* "format" "HSP"
+* "rundate" "16:34:56 02/18/2021 "
+* "netlist" "benchmark.txt "
+* "runtitle" "benchmark c17 v3 (modelo com nands)"
+* time =    0.            
+* temperature =   25.0000        
+*** BEGIN: Saved Operating Point ***                     
+.option 
++ gmindc=   1.0000p       
+.nodeset
++ a =   0.            
++ b = 700.0000m       
++ c = 700.0000m       
++ d = 700.0000m       
++ e = 700.0000m       
++ g1 =  79.1309u       
++ g2 =  79.1111u       
++ i1 = 699.9499m       
++ i2 =  79.0417u       
++ i3 = 699.9644m       
++ i4 = 699.9644m       
++ ng1 = 699.9498m       
++ ng2 = 699.9498m       
++ vdd = 700.0000m       
++ xnand11.1 =  34.7657u       
++ xnand12.1 =  39.5212u       
++ xnand13.1 = 616.9100m       
++ xnand14.1 = 616.9100m       
++ xnand15.1 =  39.5656u       
++ xnand16.1 =  39.5560u       
+***   END: Saved Operating Point ***                     

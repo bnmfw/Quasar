@@ -1,0 +1,49 @@
+Benchmark C17 V0
+
+****** Dispositivos Lógicos ******
+
+.include dis/logica.txt
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 2
+
+****** Fontes de Tensão Geral ******
+
+Vvdd vdd gnd 0.7
+
+****** Fontes de Sinal ******
+
+*Va a gnd PULSE(0 0.7  5n 0.01n 0.01n  5n  10n)
+*Vb b gnd PULSE(0 0.7 10n 0.01n 0.01n 10n  20n)
+*Vc c gnd PULSE(0 0.7 20n 0.01n 0.01n 20n  40n)
+*Vd d gnd PULSE(0 0.7 40n 0.01n 0.01n 40n  80n)
+*Ve e gnd PULSE(0 0.7 80n 0.01n 0.01n 80n 160n)
+.include fontes.txt
+
+****** SETs ******
+
+.include SETs.txt
+
+****** Circuito ******
+
+Xnand1 vdd gnd  a  b i1 NAND
+Xnand2 vdd gnd  b  d i2 NAND
+Xnand3 vdd gnd i2  c i3 NAND
+Xnand4 vdd gnd i1 i3 g1 NAND
+
+Xnor1 vdd gnd  e  c i4 NOR
+Xand1 vdd gnd  b  d i5 AND
+Xnor2 vdd gnd i4 i5 g2 NOR
+
+//Representação de um circuito pós benchmark
+xnot1 vdd gnd g1 ng1 NOT
+xnot2 vdd gnd g2 ng2 NOT
+
+****** Controle ******
+
+.tran 0.01n 4n
+
+************
+.end

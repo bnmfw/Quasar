@@ -1,0 +1,5 @@
+$DATA1 SOURCE='HSPICE' VERSION='H-2013.03-SP1 32-BIT'
+$OPTION MEASFORM=3
+.TITLE 'benchmark c17 v2'
+minout,maxout,minnod,maxnod,temper,alter#
+1.981e-05,   0.3373, 1.981e-05,   0.3373,  25.0000,1
