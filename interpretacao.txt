@@ -1,0 +1,12 @@
+Interpretacao logica de cada porta, siga o formato:
+NOME , estado logico que neutraliza a porta, saida=estado fixador
+x significa que nao ah fixação ou neutralizacao
+
+Portas basicas:
+
+AND 1 0=0 1=1
+NAND 1 0=1 1=0
+OR 1 0=0 1=1
+NOR 0 0=1 1=0
+XOR x 0=x 1=x
+XNOR x 0=x 1=x
