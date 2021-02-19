@@ -1,0 +1,69 @@
+**** Multiplexadores ****
+
+**** Dispositivos lógicos ****
+
+.include logica.txt
+
+**** MUX 1 bit ****
+
+* 3 pares finfet *
+.subckt MUX1 vp vm d1 d0 z s
+xnot vp vm z nz NOT
+xtran1 vp vm d0 s z nz TRAN
+xtran2 vp vm d1 s nz z TRAN
+.ends
+
+**** MUX 2 bits *****
+
+* 9 pares finfet *
+.subckt MUX2 vp vm a b c d y z s
+xmux1 vp vm a b z 1 MUX1
+xmux2 vp vm c d z 2 MUX1
+xmux3 vp vm 1 2 y s MUX1
+.ends
+
+**** MUX 3 bits ****
+
+* 21 pares finfet *
+.subckt MUX3 vp vm a b c d e f g h x y z s
+xmux1 vp vm a b c d y z 1 MUX2
+xmux2 vp vm e f g h y z 2 MUX2
+xmux3 vp vm 1 2 x s MUX1
+.ends
+
+**** DEMUX 1 bit ****
+
+.subckt DEMUX1 vp vm s z a b
+xnot vp vm z nz NOT
+xand1 vp vm nz s a AND
+xand2 vp vm  z s b AND
+.ends
+
+**** DEMUX 2 bits ****
+
+.subckt DEMUX2 vp vm s y z a b c d
+xnot1 vp vm z nz NOT
+xnot2 vp vm y ny NOT
+xand1 vp vm s ny nz a AND3
+xand2 vp vm s ny  z b AND3
+xand3 vp vm s  y nz c AND3
+xand4 vp vm s  y  z d AND3
+.ends
+
+**** DEMUX 3 bits ****
+
+.subckt DEMUX3 vp vm s x y z a b c d e f g h
+xnot1 vp vm z nz NOT
+xnot2 vp vm y ny NOT
+xnot3 vp vm x nx NOT
+xand1 vp vm s nx ny nz a AND4
+xand2 vp vm s nx ny  z b AND4
+xand3 vp vm s nx  y nz c AND4
+xand4 vp vm s nx  y  z d AND4
+xand5 vp vm s  x ny nz e AND4
+xand6 vp vm s  x ny  z f AND4
+xand7 vp vm s  x  y nz g AND4
+xand8 vp vm s  x  y  z h AND4
+.ends
+
+***********
