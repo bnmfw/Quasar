@@ -2,6 +2,7 @@ from param import *
 from corrente import *
 
 circuito = raw_input("circuito a ser analisado: ")
+tabela = circuito+".csv"
 circuito = circuito+".txt"
 saidas = ["g1","g2"]
 entradas = Instanciar_entradas("fontes.txt")
@@ -106,7 +107,7 @@ print(str(ciclos)+" simulacoes feitas")
 
 #Escreve as saidas obtidas em csv
 linha = 2
-with open("SETs.csv","w") as sets:
+with open(tabela,"w") as sets:
 	sets.write("nodo,saida,pulso,pulso,corrente,set\n")
 	for nodo in nodos:
 		for relacao in nodo.relacoes:
