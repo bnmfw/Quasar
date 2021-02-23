@@ -113,19 +113,19 @@ with open("SETs.csv","w") as sets:
 			if relacao[1] == "nao": pass
 			elif relacao[1] == "inv":
 				sets.write(nodo.nome+","+relacao[0]+","+"up"+","+"down"+","+str(relacao[2])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)")
-				for validacao in relacao[3]: sets.write(str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
+				for validacao in relacao[3]: sets.write("'"+str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
 				sets.write("\n")
 				linha+=1
 				sets.write(nodo.nome+","+relacao[0]+","+"down"+","+"up"+","+str(relacao[4])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)")
-				for validacao in relacao[5]: sets.write(str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
+				for validacao in relacao[5]: sets.write("'"+str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
 				sets.write("\n")
 				linha+=1
 			else:
 				sets.write(nodo.nome+","+relacao[0]+","+"up"+","+"up"+","+str(relacao[2])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)")
-				for validacao in relacao[3]: sets.write(str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
+				for validacao in relacao[3]: sets.write("'"+str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
 				sets.write("\n")
 				linha+=1
 				sets.write(nodo.nome+","+relacao[0]+","+"down"+","+"down"+","+str(relacao[4])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)")
-				for validacao in relacao[5]: sets.write(str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
+				for validacao in relacao[5]: sets.write("'"+str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
 				sets.write("\n")
 				linha+=1
