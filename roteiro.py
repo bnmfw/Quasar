@@ -20,7 +20,7 @@ nodos = Parametrar(circuito, entradas, saidas)
 #print("\n\n")
 
 for nodo in nodos:
-	
+
 	for nodo_saida in saidas: #Determina a saida
 		
 		for relacao in nodo.relacoes: #Faz cada relacao com a saida
@@ -29,9 +29,9 @@ for nodo in nodos:
 				if tipo == "nao": pass
 				else: 
 					relacao.append(3000) #corrente up da relacao
-                        	        relacao.append([])#validacao daquela corrente
+                        	        relacao.append([])#validacoes dessa corrente
                 	                relacao.append(3000) #corrente down da relacao
-        	                        relacao.append([])#validacao dessa conrrente
+        	                        relacao.append([])#validacoes dessa corrente
 	
 					p = 0
 					#identifica a relacao do nodo com a saida
@@ -69,7 +69,9 @@ for nodo in nodos:
 						ciclos += lista[1]
 						if current < relacao[2]:
 							relacao[2] = current
-							relacao[3] = final
+							relacao[3] = [final]
+						elif current == relacao[2]:
+							relacao[3].append(final)
 						#print(nodo.nome,nodo_saida,"up",pulsos[p],current,final)
 						
 						if current < 1000:
@@ -86,14 +88,16 @@ for nodo in nodos:
 							ciclos += lista[1]
 							if current < relacao[4]:
 								relacao[4] = current
-								relacao[5] = final
+								relacao[5] = [final]
+							elif current == relacao[4]:
+								relacao[5].append(final)
 							#print(nodo.nome,nodo_saida,"down",pulsos[pd],current,final)
 							if current < 1000:
                         	                                sets_validos.append([nodo.nome,nodo_saida,"down",pulsos[pd],current,final])
 							else: sets_invalidos.append([nodo.nome,nodo_saida,"down",pulsos[pd],current,final])
 
-#for nodo in nodos:
-	#print(nodo.nome, nodo.relacoes)
+for nodo in nodos:
+	print(nodo.nome, nodo.relacoes)
 for h in range(len(sets_validos)): print(sets_validos[h])
 print("\n")
 for h in range(len(sets_invalidos)): print(sets_invalidos[h])

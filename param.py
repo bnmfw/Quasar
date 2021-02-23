@@ -6,12 +6,12 @@ class Entrada():
 
 class Nodo():
 	def __init__(self,nome,entradas,logica,relacoes,sinal,validacao):
-		self.nome = nome
-		self.entradas = entradas
-		self.logica = logica
-		self.relacoes = relacoes
-		self.sinal = sinal
-		self.validacao = validacao
+		self.nome = nome 
+		self.entradas = entradas #Lista de objetos
+		self.logica = logica #Logica da porta que o tem como saida
+		self.relacoes = relacoes #Tipo de relacao com cada saida: inv, dir, nao, com
+		self.sinal = sinal #Sinal logico (usado apenas na validacao)
+		self.validacao = validacao #Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
 
 #Recursao que encontra a relacao de um nodo com uma saida
 def Relacionar(saida_global, saida, nodos, entradas ,relacao_acumulada):
