@@ -29,9 +29,9 @@ for nodo in nodos:
 				if tipo == "nao": pass
 				else: 
 					relacao.append(3000) #corrente up da relacao
-                        	        relacao.append([])#validacoes dessa corrente
-                	                relacao.append(3000) #corrente down da relacao
-        	                        relacao.append([])#validacoes dessa corrente
+					relacao.append([])#validacoes dessa corrente
+					relacao.append(3000) #corrente down da relacao
+					relacao.append([])#validacoes dessa corrente
 	
 					p = 0
 					#identifica a relacao do nodo com a saida
@@ -51,7 +51,7 @@ for nodo in nodos:
 					for k in range(2**variaveis):
 						binario = bin(k)
 						faltante = len(entradas) - len(binario)+2
-                                                final = list(validacao)
+						final = list(validacao)
 						flag = 0
 						binary = list()
 						#Transforma binario em uma lista de verdade
@@ -93,7 +93,7 @@ for nodo in nodos:
 								relacao[5].append(final)
 							#print(nodo.nome,nodo_saida,"down",pulsos[pd],current,final)
 							if current < 1000:
-                        	                                sets_validos.append([nodo.nome,nodo_saida,"down",pulsos[pd],current,final])
+								sets_validos.append([nodo.nome,nodo_saida,"down",pulsos[pd],current,final])
 							else: sets_invalidos.append([nodo.nome,nodo_saida,"down",pulsos[pd],current,final])
 
 for nodo in nodos:
@@ -112,12 +112,20 @@ with open("SETs.csv","w") as sets:
 		for relacao in nodo.relacoes:
 			if relacao[1] == "nao": pass
 			elif relacao[1] == "inv":
-				sets.write(nodo.nome+","+relacao[0]+","+"up"+","+"down"+","+str(relacao[2])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)\n")
+				sets.write(nodo.nome+","+relacao[0]+","+"up"+","+"down"+","+str(relacao[2])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)")
+				for validacao in relacao[3]: sets.write(str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
+				sets.write("\n")
 				linha+=1
-				sets.write(nodo.nome+","+relacao[0]+","+"down"+","+"up"+","+str(relacao[4])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)\n")
+				sets.write(nodo.nome+","+relacao[0]+","+"down"+","+"up"+","+str(relacao[4])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)")
+				for validacao in relacao[5]: sets.write(str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
+				sets.write("\n")
 				linha+=1
 			else:
-				sets.write(nodo.nome+","+relacao[0]+","+"up"+","+"up"+","+str(relacao[2])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)\n")
+				sets.write(nodo.nome+","+relacao[0]+","+"up"+","+"up"+","+str(relacao[2])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)")
+				for validacao in relacao[3]: sets.write(str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
+				sets.write("\n")
 				linha+=1
-                                sets.write(nodo.nome+","+relacao[0]+","+"down"+","+"down"+","+str(relacao[4])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)\n")
+				sets.write(nodo.nome+","+relacao[0]+","+"down"+","+"down"+","+str(relacao[4])+"E-6,=E"+str(linha)+"*0.00000000019/(1.08E-14*0.000000021)")
+				for validacao in relacao[5]: sets.write(str(validacao[0])+str(validacao[1])+str(validacao[2])+str(validacao[3])+str(validacao[4])+",")
+				sets.write("\n")
 				linha+=1
