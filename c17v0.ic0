@@ -1,7 +1,7 @@
 * "simulator" "HSPICE" 
 * "version" "H-2013.03-SP1 32-BIT"
 * "format" "HSP"
-* "rundate" "23:04:05 02/22/2021 "
+* "rundate" "00:14:12 02/23/2021 "
 * "netlist" "c17v0.txt "
 * "runtitle" "benchmark c17 v0"
 * time =    0.            
