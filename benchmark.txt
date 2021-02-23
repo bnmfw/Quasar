@@ -19,12 +19,6 @@ Vvdd vdd gnd 0.7
 
 ****** Fontes de Sinal ******
 
-*Va a gnd PULSE(0 0.7  5n 0.01n 0.01n  5n  10n)
-*Vb b gnd PULSE(0 0.7 10n 0.01n 0.01n 10n  20n)
-*Vc c gnd PULSE(0 0.7 20n 0.01n 0.01n 20n  40n)
-*Vd d gnd PULSE(0 0.7 40n 0.01n 0.01n 40n  80n)
-*Ve e gnd PULSE(0 0.7 80n 0.01n 0.01n 80n 160n)
-
 .include fontes.txt
 
 ****** Circuito ******
@@ -42,11 +36,6 @@ xnot12 vdd gnd g2 ng2 NOT
 ****** Controle ******
 
 .tran 0.01n 4n
-*plot v(j1) v(j2)+1 v(j3)+2 v(j4)+3 v(f1)+4 v(f2)+5
-*plot v(i1) v(i2)+1 v(i3)+2 v(i4)+3 v(g1)+4 v(g2)+5
-*plot v(a) v(c)+1 v(i3)+2
-*plot v(g1)-v(f1) 
-*plot v(g2)-v(f2)
 
 ************
 .end

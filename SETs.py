@@ -20,8 +20,10 @@ nodos = Parametrar(circuito, entradas, saidas)
 #print("i3","g1","up","down",[0,0,1,0,0],current)
 #print("\n\n")
 
-for nodo in nodos:
+#for nodo in nodos:
+#	print(nodo.nome, nodo.relacoes, nodo.validacao)
 
+for nodo in nodos:
 	for nodo_saida in saidas: #Determina a saida
 		
 		for relacao in nodo.relacoes: #Faz cada relacao com a saida

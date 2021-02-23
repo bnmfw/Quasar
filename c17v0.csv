@@ -1,4 +1,4 @@
-nodo,saida,pulso,pulso,corrente,set
+nodo,saida,pulso,pulso,corrente,set,validacoes->
 i1,g1,up,down,102.12890625E-6,=E2*0.00000000019/(1.08E-14*0.000000021),'11010,
 i1,g1,down,up,151.734375E-6,=E3*0.00000000019/(1.08E-14*0.000000021),'01010,'10010,
 i2,g1,up,up,102.12890625E-6,=E4*0.00000000019/(1.08E-14*0.000000021),'01110,

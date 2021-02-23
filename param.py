@@ -20,12 +20,20 @@ def Relacionar(saida_global, saida, nodos, entradas ,relacao_acumulada):
 	if saida in entradas: return 0	
 	else:
 		for relacao in saida.relacoes:
-			if relacao[0] == saida_global.nome and relacao[1] == "nao":
-				relacao[1] = relacao_acumulada #Salva a relacao do nodo com a global
+			if relacao[0] == saida_global.nome:
+				if relacao[1] == "nao":
+					relacao[1] = relacao_acumulada #Salva a relacao do nodo com a global
+				elif relacao[1] == relacao_acumulada: 
+					print("Relacao repetida em:"+saida.nome, relacao[1])
+					pass
+				else: 
+					relacao[1] = "com"
+					relacao_acumulada = "com"
 		#Atualiza as relacoes
 		if saida.logica == "NAND" or saida.logica == "NOR" or saida.logica == "NOT":
 			if relacao_acumulada == "dir": relacao_acumulada = "inv"
 			elif relacao_acumulada == "inv": relacao_acumulada = "dir"
+			elif relacao_acumulada == "com": pass
 			else: print("ERRO RELACAO NAO ENCONTRADA PARA:", nodos[i].nome, relacao_acumulada)
 		
 		for entrada in saida.entradas:
@@ -37,7 +45,7 @@ def Fixar(saida, entradas):
         if saida.sinal == 1:
                 if saida.logica == "NAND" or saida.logica == "NOR" or saida.logica == "NOT": paridade = 0
                 elif saida.logica == "AND" or saida.logica == "OR": paridade = 1 #Pra realmente fixar todas as entradas tem que ser 1
-                else: print("PORTA LOGICA DE SAIDA "+saida.nome+"NAO REGISTRADA")
+                else: print("PORTA LOGICA "+saida.nome+"NAO REGISTRADA (FIX)")
         elif saida.sinal == 0:
                 if saida.logica == "NAND" or saida.logica == "NOR" or saida.logica == "NOT": paridade = 1
                 elif saida.logica == "AND" or saida.logica == "OR": paridade = 0 #Pra realmente fixar todas as entradas tem que ser 0
@@ -46,11 +54,15 @@ def Fixar(saida, entradas):
         #Altera os valores das entradas quando possivel
 	for entrada in saida.entradas:
                 if saida.sinal == "x":
-			if entrada.sinal == "t": entrada.sinal = "x"
+			 entrada.sinal = "x"
                 elif saida.sinal == "t": #t significa tanto faz kkkkkk
                         pass
                 elif saida.sinal == 0 or saida.sinal == 1:
-                        if entrada.sinal == "t": entrada.sinal = paridade
+			if entrada.sinal == "t": entrada.sinal = paridade
+			elif entrada.sinal == "x": pass
+			elif entrada.sinal != paridade and (paridade == 0 or paridade == 1):
+				print("PARIDADE DUPLA PARA: "+entrada.nome+" X ATRIBUIDO (FIX)")
+				entrada.sinal = "x"
                 else: print("ERRO TIPO DE SINAL NAO REGISTRADO: "+str(saida.sinal))
 
                 #Repete a funcao pra entradas nao elementares
@@ -76,7 +88,9 @@ def Neutralizar(saida,alvo,nodos,saidas):
 						if outra_entrada.sinal == "t": outra_entrada.sinal = paridade
                                                 elif outra_entrada.sinal == "x": pass
 						elif outra_entrada.sinal == paridade: pass
-						else: print("ERRO CONFLITO DE PARADIDADE PARA: "+outra_entrada.nome+" ATUAL: "+str(outra_entrada.sinal)+" NOVA: "+str(paridade))
+						else: 
+							print("PARADIDADE DUPLA PARA: "+outra_entrada.nome+" X ATRIBUIDO (NEU)")
+							outra_entrada.sinal = "x"
 				
 				#Repete o processo se nao eh saida global
 				if nodos[i].nome in saidas: pass
