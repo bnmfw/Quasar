@@ -1,7 +1,7 @@
 *SETs para serem usados nos benchmarks
-Iseu gnd g2 EXP(0 171.1875u 2n 10p 10p 200p) //up
-*Iseu g2 gnd EXP(0 171.1875u 2n 10p 10p 200p) //down
-.meas tran minout min V(g2) from=1.0n to=4.0n
-.meas tran maxout max V(g2) from=1.0n to=4.0n
-.meas tran minnod min V(g2) from=1.0n to=4.0n
-.meas tran maxnod max V(g2) from=1.0n to=4.0n
+Iseu gnd g1 EXP(0 101.15625u 2n 10p 10p 200p) //up
+*Iseu g1 gnd EXP(0 101.15625u 2n 10p 10p 200p) //down
+.meas tran minout min V(g1) from=1.0n to=4.0n
+.meas tran maxout max V(g1) from=1.0n to=4.0n
+.meas tran minnod min V(g1) from=1.0n to=4.0n
+.meas tran maxnod max V(g1) from=1.0n to=4.0n

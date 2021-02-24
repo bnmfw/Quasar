@@ -1,10 +1,15 @@
 from param import *
 from corrente import *
+import time
+
+start = time.time()
 
 circuito = raw_input("circuito a ser analisado: ")
 tabela = circuito+".csv"
 circuito = circuito+".txt"
-saidas = ["g1","g2"]
+saidas = raw_input("saidas analisadas: ")
+saidas = saidas.split()
+#saidas = ["g1","g2"]
 entradas = Instanciar_entradas("fontes.txt")
 validacao = list()
 
@@ -35,11 +40,24 @@ for nodo in nodos:
 					relacao.append([])#validacoes dessa corrente
 					relacao.append(3000) #corrente down da relacao
 					relacao.append([])#validacoes dessa corrente
-	
+					if tipo == "com": #Validacao completa
+						relacao.append(3000) #corrente up da relacao
+                	                        relacao.append([])#validacoes dessa corrente
+        	                                relacao.append(3000) #corrente down da relacao
+	                                        relacao.append([])#validacoes dessa corrente
+
+					combinacoes = []
 					p = 0
 					#identifica a relacao do nodo com a saida
-					if tipo == "inv": p = 1
-					elif tipo == "dir": p = 0
+					if tipo == "inv": 
+						p = 1
+						combinacoes = [["up","down"],["down","up"]]
+					elif tipo == "dir": 
+						p = 0
+						combinacoes = [["up","up"],["down","down"]]
+					elif tipo == "com": 
+						p = 2
+						combinacoes = [["up","up"],["down","down"],["up","down"],["down","up"]]
 					pulsos = ["up","down"]
 					
 					variaveis = 0
@@ -57,7 +75,7 @@ for nodo in nodos:
 						final = list(validacao)
 						flag = 0
 						binary = list()
-						#Transforma binario em uma lista de verdade
+						#Transforma binario em uma lista de verdade e ajusta a validacao
 						for b in range(variaveis - (len(binario)-2)): binary.append(0)
 						for c in range(len(binario)-2): binary.append(int(binario[c+2]))
 						for a in range(len(final)):
@@ -65,45 +83,32 @@ for nodo in nodos:
 								final[a] = binary[flag]
 								flag += 1
 						
-						#PULSO DE SUBIDA NO NODO						
-						print(nodo.nome,nodo_saida,"up", pulsos[p],final)
-						lista = Corrente(circuito,entradas,"up",pulsos[p],nodo.nome,nodo_saida,final)
-						current = lista[0]
-						ciclos += lista[1]
-						if current < relacao[2]:
-							relacao[2] = current
-							relacao[3] = [final]
-						elif current == relacao[2]:
-							relacao[3].append(final)
-						#print(nodo.nome,nodo_saida,"up",pulsos[p],current,final)
-						
-						if current < 1000:
-							sets_validos.append([nodo.nome,nodo_saida,"up",pulsos[p],current,final])
-						else: sets_invalidos.append([nodo.nome,nodo_saida,"up",pulsos[p],current,final])
-						
-						
-						if current >= 1000:
-							#PULSO DE DESCIDA NO NODO
-							pd = int((p+1)%2)
-							print(nodo.nome,nodo_saida,"down", pulsos[pd],final)
-							lista  = Corrente(circuito,entradas,"down",pulsos[pd],nodo.nome,nodo_saida,final)
+						#Realiza a combinacao de up e down correta para validacao escolhida
+						for i in range(len(combinacoes)):
+							print(nodo.nome,nodo_saida,combinacoes[i][0],combinacoes[i][1],final)
+							lista = Corrente(circuito,entradas,combinacoes[i][0],combinacoes[i][1],nodo.nome,nodo_saida,final)
 							current = lista[0]
 							ciclos += lista[1]
-							if current < relacao[4]:
-								relacao[4] = current
-								relacao[5] = [final]
-							elif current == relacao[4]:
-								relacao[5].append(final)
-							#print(nodo.nome,nodo_saida,"down",pulsos[pd],current,final)
+							
+							if current < relacao[2+2*i]:
+                                                        	relacao[2+2*i] = current
+                                                        	relacao[3+2*i] = [final]
+                                                	elif current == relacao[2+2*i]:
+                                                        	relacao[3+2*i].append(final)
+	
 							if current < 1000:
-								sets_validos.append([nodo.nome,nodo_saida,"down",pulsos[pd],current,final])
-							else: sets_invalidos.append([nodo.nome,nodo_saida,"down",pulsos[pd],current,final])
+                                                        	sets_validos.append([nodo.nome,nodo_saida,combinacoes[i][0],combinacoes[i][1],current,final])
+								break #Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
+                                                	else: sets_invalidos.append([nodo.nome,nodo_saida,combinacoes[i][0],combinacoes[i][1],current,final])
 
 for h in range(len(sets_validos)): print(sets_validos[h])
 print("\n")
 for h in range(len(sets_invalidos)): print(sets_invalidos[h])
 
 print("\n"+str(ciclos)+" simulacoes feitas\n")
+
+end = time.time()
+print(str(end-start)+" segundos de execucao\n")
 
 #Escreve as saidas obtidas em csv
 linha = 2

@@ -1,2 +1,2 @@
- minout=  19.7897u    at=   1.3205n
- maxout= 336.6308m    at=   2.0310n
+ minout= 148.9456u    at=   3.9127n
+ maxout= 374.1670m    at=   2.0344n

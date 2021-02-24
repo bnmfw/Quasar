@@ -1,0 +1,36 @@
+*circuito xor
+
+****** dispositivos logicos ******
+
+.include dis/logica.txt
+
+****** SETs ******
+
+.include SETs.txt
+
+****** HSPICE ******
+
+.option measform = 3
+.option post = 2
+
+****** Fontes de Tensão Geral ******
+
+Vvdd vdd gnd 0.7
+
+****** Fontes de Sinal ******
+
+.include fontes.txt
+
+****** Circuito ******
+
+Xor1 vdd gnd a b i1 OR
+Xor2 vdd gnd c d i2 OR
+Xxor vdd gnd i1 i2 g1 XOR
+
+****** Controle ******
+
+.tran 0.01n 4n
+
+************
+.end
+

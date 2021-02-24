@@ -34,7 +34,11 @@ def Relacionar(saida_global, saida, nodos, entradas ,relacao_acumulada):
 			if relacao_acumulada == "dir": relacao_acumulada = "inv"
 			elif relacao_acumulada == "inv": relacao_acumulada = "dir"
 			elif relacao_acumulada == "com": pass
-			else: print("ERRO RELACAO NAO ENCONTRADA PARA:", nodos[i].nome, relacao_acumulada)
+		elif saida.logica == "AND" or saida.logica == "OR":
+			pass
+		elif saida.logica == "XOR" or saida.logica == "XNOR":
+			relacao_acumulada = "com"
+		else: print("ERRO RELACAO NAO ENCONTRADA PARA:", nodos[i].nome, saida.logica)
 		
 		for entrada in saida.entradas:
 			Relacionar(saida_global, entrada, nodos, entradas, relacao_acumulada)
@@ -45,10 +49,12 @@ def Fixar(saida, entradas):
         if saida.sinal == 1:
                 if saida.logica == "NAND" or saida.logica == "NOR" or saida.logica == "NOT": paridade = 0
                 elif saida.logica == "AND" or saida.logica == "OR": paridade = 1 #Pra realmente fixar todas as entradas tem que ser 1
+		elif saida.logica == "XOR" or saida.logica == "XNOR": paridade = "x"
                 else: print("PORTA LOGICA "+saida.nome+"NAO REGISTRADA (FIX)")
         elif saida.sinal == 0:
                 if saida.logica == "NAND" or saida.logica == "NOR" or saida.logica == "NOT": paridade = 1
                 elif saida.logica == "AND" or saida.logica == "OR": paridade = 0 #Pra realmente fixar todas as entradas tem que ser 0
+		elif saida.logica == "XOR" or saida.logica == "XNOR": paridade = "x"
                 else: print("PORTA LOGICA "+saida.nome+" NAO REGISTRADA (FIX)")
 
         #Altera os valores das entradas quando possivel
@@ -81,6 +87,7 @@ def Neutralizar(saida,alvo,nodos,saidas):
 				if nodos[i].logica == "NAND" or nodos[i].logica == "AND": paridade = 1
 				elif nodos[i].logica == "NOR" or nodos[i].logica == "OR": paridade = 0
 				elif nodos[i].logica == "NOT": pass
+				elif nodos[i].logica == "XNOR" or nodos[i].logica == "XOR": paridade = "x"
 				else: print("PORTA LOGICA "+nodos[i].logica+" NAO REGISTRADA (NEU)")
 				
 				for outra_entrada in nodos[i].entradas:
