@@ -53,8 +53,10 @@ def Fixar(saida, entradas):
 		elif saida.logica == "XOR" or saida.logica == "XNOR": paridade = "x"
                 else: print("PORTA LOGICA "+saida.nome+"NAO REGISTRADA (FIX)")
         elif saida.sinal == 0:
-                if saida.logica == "NAND" or saida.logica == "NOR" or saida.logica == "NOT": paridade = 1
-                elif saida.logica == "AND" or saida.logica == "OR": paridade = 0 #Pra realmente fixar todas as entradas tem que ser 0
+                if saida.logica == "NAND" or saida.logica == "NOR" or saida.logica == "NOT": 
+			paridade = 1 #Pra realmente fixar todas as entradas tem que ser 1
+			permissaoPraMudarX = True
+                elif saida.logica == "AND" or saida.logica == "OR": paridade = 0
 		elif saida.logica == "XOR" or saida.logica == "XNOR": paridade = "x"
                 else: print("PORTA LOGICA "+saida.nome+" NAO REGISTRADA (FIX)")
 

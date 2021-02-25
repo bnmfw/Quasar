@@ -3,6 +3,7 @@ Benchmark C17 V3 (Modelo com NANDs)
 ****** Dispositivos Lógicos ******
 
 .include dis/logica.txt
+.include dis/DFF.txt
 
 ****** SETs ******
 
@@ -30,8 +31,8 @@ Xnand14 vdd gnd  e i2 i4 NAND
 Xnand15 vdd gnd i1 i3 g1 NAND
 Xnand16 vdd gnd i3 i4 g2 NAND
 //Representação de um circuito pós benchmark
-xnot11 vdd gnd g1 ng1 NOT
-xnot12 vdd gnd g2 ng2 NOT
+xff1 clk g1 q1 nq1 vdd gnd DFF
+xff2 clk g2 q1 nq1 vdd gnd DFF
 
 ****** Controle ******
 

@@ -3,6 +3,7 @@ Benchmark C17 V0
 ****** Dispositivos Lógicos ******
 
 .include dis/logica.txt
+.include dis/DFF.txt
 
 ****** HGSPICE ******
 
@@ -33,8 +34,8 @@ Xand1 vdd gnd  b  d i5 AND
 Xnor2 vdd gnd i4 i5 g2 NOR
 
 //Representação de um circuito pós benchmark
-xnot1 vdd gnd g1 ng1 NOT
-xnot2 vdd gnd g2 ng2 NOT
+xff1 clk g1 q1 nq1 vdd gnd DFF
+xff2 clk g2 q1 nq1 vdd gnd DFF
 
 ****** Controle ******
 

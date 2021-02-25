@@ -10,7 +10,8 @@ circuito = circuito+".txt"
 vdd = float(input("vdd: "))
 with open("vdd.txt","w") as arquivoVdd:
 	arquivoVdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
-	arquivoVdd.write("Vvdd vdd gnd "+str(vdd))
+	arquivoVdd.write("Vvdd vdd gnd "+str(vdd)+"\n")
+	arquivoVdd.write("Vclk clk gnd PULSE(0 "+str(vdd)+" 1n 0.01n 0.01n 1n 2n)")
 saidas = raw_input("saidas analisadas: ")
 saidas = saidas.split()
 entradas = Instanciar_entradas("fontes.txt")
