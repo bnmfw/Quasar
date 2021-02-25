@@ -7,9 +7,12 @@ start = time.time()
 circuito = raw_input("circuito a ser analisado: ")
 tabela = circuito+".csv"
 circuito = circuito+".txt"
+vdd = float(input("vdd: "))
+with open("vdd.txt","w") as arquivoVdd:
+	arquivoVdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
+	arquivoVdd.write("Vvdd vdd gnd "+str(vdd))
 saidas = raw_input("saidas analisadas: ")
 saidas = saidas.split()
-#saidas = ["g1","g2"]
 entradas = Instanciar_entradas("fontes.txt")
 validacao = list()
 
@@ -20,15 +23,20 @@ sets_invalidos = []
 
 nodos = Parametrar(circuito, entradas, saidas)
 
-#print("TESTE MANUAL")
-#current = Corrente(circuito,entradas,"up","down","i3","g1",[0,0,1,0,0])
-#print("i3","g1","up","down",[0,0,1,0,0],current)
-#print("\n\n")
+for nodo in nodos:
+	print(nodo.nome, nodo.validacao)
+
+if analiseManual:
+	print("\nTESTE MANUAL\n i2, g1, up, up [0,0,0,1]\n")
+	current = Corrente(circuito,vdd, entradas,"up","up","i2","g1",[0,0,0,1])
+	print("Corrente final: "+str(current))
 
 #for nodo in nodos:
 #	print(nodo.nome, nodo.relacoes, nodo.validacao)
 
 for nodo in nodos:
+
+	if analiseManual: break
 	for nodo_saida in saidas: #Determina a saida
 		
 		for relacao in nodo.relacoes: #Faz cada relacao com a saida
@@ -47,16 +55,12 @@ for nodo in nodos:
 	                                        relacao.append([])#validacoes dessa corrente
 
 					combinacoes = []
-					p = 0
 					#identifica a relacao do nodo com a saida
 					if tipo == "inv": 
-						p = 1
 						combinacoes = [["up","down"],["down","up"]]
 					elif tipo == "dir": 
-						p = 0
 						combinacoes = [["up","up"],["down","down"]]
 					elif tipo == "com": 
-						p = 2
 						combinacoes = [["up","up"],["down","down"],["up","down"],["down","up"]]
 					pulsos = ["up","down"]
 					
@@ -86,7 +90,7 @@ for nodo in nodos:
 						#Realiza a combinacao de up e down correta para validacao escolhida
 						for i in range(len(combinacoes)):
 							print(nodo.nome,nodo_saida,combinacoes[i][0],combinacoes[i][1],final)
-							lista = Corrente(circuito,entradas,combinacoes[i][0],combinacoes[i][1],nodo.nome,nodo_saida,final)
+							lista = Corrente(circuito, vdd, entradas,combinacoes[i][0],combinacoes[i][1],nodo.nome,nodo_saida,final)
 							current = lista[0]
 							ciclos += lista[1]
 							
@@ -108,7 +112,9 @@ for h in range(len(sets_invalidos)): print(sets_invalidos[h])
 print("\n"+str(ciclos)+" simulacoes feitas\n")
 
 end = time.time()
-print(str(end-start)+" segundos de execucao\n")
+tempoTotal = int(end-start)
+
+print(str(int(tempoTotal/60))+" minutos e "+str(tempoTotal%60)+" segundos de execucao\n")
 
 #Escreve as saidas obtidas em csv
 linha = 2

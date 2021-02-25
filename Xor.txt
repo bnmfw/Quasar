@@ -15,7 +15,7 @@
 
 ****** Fontes de Tensão Geral ******
 
-Vvdd vdd gnd 0.7
+.include vdd.txt
 
 ****** Fontes de Sinal ******
 
@@ -23,9 +23,10 @@ Vvdd vdd gnd 0.7
 
 ****** Circuito ******
 
-Xor1 vdd gnd a b i1 OR
-Xor2 vdd gnd c d i2 OR
-Xxor vdd gnd i1 i2 g1 XOR
+Xand1 vdd gnd b c i1 AND
+Xand2 vdd gnd a i1 i2 AND
+Xand3 vdd gnd i1 d i3 AND
+Xand4 vdd gnd i2 i3 g1 AND
 
 ****** Controle ******
 

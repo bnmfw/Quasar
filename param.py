@@ -46,7 +46,8 @@ def Relacionar(saida_global, saida, nodos, entradas ,relacao_acumulada):
 #Funcao que define sinais para entradas nao relevantes ao sinal analisado
 def Fixar(saida, entradas):
         #Escolhe as paridades das entradas fixas
-        if saida.sinal == 1:
+        paridade = "a"
+	if saida.sinal == 1:
                 if saida.logica == "NAND" or saida.logica == "NOR" or saida.logica == "NOT": paridade = 0
                 elif saida.logica == "AND" or saida.logica == "OR": paridade = 1 #Pra realmente fixar todas as entradas tem que ser 1
 		elif saida.logica == "XOR" or saida.logica == "XNOR": paridade = "x"
@@ -59,16 +60,18 @@ def Fixar(saida, entradas):
 
         #Altera os valores das entradas quando possivel
 	for entrada in saida.entradas:
-                if saida.sinal == "x":
-			 entrada.sinal = "x"
+		if saida.sinal == "nx": #x determinado na neutralizacao
+			entrada.sinal = "nx"
+                elif saida.sinal == "x":
+			if entrada.sinal == "t": entrada.sinal = "x"
                 elif saida.sinal == "t": #t significa tanto faz kkkkkk
                         pass
                 elif saida.sinal == 0 or saida.sinal == 1:
 			if entrada.sinal == "t": entrada.sinal = paridade
 			elif entrada.sinal == "x": pass
 			elif entrada.sinal != paridade and (paridade == 0 or paridade == 1):
-				print("PARIDADE DUPLA PARA: "+entrada.nome+" X ATRIBUIDO (FIX)")
-				entrada.sinal = "x"
+				print("PARIDADE DUPLA PARA: "+entrada.nome+" NX ATRIBUIDO (FIX)")
+				entrada.sinal = "nx" #ele tambem pode atribuir nx aqui kkk
                 else: print("ERRO TIPO DE SINAL NAO REGISTRADO: "+str(saida.sinal))
 
                 #Repete a funcao pra entradas nao elementares
@@ -87,7 +90,7 @@ def Neutralizar(saida,alvo,nodos,saidas):
 				if nodos[i].logica == "NAND" or nodos[i].logica == "AND": paridade = 1
 				elif nodos[i].logica == "NOR" or nodos[i].logica == "OR": paridade = 0
 				elif nodos[i].logica == "NOT": pass
-				elif nodos[i].logica == "XNOR" or nodos[i].logica == "XOR": paridade = "x"
+				elif nodos[i].logica == "XNOR" or nodos[i].logica == "XOR": paridade = "nx" #X determinado na neutralizacao, que deve ser fixado
 				else: print("PORTA LOGICA "+nodos[i].logica+" NAO REGISTRADA (NEU)")
 				
 				for outra_entrada in nodos[i].entradas:
@@ -96,8 +99,8 @@ def Neutralizar(saida,alvo,nodos,saidas):
                                                 elif outra_entrada.sinal == "x": pass
 						elif outra_entrada.sinal == paridade: pass
 						else: 
-							print("PARADIDADE DUPLA PARA: "+outra_entrada.nome+" X ATRIBUIDO (NEU)")
-							outra_entrada.sinal = "x"
+							print("PARADIDADE DUPLA PARA: "+outra_entrada.nome+" NX ATRIBUIDO (NEU)")
+							outra_entrada.sinal = "nx"
 				
 				#Repete o processo se nao eh saida global
 				if nodos[i].nome in saidas: pass
@@ -107,6 +110,7 @@ def Neutralizar(saida,alvo,nodos,saidas):
 def Finalizar(entradas):
 	for i in range(len(entradas)):
 		if entradas[i].sinal == "t": entradas[i].sinal = 0
+		elif entradas[i].sinal == "nx": entradas[i].sinal = "x"
 
 #Gera as validacoes logicas de uma entrada para uma saida
 def Validar(alvo,entradas,nodos,saida,saidas):
@@ -157,7 +161,6 @@ def Instanciar_entradas(fontes):
                                 a,nome,b,c = linha.split()
                                 entrada = Entrada(nome,"t")
                                 entradas.append(entrada)
-
 	return entradas
 
 #Funcao que recebe o circuito e retorna os parametros	

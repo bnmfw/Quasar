@@ -1,0 +1,2 @@
+*Arquivo com a tensao usada por todos os circuitos
+Vvdd vdd gnd 0.7

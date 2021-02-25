@@ -1,2 +1,1 @@
 nodo,saida,pulso,pulso,corrente,set,validacoes->
-i1,g1,up,up,189.181640625E-6,=E2*0.00000000019/(1.08E-14*0.000000021),

@@ -11,7 +11,7 @@ Benchmark C17 V1
 
 ****** Fontes de Tensão Geral ******
 
-Vvdd vdd gnd 0.7
+.include vdd.txt
 
 ****** Fontes de Sinal ******
 

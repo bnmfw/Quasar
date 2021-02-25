@@ -11,15 +11,10 @@ Benchmark C17 V0
 
 ****** Fontes de Tensão Geral ******
 
-Vvdd vdd gnd 0.7
+.include vdd.txt
 
 ****** Fontes de Sinal ******
 
-*Va a gnd PULSE(0 0.7  5n 0.01n 0.01n  5n  10n)
-*Vb b gnd PULSE(0 0.7 10n 0.01n 0.01n 10n  20n)
-*Vc c gnd PULSE(0 0.7 20n 0.01n 0.01n 20n  40n)
-*Vd d gnd PULSE(0 0.7 40n 0.01n 0.01n 40n  80n)
-*Ve e gnd PULSE(0 0.7 80n 0.01n 0.01n 80n 160n)
 .include fontes.txt
 
 ****** SETs ******
