@@ -221,13 +221,13 @@ def Escrever_CSV(tabela, nodos):
                 for i in range(len(combinacoes)):
                     sets.write(nodo.nome + "," + relacao[0] + "," + combinacoes[i][0] + "," + combinacoes[i][1] + ",")
                     sets.write(
-                        str(relacao[2 + 2 * i]) + "E-6,=E" + str(linha) + "*0.00000000019/(1.08E-14*0.000000021),")
+                        str(relacao[2 + 2 * i]) + "E-6,=E" + str(linha) + "*0.00000000019/(1.08E-14*0.000000021)")
                     for validacao in relacao[3 + 2 * i]:
-                        sets.write("'")
+                        sets.write(",'")
                         for num in validacao:
                             sets.write(str(num))
-                sets.write("\n")
-                linha += 1
+                    sets.write("\n")
+                    linha += 1
 
 
 # Funcao que recebe o circuito e retorna os parametros

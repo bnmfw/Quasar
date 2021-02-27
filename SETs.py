@@ -113,9 +113,8 @@ for h in range(len(sets_invalidos)): print(sets_invalidos[h])
 
 # Retorno do numero de simulacoes feitas e de tempo de execucao
 print("\n" + str(simulacoesFeitas) + " simulacoes feitas\n")
+Escrever_CSV(tabela,nodos)
+
 end = time.time()
 tempoTotal = int(end - start)
 print(str(int(tempoTotal / 60)) + " minutos e " + str(tempoTotal % 60) + " segundos de execucao\n")
-
-# Escreve as saidas obtidas em csv
-Escrever_CSV(tabela,nodos)

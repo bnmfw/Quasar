@@ -30,8 +30,8 @@ def Ler_pulso(direcaoPulsoSaida, offset):
             linha_texto[0] = text.readline()
             linha_texto[1] = text.readline()
 
-            linha_texto[0 + offset] = text.readline()
-            tensao, tempo1 = linha_texto[0 + offset].split('    ')
+        linha_texto[0 + offset] = text.readline()
+        tensao, tempo1 = linha_texto[0 + offset].split('    ')
         if tensao[7] == "=":
             a, min_tensao = tensao.split('=')
         else:
