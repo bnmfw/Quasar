@@ -29,9 +29,6 @@ if analiseManual:
     current = Corrente(circuito, vdd, entradas, "up", "up", "i2", "g1", [0, 0, 0, 1])
     print("Corrente final: " + str(current))
 
-# for nodo in nodos:
-#	print(nodo.nome, nodo.relacoes, nodo.validacao)
-
 for nodo in nodos:
 
     if analiseManual: break
@@ -107,13 +104,13 @@ for nodo in nodos:
                                 sets_invalidos.append(
                                     [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
 
-for h in range(len(sets_validos)): print(sets_validos[h])
+for sets in sets_validos: print(sets)
 print("\n")
-for h in range(len(sets_invalidos)): print(sets_invalidos[h])
+for sets in sets_invalidos: print(sets)
 
 # Retorno do numero de simulacoes feitas e de tempo de execucao
 print("\n" + str(simulacoesFeitas) + " simulacoes feitas\n")
-Escrever_CSV(tabela,nodos)
+Escrever_CSV(tabela, nodos)
 
 end = time.time()
 tempoTotal = int(end - start)
