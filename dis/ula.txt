@@ -20,42 +20,42 @@ xxor vp vm a b sum XOR
 **** Subcircuito Full adder ****
 
 .subckt FADD vp vm a b cin sum cout
-Mp1 vp a 1 a PMOS_RVT L=7nm nfin=3
-Mp2 1 b ncout b PMOS_RVT L=7nm nfin=3
+Mp1 vp a 1 a PMOS_RVT nfin=3
+Mp2 1 b ncout b PMOS_RVT nfin=3
 
-Mn1 ncout a 2 a NMOS_RVT L=7nm nfin=3
-Mn2 2 b vm b NMOS_RVT L=7nm nfin=3
+Mn1 ncout a 2 a NMOS_RVT nfin=3
+Mn2 2 b vm b NMOS_RVT nfin=3
 
-Mp3 vp a 3 a PMOS_RVT L=7nm nfin=3
-Mp4 vp b 3 b PMOS_RVT L=7nm nfin=3
-Mp5 3 cin ncout cin PMOS_RVT L=7nm nfin=3
+Mp3 vp a 3 a PMOS_RVT nfin=3
+Mp4 vp b 3 b PMOS_RVT nfin=3
+Mp5 3 cin ncout cin PMOS_RVT nfin=3
 
-Mn3 ncout cin 4 cin NMOS_RVT L=7nm nfin=3
-Mn4 4 a vm a NMOS_RVT L=7nm nfin=3
-Mn5 4 b vm b NMOS_RVT L=7nm nfin=3
+Mn3 ncout cin 4 cin NMOS_RVT nfin=3
+Mn4 4 a vm a NMOS_RVT nfin=3
+Mn5 4 b vm b NMOS_RVT nfin=3
 
-Mp6 vp a 5 a PMOS_RVT L=7nm nfin=3
-Mp7 vp b 5 b PMOS_RVT L=7nm nfin=3
-Mp8 vp cin 5 cin PMOS_RVT L=7nm nfin=3
-Mp9 5 ncout nsum ncout PMOS_RVT L=7nm nfin=3
+Mp6 vp a 5 a PMOS_RVT nfin=3
+Mp7 vp b 5 b PMOS_RVT nfin=3
+Mp8 vp cin 5 cin PMOS_RVT nfin=3
+Mp9 5 ncout nsum ncout PMOS_RVT nfin=3
 
-Mn6 nsum ncout 6 ncout NMOS_RVT L=7nm nfin=3
-Mn7 6 a vm a NMOS_RVT L=7nm nfin=3n
-Mn8 6 b vm a NMOS_RVT L=7nm nfin=3
-Mn9 6 cin vm cin NMOS_RVT L=7nm nfin=3
+Mn6 nsum ncout 6 ncout NMOS_RVT nfin=3
+Mn7 6 a vm a NMOS_RVT nfin=3n
+Mn8 6 b vm a NMOS_RVT nfin=3
+Mn9 6 cin vm cin NMOS_RVT nfin=3
 
-Mp10 vp a 7 a PMOS_RVT L=7nm nfin=3
-Mp11 7 b 8 b PMOS_RVT L=7nm nfin=3
-Mp12 8 cin nsum cin PMOS_RVT L=7nm nfin=3
+Mp10 vp a 7 a PMOS_RVT nfin=3
+Mp11 7 b 8 b PMOS_RVT nfin=3
+Mp12 8 cin nsum cin PMOS_RVT nfin=3
 
-Mn10 nsum a 9 a NMOS_RVT L=7nm nfin=3
-Mn11 9 b 10 b NMOS_RVT L=7nm nfin=3
-Mn12 10 cin vm cin NMOS_RVT L=7nm nfin=3
+Mn10 nsum a 9 a NMOS_RVT nfin=3
+Mn11 9 b 10 b NMOS_RVT nfin=3
+Mn12 10 cin vm cin NMOS_RVT nfin=3
 
-Mp13 vp nsum sum nsum PMOS_RVT L=7nm nfin=3
-Mn13 sum nsum vm nsum NMOS_RVT L=7nm nfin=3
-Mp14 vp ncout cout ncout PMOS_RVT L=7nm nfin=3
-Mn14 cout ncout vm ncout NMOS_RVT L=7nm nfin=3
+Mp13 vp nsum sum nsum PMOS_RVT nfin=3
+Mn13 sum nsum vm nsum NMOS_RVT nfin=3
+Mp14 vp ncout cout ncout PMOS_RVT nfin=3
+Mn14 cout ncout vm ncout NMOS_RVT nfin=3
 
 .ends
 

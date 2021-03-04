@@ -6,154 +6,154 @@
 
 * 1 par finfet *
 .subckt TRAN vp vm a s e ne
-Mp1 a e s e PMOS_RVT L=7nm nfin=3
-Mn1 s ne a ne NMOS_RVT L=7nm nfin=3
+Mp1 a e s e PMOS_RVT nfin=3
+Mn1 s ne a ne NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito NOT ****
 
 * 1 par finfet *
 .subckt NOT vp vm a s
-Mp1 vp a s a PMOS_RVT L=7nm nfin=3
-Mn1 s a vm a NMOS_RVT L=7nm nfin=3
+Mp1 vp a s a PMOS_RVT nfin=3
+Mn1 s a vm a NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito NAND ****
 
 * 2 pares finfet *
 .subckt NAND vp vm a b s
-Mp1 vp a s a PMOS_RVT L=7nm nfin=3
-Mp2 vp b s b PMOS_RVT L=7nm nfin=3
-Mn1 s a 1 a NMOS_RVT L=7nm nfin=3
-Mn2 1 b vm b NMOS_RVT L=7nm nfin=3
+Mp1 vp a s a PMOS_RVT nfin=3
+Mp2 vp b s b PMOS_RVT nfin=3
+Mn1 s a 1 a NMOS_RVT nfin=3
+Mn2 1 b vm b NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito NAND3 ****
 
 * 3 pares finfet *
 .subckt NAND3 vp vm a b c s
-Mp1 vp a s a PMOS_RVT L=7nm nfin=3
-Mp2 vp b s b PMOS_RVT L=7nm nfin=3
-Mp3 vp c s c PMOS_RVT L=7nm nfin=3
-Mn1 s a 1 a NMOS_RVT L=7nm nfin=3
-Mn2 1 b 2 b NMOS_RVT L=7nm nfin=3
-Mn3 2 c vm c NMOS_RVT L=7nm nfin=3
+Mp1 vp a s a PMOS_RVT nfin=3
+Mp2 vp b s b PMOS_RVT nfin=3
+Mp3 vp c s c PMOS_RVT nfin=3
+Mn1 s a 1 a NMOS_RVT nfin=3
+Mn2 1 b 2 b NMOS_RVT nfin=3
+Mn3 2 c vm c NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito NAND4 ****
 
 * 4 pares finfet *
 .subckt NAND4 vp vm a b c d s
-Mp1 vp a s a PMOS_RVT L=7nm nfin=3
-Mp2 vp b s b PMOS_RVT L=7nm nfin=3
-Mp3 vp c s c PMOS_RVT L=7nm nfin=3
-Mp4 vp d s d PMOS_RVT L=7nm nfin=3
-Mn1 s a 1 a NMOS_RVT L=7nm nfin=3
-Mn2 1 b 2 b NMOS_RVT L=7nm nfin=3
-Mn3 2 c 3 c NMOS_RVT L=7nm nfin=3
-Mn4 3 d vm d NMOS_RVT L=7nm nfin=3
+Mp1 vp a s a PMOS_RVT nfin=3
+Mp2 vp b s b PMOS_RVT nfin=3
+Mp3 vp c s c PMOS_RVT nfin=3
+Mp4 vp d s d PMOS_RVT nfin=3
+Mn1 s a 1 a NMOS_RVT nfin=3
+Mn2 1 b 2 b NMOS_RVT nfin=3
+Mn3 2 c 3 c NMOS_RVT nfin=3
+Mn4 3 d vm d NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito NAND8 ****
 
 * 8 pares finfet *
 .subckt NAND8 vp vm a b c d e f g h s
-Mp1 vp a s a PMOS_RVT L=7nm nfin=3
-Mp2 vp b s b PMOS_RVT L=7nm nfin=3
-Mp3 vp c s c PMOS_RVT L=7nm nfin=3
-Mp4 vp d s d PMOS_RVT L=7nm nfin=3
-Mp5 vp e s e PMOS_RVT L=7nm nfin=3
-Mp6 vp f s f PMOS_RVT L=7nm nfin=3
-Mp7 vp g s g PMOS_RVT L=7nm nfin=3
-Mp8 vp h s h PMOS_RVT L=7nm nfin=3
-Mn1 s a 1 a NMOS_RVT L=7nm nfin=3
-Mn2 1 b 2 b NMOS_RVT L=7nm nfin=3
-Mn3 2 c 3 c NMOS_RVT L=7nm nfin=3
-Mn4 3 d 4 d NMOS_RVT L=7nm nfin=3
-Mn5 4 e 5 e NMOS_RVT L=7nm nfin=3
-Mn6 5 f 6 f NMOS_RVT L=7nm nfin=3
-Mn7 6 g 7 g NMOS_RVT L=7nm nfin=3
-Mn8 7 h vm h NMOS_RVT L=7nm nfin=3
+Mp1 vp a s a PMOS_RVT nfin=3
+Mp2 vp b s b PMOS_RVT nfin=3
+Mp3 vp c s c PMOS_RVT nfin=3
+Mp4 vp d s d PMOS_RVT nfin=3
+Mp5 vp e s e PMOS_RVT nfin=3
+Mp6 vp f s f PMOS_RVT nfin=3
+Mp7 vp g s g PMOS_RVT nfin=3
+Mp8 vp h s h PMOS_RVT nfin=3
+Mn1 s a 1 a NMOS_RVT nfin=3
+Mn2 1 b 2 b NMOS_RVT nfin=3
+Mn3 2 c 3 c NMOS_RVT nfin=3
+Mn4 3 d 4 d NMOS_RVT nfin=3
+Mn5 4 e 5 e NMOS_RVT nfin=3
+Mn6 5 f 6 f NMOS_RVT nfin=3
+Mn7 6 g 7 g NMOS_RVT nfin=3
+Mn8 7 h vm h NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito AND ****
 
 * 3 pares finfet *
 .subckt AND vp vm a b s
-Mp1 vp a 2 a PMOS_RVT L=7nm nfin=3
-Mp2 vp b 2 b PMOS_RVT L=7nm nfin=3
-Mn1 2 a 1 a NMOS_RVT L=7nm nfin=3
-Mn2 1 b vm c NMOS_RVT L=7nm nfin=3
+Mp1 vp a 2 a PMOS_RVT nfin=3
+Mp2 vp b 2 b PMOS_RVT nfin=3
+Mn1 2 a 1 a NMOS_RVT nfin=3
+Mn2 1 b vm c NMOS_RVT nfin=3
 
-Mp3 vp 2 s 2 PMOS_RVT L=7nm nfin=3
-Mn3 s 2 vm 2 NMOS_RVT L=7nm nfin=3
+Mp3 vp 2 s 2 PMOS_RVT nfin=3
+Mn3 s 2 vm 2 NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito AND3 ****
 
 * 4 pares finfet *
 .subckt AND3 vp vm a b c s
-Mp1 vp a ns a PMOS_RVT L=7nm nfin=3
-Mp2 vp b ns b PMOS_RVT L=7nm nfin=3
-Mp3 vp c ns c PMOS_RVT L=7nm nfin=3
-Mn1 ns a 1 a NMOS_RVT L=7nm nfin=3
-Mn2 1 b 2 b NMOS_RVT L=7nm nfin=3
-Mn3 2 c vm c NMOS_RVT L=7nm nfin=3
+Mp1 vp a ns a PMOS_RVT nfin=3
+Mp2 vp b ns b PMOS_RVT nfin=3
+Mp3 vp c ns c PMOS_RVT nfin=3
+Mn1 ns a 1 a NMOS_RVT nfin=3
+Mn2 1 b 2 b NMOS_RVT nfin=3
+Mn3 2 c vm c NMOS_RVT nfin=3
 
-Mp4 vp ns s ns PMOS_RVT L=7nm nfin=3
-Mn4 s ns vm ns NMOS_RVT L=7nm nfin=3
+Mp4 vp ns s ns PMOS_RVT nfin=3
+Mn4 s ns vm ns NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito AND4 ****
 
 * 5 pares finfet *
 .subckt AND4 vp vm a b c d s
-Mp1 vp a ns a PMOS_RVT L=7nm nfin=3
-Mp2 vp b ns b PMOS_RVT L=7nm nfin=3
-Mp3 vp c ns c PMOS_RVT L=7nm nfin=3
-Mp4 vp d ns d PMOS_RVT L=7nm nfin=3
-Mn1 ns a 1 a NMOS_RVT L=7nm nfin=3
-Mn2 1 b 2 b NMOS_RVT L=7nm nfin=3
-Mn3 2 c 3 c NMOS_RVT L=7nm nfin=3
-Mn4 3 d vm d NMOS_RVT L=7nm nfin=3
+Mp1 vp a ns a PMOS_RVT nfin=3
+Mp2 vp b ns b PMOS_RVT nfin=3
+Mp3 vp c ns c PMOS_RVT nfin=3
+Mp4 vp d ns d PMOS_RVT nfin=3
+Mn1 ns a 1 a NMOS_RVT nfin=3
+Mn2 1 b 2 b NMOS_RVT nfin=3
+Mn3 2 c 3 c NMOS_RVT nfin=3
+Mn4 3 d vm d NMOS_RVT nfin=3
 
-Mp5 vp ns s ns PMOS_RVT L=7nm nfin=3
-Mn5 s ns vm ns NMOS_RVT L=7nm nfin=3
+Mp5 vp ns s ns PMOS_RVT nfin=3
+Mn5 s ns vm ns NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito NOR ****
 
 * 2 pares finfet *
 .subckt NOR vp vm a b s
-Mp1 vp a 1 a PMOS_RVT L=7nm nfin=3
-Mp2 1 b s b PMOS_RVT L=7nm nfin=3
-Mn1 s a vm a NMOS_RVT L=7nm nfin=3
-Mn2 s b vm b NMOS_RVT L=7nm nfin=3
+Mp1 vp a 1 a PMOS_RVT nfin=3
+Mp2 1 b s b PMOS_RVT nfin=3
+Mn1 s a vm a NMOS_RVT nfin=3
+Mn2 s b vm b NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito OR ****
 
 * 3 pares finfet *
 .subckt OR vp vm a b s
-Mp1 vp a 1 a PMOS_RVT L=7nm nfin=3
-Mp2 1 b 2 b PMOS_RVT L=7nm nfin=3
-Mn1 2 a vm a NMOS_RVT L=7nm nfin=3
-Mn2 2 b vm b NMOS_RVT L=7nm nfin=3
+Mp1 vp a 1 a PMOS_RVT nfin=3
+Mp2 1 b 2 b PMOS_RVT nfin=3
+Mn1 2 a vm a NMOS_RVT nfin=3
+Mn2 2 b vm b NMOS_RVT nfin=3
 
-Mp3 vp 2 s 2 PMOS_RVT L=7nm nfin=3
-Mn3 s 2 vm 2 NMOS_RVT L=7nm nfin=3
+Mp3 vp 2 s 2 PMOS_RVT nfin=3
+Mn3 s 2 vm 2 NMOS_RVT nfin=3
 .ends
 
 **** Subcircuito XOR ****
 
 * 3 pares finfet *
 .subckt XOR vp vm a b s
-Mp1 vp a na a PMOS_RVT L=7nm nfin=3
-Mn1 na a vm a NMOS_RVT L=7nm nfin=3
-Mp2 a b s b PMOS_RVT L=7nm nfin=3
-Mn2 s b na b NMOS_RVT L=7nm nfin=3
-Mp3 b a s a PMOS_RVT L=7nm nfin=3
-Mn3 s na b na NMOS_RVT L=7nm nfin=3
+Mp1 vp a na a PMOS_RVT nfin=3
+Mn1 na a vm a NMOS_RVT nfin=3
+Mp2 a b s b PMOS_RVT nfin=3
+Mn2 s b na b NMOS_RVT nfin=3
+Mp3 b a s a PMOS_RVT nfin=3
+Mn3 s na b na NMOS_RVT nfin=3
 .ends
 
 
@@ -161,12 +161,12 @@ Mn3 s na b na NMOS_RVT L=7nm nfin=3
 
 * 4 pares finfet *
 .subckt XNOR vp vm a b s
-Mp1 vp a na a PMOS_RVT L=7nm nfin=3
-Mn1 na a vm a NMOS_RVT L=7nm nfin=3
-Mp2 a b ns b PMOS_RVT L=7nm nfin=3
-Mn2 ns b na b NMOS_RVT L=7nm nfin=3
-Mp3 b a ns a PMOS_RVT L=7nm nfin=3
-Mn3 ns na b na NMOS_RVT L=7nm nfin=3
-Mp4 vp ns s ns PMOS_RVT L=7nm nfin=3
-Mn4 s ns vm ns NMOS_RVT L=7nm nfin=3
+Mp1 vp a na a PMOS_RVT nfin=3
+Mn1 na a vm a NMOS_RVT nfin=3
+Mp2 a b ns b PMOS_RVT nfin=3
+Mn2 ns b na b NMOS_RVT nfin=3
+Mp3 b a ns a PMOS_RVT nfin=3
+Mn3 ns na b na NMOS_RVT nfin=3
+Mp4 vp ns s ns PMOS_RVT nfin=3
+Mn4 s ns vm ns NMOS_RVT nfin=3
 .ends
