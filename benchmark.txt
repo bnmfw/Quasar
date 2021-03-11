@@ -17,6 +17,7 @@ Benchmark C17 V3 (Modelo com NANDs)
 ****** Fontes de Tensão Geral ******
 
 .include vdd.txt
+Vvcc vcc gnd 0.7
 
 ****** Fontes de Sinal ******
 
@@ -24,15 +25,28 @@ Benchmark C17 V3 (Modelo com NANDs)
 
 ****** Circuito ******
 
-Xnand11 vdd gnd  a  b i1 NAND
-Xnand12 vdd gnd  b  d i2 NAND
-Xnand13 vdd gnd  c i2 i3 NAND
-Xnand14 vdd gnd  e i2 i4 NAND
+Xinva1 vcc gnd a na NOT
+Xinva2 vcc gnd na ta NOT
+Xinvb1 vcc gnd b nb NOT
+Xinvb2 vcc gnd nb tb NOT
+Xinvc1 vcc gnd c nc NOT
+Xinvc2 vcc gnd nc tc NOT
+Xinvd1 vcc gnd d nd NOT
+Xinvd2 vcc gnd nd td NOT
+Xinve1 vcc gnd e ne NOT
+Xinve2 vcc gnd ne te NOT
+
+Xnand11 vdd gnd ta tb i1 NAND
+Xnand12 vdd gnd tb td i2 NAND
+Xnand13 vdd gnd tc i2 i3 NAND
+Xnand14 vdd gnd te i2 i4 NAND
 Xnand15 vdd gnd i1 i3 g1 NAND
 Xnand16 vdd gnd i3 i4 g2 NAND
 //Representação de um circuito pós benchmark
 xff1 clk g1 q1 nq1 vdd gnd DFF
-xff2 clk g2 q1 nq1 vdd gnd DFF
+xff2 clk g2 q2 nq2 vdd gnd DFF
+xinv11 vcc gnd q1 nnq1 NOT
+xinv12 vcc gnd q2 nnq2 NOT  
 
 ****** Controle ******
 
