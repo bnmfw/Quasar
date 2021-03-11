@@ -65,9 +65,9 @@ def Ajustar_pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
     with open(arqvRadiacao, "w") as sets:
         sets.write("*SETs para serem usados nos benchmarks\n")
         if direcaoPulsoNodo == "down": sets.write("*")
-        sets.write("Iseu gnd " + nodo + " EXP(0 " + str(corrente) + "u 2n 10p 10p 200p) //up\n")
+        sets.write("Iseu gnd " + nodo + " EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //up\n")
         if direcaoPulsoNodo == "up": sets.write("*")
-        sets.write("Iseu " + nodo + " gnd EXP(0 " + str(corrente) + "u 2n 10p 10p 200p) //down\n")
+        sets.write("Iseu " + nodo + " gnd EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //down\n")
         sets.write(".meas tran minout min V(" + saida + ") from=1.0n to=4.0n\n")
         sets.write(".meas tran maxout max V(" + saida + ") from=1.0n to=4.0n\n")
         # Usado apenas na verificacao de validacao:

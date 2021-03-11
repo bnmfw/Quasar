@@ -228,6 +228,7 @@ def Escrever_CSV(tabela, nodos):
                             sets.write(str(num))
                     sets.write("\n")
                     linha += 1
+    print("Tabela "+tabela+" gerada com sucesso\n")
 
 
 # Funcao que recebe o circuito e retorna os parametros
