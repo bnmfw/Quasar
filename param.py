@@ -4,7 +4,6 @@ class Entrada():
         self.nome = nome
         self.sinal = sinal
 
-
 class Nodo():
     def __init__(self, nome, entradas, logica, relacoes, sinal, validacao):
         self.nome = nome
@@ -13,7 +12,6 @@ class Nodo():
         self.relacoes = relacoes  # Tipo de relacao com cada saida: inv, dir, nao, com
         self.sinal = sinal  # Sinal logico (usado apenas na validacao)
         self.validacao = validacao  # Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
-
 
 # Recursao que encontra a relacao de um nodo com uma saida
 def Relacionar(saida_global, saida, nodos, entradas, relacao_acumulada):
@@ -44,11 +42,10 @@ def Relacionar(saida_global, saida, nodos, entradas, relacao_acumulada):
         elif saida.logica == "XOR" or saida.logica == "XNOR":
             relacao_acumulada = "com"
         else:
-            print("ERRO RELACAO NAO ENCONTRADA PARA:", nodos[i].nome, saida.logica)
+            print("ERRO RELACAO NAO ENCONTRADA PARA:", saida.nome, saida.logica)
 
         for entrada in saida.entradas:
             Relacionar(saida_global, entrada, nodos, entradas, relacao_acumulada)
-
 
 # Funcao que define sinais para entradas nao relevantes ao sinal analisado
 def Fixar(saida, entradas):
@@ -97,7 +94,6 @@ def Fixar(saida, entradas):
         if not entrada in entradas:
             Fixar(entrada, entradas)
 
-
 # Funcao que recursivamente corre do nodo pra saida neutralizando entradas paralelas
 def Neutralizar(saida, alvo, nodos, saidas):
     alvo.sinal = "x"
@@ -134,7 +130,6 @@ def Neutralizar(saida, alvo, nodos, saidas):
                 else:
                     Neutralizar(saida, nodos[i], nodos, saidas)
 
-
 # Finaliza as entradas logicas para ter apenas uma variavel
 def Finalizar(entradas):
     for i in range(len(entradas)):
@@ -142,7 +137,6 @@ def Finalizar(entradas):
             entradas[i].sinal = 0
         elif entradas[i].sinal == "nx":
             entradas[i].sinal = "x"
-
 
 # Gera as validacoes logicas de uma entrada para uma saida
 def Validar(alvo, entradas, nodos, saida, saidas):
@@ -183,53 +177,6 @@ def Validar(alvo, entradas, nodos, saida, saidas):
             logica_entrada.append(entradas[i].sinal)
 
     alvo.validacao.append([saida.nome, logica_entrada])
-
-
-def Instanciar_entradas(fontes):
-    entradas = list()
-    with open(fontes, "r") as fonte:
-        for linha in fonte:
-            if "V" in linha:
-                a, nome, b, c = linha.split()
-                entrada = Entrada(nome, "t")
-                entradas.append(entrada)
-    return entradas
-
-
-def Definir_Tensao(vdd):
-    with open("vdd.txt", "w") as arquivoVdd:
-        arquivoVdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
-        arquivoVdd.write("Vvdd vdd gnd " + str(vdd) + "\n")
-        arquivoVdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
-
-
-def Escrever_CSV(tabela, nodos):
-    linha = 2
-    with open(tabela, "w") as sets:
-        sets.write("nodo,saida,pulso,pulso,corrente,set,validacoes->\n")
-        for nodo in nodos:
-            for relacao in nodo.relacoes:
-                tipo = relacao[1]
-                combinacoes = []
-                # identifica a relacao do nodo com a saida
-                if tipo == "inv":
-                    combinacoes = [["up", "down"], ["down", "up"]]
-                elif tipo == "dir":
-                    combinacoes = [["up", "up"], ["down", "down"]]
-                elif tipo == "com":
-                    combinacoes = [["up", "up"], ["down", "down"], ["up", "down"], ["down", "up"]]
-                for i in range(len(combinacoes)):
-                    sets.write(nodo.nome + "," + relacao[0] + "," + combinacoes[i][0] + "," + combinacoes[i][1] + ",")
-                    sets.write(
-                        str(relacao[2 + 2 * i]) + "E-6,=E" + str(linha) + "*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
-                    for validacao in relacao[3 + 2 * i]:
-                        sets.write(",'")
-                        for num in validacao:
-                            sets.write(str(num))
-                    sets.write("\n")
-                    linha += 1
-    print("Tabela "+tabela+" gerada com sucesso\n")
-
 
 # Funcao que recebe o circuito e retorna os parametros
 def Parametrar(circuito, entradas, saidas):

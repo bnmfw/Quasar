@@ -1,5 +1,6 @@
 from param import *
 from corrente import *
+from arquivos import Definir_Tensao, Instanciar_Entradas, Escrever_CSV
 import time
 
 start = time.time()
@@ -11,7 +12,7 @@ vdd = float(input("vdd: "))
 Definir_Tensao(vdd)
 saidas = raw_input("saidas analisadas: ")
 saidas = saidas.split()
-entradas = Instanciar_entradas("fontes.txt")
+entradas = Instanciar_Entradas("fontes.txt")
 validacao = list()
 
 simulacoesFeitas = 0
