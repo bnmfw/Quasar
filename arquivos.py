@@ -1,5 +1,5 @@
 from param import Entrada
-from corrente import analiseManual
+analiseManual = False
 
 #Ajusta as casas decimais a partir da notacao cientifica
 def Ajustar_valor(tensao):

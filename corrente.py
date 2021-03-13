@@ -1,6 +1,5 @@
 import os
-from arquivos import Ler_Pulso, Ajustar_Pulso, Definir_Fontes
-analiseManual = False
+from arquivos import Ler_Pulso, Ajustar_Pulso, Definir_Fontes, analiseManual
 
 def Verificar_validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd):
     corrente = 0
