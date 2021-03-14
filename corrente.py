@@ -30,7 +30,9 @@ def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo,
     simulacoesFeitas = 1
 
     # Escreve a validacao no arquivo de fontes
-    Definir_Fontes(fontes, validacao, vdd, entradas)
+    for i in range(len(entradas)):
+        entradas[i].sinal = validacao[i]
+    Definir_Fontes(fontes, vdd, entradas)
 
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
     analiseValida = Verificar_validacao(circuito, radiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd)

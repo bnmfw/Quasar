@@ -66,17 +66,21 @@ def Instanciar_Entradas(fontes):
     return entradas
 
 #Escreve a tensao no arquivo "fontes.txt"
-def Definir_Fontes(fontes, validacao, vdd, entradas):
+def Definir_Fontes(fontes, vdd, entradas):
     with open(fontes, "w") as sinais:
         sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
-        for i in range(len(validacao)):
+        for i in range(len(entradas)):
             sinais.write("V" + entradas[i].nome + " " + entradas[i].nome + " gnd ")
-            if validacao[i] == 1:
+            if entradas[i].sinal == 1:
                 sinais.write(str(vdd) + "\n")
-            elif validacao[i] == 0:
+            elif entradas[i].sinal == 0:
                 sinais.write("0.0\n")
+            elif entradas[i].sinal == "rise":
+                sinais.write("PWL(0n 0 1n "+str(vdd)+")")
+            elif entradas[i].sinal == "fall":
+                sinais.write("PWL(0n "+str(vdd)+" 1n 0)")
             else:
-                print("ERRO SINAL NAO BINARIO RECEBIDO: ", validacao[i])
+                print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
 #Le a resposta do pulso no arquivo "texto.txt"
 def Ler_Pulso(direcaoPulsoSaida, offset):
@@ -135,6 +139,6 @@ def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
 #Altera o arquivo "atraso.txt"
 def Escrever_Atraso(nodo, saida, vdd, direcaoNodo, direcaoSaida):
     with open("atraso.txt","w") as atraso:
-	atraso.write("*Arquivo com atraso a ser medido\n")
-	tensao = vdd * 0.5
-	atraso.write(".measure tran RiseA TRIG v("+nodo+") val='"+str(tensao)+"' "+direcaoNodo+"=1 TARG v("+nodo+") val='"+str(tensao)+"' "+direcaoSaida+"=1")
+        atraso.write("*Arquivo com atraso a ser medido\n")
+        tensao = vdd * 0.5
+        atraso.write(".measure tran atraso TRIG v("+nodo+") val='"+str(tensao)+"' "+direcaoNodo+"=1 TARG v("+saida+") val='"+str(tensao)+"' "+direcaoSaida+"=1")
