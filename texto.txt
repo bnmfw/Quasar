@@ -1,1 +1,4 @@
- atraso=   1.0770n  targ=   2.0820n   trig=   1.0050n
+ minout=  -1.5404m    at=   3.0100n
+ maxout=   1.0670m    at=   2.0200n
+ minnod=   0.         at=   1.0000n
+ maxnod=   0.         at=   1.0000n

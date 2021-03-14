@@ -1,2 +1,2 @@
 *Arquivo com atraso a ser medido
-.measure tran atraso TRIG v(e) val='0.35' fall=1 TARG v(g2) val='0.35' rise=1
+.measure tran atraso TRIG v(e) val='0.35' rise=1 TARG v(g2) val='0.35' rise=1

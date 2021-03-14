@@ -93,18 +93,18 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
             linha_texto[1] = text.readline()
 
         linha_texto[0 + offset] = text.readline()
-        tensao, tempo1 = linha_texto[0 + offset].split('    ')
-        if tensao[7] == "=":
-            a, min_tensao = tensao.split('=')
-        else:
-            a, min_tensao = tensao.split()
+	linhaDeTensao = linha_texto[0 + offset].split()
+	if len(linhaDeTensao[0]) != 7:
+	    min_tensao = linhaDeTensao[0][7:]
+	else:
+	    min_tensao = linhaDeTensao[1]
 
         linha_texto[1 + offset] = text.readline()
-        tensao, tempo1 = linha_texto[1 + offset].split('    ')
-        if tensao[7] == "=":
-            a, max_tensao = tensao.split('=')
+        linhaDeTensao = linha_texto[1 + offset].split()
+	if len(linhaDeTensao[0]) != 7:
+            max_tensao = linhaDeTensao[0][7:]
         else:
-            a, max_tensao = tensao.split()
+            max_tensao = linhaDeTensao[1]
 
     # Converte as strings lidas em floats
     max_tensao = Ajustar_Valor(max_tensao)

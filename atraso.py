@@ -5,7 +5,6 @@ import os
 
 saidas = ["g1", "g2"]
 entradas = [Entrada("a",0),Entrada("b",0),Entrada("c",0),Entrada("d",0),Entrada("e",0)]
-print(len(entradas))
 vdd = 0.7
 circuito = "c17v0.txt"
 transicoes = [["rise","rise"],["rise","fall"],["fall","rise"],["fall","fall"]]
@@ -44,6 +43,7 @@ for entradaAnalisada in entradas:
                 os.system("hspice " + circuito + " | grep \"atraso\" > texto.txt")
                 simulacoesFeitas += 1
                 atraso = Ler_Atraso()
+		print(atraso)
                 if atraso > entradaAnalisada.atraso[0]:
                     entradaAnalisada.atraso[0] = atraso
                     entradaAnalisada.atraso[1] = saida
