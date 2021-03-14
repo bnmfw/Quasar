@@ -1,9 +1,9 @@
 from param import *
 from corrente import *
 from arquivos import Definir_Tensao, Instanciar_Entradas, Escrever_CSV
-import time
+from time import time
 
-start = time.time()
+tempoInicial = time()
 
 circuito = raw_input("circuito a ser analisado: ")
 tabela = circuito + ".csv"
@@ -105,14 +105,15 @@ for nodo in nodos:
                                 sets_invalidos.append(
                                     [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
 
-for sets in sets_validos: print(sets)
-print("\n")
-for sets in sets_invalidos: print(sets)
+if not analiseManual:
+    for sets in sets_validos: print(sets)
+    print("\n")
+    for sets in sets_invalidos: print(sets)
 
-# Retorno do numero de simulacoes feitas e de tempo de execucao
-print("\n" + str(simulacoesFeitas) + " simulacoes feitas\n")
-Escrever_CSV(tabela, nodos)
+    # Retorno do numero de simulacoes feitas e de tempo de execucao
+    print("\n" + str(simulacoesFeitas) + " simulacoes feitas\n")
+    Escrever_CSV(tabela, nodos)
 
-end = time.time()
-tempoTotal = int(end - start)
+tempoFinal = time()
+tempoTotal = int(tempoFinal - tempoInicial)
 print(str(int(tempoTotal / 60)) + " minutos e " + str(tempoTotal % 60) + " segundos de execucao\n")

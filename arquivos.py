@@ -65,6 +65,19 @@ def Instanciar_Entradas(fontes):
                 entradas.append(entrada)
     return entradas
 
+#Escreve a tensao no arquivo "fontes.txt"
+def Definir_Fontes(fontes, validacao, vdd, entradas):
+    with open(fontes, "w") as sinais:
+        sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
+        for i in range(len(validacao)):
+            sinais.write("V" + entradas[i].nome + " " + entradas[i].nome + " gnd ")
+            if validacao[i] == 1:
+                sinais.write(str(vdd) + "\n")
+            elif validacao[i] == 0:
+                sinais.write("0.0\n")
+            else:
+                print("ERRO SINAL NAO BINARIO RECEBIDO: ", validacao[i])
+
 #Le a resposta do pulso no arquivo "texto.txt"
 def Ler_Pulso(direcaoPulsoSaida, offset):
     linha_texto = list(range(4))
@@ -118,16 +131,3 @@ def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
         # Usado apenas na verificacao de validacao:
         sets.write(".meas tran minnod min V(" + nodo + ") from=1.0n to=4.0n\n")
         sets.write(".meas tran maxnod max V(" + nodo + ") from=1.0n to=4.0n\n")
-
-#Escreve a tensao no arquivo "fontes.txt"
-def Definir_Fontes(fontes, validacao, vdd, entradas):
-    with open(fontes, "w") as sinais:
-        sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
-        for i in range(len(validacao)):
-            sinais.write("V" + entradas[i].nome + " " + entradas[i].nome + " gnd ")
-            if validacao[i] == 1:
-                sinais.write(str(vdd) + "\n")
-            elif validacao[i] == 0:
-                sinais.write("0.0\n")
-            else:
-                print("ERRO SINAL NAO BINARIO RECEBIDO: ", validacao[i])

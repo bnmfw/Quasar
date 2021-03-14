@@ -1,8 +1,8 @@
 import os
 from arquivos import Ler_Pulso, Ajustar_Pulso, Definir_Fontes, analiseManual
 
+#Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
 def Verificar_validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd):
-    corrente = 0
     Ajustar_Pulso(arqvRadiacao, nodo, 0.0, saida, direcaoPulsoNodo)
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
     tensaoPicoSaida = Ler_Pulso(direcaoPulsoSaida, 0)
