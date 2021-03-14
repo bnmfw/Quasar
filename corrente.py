@@ -2,7 +2,7 @@ import os
 from arquivos import Ler_Pulso, Ajustar_Pulso, Definir_Fontes, analiseManual
 
 #Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
-def Verificar_validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd):
+def Verificar_Validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd):
     Ajustar_Pulso(arqvRadiacao, nodo, 0.0, saida, direcaoPulsoNodo)
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
     tensaoPicoSaida = Ler_Pulso(direcaoPulsoSaida, 0)
@@ -10,13 +10,13 @@ def Verificar_validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, d
     if analiseManual:
         print("Verificacao Vpico nodo: " + str(tensaoPicoNodo) + " Vpico saida: " + str(tensaoPicoSaida) + "\n")
 
-    if direcaoPulsoSaida == "up" and tensaoPicoSaida > vdd * 0.51:
+    if direcaoPulsoSaida == "rise" and tensaoPicoSaida > vdd * 0.51:
         return False
-    elif direcaoPulsoSaida == "down" and tensaoPicoSaida < vdd * 0.1:
+    elif direcaoPulsoSaida == "fall" and tensaoPicoSaida < vdd * 0.1:
         return False
-    elif direcaoPulsoNodo == "up" and tensaoPicoNodo > vdd * 0.51:
+    elif direcaoPulsoNodo == "rise" and tensaoPicoNodo > vdd * 0.51:
         return False
-    elif direcaoPulsoNodo == "down" and tensaoPicoNodo < vdd * 0.1:
+    elif direcaoPulsoNodo == "fall" and tensaoPicoNodo < vdd * 0.1:
         return False
     else:
         return True
@@ -35,7 +35,7 @@ def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo,
     Definir_Fontes(fontes, vdd, entradas)
 
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
-    analiseValida = Verificar_validacao(circuito, radiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd)
+    analiseValida = Verificar_Validacao(circuito, radiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd)
 
     if not analiseValida:
         print("Analise invalida\n")
@@ -69,7 +69,7 @@ def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo,
             print("Encerramento por estouro de ciclos maximos\n")
             return [2222, simulacoesFeitas]
         # Busca binaria
-        elif direcaoPulsoSaida == "down":
+        elif direcaoPulsoSaida == "fall":
             if tensao_pico <= (1 - precisao) * vdd / 2:
                 corrente_sup = corrente
             elif tensao_pico >= (1 + precisao) * vdd / 2:
@@ -77,7 +77,7 @@ def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo,
             else:
                 print("Corrente encontrada com sucesso\n")
                 return [corrente, simulacoesFeitas]
-        elif direcaoPulsoSaida == "up":
+        elif direcaoPulsoSaida == "rise":
             if tensao_pico <= (1 - precisao) * vdd / 2:
                 corrente_inf = corrente
             elif tensao_pico >= (1 + precisao) * vdd / 2:

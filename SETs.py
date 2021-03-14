@@ -26,8 +26,8 @@ for nodo in nodos:
     print(nodo.nome, nodo.validacao)
 
 if analiseManual:
-    print("\nTESTE MANUAL\n i2, g1, up, up [0,0,0,1]\n")
-    current = Corrente(circuito, vdd, entradas, "up", "up", "i2", "g1", [0, 0, 0, 1])
+    print("\nTESTE MANUAL\n i2, g1, rise, rise [0,0,0,1]\n")
+    current = Corrente(circuito, vdd, entradas, "rise", "rise", "i2", "g1", [0, 0, 0, 1])
     print("Corrente final: " + str(current))
 
 for nodo in nodos:
@@ -41,24 +41,24 @@ for nodo in nodos:
                 if tipo == "nao":
                     pass
                 else:
-                    relacao.append(3000)  # corrente up da relacao
+                    relacao.append(3000)  # corrente rise da relacao
                     relacao.append([])  # validacoes dessa corrente
-                    relacao.append(3000)  # corrente down da relacao
+                    relacao.append(3000)  # corrente fall da relacao
                     relacao.append([])  # validacoes dessa corrente
                     if tipo == "com":  # Validacao completa
-                        relacao.append(3000)  # corrente up da relacao
+                        relacao.append(3000)  # corrente rise da relacao
                         relacao.append([])  # validacoes dessa corrente
-                        relacao.append(3000)  # corrente down da relacao
+                        relacao.append(3000)  # corrente fall da relacao
                         relacao.append([])  # validacoes dessa corrente
 
                     combinacoes = []
                     # identifica a relacao do nodo com a saida
                     if tipo == "inv":
-                        combinacoes = [["up", "down"], ["down", "up"]]
+                        combinacoes = [["rise", "fall"], ["fall", "rise"]]
                     elif tipo == "dir":
-                        combinacoes = [["up", "up"], ["down", "down"]]
+                        combinacoes = [["rise", "rise"], ["fall", "fall"]]
                     elif tipo == "com":
-                        combinacoes = [["up", "up"], ["down", "down"], ["up", "down"], ["down", "up"]]
+                        combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
 
                     variaveis = 0
 
@@ -83,7 +83,7 @@ for nodo in nodos:
                                 final[i] = binary[flag]
                                 flag += 1
 
-                        # Realiza a combinacao de up e down correta para validacao escolhida
+                        # Realiza a combinacao de rise e fall correta para validacao escolhida
                         for i in range(len(combinacoes)):
                             print(nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], final)
                             lista = Corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,

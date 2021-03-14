@@ -30,11 +30,11 @@ def Escrever_CSV(tabela, nodos):
                 combinacoes = []
                 # identifica a relacao do nodo com a saida
                 if tipo == "inv":
-                    combinacoes = [["up", "down"], ["down", "up"]]
+                    combinacoes = [["rise", "fall"], ["fall", "rise"]]
                 elif tipo == "dir":
-                    combinacoes = [["up", "up"], ["down", "down"]]
+                    combinacoes = [["rise", "rise"], ["fall", "fall"]]
                 elif tipo == "com":
-                    combinacoes = [["up", "up"], ["down", "down"], ["up", "down"], ["down", "up"]]
+                    combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
                 for i in range(len(combinacoes)):
                     sets.write(nodo.nome + "," + relacao[0] + "," + combinacoes[i][0] + "," + combinacoes[i][1] + ",")
                     sets.write(
@@ -111,10 +111,10 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
     min_tensao = Ajustar_Valor(min_tensao)
     if analiseManual: print("Tensao max: " + str(max_tensao) + " Tensao min: " + str(min_tensao))
 
-    # Identifica se o pico procurado e do tipo up ou down
-    if direcaoPulsoSaida == "up":
+    # Identifica se o pico procurado e do tipo rise ou fall
+    if direcaoPulsoSaida == "rise":
         tensao_pico = max_tensao
-    elif direcaoPulsoSaida == "down":
+    elif direcaoPulsoSaida == "fall":
         tensao_pico = min_tensao
     else:
         print("ERRO: O TIPO DE PULSO NAO FOI IDENTIFICADO")
@@ -139,10 +139,10 @@ def Ler_Atraso():
 def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
     with open(arqvRadiacao, "w") as sets:
         sets.write("*SETs para serem usados nos benchmarks\n")
-        if direcaoPulsoNodo == "down": sets.write("*")
-        sets.write("Iseu gnd " + nodo + " EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //up\n")
-        if direcaoPulsoNodo == "up": sets.write("*")
-        sets.write("Iseu " + nodo + " gnd EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //down\n")
+        if direcaoPulsoNodo == "fall": sets.write("*")
+        sets.write("Iseu gnd " + nodo + " EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //rise\n")
+        if direcaoPulsoNodo == "rise": sets.write("*")
+        sets.write("Iseu " + nodo + " gnd EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //fall\n")
         sets.write(".meas tran minout min V(" + saida + ") from=1.0n to=4.0n\n")
         sets.write(".meas tran maxout max V(" + saida + ") from=1.0n to=4.0n\n")
         # Usado apenas na verificacao de validacao:
