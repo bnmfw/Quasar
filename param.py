@@ -13,6 +13,19 @@ class Nodo():
         self.sinal = sinal  # Sinal logico (usado apenas na validacao)
         self.validacao = validacao  # Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
 
+# Agrega os nodos a outros nodos por que orientacao a objeto arrebenta
+def Agregar_Nodos(nodos, entradas):
+    for i in range(len(nodos)):
+        for j in nodos[i].entradas:
+            for k in range(len(nodos)):
+                if nodos[k].nome == nodos[i].entradas[0]:
+                    nodos[i].entradas.append(nodos[k])
+                    nodos[i].entradas.remove(nodos[i].entradas[0])
+            for k in range(len(entradas)):
+                if entradas[k].nome == nodos[i].entradas[0]:
+                    nodos[i].entradas.append(entradas[k])
+                    nodos[i].entradas.remove(nodos[i].entradas[0])
+
 # Recursao que encontra a relacao de um nodo com uma saida
 def Relacionar(saida_global, saida, nodos, entradas, relacao_acumulada):
     # Finaliza a recursao quando chega nas entradas
@@ -186,24 +199,13 @@ def Parametrar(circuito, entradas, saidas):
         for linha in circ:
             if "X" in linha:
                 a, b, c, info = linha.split(' ', 3)
-                lista = list()
                 lista = info.split()
                 nodo = Nodo(lista[-2], lista[:-2], lista[-1], [], "t", [])
                 for output in saidas:
                     nodo.relacoes.append([output, "nao"])
                 nodos.append(nodo)
 
-    # Agrega os nodos a outros nodos por que orientacao a objeto arrebenta
-    for i in range(len(nodos)):
-        for j in nodos[i].entradas:
-            for k in range(len(nodos)):
-                if nodos[k].nome == nodos[i].entradas[0]:
-                    nodos[i].entradas.append(nodos[k])
-                    nodos[i].entradas.remove(nodos[i].entradas[0])
-            for k in range(len(entradas)):
-                if entradas[k].nome == nodos[i].entradas[0]:
-                    nodos[i].entradas.append(entradas[k])
-                    nodos[i].entradas.remove(nodos[i].entradas[0])
+    Agregar_Nodos(nodos, entradas) #Agrega nodos a nodos
 
     # Define o relacionamento de cada nodo com cada saida
     for saida in saidas:
