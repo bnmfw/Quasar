@@ -29,6 +29,8 @@ def Agregar_Nodos(nodos, entradas):
 # Recursao que encontra a relacao de um nodo com uma saida
 def Relacionar(saida_global, saida, nodos, entradas, relacao_acumulada):
     # Finaliza a recursao quando chega nas entradas
+    if type(saida) == str:
+	print("ERRO: ENTRADA "+saida+" PROVAVELMENTE NAO DECLARADO NO ARQUIVO Fontes.txt")
     if saida in entradas:
         return 0
     else:
