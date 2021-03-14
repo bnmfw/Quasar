@@ -16,6 +16,7 @@ for entradaAnalisada in entradas:
             #Atribui o sinal das entradas que nao estao em analise
             binario = bin(i)
             binary = list()
+            for j in range((len(entradas) - 1) - (len(binario) - 2)): binary.append(0)
             for j in range(len(binario) - 2): binary.append(int(binario[j + 2]))
             flag = 0
             for entrada in entradas:
