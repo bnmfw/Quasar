@@ -1,0 +1,2 @@
+  **warning** (atraso.txt:2) .MEASURE  atraso never reached the target value, Measurement failed!
+ atraso= failed       targ= not found    trig= 500.0000p

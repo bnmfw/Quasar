@@ -76,9 +76,9 @@ def Definir_Fontes(fontes, vdd, entradas):
             elif entradas[i].sinal == 0:
                 sinais.write("0.0\n")
             elif entradas[i].sinal == "rise":
-                sinais.write("PWL(0n 0 1n "+str(vdd)+")")
+                sinais.write("PWL(0n 0 1n "+str(vdd)+")\n")
             elif entradas[i].sinal == "fall":
-                sinais.write("PWL(0n "+str(vdd)+" 1n 0)")
+                sinais.write("PWL(0n "+str(vdd)+" 1n 0)\n")
             else:
                 print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
@@ -137,8 +137,8 @@ def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
         sets.write(".meas tran maxnod max V(" + nodo + ") from=1.0n to=4.0n\n")
 
 #Altera o arquivo "atraso.txt"
-def Escrever_Atraso(nodo, saida, vdd, direcaoNodo, direcaoSaida):
+def Escrever_Atraso(entrada, saida, vdd, direcaoNodo, direcaoSaida):
     with open("atraso.txt","w") as atraso:
         atraso.write("*Arquivo com atraso a ser medido\n")
         tensao = vdd * 0.5
-        atraso.write(".measure tran atraso TRIG v("+nodo+") val='"+str(tensao)+"' "+direcaoNodo+"=1 TARG v("+saida+") val='"+str(tensao)+"' "+direcaoSaida+"=1")
+        atraso.write(".measure tran atraso TRIG v("+entrada.nome+") val='"+str(tensao)+"' "+direcaoNodo+"=1 TARG v("+saida+") val='"+str(tensao)+"' "+direcaoSaida+"=1")
