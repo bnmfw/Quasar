@@ -34,7 +34,6 @@ for entradaAnalisada in entradas:
                 simulacoesFeitas += 1
                 if not analiseValida: #Impede que uma analise invalida seja feita
                     print("Analise invalida")
-                    break
 
                 #Etapa de medicao de atraso
                 entradaAnalisada.sinal = transicao[0]
@@ -43,7 +42,7 @@ for entradaAnalisada in entradas:
                 os.system("hspice " + circuito + " | grep \"atraso\" > texto.txt")
                 simulacoesFeitas += 1
                 atraso = Ler_Atraso()
-		print(atraso)
+                print(atraso)
                 if atraso > entradaAnalisada.atraso[0]:
                     entradaAnalisada.atraso[0] = atraso
                     entradaAnalisada.atraso[1] = saida

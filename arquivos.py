@@ -93,15 +93,15 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
             linha_texto[1] = text.readline()
 
         linha_texto[0 + offset] = text.readline()
-	linhaDeTensao = linha_texto[0 + offset].split()
-	if len(linhaDeTensao[0]) != 7:
-	    min_tensao = linhaDeTensao[0][7:]
-	else:
-	    min_tensao = linhaDeTensao[1]
+        linhaDeTensao = linha_texto[0 + offset].split()
+        if len(linhaDeTensao[0]) != 7:
+            min_tensao = linhaDeTensao[0][7:]
+        else:
+            min_tensao = linhaDeTensao[1]
 
         linha_texto[1 + offset] = text.readline()
         linhaDeTensao = linha_texto[1 + offset].split()
-	if len(linhaDeTensao[0]) != 7:
+        if len(linhaDeTensao[0]) != 7:
             max_tensao = linhaDeTensao[0][7:]
         else:
             max_tensao = linhaDeTensao[1]
