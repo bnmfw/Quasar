@@ -131,3 +131,10 @@ def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
         # Usado apenas na verificacao de validacao:
         sets.write(".meas tran minnod min V(" + nodo + ") from=1.0n to=4.0n\n")
         sets.write(".meas tran maxnod max V(" + nodo + ") from=1.0n to=4.0n\n")
+
+#Altera o arquivo "atraso.txt"
+def Escrever_Atraso(nodo, saida, vdd, direcaoNodo, direcaoSaida):
+    with open("atraso.txt","w") as atraso:
+	atraso.write("*Arquivo com atraso a ser medido\n")
+	tensao = vdd * 0.5
+	atraso.write(".measure tran RiseA TRIG v("+nodo+") val='"+str(tensao)+"' "+direcaoNodo+"=1 TARG v("+nodo+") val='"+str(tensao)+"' "+direcaoSaida+"=1")

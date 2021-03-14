@@ -1,0 +1,2 @@
+//arquivo com a funcao basica de medicao de atraso do spice
+.measure tran RiseA TRIG v(a) val='0.35' fall=1 TARG v(s) val='0.35' rise=1

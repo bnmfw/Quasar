@@ -50,6 +50,7 @@ xinv12 vcc gnd q2 nnq2 NOT
 
 ****** Controle ******
 
+.include atraso.txt
 .tran 0.01n 4n
 
 ************
