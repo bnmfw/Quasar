@@ -1,4 +1,4 @@
-from arquivos import Escrever_Atraso, Definir_Fontes
+from arquivos import Escrever_Atraso, Definir_Fontes, Ler_Atraso
 from param import Entrada, Nodo
 import os
 
@@ -8,6 +8,7 @@ print(len(entradas))
 vdd = 0.7
 circuito = "c17v0.txt"
 transicoes = [["rise","rise"],["rise","fall"],["fall","rise"],["fall","fall"]]
+maiorAtraso = 0
 
 for entradaAnalisada in entradas:
     for saida in saidas:
@@ -28,7 +29,9 @@ for entradaAnalisada in entradas:
                 Escrever_Atraso(entradaAnalisada, saida, vdd, transicao[0], transicao[1])
                 Definir_Fontes("fontes.txt",vdd,entradas)
                 os.system("hspice " + circuito + " | grep \"atraso\" > texto.txt")
-                print(binary)
-                print(entradaAnalisada.nome, saida, transicao,[entradas[0].sinal, entradas[1].sinal, entradas[2].sinal, entradas[3].sinal, entradas[4].sinal])
-                with open("texto.txt","r") as texto:
-                    print(texto.readline())
+                atraso = Ler_Atraso()
+                if atraso > maiorAtraso:
+                    maiorAtraso = atraso
+                print(atraso)
+
+print("Maior Atraso: ",maiorAtraso)

@@ -2,7 +2,7 @@ from param import Entrada
 analiseManual = False
 
 #Ajusta as casas decimais a partir da notacao cientifica
-def Ajustar_valor(tensao):
+def Ajustar_Valor(tensao):
     grandeza = 0
     if tensao[-1] == "m":
         grandeza = -3
@@ -76,9 +76,9 @@ def Definir_Fontes(fontes, vdd, entradas):
             elif entradas[i].sinal == 0:
                 sinais.write("0.0\n")
             elif entradas[i].sinal == "rise":
-                sinais.write("PWL(0n 0 1n "+str(vdd)+")\n")
+                sinais.write("PWL(0n 0 1n 0 1.01n"+str(vdd)+")\n")
             elif entradas[i].sinal == "fall":
-                sinais.write("PWL(0n "+str(vdd)+" 1n 0)\n")
+                sinais.write("PWL(0n "+str(vdd)+" 1n "+str(vdd)+" 1.01n 0)\n")
             else:
                 print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
@@ -107,8 +107,8 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
             a, max_tensao = tensao.split()
 
     # Converte as strings lidas em floats
-    max_tensao = Ajustar_valor(max_tensao)
-    min_tensao = Ajustar_valor(min_tensao)
+    max_tensao = Ajustar_Valor(max_tensao)
+    min_tensao = Ajustar_Valor(min_tensao)
     if analiseManual: print("Tensao max: " + str(max_tensao) + " Tensao min: " + str(min_tensao))
 
     # Identifica se o pico procurado e do tipo up ou down
@@ -121,6 +121,19 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
 
     # retorna a tensao de pico lida
     return tensao_pico
+
+#Le o atraso do nodo a saida no arquivo "textp.txt"
+def Ler_Atraso():
+    texto = "texto.txt"
+    atraso = 100
+    with open(texto,"r") as text:
+        linhaDeTexto = text.readline().split()
+        atraso = linhaDeTexto[1]
+        if atraso[0] == "(": #So le isso quando nao acha atraso
+            atraso = 0
+        else:
+            atraso = Ajustar_Valor(atraso)
+    return atraso
 
 #Escreve informacoes no arquivo "SETs.txt"
 def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
