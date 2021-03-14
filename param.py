@@ -3,6 +3,7 @@ class Entrada():
     def __init__(self, nome, sinal):
         self.nome = nome
         self.sinal = sinal
+	self.atraso = [0,"saida.nome"]
 
 class Nodo():
     def __init__(self, nome, entradas, logica, relacoes, sinal, validacao):

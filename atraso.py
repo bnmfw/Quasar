@@ -9,6 +9,7 @@ vdd = 0.7
 circuito = "c17v0.txt"
 transicoes = [["rise","rise"],["rise","fall"],["fall","rise"],["fall","fall"]]
 maiorAtraso = 0
+simulacoesFeitas = 0
 
 for entradaAnalisada in entradas:
     for saida in saidas:
@@ -29,9 +30,15 @@ for entradaAnalisada in entradas:
                 Escrever_Atraso(entradaAnalisada, saida, vdd, transicao[0], transicao[1])
                 Definir_Fontes("fontes.txt",vdd,entradas)
                 os.system("hspice " + circuito + " | grep \"atraso\" > texto.txt")
+		simulacoesFeitas += 1
                 atraso = Ler_Atraso()
-                if atraso > maiorAtraso:
-                    maiorAtraso = atraso
-                print(atraso)
+                if atraso > entradaAnalisada.atraso[0]:
+                    entradaAnalisada.atraso[0] = atraso
+		    entradaAnalisada.atraso[1] = saida
+		if atraso != 0:
+		    break
+    print("Fim da analise de atraso para entrada "+entradaAnalisada.nome+"")
+    print(str(simulacoesFeitas)+" simulacoes feitas ate agora")
 
-print("Maior Atraso: ",maiorAtraso)
+for entrada in entradas:
+	print(entrada.atraso)
