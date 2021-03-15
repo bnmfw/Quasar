@@ -75,10 +75,8 @@ def Definir_Fontes(fontes, vdd, entradas):
                 sinais.write(str(vdd) + "\n")
             elif entradas[i].sinal == 0:
                 sinais.write("0.0\n")
-            elif entradas[i].sinal == "rise":
-                sinais.write("PWL(0n 0 1n 0 1.01n "+str(vdd)+")\n")
-            elif entradas[i].sinal == "fall":
-                sinais.write("PWL(0n "+str(vdd)+" 1n "+str(vdd)+" 1.01n 0)\n")
+            elif entradas[i].sinal == "atraso":
+                sinais.write("PWL(0n 0 1n 0 1.01n "+str(vdd)+" 3n "+str(vdd)+" 3.01n 0\n")
             else:
                 print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
@@ -125,10 +123,12 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
 #Le o atraso do nodo a saida no arquivo "textp.txt"
 def Ler_Atraso():
     texto = "texto.txt"
-    atraso = 100
+    linhas = list()
+    atraso = list() #0 rr, 1 rf, 2 fr, 3 ff
     with open(texto,"r") as text:
-        linhaDeTexto = text.readline().split()
-        atraso = linhaDeTexto[1]
+        for i in range(4):
+            linhas.append(text.readline().split())
+            atraso.append(linhas[i][0]) #salva os 4 atrasos
         if atraso[0] == "(": #So le isso quando nao acha atraso
             atraso = 0
         else:
@@ -150,8 +150,12 @@ def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
         sets.write(".meas tran maxnod max V(" + nodo + ") from=1.0n to=4.0n\n")
 
 #Altera o arquivo "atraso.txt"
-def Escrever_Atraso(entrada, saida, vdd, direcaoNodo, direcaoSaida):
+def Escrever_Atraso(entrada, saida, vdd):
     with open("atraso.txt","w") as atraso:
         atraso.write("*Arquivo com atraso a ser medido\n")
-        tensao = vdd * 0.5
-        atraso.write(".measure tran atraso TRIG v("+entrada.nome+") val='"+str(tensao)+"' "+direcaoNodo+"=1 TARG v("+saida+") val='"+str(tensao)+"' "+direcaoSaida+"=1")
+        tensao = str(vdd * 0.5)
+        atraso.write(".measure tran atraso_rr TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
+        atraso.write(".measure tran atraso_rf TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
+        atraso.write(".measure tran atraso_fr TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
+        atraso.write(".measure tran atraso_ff TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
+

@@ -26,32 +26,19 @@ for entradaAnalisada in entradas:
                     flag += 1
 
             print("\nNova transicao em analise")
-            for transicaoSaida in transicoes:
-                for transicaoNodo in transicoes:
-                    #Etapa de verificacao de validacao
-                    if transicaoNodo == "rise": entradaAnalisada.sinal = 0
-                    else: entradaAnalisada.sinal = 1
-                    Definir_Fontes("fontes.txt", vdd, entradas)
-                    analiseValida = Verificar_Validacao(circuito,"SETs.txt",entradaAnalisada.nome,transicaoNodo,saida,transicaoSaida,vdd)
-                    simulacoesFeitas += 1
-                    if not analiseValida: #Impede que uma analise invalida seja feita
-                        print("Analise invalida")
 
-                    #Etapa de medicao de atraso
-                    entradaAnalisada.sinal = transicaoNodo
-                    Escrever_Atraso(entradaAnalisada, saida, vdd, transicaoNodo, transicaoSaida)
-                    Definir_Fontes("fontes.txt",vdd,entradas)
-                    os.system("hspice " + circuito + " | grep \"atraso\" > texto.txt")
-                    simulacoesFeitas += 1
-                    atraso = Ler_Atraso()
-                    print(atraso)
-                    if atraso > entradaAnalisada.atraso[0]:
-                        entradaAnalisada.atraso[0] = atraso
-                        entradaAnalisada.atraso[1] = saida
-                    if atraso != 0:
-                        print("Atraso encontrado")
-                        break
-	
+            #Etapa de medicao de atraso
+            entradaAnalisada.sinal = "atraso"
+            Escrever_Atraso(entradaAnalisada, saida, vdd)
+            Definir_Fontes("fontes.txt",vdd,entradas)
+            os.system("hspice " + circuito + " | grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > texto.txt")
+            simulacoesFeitas += 1
+            atraso = Ler_Atraso()
+            print(atraso)
+            # if atraso > entradaAnalisada.atraso[0]:
+            #     entradaAnalisada.atraso[0] = atraso
+            #     entradaAnalisada.atraso[1] = saida
+
     print("Fim da analise de atraso para entrada "+entradaAnalisada.nome+"")
     print(str(simulacoesFeitas)+" simulacoes feitas ate agora")
 
