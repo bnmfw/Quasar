@@ -38,9 +38,9 @@ for entradaAnalisada in entradas:
             if atraso[0] > atraso[1]: paridade = 1
             maiorAtraso = max(atraso[0+paridade], atraso[2+paridade])
             print(maiorAtraso)
-                if maiorAtraso > entradaAnalisada.atraso[0]:
-                     entradaAnalisada.atraso[0] = maiorAtraso
-                     entradaAnalisada.atraso[1] = saida
+            if maiorAtraso > entradaAnalisada.atraso[0]:
+                 entradaAnalisada.atraso[0] = maiorAtraso
+                 entradaAnalisada.atraso[1] = saida
 
     print("Fim da analise de atraso para entrada "+entradaAnalisada.nome+"")
     print(str(simulacoesFeitas)+" simulacoes feitas ate agora\n\n")
