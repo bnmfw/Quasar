@@ -76,7 +76,7 @@ def Definir_Fontes(fontes, vdd, entradas):
             elif entradas[i].sinal == 0:
                 sinais.write("0.0\n")
             elif entradas[i].sinal == "atraso":
-                sinais.write("PWL(0n 0 1n 0 1.01n "+str(vdd)+" 3n "+str(vdd)+" 3.01n 0\n")
+                sinais.write("PWL(0n 0 1n 0 1.01n "+str(vdd)+" 3n "+str(vdd)+" 3.01n 0)\n")
             else:
                 print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
@@ -124,15 +124,14 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
 def Ler_Atraso():
     texto = "texto.txt"
     linhas = list()
-    atraso = list() #0 rr, 1 rf, 2 fr, 3 ff
+    atraso = list() #0 rr, 1 rf, 2 ff, 3 fr
     with open(texto,"r") as text:
         for i in range(4):
             linhas.append(text.readline().split())
-            atraso.append(linhas[i][0]) #salva os 4 atrasos
-        if atraso[0] == "(": #So le isso quando nao acha atraso
-            atraso = 0
-        else:
-            atraso = Ajustar_Valor(atraso)
+            atraso.append(linhas[i][1]) #salva os 4 atrasos
+	    if atraso[i][0] == "(" or atraso[i][0] == "f":
+		atraso[i] = "0.0p"
+	    atraso[i] = Ajustar_Valor(atraso[i])
     return atraso
 
 #Escreve informacoes no arquivo "SETs.txt"
@@ -156,6 +155,6 @@ def Escrever_Atraso(entrada, saida, vdd):
         tensao = str(vdd * 0.5)
         atraso.write(".measure tran atraso_rr TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
         atraso.write(".measure tran atraso_rf TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
-        atraso.write(".measure tran atraso_fr TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
         atraso.write(".measure tran atraso_ff TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
+        atraso.write(".measure tran atraso_fr TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
 
