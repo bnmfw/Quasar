@@ -25,7 +25,8 @@ for entradaAnalisada in entradas:
                     entrada.sinal = binary[flag]
                     flag += 1
 
-            for transicao in transicoes:
+            print("Nova transicao em analise")
+	    for transicao in transicoes:
                 #Etapa de verificacao de validacao
                 if transicao[0] == "rise": entradaAnalisada.sinal = 0
                 else: entradaAnalisada.sinal = 1
