@@ -129,9 +129,9 @@ def Ler_Atraso():
         for i in range(4):
             linhas.append(text.readline().split())
             atraso.append(linhas[i][1]) #salva os 4 atrasos
-	    if atraso[i][0] == "(" or atraso[i][0] == "f":
-		atraso[i] = "0.0p"
-	    atraso[i] = Ajustar_Valor(atraso[i])
+            if atraso[i][0] == "(" or atraso[i][0] == "f":
+                atraso[i] = "0.0p"
+            atraso[i] = Ajustar_Valor(atraso[i])
     return atraso
 
 #Escreve informacoes no arquivo "SETs.txt"

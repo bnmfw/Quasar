@@ -32,15 +32,15 @@ for entradaAnalisada in entradas:
             simulacoesFeitas += 1
             atraso = Ler_Atraso()
             print(atraso)
-	    paridade = 0
-	    if entradaAnalisada.nome == "b":
-		print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
-	    if atraso[0] > atraso[1]: paridade = 1
-	    maiorAtraso = max(atraso[0+paridade], atraso[2+paridade])
-	    print(maiorAtraso)
-            if maiorAtraso > entradaAnalisada.atraso[0]:
-                 entradaAnalisada.atraso[0] = maiorAtraso
-                 entradaAnalisada.atraso[1] = saida
+            paridade = 0
+            if entradaAnalisada.nome == "b":
+            print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
+            if atraso[0] > atraso[1]: paridade = 1
+            maiorAtraso = max(atraso[0+paridade], atraso[2+paridade])
+            print(maiorAtraso)
+                if maiorAtraso > entradaAnalisada.atraso[0]:
+                     entradaAnalisada.atraso[0] = maiorAtraso
+                     entradaAnalisada.atraso[1] = saida
 
     print("Fim da analise de atraso para entrada "+entradaAnalisada.nome+"")
     print(str(simulacoesFeitas)+" simulacoes feitas ate agora\n\n")
