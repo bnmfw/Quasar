@@ -76,7 +76,7 @@ def Definir_Fontes(fontes, vdd, entradas):
             elif entradas[i].sinal == 0:
                 sinais.write("0.0\n")
             elif entradas[i].sinal == "rise":
-                sinais.write("PWL(0n 0 1n 0 1.01n"+str(vdd)+")\n")
+                sinais.write("PWL(0n 0 1n 0 1.01n "+str(vdd)+")\n")
             elif entradas[i].sinal == "fall":
                 sinais.write("PWL(0n "+str(vdd)+" 1n "+str(vdd)+" 1.01n 0)\n")
             else:

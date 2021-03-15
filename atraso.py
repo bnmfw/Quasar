@@ -6,8 +6,8 @@ import os
 saidas = ["g1", "g2"]
 entradas = [Entrada("a",0),Entrada("b",0),Entrada("c",0),Entrada("d",0),Entrada("e",0)]
 vdd = 0.7
-circuito = "c17v0.txt"
-transicoes = ["rise","fall"]
+circuito = "benchmark.txt"
+transicoes = ["fall","rise"]
 maiorAtraso = 0
 simulacoesFeitas = 0
 
@@ -25,9 +25,9 @@ for entradaAnalisada in entradas:
                     entrada.sinal = binary[flag]
                     flag += 1
 
-            print("Nova transicao em analise")
-            for transicaoNodo in transicoes:
-                for transicaoSaida in transicoes:
+            print("\nNova transicao em analise")
+            for transicaoSaida in transicoes:
+                for transicaoNodo in transicoes:
                     #Etapa de verificacao de validacao
                     if transicaoNodo == "rise": entradaAnalisada.sinal = 0
                     else: entradaAnalisada.sinal = 1
@@ -36,7 +36,6 @@ for entradaAnalisada in entradas:
                     simulacoesFeitas += 1
                     if not analiseValida: #Impede que uma analise invalida seja feita
                         print("Analise invalida")
-                        break
 
                     #Etapa de medicao de atraso
                     entradaAnalisada.sinal = transicaoNodo
@@ -52,6 +51,7 @@ for entradaAnalisada in entradas:
                     if atraso != 0:
                         print("Atraso encontrado")
                         break
+	
     print("Fim da analise de atraso para entrada "+entradaAnalisada.nome+"")
     print(str(simulacoesFeitas)+" simulacoes feitas ate agora")
 
