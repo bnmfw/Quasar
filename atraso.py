@@ -34,7 +34,7 @@ for entradaAnalisada in entradas:
             print(atraso)
             paridade = 0
             if entradaAnalisada.nome == "b":
-            print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
+                print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
             if atraso[0] > atraso[1]: paridade = 1
             maiorAtraso = max(atraso[0+paridade], atraso[2+paridade])
             print(maiorAtraso)
