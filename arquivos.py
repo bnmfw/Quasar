@@ -132,17 +132,17 @@ def Ler_Atraso(vdd):
         for i in range(4):
             linhasDeAtraso.append(text.readline().split())
             if linhasDeAtraso[i][0][0] == "*": 
-		print(linhasDeAtraso[i][0])
-		return [0,0,0,0]
+                #print(linhasDeAtraso[i][0])
+                return [0,0,0,0]
 
             atrasos.append(linhasDeAtraso[i][1]) #salva os 4 atrasos
             atrasos[i] = Ajustar_Valor(atrasos[i])
-	linhasDeAtraso.append(text.readline().split())
-	larguraPulsoSaida = linhasDeAtraso[4][1]
-	larguraPulsoSaida = abs(Ajustar_Valor(larguraPulsoSaida))
-	if larguraPulsoSaida < 1 * 10**-9: #Largura de pulso menor que 1 nanosegundo
-		print("Pulso menor que 1 nano",larguraPulsoSaida)
-		return [0,0,0,0]
+        linhasDeAtraso.append(text.readline().split())
+        larguraPulsoSaida = linhasDeAtraso[4][1]
+        larguraPulsoSaida = abs(Ajustar_Valor(larguraPulsoSaida))
+        if larguraPulsoSaida < 1 * 10**-9: #Largura de pulso menor que 1 nanosegundo
+            #print("Pulso menor que 1 nano",larguraPulsoSaida)
+            return [0,0,0,0]
     return atrasos
 
 #Escreve informacoes no arquivo "SETs.txt"
@@ -168,5 +168,5 @@ def Escrever_Atraso(entrada, saida, vdd):
         atraso.write(".measure tran atraso_rf TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
         atraso.write(".measure tran atraso_ff TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
         atraso.write(".measure tran atraso_fr TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
-	atraso.write(".measure tran largura TRIG v("+saida+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
+        atraso.write(".measure tran largura TRIG v("+saida+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
 
