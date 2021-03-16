@@ -130,16 +130,10 @@ def Ler_Atraso(vdd):
     max_tensao = 0.0
     atrasos = list() #0 rr, 1 rf, 2 ff, 3 fr
     with open(texto,"r") as text:
-        #Leitura das 4 linhas com atraso
-        for i in range(4):
-            linhasDeAtraso.append(text.readline().split())
-            atrasos.append(linhasDeAtraso[i][1]) #salva os 4 atrasos
-            if atrasos[i][0] == "(" or atrasos[i][0] == "f":
-                atrasos[i] = "0.0p"
-            atrasos[i] = Ajustar_Valor(atrasos[i])
-        #Leitura das 2 linhas com tensao
+        # Leitura das 2 linhas com tensao
         linhasDeTensao.append(text.readline().split())
         linhasDeTensao.append(text.readline().split())
+
         if len(linhasDeTensao[0][0]) != 7:
             min_tensao = linhasDeTensao[0][0][7:]
         else:
@@ -148,12 +142,20 @@ def Ler_Atraso(vdd):
             max_tensao = linhasDeTensao[1][0][7:]
         else:
             max_tensao = linhasDeTensao[1][1]
-	print(max_tensao,min_tensao)
+
+        print(max_tensao, min_tensao)
         max_tensao = Ajustar_Valor(max_tensao)
         min_tensao = Ajustar_Valor(min_tensao)
-        if abs(max_tensao-min_tensao) < vdd*0.2:
-            for i in range(atrasos):
-                atrasos[i]=0
+        if abs(max_tensao - min_tensao) < vdd * 0.2:
+            return [0,0,0,0]
+        #Leitura das 4 linhas com atraso
+        for i in range(4):
+            linhasDeAtraso.append(text.readline().split())
+            if linhasDeAtraso[i][0][1] == "w": return [0,0,0,0]
+            atrasos.append(linhasDeAtraso[i][1]) #salva os 4 atrasos
+            if atrasos[i][0] == "(" or atrasos[i][0] == "f":
+                atrasos[i] = "0.0p"
+            atrasos[i] = Ajustar_Valor(atrasos[i])
     return atrasos
 
 #Escreve informacoes no arquivo "SETs.txt"
