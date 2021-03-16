@@ -1,8 +1,8 @@
 from param import Entrada
 analiseManual = False
 
-#Ajusta as casas decimais a partir da notacao cientifica
-def Ajustar_Valor(tensao):
+#Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
+def Ajustar_Valor(tensao:str):
     grandeza = 0
     if tensao[-1] == "m":
         grandeza = -3
@@ -19,8 +19,8 @@ def Ajustar_Valor(tensao):
     tensao = tensao * 10 ** grandeza
     return tensao
 
-#Funcao que escreve as informacoes dos SETs em tabelas CSV
-def Escrever_CSV(tabela, nodos):
+#Recebe o nome de uma tabela e os nodos do circuito analisado, entao escreve nessa tabela os LETs de cada nodo alem de outras informacoes
+def Escrever_CSV(tabela:str, nodos:list):
     linha = 2
     with open(tabela, "w") as sets:
         sets.write("nodo,saida,pulso,pulso,corrente,set,validacoes->\n")
@@ -48,14 +48,15 @@ def Escrever_CSV(tabela, nodos):
     print("Tabela "+tabela+" gerada com sucesso\n")
 
 #Escreve informacoes no arquivo "vdd.txt"
-def Definir_Tensao(vdd):
+#Recebe vdd (float) e altera o vdd no arquivo e no clock
+def Definir_Tensao(vdd:float):
     with open("vdd.txt", "w") as arquivoVdd:
         arquivoVdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
         arquivoVdd.write("Vvdd vdd gnd " + str(vdd) + "\n")
         arquivoVdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
 
-#Descobre quais as entradas do circuto a partir do arquivo "fontes.txt"
-def Instanciar_Entradas(fontes):
+#Descobre quais as entradas do circuto a partir do arquivo "fontes.txt" e retorna a lista com elas
+def Instanciar_Entradas(fontes:str):
     entradas = list()
     with open(fontes, "r") as fonte:
         for linha in fonte:
@@ -65,8 +66,8 @@ def Instanciar_Entradas(fontes):
                 entradas.append(entrada)
     return entradas
 
-#Escreve a tensao no arquivo "fontes.txt"
-def Definir_Fontes(fontes, vdd, entradas):
+#Escreve os sinais no arquivo "fontes.txt"
+def Definir_Fontes(fontes:str, vdd:float, entradas:list):
     with open(fontes, "w") as sinais:
         sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
         for i in range(len(entradas)):
@@ -81,7 +82,7 @@ def Definir_Fontes(fontes, vdd, entradas):
                 print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
 #Le a resposta do pulso no arquivo "texto.txt"
-def Ler_Pulso(direcaoPulsoSaida, offset):
+def Ler_Pulso(direcaoPulsoSaida:str, offset:int):
     linha_texto = list(range(4))
     texto = "texto.txt"
     tensao_pico = 3333
@@ -121,21 +122,41 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
     return tensao_pico
 
 #Le o atraso do nodo a saida no arquivo "textp.txt"
-def Ler_Atraso():
+def Ler_Atraso(vdd : float):
     texto = "texto.txt"
-    linhas = list()
-    atraso = list() #0 rr, 1 rf, 2 ff, 3 fr
+    linhasDeAtraso = list()
+    linhasDeTensao = list()
+    min_tensao = 0.0
+    max_tensao = 0.0
+    atrasos = list() #0 rr, 1 rf, 2 ff, 3 fr
     with open(texto,"r") as text:
+        #Leitura das 4 linhas com atraso
         for i in range(4):
-            linhas.append(text.readline().split())
-            atraso.append(linhas[i][1]) #salva os 4 atrasos
-            if atraso[i][0] == "(" or atraso[i][0] == "f":
-                atraso[i] = "0.0p"
-            atraso[i] = Ajustar_Valor(atraso[i])
-    return atraso
+            linhasDeAtraso.append(text.readline().split())
+            atrasos.append(linhasDeAtraso[i][1]) #salva os 4 atrasos
+            if atrasos[i][0] == "(" or atrasos[i][0] == "f":
+                atrasos[i] = "0.0p"
+            atrasos[i] = Ajustar_Valor(atrasos[i])
+        #Leitura das 2 linhas com tensao
+        linhasDeTensao.append(text.readline().split())
+        linhasDeTensao.append(text.readline().split())
+        if len(linhasDeTensao[0][0]) != 7:
+            min_tensao = linhasDeTensao[0][0][7:]
+        else:
+            min_tensao = linhasDeTensao[0][1]
+        if len(linhasDeTensao[1][0]) != 7:
+            max_tensao = linhasDeTensao[1][0][7:]
+        else:
+            max_tensao = linhasDeTensao[1][1]
+        max_tensao = Ajustar_Valor(max_tensao)
+        min_tensao = Ajustar_Valor(min_tensao)
+        if abs(max_tensao-min_tensao) < vdd*0.2:
+            for i in range(atrasos):
+                atrasos[i]=0
+    return atrasos
 
 #Escreve informacoes no arquivo "SETs.txt"
-def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
+def Ajustar_Pulso(arqvRadiacao:str, nodo:str, corrente:float, saida:str, direcaoPulsoNodo:str):
     with open(arqvRadiacao, "w") as sets:
         sets.write("*SETs para serem usados nos benchmarks\n")
         if direcaoPulsoNodo == "fall": sets.write("*")
@@ -149,7 +170,7 @@ def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):
         sets.write(".meas tran maxnod max V(" + nodo + ") from=1.0n to=4.0n\n")
 
 #Altera o arquivo "atraso.txt"
-def Escrever_Atraso(entrada, saida, vdd):
+def Escrever_Atraso(entrada:Entrada, saida:str, vdd:float):
     with open("atraso.txt","w") as atraso:
         atraso.write("*Arquivo com atraso a ser medido\n")
         tensao = str(vdd * 0.5)

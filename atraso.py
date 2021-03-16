@@ -1,4 +1,4 @@
-from arquivos import Escrever_Atraso, Definir_Fontes, Ler_Atraso
+from arquivos import Escrever_Atraso, Definir_Fontes, Ler_Atraso, Ajustar_Pulso
 from param import Entrada, Nodo
 from corrente import Verificar_Validacao
 import os
@@ -9,6 +9,8 @@ vdd = 0.7
 circuito = "benchmark.txt"
 maiorAtraso = 0
 simulacoesFeitas = 0
+
+Ajustar_Pulso("SETs.txt",saidas[0],0.0,saidas[0],"fall")
 
 for entradaAnalisada in entradas:
     for saida in saidas:
@@ -28,7 +30,7 @@ for entradaAnalisada in entradas:
             entradaAnalisada.sinal = "atraso"
             Escrever_Atraso(entradaAnalisada, saida, vdd)
             Definir_Fontes("fontes.txt",vdd,entradas)
-            os.system("hspice " + circuito + " | grep \"atraso_rr\|atraso_rf\|atraso_ff\|atraso_fr\" > texto.txt")
+            os.system("hspice " + circuito + " | grep \"atraso_rr\|atraso_rf\|atraso_ff\|minout\|maxout\|\" > texto.txt")
             simulacoesFeitas += 1
             atraso = Ler_Atraso()
             print(atraso)
