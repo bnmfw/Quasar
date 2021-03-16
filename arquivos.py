@@ -125,37 +125,24 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
 def Ler_Atraso(vdd):
     texto = "texto.txt"
     linhasDeAtraso = list()
-    linhasDeTensao = list()
-    min_tensao = 0.0
-    max_tensao = 0.0
     atrasos = list() #0 rr, 1 rf, 2 ff, 3 fr
+    larguraPulsoSaida = "0"
     with open(texto,"r") as text:
-        # Leitura das 2 linhas com tensao
-        linhasDeTensao.append(text.readline().split())
-        linhasDeTensao.append(text.readline().split())
-
-        if len(linhasDeTensao[0][0]) != 7:
-            min_tensao = linhasDeTensao[0][0][7:]
-        else:
-            min_tensao = linhasDeTensao[0][1]
-        if len(linhasDeTensao[1][0]) != 7:
-            max_tensao = linhasDeTensao[1][0][7:]
-        else:
-            max_tensao = linhasDeTensao[1][1]
-
-        print(max_tensao, min_tensao)
-        max_tensao = Ajustar_Valor(max_tensao)
-        min_tensao = Ajustar_Valor(min_tensao)
-        if abs(max_tensao - min_tensao) < vdd * 0.2:
-            return [0,0,0,0]
         #Leitura das 4 linhas com atraso
         for i in range(4):
             linhasDeAtraso.append(text.readline().split())
-            if linhasDeAtraso[i][0][1] == "w": return [0,0,0,0]
+            if linhasDeAtraso[i][0][0] == "*": 
+		print(linhasDeAtraso[i][0])
+		return [0,0,0,0]
+
             atrasos.append(linhasDeAtraso[i][1]) #salva os 4 atrasos
-            if atrasos[i][0] == "(" or atrasos[i][0] == "f":
-                atrasos[i] = "0.0p"
             atrasos[i] = Ajustar_Valor(atrasos[i])
+	linhasDeAtraso.append(text.readline().split())
+	larguraPulsoSaida = linhasDeAtraso[4][1]
+	larguraPulsoSaida = abs(Ajustar_Valor(larguraPulsoSaida))
+	if larguraPulsoSaida < 1 * 10**-9: #Largura de pulso menor que 1 nanosegundo
+		print("Pulso menor que 1 nano",larguraPulsoSaida)
+		return [0,0,0,0]
     return atrasos
 
 #Escreve informacoes no arquivo "SETs.txt"
@@ -181,4 +168,5 @@ def Escrever_Atraso(entrada, saida, vdd):
         atraso.write(".measure tran atraso_rf TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
         atraso.write(".measure tran atraso_ff TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
         atraso.write(".measure tran atraso_fr TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
+	atraso.write(".measure tran largura TRIG v("+saida+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
 

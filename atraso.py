@@ -30,12 +30,12 @@ for entradaAnalisada in entradas:
             entradaAnalisada.sinal = "atraso"
             Escrever_Atraso(entradaAnalisada, saida, vdd)
             Definir_Fontes("fontes.txt",vdd,entradas)
-            os.system("hspice " + circuito + " | grep \"atraso_rr\|atraso_rf\|atraso_ff\|minout\|maxout\" > texto.txt")
+            os.system("hspice " + circuito + " | grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
             simulacoesFeitas += 1
             atraso = Ler_Atraso(vdd)
             print(atraso)
             paridade = 0
-            if entradaAnalisada.nome == "b":
+            if entradaAnalisada.nome == "a":
                 print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
             if atraso[0] > atraso[1]: paridade = 1
             maiorAtraso = max(atraso[0+paridade], atraso[2+paridade])
@@ -45,7 +45,7 @@ for entradaAnalisada in entradas:
                  entradaAnalisada.atraso[1] = saida
 
     print("Fim da analise de atraso para entrada "+entradaAnalisada.nome+"")
-    print(str(simulacoesFeitas)+" simulacoes feitas ate agora\n\n")
+    print(str(simulacoesFeitas)+" simulacoes feitas ate agora\n\n\n\n")
 
 for entrada in entradas:
     print(entrada.atraso)
