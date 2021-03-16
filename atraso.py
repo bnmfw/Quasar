@@ -30,9 +30,9 @@ for entradaAnalisada in entradas:
             entradaAnalisada.sinal = "atraso"
             Escrever_Atraso(entradaAnalisada, saida, vdd)
             Definir_Fontes("fontes.txt",vdd,entradas)
-            os.system("hspice " + circuito + " | grep \"atraso_rr\|atraso_rf\|atraso_ff\|minout\|maxout\|\" > texto.txt")
+            os.system("hspice " + circuito + " | grep \"atraso_rr\|atraso_rf\|atraso_ff\|minout\|maxout\" > texto.txt")
             simulacoesFeitas += 1
-            atraso = Ler_Atraso()
+            atraso = Ler_Atraso(vdd)
             print(atraso)
             paridade = 0
             if entradaAnalisada.nome == "b":
