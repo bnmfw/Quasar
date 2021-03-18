@@ -45,7 +45,7 @@ for entradaAnalisada in entradas:
                 entradaAnalisada.atraso[1] = saida
                 entradaAnalisada.atraso[1] = [entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal]
 
-    print("Fim da analise de atraso para entrada "+entradaAnalisada.nome+"")
+    print("Fim da analise de atraso para entrada kkk "+entradaAnalisada.nome+"")
 
 for entrada in entradas:
     print(entrada.atraso)
