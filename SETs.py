@@ -32,6 +32,7 @@ if analiseManual:
     print("Corrente final: " + str(current))
 
 for nodo in nodos:
+    print(nodo.relacoes)
     if analiseManual: break
     for nodo_saida in saidas:  # Determina a saida
         for relacao in nodo.relacoes:
@@ -68,9 +69,9 @@ for nodo in nodos:
                 # Realiza a combinacao de rise e fall correta para validacao escolhida
                 for i in range(len(combinacoes)):
                     print(nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], final)
-                    current, simulacoesFeitas = Corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,
+                    current, simulacoes = Corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,
                                      nodo_saida, final)
-
+		    simulacoesFeitas += simulacoes
                     if current < relacao[1 + 2 * i]:
                         relacao[1 + 2 * i] = current
                         relacao[2 + 2 * i] = [final]
@@ -84,6 +85,9 @@ for nodo in nodos:
                     else:
                         sets_invalidos.append(
                             [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
+
+for nodo in nodos:
+    print(nodo.relacoes)
 
 if not analiseManual:
     for sets in sets_validos: print(sets)

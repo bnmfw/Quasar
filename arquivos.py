@@ -43,17 +43,18 @@ def Escrever_CSV(tabela, nodos):
                 tipo = relacao[1]
                 combinacoes = []
                 # identifica a relacao do nodo com a saida
-                if nodo.validacao[5] < 1111:
+		print(relacao)
+                if relacao[5] < 1111:
                     combinacoes = [["rise", "fall"], ["fall", "rise"]]
-                elif nodo.validacao[1] < 1111:
+                elif relacao[1] < 1111:
                     combinacoes = [["rise", "rise"], ["fall", "fall"]]
                 else:
                     combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
                 for i in range(len(combinacoes)):
                     sets.write(nodo.nome + "," + relacao[0] + "," + combinacoes[i][0] + "," + combinacoes[i][1] + ",")
                     sets.write(
-                        str(relacao[2 + 2 * i]) + "E-6,=E" + str(linha) + "*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
-                    for validacao in relacao[3 + 2 * i]:
+                        str(relacao[1 + 2 * i]) + "E-6,=E" + str(linha) + "*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
+                    for validacao in relacao[2 + 2 * i]:
                         sets.write(",'")
                         for num in validacao:
                             sets.write(str(num))
