@@ -2,7 +2,7 @@ class Entrada():
     def __init__(self, nome, sinal):
         self.nome = nome
         self.sinal = sinal
-        self.atraso = [0,"saida.nome",["Vetor de validação"]]
+        self.atraso = [0,"saida.nome",["Vetor de validacao"]]
 
 class Nodo():
     def __init__(self, nome, entradas, logica, relacoes, sinal, validacao):
@@ -149,7 +149,7 @@ def Ler_Pulso(direcaoPulsoSaida, offset):
     # retorna a tensao de pico lida
     return tensao_pico
 
-#Le o atraso do nodo a saida no arquivo "textp.txt"
+#Le o atraso do nodo a saida no arquivo "texto.txt"
 def Ler_Atraso(vdd):
     texto = "texto.txt"
     linhasDeAtraso = list()
