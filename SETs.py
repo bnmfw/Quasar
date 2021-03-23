@@ -88,7 +88,7 @@ for nodo in nodos:
                                 [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
 
 for nodo in nodos:
-    print(nodo.relacoes)
+    print(nodo.nome,nodo.relacoes)
 
 if not analiseManual:
     for sets in sets_validos: print(sets)

@@ -40,21 +40,21 @@ def Escrever_CSV(tabela, nodos):
         sets.write("nodo,saida,pulso,pulso,corrente,set,validacoes->\n")
         for nodo in nodos:
             for relacao in nodo.relacoes:
-                tipo = relacao[1]
                 combinacoes = []
+		offset = 0
                 # identifica a relacao do nodo com a saida
-		print(relacao)
-                if relacao[5] < 1111:
-                    combinacoes = [["rise", "fall"], ["fall", "rise"]]
+                if relacao[5] < 1111 and relacao[1] < 1111:
+                    combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
                 elif relacao[1] < 1111:
                     combinacoes = [["rise", "rise"], ["fall", "fall"]]
-                else:
-                    combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
+                elif relacao[5] < 1111:
+                    combinacoes = [["rise", "fall"], ["fall", "rise"]]
+		    offset = 4
                 for i in range(len(combinacoes)):
                     sets.write(nodo.nome + "," + relacao[0] + "," + combinacoes[i][0] + "," + combinacoes[i][1] + ",")
                     sets.write(
-                        str(relacao[1 + 2 * i]) + "E-6,=E" + str(linha) + "*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
-                    for validacao in relacao[2 + 2 * i]:
+                        str(relacao[1 + offset + 2 * i]) + "E-6,=E" + str(linha) + "*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
+                    for validacao in relacao[2 + offset + 2 * i]:
                         sets.write(",'")
                         for num in validacao:
                             sets.write(str(num))
