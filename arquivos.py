@@ -90,7 +90,7 @@ def Instanciar_Nodos(circuito, saidas):
                 lista = info.split()
                 nodo = Nodo(lista[-2], lista[:-2], lista[-1], [], "t", [])
                 for output in saidas:
-                    nodo.relacoes.append([output, "nao"])
+                    nodo.relacoes.append([output])
                 nodos.append(nodo)
     return nodos
 

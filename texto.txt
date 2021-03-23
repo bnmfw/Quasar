@@ -1,7 +1,2 @@
-  **warning** (atraso.txt:2) .MEASURE  atraso_rr never reached the target value, Measurement failed!
- atraso_rr= failed       targ= not found    trig=   1.0050n
- atraso_rf= failed       targ= not found    trig=   1.0050n
- atraso_ff= failed       targ= not found    trig=   3.0050n
- atraso_fr= failed       targ= not found    trig=   3.0050n
-  **warning** (atraso.txt:6) .MEASURE  largura never reached the trigger value, Measurement failed!
-   largura= failed                          trig= not found
+ minout=  -1.1656m    at=   1.0100n
+ maxout= 357.4589m    at=   2.0901n
