@@ -43,11 +43,11 @@ def Escrever_CSV(tabela, nodos):
                 tipo = relacao[1]
                 combinacoes = []
                 # identifica a relacao do nodo com a saida
-                if tipo == "inv":
+                if nodo.validacao[5] < 1111:
                     combinacoes = [["rise", "fall"], ["fall", "rise"]]
-                elif tipo == "dir":
+                elif nodo.validacao[1] < 1111:
                     combinacoes = [["rise", "rise"], ["fall", "fall"]]
-                elif tipo == "com":
+                else:
                     combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
                 for i in range(len(combinacoes)):
                     sets.write(nodo.nome + "," + relacao[0] + "," + combinacoes[i][0] + "," + combinacoes[i][1] + ",")
@@ -62,7 +62,6 @@ def Escrever_CSV(tabela, nodos):
     print("Tabela "+tabela+" gerada com sucesso\n")
 
 #Escreve informacoes no arquivo "vdd.txt"
-#Recebe vdd (float) e altera o vdd no arquivo e no clock
 def Definir_Tensao(vdd):
     with open("vdd.txt", "w") as arquivoVdd:
         arquivoVdd.write("*Arquivo com a tensao usada por todos os circuitos\n")

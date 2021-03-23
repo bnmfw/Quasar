@@ -71,8 +71,7 @@ for nodo in nodos:
                     current, simulacoesFeitas = Corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,
                                      nodo_saida, final)
 
-                    #print(relacao)
-		    if current < relacao[1 + 2 * i]:
+                    if current < relacao[1 + 2 * i]:
                         relacao[1 + 2 * i] = current
                         relacao[2 + 2 * i] = [final]
                     elif current == relacao[1 + 2 * i]:
@@ -85,7 +84,6 @@ for nodo in nodos:
                     else:
                         sets_invalidos.append(
                             [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
-	    print(relacao)
 
 if not analiseManual:
     for sets in sets_validos: print(sets)
