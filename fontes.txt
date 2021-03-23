@@ -3,4 +3,4 @@ Va a gnd 0.7
 Vb b gnd 0.7
 Vc c gnd 0.7
 Vd d gnd 0.7
-Ve e gnd PWL(0n 0 1n 0 1.01n 0.7 3n 0.7 3.01n 0)
+Ve e gnd 0.7

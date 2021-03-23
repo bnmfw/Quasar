@@ -1,4 +1,18 @@
-from param import Entrada
+class Entrada():
+    def __init__(self, nome, sinal):
+        self.nome = nome
+        self.sinal = sinal
+        self.atraso = [0,"saida.nome",["Vetor de validação"]]
+
+class Nodo():
+    def __init__(self, nome, entradas, logica, relacoes, sinal, validacao):
+        self.nome = nome
+        self.entradas = entradas  # Lista de objetos
+        self.logica = logica  # Logica da porta que o tem como saida
+        self.relacoes = relacoes  # Tipo de relacao com cada saida: inv, dir, nao, com
+        self.sinal = sinal  # Sinal logico (usado apenas na validacao)
+        self.validacao = validacao  # Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
+
 analiseManual = False
 
 #Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
@@ -65,6 +79,20 @@ def Instanciar_Entradas(fontes):
                 entrada = Entrada(nome, "t")
                 entradas.append(entrada)
     return entradas
+
+#Descobre quais os nodos nao do circuito a partir de um arquivo "circuito.txt"
+def Instanciar_Nodos(circuito, saidas):
+    nodos = list()
+    with open(circuito, "r") as circ:
+        for linha in circ:
+            if "X" in linha:
+                a, b, c, info = linha.split(' ', 3)
+                lista = info.split()
+                nodo = Nodo(lista[-2], lista[:-2], lista[-1], [], "t", [])
+                for output in saidas:
+                    nodo.relacoes.append([output, "nao"])
+                nodos.append(nodo)
+    return nodos
 
 #Escreve os sinais no arquivo "fontes.txt"
 def Definir_Fontes(fontes, vdd, entradas):
@@ -144,6 +172,33 @@ def Ler_Atraso(vdd):
             #print("Pulso menor que 1 nano",larguraPulsoSaida)
             return [0,0,0,0]
     return atrasos
+
+#Le a validacao predeterminada em um arquivo "valcircuito.txt"
+def Ler_Validacao(circuito, nodos, saidas):
+    arqValidacao = "val"+circuito
+    linhas = list()
+    #Leitura das linhas
+    with open(arqValidacao, "r") as arquivo:
+        for linha in arquivo:
+            linhas.append(linha)
+    for nodo in nodos:
+        validacao = list()
+        for linha in linhas:
+            if linha[:2] == nodo.nome:
+                sinaisDeEntrada = linha[5:15].split()
+                for i in range(len(sinaisDeEntrada)):
+                    try: sinaisDeEntrada[i] = int(sinaisDeEntrada[i])
+                    except: pass
+                validacao.append([saidas[0],sinaisDeEntrada])
+                sinaisDeEntrada = linha[18:28].split()
+                for i in range(len(sinaisDeEntrada)):
+                    try:
+                        sinaisDeEntrada[i] = int(sinaisDeEntrada[i])
+                    except:
+                        pass
+                validacao.append([saidas[1], sinaisDeEntrada])
+                break
+        nodo.validacao = validacao
 
 #Escreve informacoes no arquivo "SETs.txt"
 def Ajustar_Pulso(arqvRadiacao, nodo, corrente, saida, direcaoPulsoNodo):

@@ -1,0 +1,6 @@
+i1 g1 x x 0 1 0 g2 0 0 0 0 0
+i2 g1 0 x 1 x 0 g2 0 x 1 x 1
+i3 g1 0 x x x 0 g2 0 x x x 0
+i4 g1 0 0 0 0 0 g2 0 x 0 x x
+g1 g1 x x x x 0 g2 0 0 0 0 0
+g2 g1 0 0 0 0 0 g2 0 x x x x

@@ -1,6 +1,6 @@
 from param import *
 from corrente import *
-from arquivos import Definir_Tensao, Instanciar_Entradas, Escrever_CSV
+from arquivos import *
 from time import time
 
 tempoInicial = time()
@@ -20,7 +20,8 @@ simulacoesFeitas = 0
 sets_validos = []
 sets_invalidos = []
 
-nodos = Parametrar(circuito, entradas, saidas)
+nodos = Instanciar_Nodos(circuito,saidas)
+Ler_Validacao(circuito,nodos,saidas)
 
 for nodo in nodos:
     print(nodo.nome, nodo.validacao)

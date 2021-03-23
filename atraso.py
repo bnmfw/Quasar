@@ -1,5 +1,4 @@
-from arquivos import Escrever_Atraso, Definir_Fontes, Ler_Atraso, Ajustar_Pulso
-from param import Entrada, Nodo
+from arquivos import Escrever_Atraso, Definir_Fontes, Ler_Atraso, Ajustar_Pulso, Entrada, Nodo
 from corrente import Verificar_Validacao
 import os
 

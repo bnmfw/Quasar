@@ -1,18 +1,4 @@
-# Classe nodo e entrada
-class Entrada():
-    def __init__(self, nome, sinal):
-        self.nome = nome
-        self.sinal = sinal
-        self.atraso = [0,"saida.nome",["Vetor de validação"]]
-
-class Nodo():
-    def __init__(self, nome, entradas, logica, relacoes, sinal, validacao):
-        self.nome = nome
-        self.entradas = entradas  # Lista de objetos
-        self.logica = logica  # Logica da porta que o tem como saida
-        self.relacoes = relacoes  # Tipo de relacao com cada saida: inv, dir, nao, com
-        self.sinal = sinal  # Sinal logico (usado apenas na validacao)
-        self.validacao = validacao  # Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
+from arquivos import Entrada, Nodo, Instanciar_Nodos
 
 # Agrega os nodos a outros nodos por que orientacao a objeto arrebenta
 def Agregar_Nodos(nodos, entradas):
@@ -197,16 +183,8 @@ def Validar(alvo, entradas, nodos, saida, saidas):
 # Funcao que recebe o circuito e retorna os parametros
 def Parametrar(circuito, entradas, saidas):
     # Instanciacao de todos os nodos que nao entradas
-    nodos = list()
-    with open(circuito, "r") as circ:
-        for linha in circ:
-            if "X" in linha:
-                a, b, c, info = linha.split(' ', 3)
-                lista = info.split()
-                nodo = Nodo(lista[-2], lista[:-2], lista[-1], [], "t", [])
-                for output in saidas:
-                    nodo.relacoes.append([output, "nao"])
-                nodos.append(nodo)
+
+    nodos = Instanciar_Nodos(circuito,saidas)
 
     Agregar_Nodos(nodos, entradas) #Agrega nodos a nodos
 
