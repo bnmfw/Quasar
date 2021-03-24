@@ -55,6 +55,8 @@ for nodo in nodos:
                         for x in range(len(val[1])):
                             if val[1][x] == "x": variaveis += 1
 
+                if not variaveis: break
+
                 for k in range(2 ** variaveis):
                     binario = bin(k)
                     faltante = len(entradas) - len(binario) + 2
