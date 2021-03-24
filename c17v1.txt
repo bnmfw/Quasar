@@ -56,11 +56,11 @@ Mn51 e4 c gnd c NMOS_RVT nfin=3
 Mn52 e4 e gnd e NMOS_RVT nfin=3
 
 Mp61 vdd nb i6 nb PMOS_RVT nfin=3
-Mp62 i5 nd e5 nd PMOS_RVT nfin=3
+Mp62 i6 nd e5 nd PMOS_RVT nfin=3
 Mn61 e5 nb gnd nb NMOS_RVT nfin=3
 Mn62 e5 nd gnd nd NMOS_RVT nfin=3
 
-Mp71 vdd e4 i6 e4 PMOS_RVT nfin=3
+Mp71 vdd e4 i7 e4 PMOS_RVT nfin=3
 Mp72 i7 e5 g2 e5 PMOS_RVT nfin=3
 Mn71 g2 e4 gnd e4 NMOS_RVT nfin=3
 Mn72 g2 e5 gnd e5 NMOS_RVT nfin=3
