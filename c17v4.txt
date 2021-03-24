@@ -34,7 +34,7 @@ Mn13 e1 i12 gnd i12 NMOS_RVT nfin=3
 
 MpI1 vdd c nc c PMOS_RVT nfin=3
 MnI1 nc c gnd c NMOS_RVT nfin=3
-I
+
 Mp21 vdd d i22 d PMOS_RVT nfin=3
 Mp22 vdd b i22 b PMOS_RVT nfin=3
 Mn21 i22 d i21 d NMOS_RVT nfin=3
