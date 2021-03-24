@@ -41,7 +41,7 @@ def Escrever_CSV(tabela, nodos):
         for nodo in nodos:
             for relacao in nodo.relacoes:
                 combinacoes = []
-		offset = 0
+                offset = 0
                 # identifica a relacao do nodo com a saida
                 if relacao[5] < 1111 and relacao[1] < 1111:
                     combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
@@ -49,7 +49,7 @@ def Escrever_CSV(tabela, nodos):
                     combinacoes = [["rise", "rise"], ["fall", "fall"]]
                 elif relacao[5] < 1111:
                     combinacoes = [["rise", "fall"], ["fall", "rise"]]
-		    offset = 4
+                    offset = 4
                 for i in range(len(combinacoes)):
                     sets.write(nodo.nome + "," + relacao[0] + "," + combinacoes[i][0] + "," + combinacoes[i][1] + ",")
                     sets.write(
@@ -81,17 +81,21 @@ def Instanciar_Entradas(fontes):
     return entradas
 
 #Descobre quais os nodos nao do circuito a partir de um arquivo "circuito.txt"
-def Instanciar_Nodos(circuito, saidas):
+def Instanciar_Nodos(circuito, saidas, entradas):
     nodos = list()
+    nodos_nomes = list()
     with open(circuito, "r") as circ:
         for linha in circ:
-            if "X" in linha:
-                a, b, c, info = linha.split(' ', 3)
-                lista = info.split()
-                nodo = Nodo(lista[-2], lista[:-2], lista[-1], [], "t", [])
-                for output in saidas:
-                    nodo.relacoes.append([output])
-                nodos.append(nodo)
+            if "M" in linha:
+                transistor, coletor, base, emissor, bulk, modelo, nfin = linha.split()
+                nodos_interessantes = [coletor, base, emissor]
+                for nodo_interessante in nodos_interessantes:
+                    if nodo_interessante not in nodos_nomes and nodo_interessante not in ["vdd","gnd"] and nodo_interessante not in entradas:
+                        nodo = Nodo(nodo_interessante, "ignorado", "ignorado", [], [], [])
+                        nodos_nomes.append(nodo_interessante)
+                        for output in saidas:
+                            nodo.relacoes.append([output])
+                        nodos.append(nodo)
     return nodos
 
 #Escreve os sinais no arquivo "fontes.txt"
@@ -198,6 +202,9 @@ def Ler_Validacao(circuito, nodos, saidas):
                         pass
                 validacao.append([saidas[1], sinaisDeEntrada])
                 break
+        if not len(validacao):
+            for saida in saidas:
+                validacao.append([saida,["x","x","x","x","x"]])
         nodo.validacao = validacao
 
 #Escreve informacoes no arquivo "SETs.txt"

@@ -12,7 +12,7 @@ vdd = float(input("vdd: "))
 Definir_Tensao(vdd)
 saidas = raw_input("saidas analisadas: ")
 saidas = saidas.split()
-entradas = Instanciar_Entradas("fontes.txt")
+entradas = ["a","b","c","d","e"]
 validacao = list()
 
 simulacoesFeitas = 0
@@ -20,7 +20,7 @@ simulacoesFeitas = 0
 sets_validos = []
 sets_invalidos = []
 
-nodos = Instanciar_Nodos(circuito,saidas)
+nodos = Instanciar_Nodos(circuito,saidas,entradas)
 Ler_Validacao(circuito,nodos,saidas)
 
 for nodo in nodos:
