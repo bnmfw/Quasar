@@ -60,7 +60,6 @@ Mn62 i61 e4 gnd e4 NMOS_RVT nfin=3
 Mp63 vdd i62 g2 i62 PMOS_RVT nfin=3
 Mn63 g2 i62 gnd i62 NMOS_RVT nfin=3
 
-Xand11 vdd gnd i2 i4 g2 AND
 //Representação de um circuitpos benchmark
 *xff1 clk g1 q1 nq1 vdd gnd DFF
 *xff2 clk g2 q1 nq1 vdd gnd DFF
@@ -68,7 +67,7 @@ Xand11 vdd gnd i2 i4 g2 AND
 ****** Controle ******
 
 .include atraso.txt
-.tran 0.01n 4n
+.tran 0.01n 160n
 
 ************
 .end

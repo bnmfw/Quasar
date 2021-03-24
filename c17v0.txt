@@ -62,8 +62,6 @@ Mp72 i7 e5 g2 e5 PMOS_RVT nfin=3
 Mn71 g2 e4 gnd e4 NMOS_RVT nfin=3
 Mn72 g2 e5 gnd e5 NMOS_RVT nfin=3
 
-Xnor2 vdd gnd i4 i5 g2 NOR
-
 //Representação de um circuito pós benchmark
 *xff1 clk g1 q1 nq1 vdd gnd DFF
 *xff2 clk g2 q1 nq1 vdd gnd DFF
@@ -71,7 +69,7 @@ Xnor2 vdd gnd i4 i5 g2 NOR
 ****** Controle ******
 
 .include atraso.txt
-.tran 0.01n 4n
+.tran 0.01n 160n
 
 ************
 .end

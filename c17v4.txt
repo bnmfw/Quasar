@@ -34,7 +34,7 @@ Mn13 e1 i12 gnd i12 NMOS_RVT nfin=3
 
 MpI1 vdd c nc c PMOS_RVT nfin=3
 MnI1 nc c gnd c NMOS_RVT nfin=3
-
+I
 Mp21 vdd d i22 d PMOS_RVT nfin=3
 Mp22 vdd b i22 b PMOS_RVT nfin=3
 Mn21 i22 d i21 d NMOS_RVT nfin=3
@@ -49,7 +49,7 @@ Mn31 e3 nc gnd nc NMOS_RVT nfin=3
 Mn32 e3 e2 gnd e2 NMOS_RVT nfin=3
 
 Mp41 vdd e1 i41 e1 PMOS_RVT nfin=3
-Mp42 i41 e3 2 e3 PMOS_RVT nfin=3
+Mp42 i41 e3 i42 e3 PMOS_RVT nfin=3
 Mn41 i42 e1 gnd e1 NMOS_RVT nfin=3
 Mn42 i42 e3 gnd e3 NMOS_RVT nfin=3
 
@@ -68,12 +68,12 @@ Mn62 g2 e4 gnd e4 NMOS_RVT nfin=3
 
 //Representação de um circuito pós benchmark
 *xff1 clk g1 q1 nq1 vdd gnd DFF
-(xff2 clk g2 q1 nq1 vdd gnd DFF
+*xff2 clk g2 q1 nq1 vdd gnd DFF
 
 ****** Controle ******
 
 .include atraso.txt
-.tran 0.01n 4n
+.tran 0.01n 160n
 
 ************
 .end
