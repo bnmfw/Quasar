@@ -7,9 +7,10 @@ e4 g1 0 0 0 0 0 g2 0 0 x 0 x
 g2 g1 0 0 0 0 0 g2 0 x x x x
 i11 g1 1 1 0 x 0 g2 0 0 0 0 0
 i12 g1 x x 0 x 0 g2 0 0 0 0 0
-i21 g1 0 0 0 0 0 g2 x x x x x
-i3 g1 x x x x x g2 x x x x x
-i41 g1 x x x x x g2 x x x x x
-i42 g1 x x x x x g2 x x x x x
+i21 g1 0 0 0 0 0 g2 0 x x 1 0
+i22 g1 x x 1 x 0 g2 0 x x x x
+i3 g1 x x 0 x 0 g2 0 x 0 1 1
+i41 g1 x x x x 0 g2 0 0 0 0 0
+i42 g1 x x x x 0 g2 0 0 0 0 0
 i5 g1 0 0 0 0 0 0 g2 0 x x x 0
 i6 g1 0 0 0 0 0 0 g2 0 x x x x
