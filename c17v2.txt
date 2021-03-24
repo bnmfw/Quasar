@@ -49,8 +49,8 @@ Mp52 i51 e i52 e PMOS_RVT nfin=3
 Mn51 i52 c gnd c NMOS_RVT nfin=3
 Mn52 i52 e gnd e NMOS_RVT nfin=3
 
-Mp53 vdd 2 e4 2 PMOS_RVT nfin=3
-Mn53 e4 2 gnd 2 NMOS_RVT nfin=3
+Mp53 vdd i52 e4 i52 PMOS_RVT nfin=3
+Mn53 e4 i52 gnd i52 NMOS_RVT nfin=3
 
 Mp61 vdd e2 i62 e2 PMOS_RVT nfin=3
 Mp62 vdd e4 i62 e4 PMOS_RVT nfin=3
