@@ -11,10 +11,10 @@ def Verificar_Validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, d
         print("Verificacao Vpico nodo: " + str(tensaoPicoNodo) + " Vpico saida: " + str(tensaoPicoSaida) + "\n")
 
     #Leitura sem pulso
-    if direcaoPulsoSaida == "rise" and tensaoPicoSaida > vdd * 0.51: return False
-    elif direcaoPulsoSaida == "fall" and tensaoPicoSaida < vdd * 0.1: return False
-    elif direcaoPulsoNodo == "rise" and tensaoPicoNodo > vdd * 0.51: return False
-    elif direcaoPulsoNodo == "fall" and tensaoPicoNodo < vdd * 0.1: return False
+    if direcaoPulsoSaida == "rise" and tensaoPicoSaida > vdd * 0.51: return [False,1]
+    elif direcaoPulsoSaida == "fall" and tensaoPicoSaida < vdd * 0.1: return [False,1]
+    elif direcaoPulsoNodo == "rise" and tensaoPicoNodo > vdd * 0.51: return [False,1]
+    elif direcaoPulsoNodo == "fall" and tensaoPicoNodo < vdd * 0.1: return [False,1]
 
     Ajustar_Pulso(arqvRadiacao, nodo, 500.0, saida, direcaoPulsoNodo)
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
@@ -23,12 +23,12 @@ def Verificar_Validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, d
     if analiseManual:
         print("Verificacao Vpico nodo: " + str(tensaoPicoNodo) + " Vpico saida: " + str(tensaoPicoSaida) + "\n")
     # Leitura com pulso
-    if direcaoPulsoSaida == "rise" and tensaoPicoSaida < vdd * 0.50: return False
-    elif direcaoPulsoSaida == "fall" and tensaoPicoSaida > vdd * 0.50: return False
-    elif direcaoPulsoNodo == "rise" and tensaoPicoNodo < vdd * 0.50: return False
-    elif direcaoPulsoNodo == "fall" and tensaoPicoNodo > vdd * 0.50: return False
+    if direcaoPulsoSaida == "rise" and tensaoPicoSaida < vdd * 0.50: return [False,2]
+    elif direcaoPulsoSaida == "fall" and tensaoPicoSaida > vdd * 0.50: return [False,2]
+    elif direcaoPulsoNodo == "rise" and tensaoPicoNodo < vdd * 0.50: return [False,2]
+    elif direcaoPulsoNodo == "fall" and tensaoPicoNodo > vdd * 0.50: return [False,2]
 
-    return True
+    return [True,2]
 
 def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo, saida, validacao):
     radiacao = "SETs.txt"
@@ -36,15 +36,13 @@ def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo,
 
     precisao = 0.1
 
-    simulacoesFeitas = 1
-
     # Escreve a validacao no arquivo de fontes
     for i in range(len(entradas)):
         entradas[i].sinal = validacao[i]
     Definir_Fontes(fontes, vdd, entradas)
 
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
-    analiseValida = Verificar_Validacao(circuito, radiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd)
+    analiseValida, simulacoesFeitas = Verificar_Validacao(circuito, radiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd)
 
     if not analiseValida:
         print("Analise invalida\n")
