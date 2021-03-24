@@ -13,7 +13,6 @@ Definir_Tensao(vdd)
 saidas = raw_input("saidas analisadas: ")
 saidas = saidas.split()
 entradas = ["a","b","c","d","e"]
-entradas = Instanciar_Entradas(entradas)
 validacao = list()
 
 simulacoesFeitas = 0
@@ -23,6 +22,8 @@ sets_invalidos = []
 
 nodos = Instanciar_Nodos(circuito,saidas,entradas)
 Ler_Validacao(circuito,nodos,saidas)
+
+entradas = Instanciar_Entradas(entradas)
 
 for nodo in nodos:
     print(nodo.nome, nodo.validacao)

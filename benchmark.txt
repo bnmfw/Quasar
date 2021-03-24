@@ -68,10 +68,10 @@ Mn61 g2 e4 i6 e4 NMOS_RVT nfin=3
 Mn62 i6 e3 gnd e3 NMOS_RVT nfin=3
 
 //Representação de um circuito pós benchmark
-xff1 clk g1 q1 nq1 vdd gnd DFF
-xff2 clk g2 q2 nq2 vdd gnd DFF
-xinv11 vcc gnd q1 nnq1 NOT
-xinv12 vcc gnd q2 nnq2 NOT  
+*xff1 clk g1 q1 nq1 vdd gnd DFF
+*xff2 clk g2 q2 nq2 vdd gnd DFF
+*xinv11 vcc gnd q1 nnq1 NOT
+*xinv12 vcc gnd q2 nnq2 NOT  
 
 ****** Controle ******
 
