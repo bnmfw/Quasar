@@ -13,6 +13,7 @@ Definir_Tensao(vdd)
 saidas = raw_input("saidas analisadas: ")
 saidas = saidas.split()
 entradas = ["a","b","c","d","e"]
+entradas = Instanciar_Entradas(entradas)
 validacao = list()
 
 simulacoesFeitas = 0

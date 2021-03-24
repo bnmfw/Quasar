@@ -70,15 +70,11 @@ def Definir_Tensao(vdd):
         arquivoVdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
 
 #Descobre quais as entradas do circuto a partir do arquivo "fontes.txt" e retorna a lista com elas
-def Instanciar_Entradas(fontes):
-    entradas = list()
-    with open(fontes, "r") as fonte:
-        for linha in fonte:
-            if "V" in linha:
-                a, nome, b, c = linha.split()
-                entrada = Entrada(nome, "t")
-                entradas.append(entrada)
-    return entradas
+def Instanciar_Entradas(entradas):
+    novas_entradas = list()
+    for entrada in entradas:
+        novas_entradas.append(Entrada(entrada,"t"))
+    return novas_entradas
 
 #Descobre quais os nodos nao do circuito a partir de um arquivo "circuito.txt"
 def Instanciar_Nodos(circuito, saidas, entradas):
