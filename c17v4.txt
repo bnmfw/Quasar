@@ -22,19 +22,53 @@ Benchmark C17 V4
 
 .include fontes.txt
 
-****** Circuito Limpo ******
+****** Circuito ******
 
-Xand11 vdd gnd  a  b i1 AND
-Xnot13 vdd gnd  c nc NOT
-Xand12 vdd gnd  b  d i2 AND
-Xnor11 vdd gnd nc i2 i3 NOR
-Xor11 vdd gnd i1 i3 g1 OR
-Xnor12 vdd gnd  c  e i4 NOR
-Xnor13 vdd gnd i4 i2 g2 NOR
+Mp11 vdd a i12 a PMOS_RVT nfin=3
+Mp12 vdd b i12 b PMOS_RVT nfin=3
+Mn11 i12 a i11 a NMOS_RVT nfin=3
+Mn12 i11 b gnd b NMOS_RVT nfin=3
+
+Mp13 vdd i12 e1 i12 PMOS_RVT nfin=3
+Mn13 e1 i12 gnd i12 NMOS_RVT nfin=3
+
+MpI1 vdd c nc c PMOS_RVT nfin=3
+MnI1 nc c gnd c NMOS_RVT nfin=3
+
+Mp21 vdd d i22 d PMOS_RVT nfin=3
+Mp22 vdd b i22 b PMOS_RVT nfin=3
+Mn21 i22 d i21 d NMOS_RVT nfin=3
+Mn22 i21 b gnd b NMOS_RVT nfin=3
+
+Mp23 vdd i22 e2 i22 PMOS_RVT nfin=3
+Mn23 e2 i22 gnd i22 NMOS_RVT nfin=3
+
+Mp31 vdd nc i3 nc PMOS_RVT nfin=3
+Mp32 i3 e2 e3 e2 PMOS_RVT nfin=3
+Mn31 e3 nc gnd nc NMOS_RVT nfin=3
+Mn32 e3 e2 gnd e2 NMOS_RVT nfin=3
+
+Mp41 vdd e1 i41 e1 PMOS_RVT nfin=3
+Mp42 i41 e3 2 e3 PMOS_RVT nfin=3
+Mn41 i42 e1 gnd e1 NMOS_RVT nfin=3
+Mn42 i42 e3 gnd e3 NMOS_RVT nfin=3
+
+Mp43 vdd i42 g1 i42 PMOS_RVT nfin=3
+Mn43 g1 i42 gnd i42 NMOS_RVT nfin=3
+
+Mp51 vdd c i5 c PMOS_RVT nfin=3
+Mp52 i5 e e4 e PMOS_RVT nfin=3
+Mn51 e4 c gnd c NMOS_RVT nfin=3
+Mn52 e4 e gnd e NMOS_RVT nfin=3
+
+Mp61 vdd e2 i6 e2 PMOS_RVT nfin=3
+Mp62 i6 e4 g2 e4 PMOS_RVT nfin=3
+Mn61 g2 e2 gnd e2 NMOS_RVT nfin=3
+Mn62 g2 e4 gnd e4 NMOS_RVT nfin=3
 
 //Representação de um circuito pós benchmark
-xff1 clk g1 q1 nq1 vdd gnd DFF
-xff2 clk g2 q1 nq1 vdd gnd DFF
+*xff1 clk g1 q1 nq1 vdd gnd DFF
+(xff2 clk g2 q1 nq1 vdd gnd DFF
 
 ****** Controle ******
 
