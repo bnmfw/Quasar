@@ -83,7 +83,7 @@ Mn8 7 h vm h NMOS_RVT nfin=3
 Mp1 vp a 2 a PMOS_RVT nfin=3
 Mp2 vp b 2 b PMOS_RVT nfin=3
 Mn1 2 a 1 a NMOS_RVT nfin=3
-Mn2 1 b vm c NMOS_RVT nfin=3
+Mn2 1 b vm b NMOS_RVT nfin=3
 
 Mp3 vp 2 s 2 PMOS_RVT nfin=3
 Mn3 s 2 vm 2 NMOS_RVT nfin=3
