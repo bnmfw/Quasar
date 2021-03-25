@@ -82,17 +82,17 @@ def Instanciar_Nodos(circuito, saidas, entradas):
     nodos_nomes = list()
     inputs = list()
     for entrada in entradas:
-	inputs.append(entrada)
-    inputs.append("ta")
-    inputs.append("tb")
-    inputs.append("tc")
-    inputs.append("td")
-    inputs.append("te")
-    inputs.append("fa")
-    inputs.append("fb")
-    inputs.append("fc")
-    inputs.append("fd")
-    inputs.append("fe")
+        inputs.append(entrada)
+        inputs.append("ta")
+        inputs.append("tb")
+        inputs.append("tc")
+        inputs.append("td")
+        inputs.append("te")
+        inputs.append("fa")
+        inputs.append("fb")
+        inputs.append("fc")
+        inputs.append("fd")
+        inputs.append("fe")
     with open(circuito, "r") as circ:
         for linha in circ:
             if "M" in linha:
@@ -194,23 +194,26 @@ def Ler_Validacao(circuito, nodos, saidas):
     with open(arqValidacao, "r") as arquivo:
         for linha in arquivo:
             linhas.append(linha)
-    print(linhas)
     for nodo in nodos:
         validacao = list()
         for linha in linhas:
-            if linha[:2] == nodo.nome:
-                sinaisDeEntrada = linha[5:15].split()
-                for i in range(len(sinaisDeEntrada)):
-                    try: sinaisDeEntrada[i] = int(sinaisDeEntrada[i])
+            nome,resto = linha.split(" ",1)
+            if nome == nodo.nome:
+                sinaisDeEntrada = resto.split()
+                for saida in saidas:
+                    sinaisDeEntrada.remove(saida)
+                sinaisDeEntrada_1 = sinaisDeEntrada[:5]
+                #Conversao de string pra inteiro
+                for i in range(len(sinaisDeEntrada_1)):
+                    try: sinaisDeEntrada_1[i] = int(sinaisDeEntrada_1[i])
                     except: pass
-                validacao.append([saidas[0],sinaisDeEntrada])
-                sinaisDeEntrada = linha[18:28].split()
-                for i in range(len(sinaisDeEntrada)):
-                    try:
-                        sinaisDeEntrada[i] = int(sinaisDeEntrada[i])
-                    except:
-                        pass
-                validacao.append([saidas[1], sinaisDeEntrada])
+                validacao.append([saidas[0],sinaisDeEntrada_1])
+                sinaisDeEntrada_2 = sinaisDeEntrada[-5:]
+                #Conversao de string pra inteiro
+                for i in range(len(sinaisDeEntrada_2)):
+                    try: sinaisDeEntrada_2[i] = int(sinaisDeEntrada_2[i])
+                    except: pass
+                validacao.append([saidas[1], sinaisDeEntrada_2])
                 break
         if not len(validacao):
             for saida in saidas:

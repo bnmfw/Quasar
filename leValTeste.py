@@ -1,6 +1,6 @@
 from arquivos import *
 
-circuito = "c17v4.txt"
+circuito = "c17v0.txt"
 saidas = ["g1", "g2"]
 entradas = ["a","b","c","d","e"]
 
