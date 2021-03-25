@@ -80,23 +80,26 @@ def Instanciar_Entradas(entradas):
 def Instanciar_Nodos(circuito, saidas, entradas):
     nodos = list()
     nodos_nomes = list()
-    entradas.append("ta")
-    entradas.append("tb")
-    entradas.append("tc")
-    entradas.append("td")
-    entradas.append("te")
-    entradas.append("fa")
-    entradas.append("fb")
-    entradas.append("fc")
-    entradas.append("fd")
-    entradas.append("fe")
+    inputs = list()
+    for entrada in entradas:
+	inputs.append(entrada)
+    inputs.append("ta")
+    inputs.append("tb")
+    inputs.append("tc")
+    inputs.append("td")
+    inputs.append("te")
+    inputs.append("fa")
+    inputs.append("fb")
+    inputs.append("fc")
+    inputs.append("fd")
+    inputs.append("fe")
     with open(circuito, "r") as circ:
         for linha in circ:
             if "M" in linha:
                 transistor, coletor, base, emissor, bulk, modelo, nfin = linha.split()
                 nodos_interessantes = [coletor, base, emissor]
                 for nodo_interessante in nodos_interessantes:
-                    if nodo_interessante not in nodos_nomes and nodo_interessante not in ["vdd","gnd"] and nodo_interessante not in entradas:
+                    if nodo_interessante not in nodos_nomes and nodo_interessante not in ["vdd","gnd"] and nodo_interessante not in inputs:
                         nodo = Nodo(nodo_interessante, "ignorado", "ignorado", [], [], [])
                         nodos_nomes.append(nodo_interessante)
                         for output in saidas:
@@ -191,6 +194,7 @@ def Ler_Validacao(circuito, nodos, saidas):
     with open(arqValidacao, "r") as arquivo:
         for linha in arquivo:
             linhas.append(linha)
+    print(linhas)
     for nodo in nodos:
         validacao = list()
         for linha in linhas:
