@@ -80,6 +80,16 @@ def Instanciar_Entradas(entradas):
 def Instanciar_Nodos(circuito, saidas, entradas):
     nodos = list()
     nodos_nomes = list()
+    entradas.append("ta")
+    entradas.append("tb")
+    entradas.append("tc")
+    entradas.append("td")
+    entradas.append("te")
+    entradas.append("fa")
+    entradas.append("fb")
+    entradas.append("fc")
+    entradas.append("fd")
+    entradas.append("fe")
     with open(circuito, "r") as circ:
         for linha in circ:
             if "M" in linha:

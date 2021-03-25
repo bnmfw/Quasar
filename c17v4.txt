@@ -17,6 +17,7 @@ Benchmark C17 V4
 ****** Fontes de Tensão Geral ******
 
 .include vdd.txt
+Vvcc vcc gnd 0.7
 
 ****** Fontes de Sinal ******
 
@@ -24,21 +25,32 @@ Benchmark C17 V4
 
 ****** Circuito ******
 
-Mp11 vdd a i12 a PMOS_RVT nfin=3
-Mp12 vdd b i12 b PMOS_RVT nfin=3
-Mn11 i12 a i11 a NMOS_RVT nfin=3
-Mn12 i11 b gnd b NMOS_RVT nfin=3
+Xinva1 vcc gnd a fa NOT
+Xinva2 vcc gnd fa ta NOT
+Xinvb1 vcc gnd b fb NOT
+Xinvb2 vcc gnd fb tb NOT
+Xinvc1 vcc gnd c fc NOT
+Xinvc2 vcc gnd fc tc NOT
+Xinvd1 vcc gnd d fd NOT
+Xinvd2 vcc gnd fd td NOT
+Xinve1 vcc gnd e fe NOT
+Xinve2 vcc gnd fe te NOT
+
+Mp11 vdd ta i12 ta PMOS_RVT nfin=3
+Mp12 vdd tb i12 tb PMOS_RVT nfin=3
+Mn11 i12 ta i11 ta NMOS_RVT nfin=3
+Mn12 i11 tb gnd tb NMOS_RVT nfin=3
 
 Mp13 vdd i12 e1 i12 PMOS_RVT nfin=3
 Mn13 e1 i12 gnd i12 NMOS_RVT nfin=3
 
-MpI1 vdd c nc c PMOS_RVT nfin=3
-MnI1 nc c gnd c NMOS_RVT nfin=3
+MpI1 vdd tc nc tc PMOS_RVT nfin=3
+MnI1 nc tc gnd tc NMOS_RVT nfin=3
 
-Mp21 vdd d i22 d PMOS_RVT nfin=3
-Mp22 vdd b i22 b PMOS_RVT nfin=3
-Mn21 i22 d i21 d NMOS_RVT nfin=3
-Mn22 i21 b gnd b NMOS_RVT nfin=3
+Mp21 vdd td i22 td PMOS_RVT nfin=3
+Mp22 vdd tb i22 tb PMOS_RVT nfin=3
+Mn21 i22 td i21 td NMOS_RVT nfin=3
+Mn22 i21 tb gnd tb NMOS_RVT nfin=3
 
 Mp23 vdd i22 e2 i22 PMOS_RVT nfin=3
 Mn23 e2 i22 gnd i22 NMOS_RVT nfin=3
@@ -56,10 +68,10 @@ Mn42 i42 e3 gnd e3 NMOS_RVT nfin=3
 Mp43 vdd i42 g1 i42 PMOS_RVT nfin=3
 Mn43 g1 i42 gnd i42 NMOS_RVT nfin=3
 
-Mp51 vdd c i5 c PMOS_RVT nfin=3
-Mp52 i5 e e4 e PMOS_RVT nfin=3
-Mn51 e4 c gnd c NMOS_RVT nfin=3
-Mn52 e4 e gnd e NMOS_RVT nfin=3
+Mp51 vdd tc i5 tc PMOS_RVT nfin=3
+Mp52 i5 te e4 te PMOS_RVT nfin=3
+Mn51 e4 tc gnd tc NMOS_RVT nfin=3
+Mn52 e4 te gnd te NMOS_RVT nfin=3
 
 Mp61 vdd e2 i6 e2 PMOS_RVT nfin=3
 Mp62 i6 e4 g2 e4 PMOS_RVT nfin=3
@@ -67,13 +79,15 @@ Mn61 g2 e2 gnd e2 NMOS_RVT nfin=3
 Mn62 g2 e4 gnd e4 NMOS_RVT nfin=3
 
 //Representação de um circuito pós benchmark
-*xff1 clk g1 q1 nq1 vdd gnd DFF
-*xff2 clk g2 q1 nq1 vdd gnd DFF
+xff1 clk g1 q1 nq1 vdd gnd DFF
+xff2 clk g2 q2 nq2 vdd gnd DFF
+xinv11 vcc gnd q1 nnq1 NOT
+xinv12 vcc gnd q2 nnq2 NOT  
 
 ****** Controle ******
 
 .include atraso.txt
-.tran 0.01n 160n
+.tran 0.01n 4n
 
 ************
 .end
