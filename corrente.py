@@ -8,7 +8,7 @@ def Verificar_Validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, d
     tensaoPicoSaida = Ler_Pulso(direcaoPulsoSaida, 0)
     tensaoPicoNodo = Ler_Pulso(direcaoPulsoNodo, 2)
     if analiseManual:
-        print("Verificacao Vpico nodo: " + str(tensaoPicoNodo) + " Vpico saida: " + str(tensaoPicoSaida) + "\n")
+        print("Verificacao de Sinal: Vpico nodo: " + str(tensaoPicoNodo) + " Vpico saida: " + str(tensaoPicoSaida) + "\n")
 
     #Leitura sem pulso
     if direcaoPulsoSaida == "rise" and tensaoPicoSaida > vdd * 0.51: return [False,1]
@@ -16,12 +16,12 @@ def Verificar_Validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, d
     elif direcaoPulsoNodo == "rise" and tensaoPicoNodo > vdd * 0.51: return [False,1]
     elif direcaoPulsoNodo == "fall" and tensaoPicoNodo < vdd * 0.1: return [False,1]
 
-    Ajustar_Pulso(arqvRadiacao, nodo, 500.0, saida, direcaoPulsoNodo)
+    Ajustar_Pulso(arqvRadiacao, nodo, 499.0, saida, direcaoPulsoNodo)
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
     tensaoPicoSaida = Ler_Pulso(direcaoPulsoSaida, 0)
     tensaoPicoNodo = Ler_Pulso(direcaoPulsoNodo, 2)
     if analiseManual:
-        print("Verificacao Vpico nodo: " + str(tensaoPicoNodo) + " Vpico saida: " + str(tensaoPicoSaida) + "\n")
+        print("Verificacao de Pulso: Vpico nodo: " + str(tensaoPicoNodo) + " Vpico saida: " + str(tensaoPicoSaida) + "\n")
     # Leitura com pulso
     if direcaoPulsoSaida == "rise" and tensaoPicoSaida < vdd * 0.50: return [False,2]
     elif direcaoPulsoSaida == "fall" and tensaoPicoSaida > vdd * 0.50: return [False,2]
@@ -73,8 +73,13 @@ def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo,
 
         # Encerramento por excesso de simulacoes
         if simulacoesFeitas >= 20:
-            print("Encerramento por estouro de ciclos maximos\n")
-            return [2222, simulacoesFeitas]
+	    #print(corrente, (1-precisao)*vdd/2, tensao_pico,(1+precisao)*vdd/2)
+	    if corrente > 1 and corrente < 499:
+	    	print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
+		return [corrente, simulacoesFeitas]
+	    else:
+		print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
+            	return [2222, simulacoesFeitas]
         # Busca binaria
         elif direcaoPulsoSaida == "fall":
             if tensao_pico <= (1 - precisao) * vdd / 2:

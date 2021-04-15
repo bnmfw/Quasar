@@ -5,6 +5,8 @@ from time import time
 
 tempoInicial = time()
 
+if analiseManual: print("----------EM ANALISE MANUAL----------")
+
 circuito = raw_input("circuito a ser analisado: ")
 tabela = circuito + ".csv"
 circuito = circuito + ".txt"
@@ -21,20 +23,25 @@ sets_validos = []
 sets_invalidos = []
 
 nodos = Instanciar_Nodos(circuito,saidas,entradas)
+
 Ler_Validacao(circuito,nodos,saidas)
 
 entradas = Instanciar_Entradas(entradas)
 
-for nodo in nodos:
-    print(nodo.nome, nodo.validacao)
-
 if analiseManual:
-    print("\nTESTE MANUAL\n i2, g1, rise, rise [0,0,0,1]\n")
-    current = Corrente(circuito, vdd, entradas, "rise", "rise", "i2", "g1", [0, 0, 0, 1])
+    pulsos = raw_input("pulsos na entrada e saida: ")
+    pulso_in, pulso_out = pulsos.split()
+    nodos_analise = raw_input("nodo e saida analisados: ")
+    nodo_manual, saida_manual = nodos_analise.split()
+    vetor_manual = raw_input("vetor analisado: ").split()
+    for i in range(len(vetor_manual)):
+	vetor_manual[i] = int(vetor_manual[i])
+    print("")
+    current = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, saida_manual, saida_manual, vetor_manual)
     print("Corrente final: " + str(current))
 
 for nodo in nodos:
-    print(nodo.relacoes)
+    #print(nodo.relacoes)
     if analiseManual: break
     for nodo_saida in saidas:  # Determina a saida
         for relacao in nodo.relacoes:
@@ -105,4 +112,8 @@ if not analiseManual:
 
 tempoFinal = time()
 tempoTotal = int(tempoFinal - tempoInicial)
-print(str(int(tempoTotal / 60)) + " minutos e " + str(tempoTotal % 60) + " segundos de execucao\n")
+horasDeSimulacao = int(tempoTotal/3600)
+minutosDeSimulacao = int((tempoTotal % 3600)/60)
+if horasDeSimulacao:
+    print(str(horasDeSimulacao) + " horas, ")
+print(str(minutosDeSimulacao) + " minutos e " + str(tempoTotal % 60) + " segundos de execucao\n")

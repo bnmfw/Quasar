@@ -203,7 +203,6 @@ def Ler_Validacao(circuito, nodos, saidas):
                 for saida in saidas:
                     sinaisDeEntrada.remove(saida)
                 sinaisDeEntrada_1 = sinaisDeEntrada[:5]
-                #Conversao de string pra inteiro
                 for i in range(len(sinaisDeEntrada_1)):
                     try: sinaisDeEntrada_1[i] = int(sinaisDeEntrada_1[i])
                     except: pass
