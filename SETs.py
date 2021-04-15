@@ -3,46 +3,60 @@ from corrente import *
 from arquivos import *
 from time import time
 
+def converter_binario(binario, validacao): #Converte o binario esquisito numa lista
+    final = list(validacao)
+    flag = 0
+    binary = list()
+    # Transforma binario em uma lista de verdade e ajusta a validacao
+    for i in range(variaveis - (len(binario) - 2)): binary.append(0)
+    for i in range(len(binario) - 2): binary.append(int(binario[i + 2]))
+    for i in range(len(final)):
+        if final[i] == "x":
+            final[i] = binary[flag]
+            flag += 1
+    return final
+
+
 tempoInicial = time()
 
-if analiseManual: print("----------EM ANALISE MANUAL----------")
+if analise_manual: print("----------EM ANALISE MANUAL----------")
 
 circuito = raw_input("circuito a ser analisado: ")
 tabela = circuito + ".csv"
 circuito = circuito + ".txt"
 vdd = float(input("vdd: "))
-Definir_Tensao(vdd)
+definir_tensao(vdd)
 saidas = raw_input("saidas analisadas: ")
 saidas = saidas.split()
 entradas = ["a","b","c","d","e"]
 validacao = list()
 
-simulacoesFeitas = 0
+simulacoes_feitas = 0
 
 sets_validos = []
 sets_invalidos = []
 
-nodos = Instanciar_Nodos(circuito,saidas,entradas)
+nodos = instanciar_nodos(circuito,saidas,entradas)
 
-Ler_Validacao(circuito,nodos,saidas)
+ler_validacao(circuito,nodos,saidas)
 
-entradas = Instanciar_Entradas(entradas)
+entradas = instanciar_entradas(entradas)
 
-if analiseManual:
+if analise_manual:
     pulsos = raw_input("pulsos na entrada e saida: ")
     pulso_in, pulso_out = pulsos.split()
     nodos_analise = raw_input("nodo e saida analisados: ")
     nodo_manual, saida_manual = nodos_analise.split()
     vetor_manual = raw_input("vetor analisado: ").split()
     for i in range(len(vetor_manual)):
-	vetor_manual[i] = int(vetor_manual[i])
+        vetor_manual[i] = int(vetor_manual[i])
     print("")
     current = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, saida_manual, saida_manual, vetor_manual)
     print("Corrente final: " + str(current))
 
 for nodo in nodos:
     #print(nodo.relacoes)
-    if analiseManual: break
+    if analise_manual: break
     for nodo_saida in saidas:  # Determina a saida
         for relacao in nodo.relacoes:
             if relacao[0] == nodo_saida:
@@ -65,25 +79,15 @@ for nodo in nodos:
                 if not variaveis: break
 
                 for k in range(2 ** variaveis):
-                    binario = bin(k)
-                    faltante = len(entradas) - len(binario) + 2
-                    final = list(validacao)
-                    flag = 0
-                    binary = list()
-                    # Transforma binario em uma lista de verdade e ajusta a validacao
-                    for i in range(variaveis - (len(binario) - 2)): binary.append(0)
-                    for i in range(len(binario) - 2): binary.append(int(binario[i + 2]))
-                    for i in range(len(final)):
-                        if final[i] == "x":
-                            final[i] = binary[flag]
-                            flag += 1
+
+                    final = converter_binario(bin(k), validacao)
 
                     # Realiza a combinacao de rise e fall correta para validacao escolhida
                     for i in range(len(combinacoes)):
                         print(nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], final)
                         current, simulacoes = Corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,
                                          nodo_saida, final)
-                        simulacoesFeitas += simulacoes
+                        simulacoes_feitas += simulacoes
                         if current < relacao[1 + 2 * i]:
                             relacao[1 + 2 * i] = current
                             relacao[2 + 2 * i] = [final]
@@ -101,14 +105,14 @@ for nodo in nodos:
 for nodo in nodos:
     print(nodo.nome,nodo.relacoes)
 
-if not analiseManual:
+if not analise_manual:
     for sets in sets_validos: print(sets)
     print("\n")
     for sets in sets_invalidos: print(sets)
 
     # Retorno do numero de simulacoes feitas e de tempo de execucao
-    print("\n" + str(simulacoesFeitas) + " simulacoes feitas\n")
-    Escrever_CSV(tabela, nodos)
+    print("\n" + str(simulacoes_feitas) + " simulacoes feitas\n")
+    escrever_csv(tabela, nodos)
 
 tempoFinal = time()
 tempoTotal = int(tempoFinal - tempoInicial)

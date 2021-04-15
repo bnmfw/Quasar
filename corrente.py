@@ -1,36 +1,36 @@
 import os
-from arquivos import Ler_Pulso, Ajustar_Pulso, Definir_Fontes, analiseManual
+from arquivos import ler_pulso, ajustar_pulso, definir_fontes, analise_manual
 
 #Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
-def Verificar_Validacao(circuito, arqvRadiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd):
-    Ajustar_Pulso(arqvRadiacao, nodo, 0.0, saida, direcaoPulsoNodo)
+def Verificar_Validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
+    ajustar_pulso(arqv_radiacao, nodo, 0.0, saida, direcao_pulso_nodo)
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
-    tensaoPicoSaida = Ler_Pulso(direcaoPulsoSaida, 0)
-    tensaoPicoNodo = Ler_Pulso(direcaoPulsoNodo, 2)
-    if analiseManual:
-        print("Verificacao de Sinal: Vpico nodo: " + str(tensaoPicoNodo) + " Vpico saida: " + str(tensaoPicoSaida) + "\n")
+    tensao_pico_saida = ler_pulso(direcao_pulso_saida, 0)
+    tensao_pico_nodo = ler_pulso(direcao_pulso_nodo, 2)
+    if analise_manual:
+        print("Verificacao de Sinal: Vpico nodo: " + str(tensao_pico_nodo) + " Vpico saida: " + str(tensao_pico_saida) + "\n")
 
     #Leitura sem pulso
-    if direcaoPulsoSaida == "rise" and tensaoPicoSaida > vdd * 0.51: return [False,1]
-    elif direcaoPulsoSaida == "fall" and tensaoPicoSaida < vdd * 0.1: return [False,1]
-    elif direcaoPulsoNodo == "rise" and tensaoPicoNodo > vdd * 0.51: return [False,1]
-    elif direcaoPulsoNodo == "fall" and tensaoPicoNodo < vdd * 0.1: return [False,1]
+    if direcao_pulso_saida == "rise" and tensao_pico_saida > vdd * 0.51: return [False, 1]
+    elif direcao_pulso_saida == "fall" and tensao_pico_saida < vdd * 0.1: return [False, 1]
+    elif direcao_pulso_nodo == "rise" and tensao_pico_nodo > vdd * 0.51: return [False, 1]
+    elif direcao_pulso_nodo == "fall" and tensao_pico_nodo < vdd * 0.1: return [False, 1]
 
-    Ajustar_Pulso(arqvRadiacao, nodo, 499.0, saida, direcaoPulsoNodo)
+    ajustar_pulso(arqv_radiacao, nodo, 499.0, saida, direcao_pulso_nodo)
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
-    tensaoPicoSaida = Ler_Pulso(direcaoPulsoSaida, 0)
-    tensaoPicoNodo = Ler_Pulso(direcaoPulsoNodo, 2)
-    if analiseManual:
-        print("Verificacao de Pulso: Vpico nodo: " + str(tensaoPicoNodo) + " Vpico saida: " + str(tensaoPicoSaida) + "\n")
+    tensao_pico_saida = ler_pulso(direcao_pulso_saida, 0)
+    tensao_pico_nodo = ler_pulso(direcao_pulso_nodo, 2)
+    if analise_manual:
+        print("Verificacao de Pulso: Vpico nodo: " + str(tensao_pico_nodo) + " Vpico saida: " + str(tensao_pico_saida) + "\n")
     # Leitura com pulso
-    if direcaoPulsoSaida == "rise" and tensaoPicoSaida < vdd * 0.50: return [False,2]
-    elif direcaoPulsoSaida == "fall" and tensaoPicoSaida > vdd * 0.50: return [False,2]
-    elif direcaoPulsoNodo == "rise" and tensaoPicoNodo < vdd * 0.50: return [False,2]
-    elif direcaoPulsoNodo == "fall" and tensaoPicoNodo > vdd * 0.50: return [False,2]
+    if direcao_pulso_saida == "rise" and tensao_pico_saida < vdd * 0.50: return [False, 2]
+    elif direcao_pulso_saida == "fall" and tensao_pico_saida > vdd * 0.50: return [False, 2]
+    elif direcao_pulso_nodo == "rise" and tensao_pico_nodo < vdd * 0.50: return [False, 2]
+    elif direcao_pulso_nodo == "fall" and tensao_pico_nodo > vdd * 0.50: return [False, 2]
 
     return [True,2]
 
-def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo, saida, validacao):
+def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):
     radiacao = "SETs.txt"
     fontes = "fontes.txt"
 
@@ -39,14 +39,14 @@ def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo,
     # Escreve a validacao no arquivo de fontes
     for i in range(len(entradas)):
         entradas[i].sinal = validacao[i]
-    Definir_Fontes(fontes, vdd, entradas)
+    definir_fontes(fontes, vdd, entradas)
 
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
-    analiseValida, simulacoesFeitas = Verificar_Validacao(circuito, radiacao, nodo, direcaoPulsoNodo, saida, direcaoPulsoSaida, vdd)
+    analise_valida, simulacoes_feitas = Verificar_Validacao(circuito, radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd)
 
-    if not analiseValida:
+    if not analise_valida:
         print("Analise invalida\n")
-        return [1111, simulacoesFeitas]
+        return [1111, simulacoes_feitas]
 
     tensao_pico = 0
     # max_tensao = 0
@@ -58,47 +58,46 @@ def Corrente(circuito, vdd, entradas, direcaoPulsoNodo, direcaoPulsoSaida, nodo,
     corrente_inf = 0
 
     # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
-    Ajustar_Pulso(radiacao, nodo, corrente, saida, direcaoPulsoNodo)
+    ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
 
     while not ((1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2):
 
         # Roda o HSPICE e salva os valores no arquivo de texto
         os.system("hspice " + circuito + " | grep \"minout\|maxout\" > texto.txt")
-        simulacoesFeitas += 1
+        simulacoes_feitas += 1
 
         # Le a o pico de tensao na saida do circuito
-        tensao_pico = Ler_Pulso(direcaoPulsoSaida, 0)
+        tensao_pico = ler_pulso(direcao_pulso_saida, 0)
 
-        if analiseManual: print("Corrente testada: " + str(corrente) + " Resposta na saida: " + str(tensao_pico) + "\n")
+        if analise_manual: print("Corrente testada: " + str(corrente) + " Resposta na saida: " + str(tensao_pico) + "\n")
 
         # Encerramento por excesso de simulacoes
-        if simulacoesFeitas >= 20:
-	    #print(corrente, (1-precisao)*vdd/2, tensao_pico,(1+precisao)*vdd/2)
-	    if corrente > 1 and corrente < 499:
-	    	print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
-		return [corrente, simulacoesFeitas]
-	    else:
-		print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
-            	return [2222, simulacoesFeitas]
+        if simulacoes_feitas >= 20:
+            if corrente > 1 and corrente < 499:
+                print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
+                return [corrente, simulacoes_feitas]
+            else:
+                print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
+                return [2222, simulacoes_feitas]
         # Busca binaria
-        elif direcaoPulsoSaida == "fall":
+        elif direcao_pulso_saida == "fall":
             if tensao_pico <= (1 - precisao) * vdd / 2:
                 corrente_sup = corrente
             elif tensao_pico >= (1 + precisao) * vdd / 2:
                 corrente_inf = corrente
             else:
                 print("Corrente encontrada com sucesso\n")
-                return [corrente, simulacoesFeitas]
-        elif direcaoPulsoSaida == "rise":
+                return [corrente, simulacoes_feitas]
+        elif direcao_pulso_saida == "rise":
             if tensao_pico <= (1 - precisao) * vdd / 2:
                 corrente_inf = corrente
             elif tensao_pico >= (1 + precisao) * vdd / 2:
                 corrente_sup = corrente
             else:
                 print("Corrente encontrada com sucesso\n")
-                return [corrente, simulacoesFeitas]
+                return [corrente, simulacoes_feitas]
 
         corrente = float((corrente_sup + corrente_inf) / 2)
 
         # Escreve os paramtros no arquivo dos SETs
-        Ajustar_Pulso(radiacao, nodo, corrente, saida, direcaoPulsoNodo)
+        ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)

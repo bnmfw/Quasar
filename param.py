@@ -1,4 +1,4 @@
-from arquivos import Entrada, Nodo, Instanciar_Nodos
+from arquivos import Entrada, Nodo, instanciar_nodos
 
 # Agrega os nodos a outros nodos por que orientacao a objeto arrebenta
 def Agregar_Nodos(nodos, entradas):
@@ -184,7 +184,7 @@ def Validar(alvo, entradas, nodos, saida, saidas):
 def Parametrar(circuito, entradas, saidas):
     # Instanciacao de todos os nodos que nao entradas
 
-    nodos = Instanciar_Nodos(circuito,saidas)
+    nodos = instanciar_nodos(circuito,saidas)
 
     Agregar_Nodos(nodos, entradas) #Agrega nodos a nodos
 

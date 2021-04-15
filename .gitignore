@@ -5,3 +5,5 @@
 *.st0
 *.mt0*
 *.log*
+*.xml
+*.iml
