@@ -1,0 +1,3 @@
+*Arquivo com a leitura da lergura dos pulsos
+.meas tran pulso_rf TRIG v(g2) val='0.35' rise=1 TARG v(g2) val='0.35' fall=1
+.meas tran pulso_fr TRIG v(g2) val='0.35' fall=1 TARG v(g2) val='0.35' rise=1

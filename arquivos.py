@@ -253,13 +253,15 @@ def escrever_largura_pulso(nodo,saida,vdd):
     with open ("largura_pulso.txt","w") as larg:
         larg.write("*Arquivo com a leitura da lergura dos pulsos\n")
         tensao = str(vdd*0.5)
-        larg.write(".meas tran pulso_rf TRIG v("+saida.nome+") val='"+tensao+"' rise=1 TARG v("+saida.nome+") val='"+tensao+"' fall=1\n")
-        larg.write(".meas tran pulso_fr TRIG v("+saida.nome+") val='"+tensao+"' fall=1 TARG v("+saida.nome+") val='"+tensao+"' rise=1\n")
+        larg.write(".meas tran pulso_rf TRIG v("+saida+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
+        larg.write(".meas tran pulso_fr TRIG v("+saida+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
 
 #Leitura do arquivo "leitura_pulso.txt"
 def ler_largura_pulso():
-    with open("largura-pulso.txt","r") as larg:
+    with open("texto.txt","r") as larg:
         pulso_rf = larg.readline().split()
+	if pulso_rf[0][0] == "*":
+		return 0
         pulso_rf = ajustar_valor(pulso_rf[1])
         pulso_fr = larg.readline().split()
         pulso_fr = ajustar_valor(pulso_fr[1])
