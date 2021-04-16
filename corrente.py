@@ -38,7 +38,7 @@ def largura_pulso(circuito, nodo, nodo_saida, vdd, atraso): ##### REALIZA A MEDI
     if atraso < largura_de_pulso:
         return largura_de_pulso
     else:
-        return 1111
+        return 4444
 
 def corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):
     radiacao = "SETs.txt"

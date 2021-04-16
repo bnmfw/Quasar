@@ -96,6 +96,13 @@ for nodo in nodos:
                         elif current == relacao[1 + 2 * i]: ##### SE O LETth EH IGUAL A UM JA EXISTENTE
                             relacao[2 + 2 * i].append(final)
 
+                        ##### VALIDACAO DE LARGURA DE PULSO #####
+                        pulso = largura_pulso(circuito, nodo, nodo_saida, vdd, atraso)
+                        simulacoes_feitas += 1
+                        if pulso == 4444:
+                            print("Corrente Invalidada por Lagura de Pulso")
+                            current = 4444 #Invalida corrente de pulso muito pequeno
+
                         ##### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
                         if current < 1000:
                             sets_validos.append(
@@ -104,10 +111,6 @@ for nodo in nodos:
                         else:
                             sets_invalidos.append(
                                 [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
-
-        ##### MEDICAO DE VALIDACAO DE PULSO #####
-        pulso = largura_pulso(circuito, nodo, nodo_saida, vdd, atraso)
-        simulacoes_feitas += 1
 
 for nodo in nodos:
     print(nodo.nome,nodo.relacoes)
@@ -121,6 +124,7 @@ if not analise_manual:
     print("\n" + str(simulacoes_feitas) + " simulacoes feitas\n")
     escrever_csv(tabela, nodos)
 
+##### RELATORIO DE TEMPO DE EXECUCAO #####
 tempo_final = time()
 tempo_total = int(tempo_final - tempo_inicial)
 dias_de_simulacao = int(tempo_total / 86400)

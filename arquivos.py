@@ -260,8 +260,8 @@ def escrever_largura_pulso(nodo,saida,vdd):
 def ler_largura_pulso():
     with open("texto.txt","r") as larg:
         pulso_rf = larg.readline().split()
-	if pulso_rf[0][0] == "*":
-		return 0
+        if pulso_rf[0][0] == "*":
+            return 0
         pulso_rf = ajustar_valor(pulso_rf[1])
         pulso_fr = larg.readline().split()
         pulso_fr = ajustar_valor(pulso_fr[1])
