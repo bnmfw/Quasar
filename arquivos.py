@@ -37,7 +37,7 @@ def ajustar_valor(tensao):
 def escrever_csv(tabela, nodos):
     linha = 2
     with open(tabela, "w") as sets:
-        sets.write("nodo,saida,pulso,pulso,corrente,set,validacoes->\n")
+        sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
         for nodo in nodos:
             for relacao in nodo.relacoes:
                 combinacoes = []
@@ -52,8 +52,9 @@ def escrever_csv(tabela, nodos):
                     offset = 4
                 for i in range(len(combinacoes)):
                     sets.write(nodo.nome + "," + relacao[0] + "," + combinacoes[i][0] + "," + combinacoes[i][1] + ",")
-                    sets.write(
-                        str(relacao[1 + offset + 2 * i]) + "E-6,=E" + str(linha) + "*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
+                    sets.write(str(relacao[1 + offset + 2 * i]) + "E-6,=E" + str(linha))
+                    sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
+                    sets.write(str(len(relacao[2 + offset + 2 * i]))) #Numero de validacoes
                     for validacao in relacao[2 + offset + 2 * i]:
                         sets.write(",'")
                         for num in validacao:
@@ -67,6 +68,7 @@ def definir_tensao(vdd):
     with open("vdd.txt", "w") as arquivo_vdd:
         arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
         arquivo_vdd.write("Vvdd vdd gnd " + str(vdd) + "\n")
+        arquivo_vdd.write("Vvcc vcc gnd " + str(vdd) + "\n")
         arquivo_vdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
 
 #Descobre quais as entradas do circuto a partir do arquivo "fontes.txt" e retorna a lista com elas
@@ -194,6 +196,7 @@ def ler_validacao(circuito, nodos, saidas):
     with open(arq_validacao, "r") as arquivo:
         for linha in arquivo:
             linhas.append(linha)
+    atraso = float(linhas[0].split()[1]) * 10 ** -12
     for nodo in nodos:
         validacao = list()
         for linha in linhas:
@@ -218,6 +221,7 @@ def ler_validacao(circuito, nodos, saidas):
             for saida in saidas:
                 validacao.append([saida,["x","x","x","x","x"]])
         nodo.validacao = validacao
+    return atraso
 
 #Escreve informacoes no arquivo "SETs.txt"
 def ajustar_pulso(arqv_radiacao, nodo, corrente, saida, direcao_pulso_nodo):
@@ -238,9 +242,25 @@ def escrever_atraso(entrada, saida, vdd):
     with open("atraso.txt","w") as atraso:
         atraso.write("*Arquivo com atraso a ser medido\n")
         tensao = str(vdd * 0.5)
-        atraso.write(".measure tran atraso_rr TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
-        atraso.write(".measure tran atraso_rf TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
-        atraso.write(".measure tran atraso_ff TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
-        atraso.write(".measure tran atraso_fr TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
-        atraso.write(".measure tran largura TRIG v("+saida+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
+        atraso.write(".meas tran atraso_rr TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
+        atraso.write(".meas tran atraso_rf TRIG v("+entrada.nome+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
+        atraso.write(".meas tran atraso_ff TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
+        atraso.write(".meas tran atraso_fr TRIG v("+entrada.nome+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
+        atraso.write(".meas tran largura TRIG v("+saida+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
 
+#Altera o arquivo "largura_pulso.txt"
+def escrever_largura_pulso(nodo,saida,vdd):
+    with open ("largura_pulso.txt","w") as larg:
+        larg.write("*Arquivo com a leitura da lergura dos pulsos\n")
+        tensao = str(vdd*0.5)
+        larg.write(".meas tran pulso_rf TRIG v("+saida.nome+") val='"+tensao+"' rise=1 TARG v("+saida.nome+") val='"+tensao+"' fall=1\n")
+        larg.write(".meas tran pulso_fr TRIG v("+saida.nome+") val='"+tensao+"' fall=1 TARG v("+saida.nome+") val='"+tensao+"' rise=1\n")
+
+#Leitura do arquivo "leitura_pulso.txt"
+def ler_largura_pulso():
+    with open("largura-pulso.txt","r") as larg:
+        pulso_rf = larg.readline().split()
+        pulso_rf = ajustar_valor(pulso_rf[1])
+        pulso_fr = larg.readline().split()
+        pulso_fr = ajustar_valor(pulso_fr[1])
+        return (pulso_fr > 0.0)*pulso_fr + (pulso_rf > 0.0)*pulso_rf #BRANCHLESS

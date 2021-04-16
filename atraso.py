@@ -1,5 +1,5 @@
 from arquivos import escrever_atraso, definir_fontes, ler_atraso, ajustar_pulso, Entrada, Nodo
-from corrente import Verificar_Validacao
+from corrente import verificar_validacao
 import os
 
 saidas = ["g1", "g2"]

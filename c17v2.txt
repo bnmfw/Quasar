@@ -17,7 +17,6 @@ Benchmark C17 V2
 ****** Fontes de Tensão Geral ******
 
 .include vdd.txt
-Vvcc vcc gnd 0.7
 
 ****** Fontes de Sinal ******
 
@@ -73,13 +72,14 @@ Mp63 vdd i62 g2 i62 PMOS_RVT nfin=3
 Mn63 g2 i62 gnd i62 NMOS_RVT nfin=3
 
 //Representação de um circuitpos benchmark
-xff1 clk g1 q1 nq1 vdd gnd DFF
-xff2 clk g2 q2 nq2 vdd gnd DFF
+xff1 clk g1 q1 nq1 vcc gnd DFF
+xff2 clk g2 q2 nq2 vcc gnd DFF
 xinv11 vcc gnd q1 nnq1 NOT
 xinv12 vcc gnd q2 nnq2 NOT  
 
 ****** Controle ******
 
+.include largura_pulso.txt
 .include atraso.txt
 .tran 0.01n 4n
 

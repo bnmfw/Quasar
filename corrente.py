@@ -1,8 +1,8 @@
 import os
-from arquivos import ler_pulso, ajustar_pulso, definir_fontes, analise_manual
+from arquivos import ler_pulso, ajustar_pulso, definir_fontes, analise_manual, escrever_largura_pulso, ler_largura_pulso
 
 #Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
-def Verificar_Validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
+def verificar_validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
     ajustar_pulso(arqv_radiacao, nodo, 0.0, saida, direcao_pulso_nodo)
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
     tensao_pico_saida = ler_pulso(direcao_pulso_saida, 0)
@@ -30,7 +30,17 @@ def Verificar_Validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida
 
     return [True,2]
 
-def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):
+def largura_pulso(circuito, nodo, nodo_saida, vdd, atraso): ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
+    escrever_largura_pulso(nodo, nodo_saida, vdd)  # Determina os parametros no arquivo de leitura de largura de pulso
+    os.system("hspice " + circuito + " | grep \"pulso_fr\|pulso_rf\" > texto.txt")
+    largura_de_pulso = ler_largura_pulso()
+    print(atraso, largura_de_pulso)
+    if atraso < largura_de_pulso:
+        return largura_de_pulso
+    else:
+        return 1111
+
+def corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):
     radiacao = "SETs.txt"
     fontes = "fontes.txt"
 
@@ -42,7 +52,7 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
     definir_fontes(fontes, vdd, entradas)
 
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
-    analise_valida, simulacoes_feitas = Verificar_Validacao(circuito, radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd)
+    analise_valida, simulacoes_feitas = verificar_validacao(circuito, radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd)
 
     if not analise_valida:
         print("Analise invalida\n")

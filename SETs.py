@@ -16,11 +16,17 @@ def converter_binario(binario, validacao): #Converte o binario esquisito numa li
             flag += 1
     return final
 
+tempo_inicial = time()
 
-tempoInicial = time()
+##### DADOS GERAIS #####
+combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
+simulacoes_feitas = 0
+sets_validos = []
+sets_invalidos = []
 
-if analise_manual: print("----------EM ANALISE MANUAL----------")
+if analise_manual: print("-----------EM ANALISE MANUAL-----------")
 
+##### ENTRADAS #####
 circuito = raw_input("circuito a ser analisado: ")
 tabela = circuito + ".csv"
 circuito = circuito + ".txt"
@@ -31,17 +37,12 @@ saidas = saidas.split()
 entradas = ["a","b","c","d","e"]
 validacao = list()
 
-simulacoes_feitas = 0
-
-sets_validos = []
-sets_invalidos = []
-
+##### OBJETIFICACAO DOS NODOS E LEITURA DA VALIDACAO #####
 nodos = instanciar_nodos(circuito,saidas,entradas)
-
-ler_validacao(circuito,nodos,saidas)
-
+atraso = ler_validacao(circuito,nodos,saidas)
 entradas = instanciar_entradas(entradas)
 
+##### ANALISE MANUAL #####
 if analise_manual:
     pulsos = raw_input("pulsos na entrada e saida: ")
     pulso_in, pulso_out = pulsos.split()
@@ -51,49 +52,51 @@ if analise_manual:
     for i in range(len(vetor_manual)):
         vetor_manual[i] = int(vetor_manual[i])
     print("")
-    current = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, saida_manual, saida_manual, vetor_manual)
+    current = corrente(circuito, vdd, entradas, pulso_in, pulso_out, saida_manual, saida_manual, vetor_manual)
     print("Corrente final: " + str(current))
 
 for nodo in nodos:
-    #print(nodo.relacoes)
     if analise_manual: break
-    for nodo_saida in saidas:  # Determina a saida
+
+    for nodo_saida in saidas:
+
         for relacao in nodo.relacoes:
-            if relacao[0] == nodo_saida:
-                for i in range(4):
+            if relacao[0] == nodo_saida: # RODA QUANDO O NODO TEM UMA RELACAO COM A SAIDA
+
+                for i in range(4): # CRIA OS DADOS DOS SETS DE CADA RELACAO
                     relacao.append(3000)  # correntes da relacao
                     relacao.append([])  # validacoes dessa corrente
-                    #[g1,corrente,[vals],corrente,[vals],corrente,[vals],corrente,[vals]
 
-                combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
-
+                ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
                 variaveis = 0
-
-                # Descobre quantas variaveis na entrada
                 for val in nodo.validacao:
                     if val[0] == nodo_saida:
-                        validacao = list(val[1])
+                        validacao = list(val[1]) # Copia a validacao
                         for x in range(len(val[1])):
                             if val[1][x] == "x": variaveis += 1
-
                 if not variaveis: break
 
-                for k in range(2 ** variaveis):
+                for k in range(2 ** variaveis): #PASSA POR TODAS AS COMBINACOES DE ENTRADA
 
                     final = converter_binario(bin(k), validacao)
 
-                    # Realiza a combinacao de rise e fall correta para validacao escolhida
+                    ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
                     for i in range(len(combinacoes)):
+
+                        ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
                         print(nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], final)
-                        current, simulacoes = Corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,
+                        current, simulacoes = corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,
                                          nodo_saida, final)
                         simulacoes_feitas += simulacoes
-                        if current < relacao[1 + 2 * i]:
+
+                        if current < relacao[1 + 2 * i]: ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
                             relacao[1 + 2 * i] = current
                             relacao[2 + 2 * i] = [final]
-                        elif current == relacao[1 + 2 * i]:
+
+                        elif current == relacao[1 + 2 * i]: ##### SE O LETth EH IGUAL A UM JA EXISTENTE
                             relacao[2 + 2 * i].append(final)
 
+                        ##### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
                         if current < 1000:
                             sets_validos.append(
                                 [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
@@ -101,6 +104,10 @@ for nodo in nodos:
                         else:
                             sets_invalidos.append(
                                 [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
+
+        ##### MEDICAO DE VALIDACAO DE PULSO #####
+        pulso = largura_pulso(circuito, nodo, nodo_saida, vdd, atraso)
+        simulacoes_feitas += 1
 
 for nodo in nodos:
     print(nodo.nome,nodo.relacoes)
@@ -114,10 +121,13 @@ if not analise_manual:
     print("\n" + str(simulacoes_feitas) + " simulacoes feitas\n")
     escrever_csv(tabela, nodos)
 
-tempoFinal = time()
-tempoTotal = int(tempoFinal - tempoInicial)
-horasDeSimulacao = int(tempoTotal/3600)
-minutosDeSimulacao = int((tempoTotal % 3600)/60)
-if horasDeSimulacao:
-    print(str(horasDeSimulacao) + " horas, ")
-print(str(minutosDeSimulacao) + " minutos e " + str(tempoTotal % 60) + " segundos de execucao\n")
+tempo_final = time()
+tempo_total = int(tempo_final - tempo_inicial)
+dias_de_simulacao = int(tempo_total / 86400)
+horas_de_simulacao = int((tempo_total % 86400) / 3600)
+minutos_de_simulacao = int((tempo_total % 3600) / 60)
+if dias_de_simulacao:
+    print(str(dias_de_simulacao) + " dias, ")
+if horas_de_simulacao:
+    print(str(horas_de_simulacao) + " horas, ")
+print(str(minutos_de_simulacao) + " minutos e " + str(tempo_total % 60) + " segundos de execucao\n")
