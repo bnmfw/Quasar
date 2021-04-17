@@ -5,7 +5,7 @@ import os
 saidas = ["g1", "g2"]
 entradas = [Entrada("a",0),Entrada("b",0),Entrada("c",0),Entrada("d",0),Entrada("e",0)]
 vdd = 0.7
-circuito = "benchmark.txt"
+circuito = "c17v0.txt"
 maior_atraso = 0
 simulacoes_feitas = 0
 
@@ -37,12 +37,14 @@ for entrada_analisada in entradas:
             #    print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
             if atraso[0] > atraso[1]: paridade = 1
             maior_atraso = max(atraso[0 + paridade], atraso[2 + paridade])
+	    print(maior_atraso, entradas[0].sinal, entradas[1].sinal, entradas[2].sinal, entradas[3].sinal, entradas[4].sinal)
             if maior_atraso > entrada_analisada.atraso[0]:
                 entrada_analisada.atraso[0] = maior_atraso
                 entrada_analisada.atraso[1] = saida
                 entrada_analisada.atraso[1] = [entradas[0].sinal, entradas[1].sinal, entradas[2].sinal, entradas[3].sinal, entradas[4].sinal]
+	print("Atraso encontrado para " + entrada_analisada.nome + " em " + saida)
 
-    print("Fim da analise de atraso para entrada kkk " + entrada_analisada.nome + "")
+    print("Atraso encontrado para entrada " + entrada_analisada.nome + "\n")
 
 for entrada in entradas:
     print(entrada.atraso)

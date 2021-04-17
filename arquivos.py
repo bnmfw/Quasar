@@ -13,7 +13,7 @@ class Nodo():
         self.sinal = sinal  # Sinal logico (usado apenas na validacao)
         self.validacao = validacao  # Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
 
-analise_manual = False
+analise_manual = True
 
 #Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
 def ajustar_valor(tensao):
@@ -253,16 +253,16 @@ def escrever_largura_pulso(nodo,saida,vdd):
     with open ("largura_pulso.txt","w") as larg:
         larg.write("*Arquivo com a leitura da lergura dos pulsos\n")
         tensao = str(vdd*0.5)
-        larg.write(".meas tran pulso_rf TRIG v("+saida+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
-        larg.write(".meas tran pulso_fr TRIG v("+saida+") val='"+tensao+"' fall=1 TARG v("+saida+") val='"+tensao+"' rise=1\n")
+        larg.write(".meas tran pulso TRIG v("+saida+") val='"+tensao+"' rise=1 TARG v("+saida+") val='"+tensao+"' fall=1\n")
 
 #Leitura do arquivo "leitura_pulso.txt"
 def ler_largura_pulso():
     with open("texto.txt","r") as larg:
-        pulso_rf = larg.readline().split()
-        if pulso_rf[0][0] == "*":
+        pulso = larg.readline().split()
+	if analise_manual: print(pulso)
+        if pulso[0][0] == "*":
             return 0
-        pulso_rf = ajustar_valor(pulso_rf[1])
-        pulso_fr = larg.readline().split()
-        pulso_fr = ajustar_valor(pulso_fr[1])
-        return (pulso_fr > 0.0)*pulso_fr + (pulso_rf > 0.0)*pulso_rf #BRANCHLESS
+	if "-" in pulso[0]:
+	    pulso = pulso[0].split("-")
+        pulso = ajustar_valor(pulso[1])
+        return pulso

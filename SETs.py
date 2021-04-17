@@ -44,17 +44,19 @@ entradas = instanciar_entradas(entradas)
 
 ##### ANALISE MANUAL #####
 if analise_manual:
+    nodos_analise = raw_input("nodo e saida analisados: ")
     pulsos = raw_input("pulsos na entrada e saida: ")
     pulso_in, pulso_out = pulsos.split()
-    nodos_analise = raw_input("nodo e saida analisados: ")
     nodo_manual, saida_manual = nodos_analise.split()
     vetor_manual = raw_input("vetor analisado: ").split()
     for i in range(len(vetor_manual)):
         vetor_manual[i] = int(vetor_manual[i])
     print("")
-    current = corrente(circuito, vdd, entradas, pulso_in, pulso_out, saida_manual, saida_manual, vetor_manual)
+    current = corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual, vetor_manual)
     print("Corrente final: " + str(current))
+    pulso = largura_pulso(circuito, nodo_manual, saida_manual, vdd, atraso)
 
+##### BUSCA DO LETth DO CIRCUITO #####
 for nodo in nodos:
     if analise_manual: break
 
@@ -97,11 +99,14 @@ for nodo in nodos:
                             relacao[2 + 2 * i].append(final)
 
                         ##### VALIDACAO DE LARGURA DE PULSO #####
-                        pulso = largura_pulso(circuito, nodo, nodo_saida, vdd, atraso)
-                        simulacoes_feitas += 1
-                        if pulso == 4444:
-                            print("Corrente Invalidada por Lagura de Pulso")
-                            current = 4444 #Invalida corrente de pulso muito pequeno
+                        if current < 1000:
+			    pulso = largura_pulso(circuito, nodo, nodo_saida, vdd, atraso)
+                            simulacoes_feitas += 1
+                            if pulso == 4444:
+                                print("Corrente invalidada por lagura de pulso\n")
+                                current = 4444 #Invalida corrente de pulso muito pequeno
+			    else:
+				print("Corrente validada\n")
 
                         ##### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
                         if current < 1000:
@@ -112,13 +117,18 @@ for nodo in nodos:
                             sets_invalidos.append(
                                 [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
 
-for nodo in nodos:
-    print(nodo.nome,nodo.relacoes)
+##### RELATORIOS #####
 
 if not analise_manual:
+
     for sets in sets_validos: print(sets)
     print("\n")
     for sets in sets_invalidos: print(sets)
+
+    print("\n1111-SET invalidado em analise de tensao")
+    print("2222-SET invalidado em analise de pulso")
+    print("3333-SET Passou validacoes anteriores mas foi mal concluido")
+    print("4444-SET invalidado em validacao de largura de pulso")
 
     # Retorno do numero de simulacoes feitas e de tempo de execucao
     print("\n" + str(simulacoes_feitas) + " simulacoes feitas\n")
