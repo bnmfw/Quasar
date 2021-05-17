@@ -27,15 +27,19 @@ sets_invalidos = []
 
 if analise_manual: print("-----------EM ANALISE MANUAL-----------")
 
+def raw_input(key):
+    return(input(key))
+
 ##### ENTRADAS #####
 circuito = raw_input("circuito a ser analisado: ")
 tabela = circuito + ".csv"
 circuito = circuito + ".txt"
 vdd = float(input("vdd: "))
 definir_tensao(vdd)
-saidas = raw_input("saidas analisadas: ")
+saidas = raw_input("saidas analisadas: ").split()
 lista_auxiliar = []
 for saida in saidas:
+    print(saida)
     lista_auxiliar.append(Nodo(saida))
 saidas = lista_auxiliar
 entradas = ["a", "b", "c", "d", "e"]
@@ -69,14 +73,14 @@ for nodo in nodos:
     for saida in saidas:
         ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
         variaveis = 0
-	print(nodo.validacao)
+        print(nodo.validacao)
         for val in nodo.validacao:
             if val[0] == saida:
                 validacao = list(val[1])  # Copia a validacao
                 for x in range(len(val[1])):
                     if val[1][x] == "x": variaveis += 1
-        #print(variaveis)
-	if not variaveis: break
+        # print(variaveis)
+        if not variaveis: break
 
         for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
 
@@ -90,7 +94,7 @@ for nodo in nodos:
                                                nodo, saida, final)
                 simulacoes_feitas += simulacoes
 
-                chave = combinacao[0][0]+combinacao[1][0] # Faz coisa tipo ["rise","fall"] virar "rf"
+                chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
                 if current < nodo.LETth[saida.nome][chave][0]:  ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
                     nodo.LETth[saida.nome][chave][0] = current
                     nodo.LETth[saida.nome][chave][1] = [final]
