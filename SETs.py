@@ -52,9 +52,8 @@ if analise_manual:
     for i in range(len(vetor_manual)):
         vetor_manual[i] = int(vetor_manual[i])
     print("")
-    current = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual, vetor_manual)
+    current = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_em_analise, saida_manual, vetor_manual)
     print("Corrente final: " + str(nodo_em_analise.LETth[saida_manual]))
-
     # pulso = largura_pulso(circuito, nodo_manual, saida_manual, vdd, atraso)
 
 ##### BUSCA DO LETth DO CIRCUITO #####

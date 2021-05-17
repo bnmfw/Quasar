@@ -227,7 +227,8 @@ def ler_validacao(circuito, nodos, saidas):
 
 #Escreve informacoes no arquivo "SETs.txt"
 def ajustar_pulso(arqv_radiacao, nodo, corrente, saida, direcao_pulso_nodo):
-    saida = saida.nome
+    #saida = saida.nome
+    nodo = nodo.nome
     with open(arqv_radiacao, "w") as sets:
         sets.write("*SETs para serem usados nos benchmarks\n")
         if direcao_pulso_nodo == "fall": sets.write("*")
