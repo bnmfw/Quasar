@@ -16,7 +16,7 @@ class Nodo():
         self.validacao = validacao  # Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
         self.LETth = {}
 
-analise_manual = True
+analise_manual = False
 
 #Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
 def ajustar_valor(tensao):
@@ -42,18 +42,19 @@ def escrever_csv(tabela, nodos):
     with open(tabela, "w") as sets:
         sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
         for nodo in nodos:
-            for saida,combinacao in zip(nodo.LETth, [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]):
-                if nodo.LETth[saida][0] < 1111:
-                    sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
-                    sets.write(str(nodo.LETth[saida][0]) + "E-6,=E" + str(linha))
-                    sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
-                    sets.write(str(len(nodo.LETth[saida][1]))) #Numero de validacoes
-                    for validacao in nodo.LETth[saida][1]:
-                        sets.write(",'")
-                        for num in validacao:
-                            sets.write(str(num))
-                    sets.write("\n")
-                    linha += 1
+            for saida in nodo.LETth:
+		for orientacao, combinacao in zip(saida, [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]):
+                    if orientacao[0] < 1111:
+                        sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
+                        sets.write(str(orientacao[0]) + "E-6,=E" + str(linha))
+                        sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
+                        sets.write(str(len(orientacao[1]))) #Numero de validacoes
+                        for validacao in orientacao[1]:
+                            sets.write(",'")
+                            for num in validacao:
+                                sets.write(str(num))
+                        sets.write("\n")
+                        linha += 1
     print("Tabela "+tabela+" gerada com sucesso\n")
 
 #Escreve informacoes no arquivo "vdd.txt"
@@ -82,7 +83,7 @@ def instanciar_nodos(circuito, saidas):
                 transistor, coletor, base, emissor, bulk, modelo, nfin = linha.split()
                 nodos_analisaveis = [coletor, base, emissor]
                 for nodo in nodos_analisaveis:
-                    if nodo not in ["vdd","gnd", *nodos_nomes, *ignorados]:
+                    if nodo not in ["vdd","gnd"] and nodo not in nodos_nomes and nodo not in ignorados:
                         nodo = Nodo(nodo)
                         nodos_nomes.append(nodo)
                         for saida in saidas:
@@ -184,22 +185,23 @@ def ler_validacao(circuito, nodos, saidas):
             if nome == nodo.nome:
                 sinais_de_entrada = resto.split()
                 for saida in saidas:
-                    sinais_de_entrada.remove(saida)
+		    print(sinais_de_entrada, saida.nome)
+                    sinais_de_entrada.remove(saida.nome)
                 sinais_de_entrada_1 = sinais_de_entrada[:5]
                 for i in range(len(sinais_de_entrada_1)):
                     try: sinais_de_entrada_1[i] = int(sinais_de_entrada_1[i])
                     except: pass
-                validacao.append([saidas[0], sinais_de_entrada_1])
+                validacao.append([saidas[0].nome, sinais_de_entrada_1])
                 sinais_de_entrada_2 = sinais_de_entrada[-5:]
                 #Conversao de string pra inteiro
                 for i in range(len(sinais_de_entrada_2)):
                     try: sinais_de_entrada_2[i] = int(sinais_de_entrada_2[i])
                     except: pass
-                validacao.append([saidas[1], sinais_de_entrada_2])
+                validacao.append([saidas[1].nome, sinais_de_entrada_2])
                 break
         if not len(validacao):
             for saida in saidas:
-                validacao.append([saida,["x","x","x","x","x"]])
+                validacao.append([saida.nome,["x","x","x","x","x"]])
         nodo.validacao = validacao
     return atraso
 

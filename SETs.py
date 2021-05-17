@@ -43,7 +43,7 @@ validacao = list()
 
 ##### OBJETIFICACAO DOS NODOS E LEITURA DA VALIDACAO #####
 nodos = instanciar_nodos(circuito, saidas)
-#atraso = ler_validacao(circuito, nodos, saidas)
+atraso = ler_validacao(circuito, nodos, saidas)
 entradas = instanciar_entradas(entradas)
 
 ##### ANALISE MANUAL #####
@@ -69,17 +69,18 @@ for nodo in nodos:
     for saida in saidas:
         ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
         variaveis = 0
+	print(nodo.validacao)
         for val in nodo.validacao:
             if val[0] == saida:
                 validacao = list(val[1])  # Copia a validacao
                 for x in range(len(val[1])):
                     if val[1][x] == "x": variaveis += 1
-        if not variaveis: break
+        #print(variaveis)
+	if not variaveis: break
 
         for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
 
             final = converter_binario(bin(k), validacao)
-
             ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
             for combinacao in combinacoes:
 
