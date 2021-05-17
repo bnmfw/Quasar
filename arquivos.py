@@ -42,23 +42,13 @@ def escrever_csv(tabela, nodos):
     with open(tabela, "w") as sets:
         sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
         for nodo in nodos:
-            for relacao in nodo.relacoes:
-                combinacoes = []
-                offset = 0
-                # identifica a relacao do nodo com a saida
-                if relacao[5] < 1111 and relacao[1] < 1111:
-                    combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
-                elif relacao[1] < 1111:
-                    combinacoes = [["rise", "rise"], ["fall", "fall"]]
-                elif relacao[5] < 1111:
-                    combinacoes = [["rise", "fall"], ["fall", "rise"]]
-                    offset = 4
-                for i in range(len(combinacoes)):
-                    sets.write(nodo.nome + "," + relacao[0] + "," + combinacoes[i][0] + "," + combinacoes[i][1] + ",")
-                    sets.write(str(relacao[1 + offset + 2 * i]) + "E-6,=E" + str(linha))
+            for saida,combinacao in zip(nodo.LETth, [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]):
+                if nodo.LETth[saida][0] < 1111:
+                    sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
+                    sets.write(str(nodo.LETth[saida][0]) + "E-6,=E" + str(linha))
                     sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
-                    sets.write(str(len(relacao[2 + offset + 2 * i]))) #Numero de validacoes
-                    for validacao in relacao[2 + offset + 2 * i]:
+                    sets.write(str(len(nodo.LETth[saida][1]))) #Numero de validacoes
+                    for validacao in nodo.LETth[saida][1]:
                         sets.write(",'")
                         for num in validacao:
                             sets.write(str(num))
@@ -82,33 +72,21 @@ def instanciar_entradas(entradas):
     return novas_entradas
 
 #Descobre quais os nodos nao do circuito a partir de um arquivo "circuito.txt"
-def instanciar_nodos(circuito, saidas, entradas):
+def instanciar_nodos(circuito, saidas):
     nodos = list()
     nodos_nomes = list()
-    inputs = list()
-    for entrada in entradas:
-        inputs.append(entrada)
-        inputs.append("ta")
-        inputs.append("tb")
-        inputs.append("tc")
-        inputs.append("td")
-        inputs.append("te")
-        inputs.append("fa")
-        inputs.append("fb")
-        inputs.append("fc")
-        inputs.append("fd")
-        inputs.append("fe")
+    ignorados = ["ta", "tb", "tc", "td", "te", "fa", "fb", "fc", "fd", "fe"]
     with open(circuito, "r") as circ:
         for linha in circ:
             if "M" in linha:
                 transistor, coletor, base, emissor, bulk, modelo, nfin = linha.split()
-                nodos_interessantes = [coletor, base, emissor]
-                for nodo_interessante in nodos_interessantes:
-                    if nodo_interessante not in nodos_nomes and nodo_interessante not in ["vdd","gnd"] and nodo_interessante not in inputs:
-                        nodo = Nodo(nodo_interessante)
-                        nodos_nomes.append(nodo_interessante)
-                        for output in saidas:
-                            nodo.relacoes.append([output])
+                nodos_analisaveis = [coletor, base, emissor]
+                for nodo in nodos_analisaveis:
+                    if nodo not in ["vdd","gnd", *nodos_nomes, *ignorados]:
+                        nodo = Nodo(nodo)
+                        nodos_nomes.append(nodo)
+                        for saida in saidas:
+                            nodo.LETth[saida.nome] = {"rr":[9999,[]],"rf":[9999,[]],"fr":[9999,[]],"ff":[9999,[]]}
                         nodos.append(nodo)
     return nodos
 

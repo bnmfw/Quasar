@@ -2,7 +2,8 @@ from corrente import *
 from arquivos import *
 from time import time
 
-def converter_binario(binario, validacao): #Converte o binario esquisito numa lista
+
+def converter_binario(binario, validacao):  # Converte o binario esquisito numa lista
     final = list(validacao)
     flag = 0
     binary = list()
@@ -14,6 +15,7 @@ def converter_binario(binario, validacao): #Converte o binario esquisito numa li
             final[i] = binary[flag]
             flag += 1
     return final
+
 
 tempo_inicial = time()
 
@@ -32,13 +34,16 @@ circuito = circuito + ".txt"
 vdd = float(input("vdd: "))
 definir_tensao(vdd)
 saidas = raw_input("saidas analisadas: ")
-saidas = saidas.split()
-entradas = ["a","b","c","d","e"]
+lista_auxiliar = []
+for saida in saidas:
+    lista_auxiliar.append(Nodo(saida))
+saidas = lista_auxiliar
+entradas = ["a", "b", "c", "d", "e"]
 validacao = list()
 
 ##### OBJETIFICACAO DOS NODOS E LEITURA DA VALIDACAO #####
-nodos = instanciar_nodos(circuito,saidas,entradas)
-atraso = ler_validacao(circuito,nodos,saidas)
+nodos = instanciar_nodos(circuito, saidas)
+#atraso = ler_validacao(circuito, nodos, saidas)
 entradas = instanciar_entradas(entradas)
 
 ##### ANALISE MANUAL #####
@@ -61,62 +66,55 @@ if analise_manual:
 for nodo in nodos:
     if analise_manual: break
 
-    for nodo_saida in saidas:
+    for saida in saidas:
+        ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
+        variaveis = 0
+        for val in nodo.validacao:
+            if val[0] == saida:
+                validacao = list(val[1])  # Copia a validacao
+                for x in range(len(val[1])):
+                    if val[1][x] == "x": variaveis += 1
+        if not variaveis: break
 
-        for relacao in nodo.relacoes:
-            if relacao[0] == nodo_saida: # RODA QUANDO O NODO TEM UMA RELACAO COM A SAIDA
+        for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
 
-                for i in range(4): # CRIA OS DADOS DOS SETS DE CADA RELACAO
-                    relacao.append(3000)  # correntes da relacao
-                    relacao.append([])  # validacoes dessa corrente
+            final = converter_binario(bin(k), validacao)
 
-                ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
-                variaveis = 0
-                for val in nodo.validacao:
-                    if val[0] == nodo_saida:
-                        validacao = list(val[1]) # Copia a validacao
-                        for x in range(len(val[1])):
-                            if val[1][x] == "x": variaveis += 1
-                if not variaveis: break
+            ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
+            for combinacao in combinacoes:
 
-                for k in range(2 ** variaveis): #PASSA POR TODAS AS COMBINACOES DE ENTRADA
+                ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
+                print(nodo.nome, saida, combinacao[0], combinacao[1], final)
+                current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1],
+                                               nodo, saida, final)
+                simulacoes_feitas += simulacoes
 
-                    final = converter_binario(bin(k), validacao)
+                chave = combinacao[0][0]+combinacao[1][0] # Faz coisa tipo ["rise","fall"] virar "rf"
+                if current < nodo.LETth[saida.nome][chave][0]:  ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
+                    nodo.LETth[saida.nome][chave][0] = current
+                    nodo.LETth[saida.nome][chave][1] = [final]
 
-                    ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
-                    for i in range(len(combinacoes)):
+                elif current == nodo.LETth[saida.nome][chave][0]:  ##### SE O LETth EH IGUAL A UM JA EXISTENTE
+                    nodo.LETth[saida.nome][chave][1].append(final)
 
-                        ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
-                        print(nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], final)
-                        current, simulacoes = Corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,
-                                                       nodo_saida, final)
-                        simulacoes_feitas += simulacoes
+                ##### VALIDACAO DE LARGURA DE PULSO #####
+                # if current < 1000:
+                #     pulso = largura_pulso(circuito, nodo, saida, vdd, atraso)
+                #     simulacoes_feitas += 1
+                #     if pulso == 4444:
+                #         print("Corrente invalidada por lagura de pulso\n")
+                #         current = 4444  # Invalida corrente de pulso muito pequeno
+                #     else:
+                #         print("Corrente validada\n")
 
-                        if current < relacao[1 + 2 * i]: ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
-                            relacao[1 + 2 * i] = current
-                            relacao[2 + 2 * i] = [final]
-
-                        elif current == relacao[1 + 2 * i]: ##### SE O LETth EH IGUAL A UM JA EXISTENTE
-                            relacao[2 + 2 * i].append(final)
-
-                        ##### VALIDACAO DE LARGURA DE PULSO #####
-                        if current < 1000:
-			    pulso = largura_pulso(circuito, nodo, nodo_saida, vdd, atraso)
-                            simulacoes_feitas += 1
-                            if pulso == 4444:
-                                print("Corrente invalidada por lagura de pulso\n")
-                                current = 4444 #Invalida corrente de pulso muito pequeno
-			    else:
-				print("Corrente validada\n")
-
-                        ##### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
-                        if current < 1000:
-                            sets_validos.append(
-                                [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
-                            break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
-                        else:
-                            sets_invalidos.append(
-                                [nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], current, final])
+                ##### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
+                if current < 1000:
+                    sets_validos.append(
+                        [nodo.nome, saida, combinacao[0], combinacoes[i][1], current, final])
+                    break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
+                else:
+                    sets_invalidos.append(
+                        [nodo.nome, saida, combinacao[0], combinacoes[i][1], current, final])
 
 ##### RELATORIOS #####
 
