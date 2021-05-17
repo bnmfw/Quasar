@@ -37,12 +37,12 @@ for entrada_analisada in entradas:
             #    print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
             if atraso[0] > atraso[1]: paridade = 1
             maior_atraso = max(atraso[0 + paridade], atraso[2 + paridade])
-	    print(maior_atraso, entradas[0].sinal, entradas[1].sinal, entradas[2].sinal, entradas[3].sinal, entradas[4].sinal)
+            print(maior_atraso, entradas[0].sinal, entradas[1].sinal, entradas[2].sinal, entradas[3].sinal, entradas[4].sinal)
             if maior_atraso > entrada_analisada.atraso[0]:
                 entrada_analisada.atraso[0] = maior_atraso
                 entrada_analisada.atraso[1] = saida
                 entrada_analisada.atraso[1] = [entradas[0].sinal, entradas[1].sinal, entradas[2].sinal, entradas[3].sinal, entradas[4].sinal]
-	print("Atraso encontrado para " + entrada_analisada.nome + " em " + saida)
+        print("Atraso encontrado para " + entrada_analisada.nome + " em " + saida)
 
     print("Atraso encontrado para entrada " + entrada_analisada.nome + "\n")
 

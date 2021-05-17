@@ -5,13 +5,16 @@ class Entrada():
         self.atraso = [0,"saida.nome",["Vetor de validacao"]]
 
 class Nodo():
-    def __init__(self, nome, entradas, logica, relacoes, sinal, validacao):
+    def __init__(self, nome, entradas = None, logica = None, relacoes = None, sinal = None, validacao = None):
+        if validacao == None: validacao = []
+        if relacoes == None: relacoes = []
         self.nome = nome
         self.entradas = entradas  # Lista de objetos
         self.logica = logica  # Logica da porta que o tem como saida
         self.relacoes = relacoes  # Tipo de relacao com cada saida: inv, dir, nao, com
         self.sinal = sinal  # Sinal logico (usado apenas na validacao)
         self.validacao = validacao  # Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
+        self.LETth = {}
 
 analise_manual = True
 
@@ -102,7 +105,7 @@ def instanciar_nodos(circuito, saidas, entradas):
                 nodos_interessantes = [coletor, base, emissor]
                 for nodo_interessante in nodos_interessantes:
                     if nodo_interessante not in nodos_nomes and nodo_interessante not in ["vdd","gnd"] and nodo_interessante not in inputs:
-                        nodo = Nodo(nodo_interessante, "ignorado", "ignorado", [], [], [])
+                        nodo = Nodo(nodo_interessante)
                         nodos_nomes.append(nodo_interessante)
                         for output in saidas:
                             nodo.relacoes.append([output])
@@ -169,7 +172,6 @@ def ler_atraso(vdd):
     texto = "texto.txt"
     linhas_de_atraso = list()
     atrasos = list() #0 rr, 1 rf, 2 ff, 3 fr
-    largura_pulso_saida = "0"
     with open(texto,"r") as text:
         #Leitura das 4 linhas com atraso
         for i in range(4):
@@ -225,6 +227,7 @@ def ler_validacao(circuito, nodos, saidas):
 
 #Escreve informacoes no arquivo "SETs.txt"
 def ajustar_pulso(arqv_radiacao, nodo, corrente, saida, direcao_pulso_nodo):
+    saida = saida.nome
     with open(arqv_radiacao, "w") as sets:
         sets.write("*SETs para serem usados nos benchmarks\n")
         if direcao_pulso_nodo == "fall": sets.write("*")
@@ -259,10 +262,10 @@ def escrever_largura_pulso(nodo,saida,vdd):
 def ler_largura_pulso():
     with open("texto.txt","r") as larg:
         pulso = larg.readline().split()
-	if analise_manual: print(pulso)
-        if pulso[0][0] == "*":
+    if analise_manual: print(pulso)
+    if pulso[0][0] == "*":
             return 0
-	if "-" in pulso[0]:
-	    pulso = pulso[0].split("-")
+    if "-" in pulso[0]:
+        pulso = pulso[0].split("-")
         pulso = ajustar_valor(pulso[1])
         return pulso

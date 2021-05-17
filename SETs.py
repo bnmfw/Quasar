@@ -1,4 +1,3 @@
-from param import *
 from corrente import *
 from arquivos import *
 from time import time
@@ -48,13 +47,15 @@ if analise_manual:
     pulsos = raw_input("pulsos na entrada e saida: ")
     pulso_in, pulso_out = pulsos.split()
     nodo_manual, saida_manual = nodos_analise.split()
+    nodo_em_analise = Nodo(nodo_manual)
     vetor_manual = raw_input("vetor analisado: ").split()
     for i in range(len(vetor_manual)):
         vetor_manual[i] = int(vetor_manual[i])
     print("")
-    current = corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual, vetor_manual)
-    print("Corrente final: " + str(current))
-    pulso = largura_pulso(circuito, nodo_manual, saida_manual, vdd, atraso)
+    current = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual, vetor_manual)
+    print("Corrente final: " + str(nodo_em_analise.LETth[saida_manual]))
+
+    # pulso = largura_pulso(circuito, nodo_manual, saida_manual, vdd, atraso)
 
 ##### BUSCA DO LETth DO CIRCUITO #####
 for nodo in nodos:
@@ -87,8 +88,8 @@ for nodo in nodos:
 
                         ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
                         print(nodo.nome, nodo_saida, combinacoes[i][0], combinacoes[i][1], final)
-                        current, simulacoes = corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,
-                                         nodo_saida, final)
+                        current, simulacoes = Corrente(circuito, vdd, entradas, combinacoes[i][0], combinacoes[i][1], nodo.nome,
+                                                       nodo_saida, final)
                         simulacoes_feitas += simulacoes
 
                         if current < relacao[1 + 2 * i]: ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
