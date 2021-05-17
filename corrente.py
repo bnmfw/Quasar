@@ -65,11 +65,9 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
     for i in range(len(entradas)):
         entradas[i].sinal = validacao[i]
     definir_fontes(fontes, vdd, entradas)
-
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
     analise_valida, simulacoes_feitas = verificar_validacao(circuito, radiacao, nodo, direcao_pulso_nodo, saida,
                                                             direcao_pulso_saida, vdd)
-
     if not analise_valida:
         print("Analise invalida\n")
         if simulacoes_feitas == 1:
@@ -87,7 +85,7 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
     corrente_inf = 0
 
     # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
-    ajustar_pulso(radiacao, nodo, corrente, saida.nome, direcao_pulso_nodo)
+    ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
 
     while not ((1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2):
 

@@ -47,13 +47,14 @@ if analise_manual:
     pulsos = raw_input("pulsos na entrada e saida: ")
     pulso_in, pulso_out = pulsos.split()
     nodo_manual, saida_manual = nodos_analise.split()
-    nodo_em_analise = Nodo(nodo_manual)
+    nodo_manual = Nodo(nodo_manual)
+    saida_manual = Nodo(saida_manual)
     vetor_manual = raw_input("vetor analisado: ").split()
     for i in range(len(vetor_manual)):
         vetor_manual[i] = int(vetor_manual[i])
     print("")
-    current = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_em_analise, saida_manual, vetor_manual)
-    print("Corrente final: " + str(nodo_em_analise.LETth[saida_manual]))
+    current = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual, vetor_manual)
+    print("Corrente final: " + str(nodo_manual.LETth[saida_manual.nome]))
     # pulso = largura_pulso(circuito, nodo_manual, saida_manual, vdd, atraso)
 
 ##### BUSCA DO LETth DO CIRCUITO #####

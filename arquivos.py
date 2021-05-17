@@ -227,19 +227,17 @@ def ler_validacao(circuito, nodos, saidas):
 
 #Escreve informacoes no arquivo "SETs.txt"
 def ajustar_pulso(arqv_radiacao, nodo, corrente, saida, direcao_pulso_nodo):
-    #saida = saida.nome
-    nodo = nodo.nome
     with open(arqv_radiacao, "w") as sets:
         sets.write("*SETs para serem usados nos benchmarks\n")
         if direcao_pulso_nodo == "fall": sets.write("*")
-        sets.write("Iseu gnd " + nodo + " EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //rise\n")
+        sets.write("Iseu gnd " + nodo.nome + " EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //rise\n")
         if direcao_pulso_nodo == "rise": sets.write("*")
-        sets.write("Iseu " + nodo + " gnd EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //fall\n")
-        sets.write(".meas tran minout min V(" + saida + ") from=1.0n to=4.0n\n")
-        sets.write(".meas tran maxout max V(" + saida + ") from=1.0n to=4.0n\n")
+        sets.write("Iseu " + nodo.nome + " gnd EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //fall\n")
+        sets.write(".meas tran minout min V(" + saida.nome + ") from=1.0n to=4.0n\n")
+        sets.write(".meas tran maxout max V(" + saida.nome + ") from=1.0n to=4.0n\n")
         # Usado apenas na verificacao de validacao:
-        sets.write(".meas tran minnod min V(" + nodo + ") from=1.0n to=4.0n\n")
-        sets.write(".meas tran maxnod max V(" + nodo + ") from=1.0n to=4.0n\n")
+        sets.write(".meas tran minnod min V(" + nodo.nome + ") from=1.0n to=4.0n\n")
+        sets.write(".meas tran maxnod max V(" + nodo.nome + ") from=1.0n to=4.0n\n")
 
 #Altera o arquivo "atraso.txt"
 def escrever_atraso(entrada, saida, vdd):
