@@ -93,7 +93,7 @@ def instanciar_nodos(circuito, saidas):
                 for nodo in nodos_analisaveis:
                     if nodo not in ["vdd", "gnd"] and nodo not in nodos_nomes and nodo not in ignorados:
                         nodo = Nodo(nodo)
-                        nodos_nomes.append(nodo)
+                        nodos_nomes.append(nodo.nome)
                         for saida in saidas:
                             nodo.LETth[saida.nome] = {"rr": [9999, []], "rf": [9999, []], "fr": [9999, []],
                                                       "ff": [9999, []]}

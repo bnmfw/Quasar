@@ -27,8 +27,8 @@ sets_invalidos = []
 
 if analise_manual: print("-----------EM ANALISE MANUAL-----------")
 
-def raw_input(key):
-    return(input(key))
+#def raw_input(key):
+#    return(input(key))
 
 ##### ENTRADAS #####
 circuito = raw_input("circuito a ser analisado: ")
@@ -39,7 +39,6 @@ definir_tensao(vdd)
 saidas = raw_input("saidas analisadas: ").split()
 lista_auxiliar = []
 for saida in saidas:
-    print(saida)
     lista_auxiliar.append(Nodo(saida))
 saidas = lista_auxiliar
 entradas = ["a", "b", "c", "d", "e"]
@@ -73,13 +72,13 @@ for nodo in nodos:
     for saida in saidas:
         ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
         variaveis = 0
-        print(nodo.validacao)
         for val in nodo.validacao:
-            if val[0] == saida:
+            if val[0] == saida.nome:
                 validacao = list(val[1])  # Copia a validacao
                 for x in range(len(val[1])):
                     if val[1][x] == "x": variaveis += 1
         # print(variaveis)
+	print(variaveis)
         if not variaveis: break
 
         for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
@@ -89,9 +88,8 @@ for nodo in nodos:
             for combinacao in combinacoes:
 
                 ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
-                print(nodo.nome, saida, combinacao[0], combinacao[1], final)
-                current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1],
-                                               nodo, saida, final)
+                print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
+                current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1], nodo, saida, final)
                 simulacoes_feitas += simulacoes
 
                 chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
@@ -115,11 +113,11 @@ for nodo in nodos:
                 ##### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
                 if current < 1000:
                     sets_validos.append(
-                        [nodo.nome, saida, combinacao[0], combinacoes[i][1], current, final])
+                        [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
                     break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
                 else:
                     sets_invalidos.append(
-                        [nodo.nome, saida, combinacao[0], combinacoes[i][1], current, final])
+                        [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
 
 ##### RELATORIOS #####
 

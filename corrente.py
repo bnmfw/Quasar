@@ -70,12 +70,7 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
                                                             direcao_pulso_saida, vdd)
     if not analise_valida:
         print("Analise invalida\n")
-        if simulacoes_feitas == 1:
-            nodo.LETth[saida.nome] = 1111
-            return simulacoes_feitas
-        else:
-            nodo.LETth[saida.nome] = 2222
-            return simulacoes_feitas
+        return [1111 * simulacoes_feitas, simulacoes_feitas]
 
     tensao_pico = 0
 
@@ -103,11 +98,10 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
         if simulacoes_feitas >= 25:
             if 1 < corrente < 499:
                 print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
-                nodo.LETth[saida.nome] = corrente
+                return[3333, simulacoes_feitas]
             else:
                 print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
-                nodo.LETth[saida.nome] = corrente
-            return simulacoes_feitas
+                return[corrente, simulacoes_feitas]
 
         # Busca binaria
         elif direcao_pulso_saida == "fall":
@@ -115,15 +109,13 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
             elif tensao_pico >= (1 + precisao) * vdd / 2: corrente_inf = corrente
             else:
                 print("Corrente encontrada com sucesso\n")
-                nodo.LETth[saida.nome] = corrente
-                return simulacoes_feitas
+                return [corrente,simulacoes_feitas]
         elif direcao_pulso_saida == "rise":
             if tensao_pico <= (1 - precisao) * vdd / 2: corrente_inf = corrente
             elif tensao_pico >= (1 + precisao) * vdd / 2: corrente_sup = corrente
             else:
                 print("Corrente encontrada com sucesso\n")
-                nodo.LETth[saida.nome] = corrente
-                return simulacoes_feitas
+                return [corrente, simulacoes_feitas]
 
         corrente = float((corrente_sup + corrente_inf) / 2)
 
