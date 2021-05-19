@@ -141,10 +141,10 @@ if not analise_manual:
     for nodo in nodos:
         # print(nodo.nome)
         for saida in nodo.LETth:
-            pass
-            print(saida, nodo.LETth[saida])
+            #print(saida, nodo.LETth[saida])
             for orientacao in nodo.LETth[saida]:
-                print(orientacao)
+                pass
+		#print(orientacao)
     escrever_csv(tabela, nodos)
 
 ##### RELATORIO DE TEMPO DE EXECUCAO #####

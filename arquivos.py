@@ -53,7 +53,7 @@ def escrever_csv(tabela, nodos):
                     if nodo.LETth[saida][comb][0] < 1111:
                         sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
                         sets.write(str(nodo.LETth[saida][comb][0]) + "E-6,=E" + str(linha))
-                        sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
+                        sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021),")
                         sets.write(str(len(nodo.LETth[saida][comb][1])))  # Numero de validacoes
                         for validacao in nodo.LETth[saida][comb][1]:
                             sets.write(",'")
