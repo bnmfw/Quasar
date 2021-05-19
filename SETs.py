@@ -134,6 +134,12 @@ if not analise_manual:
 
     # Retorno do numero de simulacoes feitas e de tempo de execucao
     print("\n" + str(simulacoes_feitas) + " simulacoes feitas\n")
+    for nodo in nodos:
+	print(nodo.nome)
+	for saida in nodo.LETth:
+	    print(saida, nodo.LETth[saida])
+	    #for orientacao in nodo.LETth[saida]:	
+	    #	print(orientacao)
     escrever_csv(tabela, nodos)
 
 ##### RELATORIO DE TEMPO DE EXECUCAO #####

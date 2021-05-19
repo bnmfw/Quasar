@@ -46,18 +46,18 @@ def escrever_csv(tabela, nodos):
     with open(tabela, "w") as sets:
         sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
         for nodo in nodos:
-            for saida in nodo.LETth:
-                for orientacao, combinacao in zip(saida, [["rise", "rise"], ["fall", "fall"], ["rise", "fall"],
-                                                          ["fall", "rise"]]):
-                    if orientacao[0] < 1111:
-                        sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
-                        sets.write(str(orientacao[0]) + "E-6,=E" + str(linha))
-                        sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
-                        sets.write(str(len(orientacao[1])))  # Numero de validacoes
-                        for validacao in orientacao[1]:
+	    for saida in nodo.LETth:
+                for comb, combinacao in zip(["rr","ff","rf","ff"], [["rise","rise"],["fall","fall"],["rise","fall"],["fall","fall"]]):
+                    print(saida, comb, nodo.LETth[saida])
+		    if nodo.LETth[saida][comb][0] < 1111:
+                    	sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
+                    	sets.write(str(nodo.LETth[saida][comb][0]) + "E-6,=E" + str(linha))
+                    	sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
+                    	sets.write(str(len(nodo.LETth[saida][comb][1])))  # Numero de validacoes
+                    	for validacao in nodo.LETth[saida][comb][1]:
                             sets.write(",'")
                             for num in validacao:
-                                sets.write(str(num))
+                            	sets.write(str(num))
                         sets.write("\n")
                         linha += 1
     print("Tabela " + tabela + " gerada com sucesso\n")
