@@ -27,8 +27,8 @@ sets_invalidos = []
 
 if analise_manual: print("-----------EM ANALISE MANUAL-----------")
 
-def raw_input(key):
-   return(input(key))
+#def raw_input(key):
+#   return(input(key))
 
 ##### ENTRADAS #####
 circuito = raw_input("circuito a ser analisado: ")
@@ -67,19 +67,22 @@ if analise_manual:
 
 ##### BUSCA DO LETth DO CIRCUITO #####
 for nodo in nodos:
-    print(nodo.validacao)
+    #print(nodo.validacao)
     if analise_manual: break
 
     for saida in saidas:
         ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
         variaveis = 0
+	print("Nodo:", nodo.nome)
+	print(saida.nome)
+	print(nodo.validacao)
         val = list(nodo.validacao[saida.nome])
         print(val)
         for x in range(len(val)):
             if val[x] == "x": variaveis += 1
         # print(variaveis)
         print(variaveis)
-        if not variaveis: break
+        if variaveis:
 
         for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
 
@@ -89,17 +92,17 @@ for nodo in nodos:
 
                 ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
                 print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
-                current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1], nodo, saida,
-                                               final)
-                simulacoes_feitas += simulacoes
+                #current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1], nodo, saida,
+                #                               final)
+                #simulacoes_feitas += simulacoes
 
-                chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
-                if current < nodo.LETth[saida.nome][chave][0]:  ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
-                    nodo.LETth[saida.nome][chave][0] = current
-                    nodo.LETth[saida.nome][chave][1] = [final]
+                #chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
+                #if current < nodo.LETth[saida.nome][chave][0]:  ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
+                #    nodo.LETth[saida.nome][chave][0] = current
+                #    nodo.LETth[saida.nome][chave][1] = [final]
 
-                elif current == nodo.LETth[saida.nome][chave][0]:  ##### SE O LETth EH IGUAL A UM JA EXISTENTE
-                    nodo.LETth[saida.nome][chave][1].append(final)
+                #elif current == nodo.LETth[saida.nome][chave][0]:  ##### SE O LETth EH IGUAL A UM JA EXISTENTE
+                #    nodo.LETth[saida.nome][chave][1].append(final)
 
                 ##### VALIDACAO DE LARGURA DE PULSO #####
                 # if current < 1000:
@@ -112,21 +115,21 @@ for nodo in nodos:
                 #         print("Corrente validada\n")
 
                 ##### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
-                if current < 1000:
-                    sets_validos.append(
-                        [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
-                    break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
-                else:
-                    sets_invalidos.append(
-                        [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
+                #if current < 1000:
+                #    sets_validos.append(
+                #        [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
+                #    break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
+                #else:
+                #    sets_invalidos.append(
+                #        [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
 
 ##### RELATORIOS #####
 
 if not analise_manual:
 
-    for sets in sets_validos: print(sets)
-    print("\n")
-    for sets in sets_invalidos: print(sets)
+    #for sets in sets_validos: print(sets)
+    #print("\n")
+    #for sets in sets_invalidos: print(sets)
 
     print("\n1111-SET invalidado em analise de tensao")
     print("2222-SET invalidado em analise de pulso")
@@ -136,9 +139,10 @@ if not analise_manual:
     # Retorno do numero de simulacoes feitas e de tempo de execucao
     print("\n" + str(simulacoes_feitas) + " simulacoes feitas\n")
     for nodo in nodos:
-        print(nodo.nome)
+        #print(nodo.nome)
         for saida in nodo.LETth:
-            print(saida, nodo.LETth[saida])
+	    pass
+            #print(saida, nodo.LETth[saida])
             # for orientacao in nodo.LETth[saida]:
             #	print(orientacao)
     escrever_csv(tabela, nodos)

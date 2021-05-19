@@ -49,7 +49,7 @@ def escrever_csv(tabela, nodos):
             for saida in nodo.LETth:
                 for comb, combinacao in zip(["rr", "ff", "rf", "ff"],
                                             [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "fall"]]):
-                    print(saida, comb, nodo.LETth[saida])
+                    #print(saida, comb, nodo.LETth[saida])
                     if nodo.LETth[saida][comb][0] < 1111:
                         sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
                         sets.write(str(nodo.LETth[saida][comb][0]) + "E-6,=E" + str(linha))
