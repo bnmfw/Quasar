@@ -46,18 +46,19 @@ def escrever_csv(tabela, nodos):
     with open(tabela, "w") as sets:
         sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
         for nodo in nodos:
-	    for saida in nodo.LETth:
-                for comb, combinacao in zip(["rr","ff","rf","ff"], [["rise","rise"],["fall","fall"],["rise","fall"],["fall","fall"]]):
+            for saida in nodo.LETth:
+                for comb, combinacao in zip(["rr", "ff", "rf", "ff"],
+                                            [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "fall"]]):
                     print(saida, comb, nodo.LETth[saida])
-		    if nodo.LETth[saida][comb][0] < 1111:
-                    	sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
-                    	sets.write(str(nodo.LETth[saida][comb][0]) + "E-6,=E" + str(linha))
-                    	sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
-                    	sets.write(str(len(nodo.LETth[saida][comb][1])))  # Numero de validacoes
-                    	for validacao in nodo.LETth[saida][comb][1]:
+                    if nodo.LETth[saida][comb][0] < 1111:
+                        sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
+                        sets.write(str(nodo.LETth[saida][comb][0]) + "E-6,=E" + str(linha))
+                        sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021)")
+                        sets.write(str(len(nodo.LETth[saida][comb][1])))  # Numero de validacoes
+                        for validacao in nodo.LETth[saida][comb][1]:
                             sets.write(",'")
                             for num in validacao:
-                            	sets.write(str(num))
+                                sets.write(str(num))
                         sets.write("\n")
                         linha += 1
     print("Tabela " + tabela + " gerada com sucesso\n")
@@ -192,7 +193,7 @@ def ler_validacao(circuito, nodos, saidas):
             linhas.append(linha)
     atraso = float(linhas[0].split()[1]) * 10 ** -12
     for nodo in nodos:
-        validacao = list()
+        validacao = {}
         for linha in linhas:
             nome, resto = linha.split(" ", 1)
             if nome == nodo.nome:
@@ -203,21 +204,22 @@ def ler_validacao(circuito, nodos, saidas):
                 for i in range(len(sinais_de_entrada_1)):
                     try:
                         sinais_de_entrada_1[i] = int(sinais_de_entrada_1[i])
-                    except:
+                    except ValueError:
                         pass
-                validacao.append([saidas[0].nome, sinais_de_entrada_1])
+                validacao[saidas[0].nome] = sinais_de_entrada_1
                 sinais_de_entrada_2 = sinais_de_entrada[-5:]
                 # Conversao de string pra inteiro
                 for i in range(len(sinais_de_entrada_2)):
                     try:
                         sinais_de_entrada_2[i] = int(sinais_de_entrada_2[i])
-                    except:
+                    except ValueError:
                         pass
-                validacao.append([saidas[1].nome, sinais_de_entrada_2])
+                validacao[saidas[1].nome] = sinais_de_entrada_2
                 break
-        if not len(validacao):
-            for saida in saidas:
-                validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
+        # FAILSAFE QUE TEM QUE ARRUMAR DEPOIS
+        # if not len(validacao):
+        #     for saida in saidas:
+        #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
         nodo.validacao = validacao
     return atraso
 

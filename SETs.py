@@ -27,8 +27,8 @@ sets_invalidos = []
 
 if analise_manual: print("-----------EM ANALISE MANUAL-----------")
 
-#def raw_input(key):
-#    return(input(key))
+def raw_input(key):
+   return(input(key))
 
 ##### ENTRADAS #####
 circuito = raw_input("circuito a ser analisado: ")
@@ -67,29 +67,30 @@ if analise_manual:
 
 ##### BUSCA DO LETth DO CIRCUITO #####
 for nodo in nodos:
+    print(nodo.validacao)
     if analise_manual: break
 
     for saida in saidas:
         ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
         variaveis = 0
-        for val in nodo.validacao:
-            if val[0] == saida.nome:
-                validacao = list(val[1])  # Copia a validacao
-                for x in range(len(val[1])):
-                    if val[1][x] == "x": variaveis += 1
+        val = list(nodo.validacao[saida.nome])
+        print(val)
+        for x in range(len(val)):
+            if val[x] == "x": variaveis += 1
         # print(variaveis)
-	print(variaveis)
+        print(variaveis)
         if not variaveis: break
 
         for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
 
-            final = converter_binario(bin(k), validacao)
+            final = converter_binario(bin(k), val)
             ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
             for combinacao in combinacoes:
 
                 ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
                 print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
-                current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1], nodo, saida, final)
+                current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1], nodo, saida,
+                                               final)
                 simulacoes_feitas += simulacoes
 
                 chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
@@ -135,11 +136,11 @@ if not analise_manual:
     # Retorno do numero de simulacoes feitas e de tempo de execucao
     print("\n" + str(simulacoes_feitas) + " simulacoes feitas\n")
     for nodo in nodos:
-	print(nodo.nome)
-	for saida in nodo.LETth:
-	    print(saida, nodo.LETth[saida])
-	    #for orientacao in nodo.LETth[saida]:	
-	    #	print(orientacao)
+        print(nodo.nome)
+        for saida in nodo.LETth:
+            print(saida, nodo.LETth[saida])
+            # for orientacao in nodo.LETth[saida]:
+            #	print(orientacao)
     escrever_csv(tabela, nodos)
 
 ##### RELATORIO DE TEMPO DE EXECUCAO #####
