@@ -13,7 +13,7 @@ class Nodo():
         self.sinal = sinal  # Sinal logico (usado apenas na validacao)
         self.validacao = validacao  # Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
 
-analise_manual = True
+analise_manual = False
 
 #Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
 def ajustar_valor(tensao):
