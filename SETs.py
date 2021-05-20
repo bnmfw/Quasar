@@ -20,7 +20,6 @@ def converter_binario(binario, validacao):  # Converte o binario esquisito numa 
 tempo_inicial = time()
 
 ##### DADOS GERAIS #####
-combinacoes = [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]
 simulacoes_feitas = 0
 sets_validos = []
 sets_invalidos = []
@@ -61,8 +60,8 @@ if analise_manual:
     for i in range(len(vetor_manual)):
         vetor_manual[i] = int(vetor_manual[i])
     print("")
-    current = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual, vetor_manual)
-    print("Corrente final: " + str(nodo_manual.LETth[saida_manual.nome]))
+    current, simulacoes_feitas = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual, vetor_manual)
+    print("Corrente final: " + str(current))
     # pulso = largura_pulso(circuito, nodo_manual, saida_manual, vdd, atraso)
 
 ##### BUSCA DO LETth DO CIRCUITO #####
@@ -88,15 +87,16 @@ for nodo in nodos:
 
                 final = converter_binario(bin(k), val)
                 ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
-                for combinacao in combinacoes:
+                for combinacao in [["rise","rise"],["rise","fall"],["fall","fall"],["fall","rise"]]:
 
                     ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
-                    print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
+                    chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
+		    print(chave, nodo.LETth[saida.nome][chave])
+		    print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
                     current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1], nodo, saida,
                                                    final)
                     simulacoes_feitas += simulacoes
 
-                    chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
                     if current < nodo.LETth[saida.nome][chave][0]:  ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
                         nodo.LETth[saida.nome][chave][0] = current
                         nodo.LETth[saida.nome][chave][1] = [final]
