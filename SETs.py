@@ -26,8 +26,6 @@ sets_invalidos = []
 
 if analise_manual: print("-----------EM ANALISE MANUAL-----------")
 
-# def raw_input(key):
-#   return(input(key))
 
 ##### ENTRADAS #####
 circuito = input("circuito a ser analisado: ")
@@ -50,13 +48,13 @@ atraso = ler_validacao(circuito, nodos, entradas, saidas)
 
 ##### ANALISE MANUAL #####
 if analise_manual:
-    nodos_analise = raw_input("nodo e saida analisados: ")
-    pulsos = raw_input("pulsos na entrada e saida: ")
+    nodos_analise = input("nodo e saida analisados: ")
+    pulsos = input("pulsos na entrada e saida: ")
     pulso_in, pulso_out = pulsos.split()
     nodo_manual, saida_manual = nodos_analise.split()
     nodo_manual = Nodo(nodo_manual)
     saida_manual = Nodo(saida_manual)
-    vetor_manual = raw_input("vetor analisado: ").split()
+    vetor_manual = input("vetor analisado: ").split()
     for i in range(len(vetor_manual)):
         vetor_manual[i] = int(vetor_manual[i])
     print("")

@@ -1,6 +1,7 @@
 import os
 from arquivos import *
 
+
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
 def verificar_validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
     ajustar_pulso(arqv_radiacao, nodo, 0.0, saida, direcao_pulso_nodo)
@@ -69,9 +70,12 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
     analise_valida, simulacoes_feitas = verificar_validacao(circuito, radiacao, nodo, direcao_pulso_nodo, saida,
                                                             direcao_pulso_saida, vdd)
     if not analise_valida:
-        if simulacoes_feitas == 1: print("Analise invalida - Tensoes improprias\n")
-	elif simulacoes_feitas == 2: print("Analise invalida - Pulso sem efeito\n")
-	else: print("Analise invalida - WTF?\n")
+        if simulacoes_feitas == 1:
+            print("Analise invalida - Tensoes improprias\n")
+        elif simulacoes_feitas == 2:
+            print("Analise invalida - Pulso sem efeito\n")
+        else:
+            print("Analise invalida - WTF?\n")
         return [1111 * simulacoes_feitas, simulacoes_feitas]
 
     tensao_pico = 0
@@ -100,21 +104,25 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
         if simulacoes_feitas >= 25:
             if 1 < corrente < 499:
                 print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
-                return[corrente, simulacoes_feitas]
+                return [corrente, simulacoes_feitas]
             else:
                 print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
-                return[3333, simulacoes_feitas]
+                return [3333, simulacoes_feitas]
 
         # Busca binaria
         elif direcao_pulso_saida == "fall":
-            if tensao_pico <= (1 - precisao) * vdd / 2: corrente_sup = corrente
-            elif tensao_pico >= (1 + precisao) * vdd / 2: corrente_inf = corrente
+            if tensao_pico <= (1 - precisao) * vdd / 2:
+                corrente_sup = corrente
+            elif tensao_pico >= (1 + precisao) * vdd / 2:
+                corrente_inf = corrente
             else:
                 print("Corrente encontrada com sucesso\n")
-                return [corrente,simulacoes_feitas]
+                return [corrente, simulacoes_feitas]
         elif direcao_pulso_saida == "rise":
-            if tensao_pico <= (1 - precisao) * vdd / 2: corrente_inf = corrente
-            elif tensao_pico >= (1 + precisao) * vdd / 2: corrente_sup = corrente
+            if tensao_pico <= (1 - precisao) * vdd / 2:
+                corrente_inf = corrente
+            elif tensao_pico >= (1 + precisao) * vdd / 2:
+                corrente_sup = corrente
             else:
                 print("Corrente encontrada com sucesso\n")
                 return [corrente, simulacoes_feitas]
