@@ -46,9 +46,9 @@ def escrever_csv(tabela, nodos):
     with open(tabela, "w") as sets:
         sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
         for nodo in nodos:
+	    print(nodo.LETth)
             for saida in nodo.LETth:
-                for chave, combinacao in zip(["rr", "ff", "rf", "ff"],
-                                            [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "fall"]]):
+                for chave , combinacao in zip(["rr", "ff", "rf", "fr"],[["rise", "rise"],["fall","fall"],["rise","fall"],["fall","rise"]]):
                     #print(saida, comb, nodo.LETth[saida])
                     if nodo.LETth[saida][chave][0] < 1111:
                         sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")

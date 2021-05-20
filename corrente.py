@@ -69,7 +69,9 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
     analise_valida, simulacoes_feitas = verificar_validacao(circuito, radiacao, nodo, direcao_pulso_nodo, saida,
                                                             direcao_pulso_saida, vdd)
     if not analise_valida:
-        print("Analise invalida\n")
+        if simulacoes_feitas == 1: print("Analise invalida - Tensoes improprias\n")
+	elif simulacoes_feitas == 2: print("Analise invalida - Pulso sem efeito\n")
+	else: print("Analise invalida - WTF?\n")
         return [1111 * simulacoes_feitas, simulacoes_feitas]
 
     tensao_pico = 0
@@ -98,10 +100,10 @@ def Corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, n
         if simulacoes_feitas >= 25:
             if 1 < corrente < 499:
                 print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
-                return[3333, simulacoes_feitas]
+                return[corrente, simulacoes_feitas]
             else:
                 print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
-                return[corrente, simulacoes_feitas]
+                return[3333, simulacoes_feitas]
 
         # Busca binaria
         elif direcao_pulso_saida == "fall":
