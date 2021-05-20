@@ -222,8 +222,12 @@ def ler_validacao(circuito, nodos, entradas, saidas):
             #     for saida in saidas:
             #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
             nodo.validacao = validacao
-    except FileNotFoundError:
+    except:
+	print(len(nodos))
+	print(len(saidas))
+	print(len(entradas))
         for nodo in nodos:
+	    nodo.validacao = {}
             for saida in saidas:
                 nodo.validacao[saida.nome] = []
                 for entrada in entradas:

@@ -40,13 +40,13 @@ lista_auxiliar = []
 for saida in saidas:
     lista_auxiliar.append(Nodo(saida))
 saidas = lista_auxiliar
-entradas = ["a", "b", "c", "d", "e"]
+entradas = raw_input("entradas: ").split()
 validacao = list()
 
 ##### OBJETIFICACAO DOS NODOS E LEITURA DA VALIDACAO #####
 nodos = instanciar_nodos(circuito, saidas)
-atraso = ler_validacao(circuito, nodos, entrada, saidas)
 entradas = instanciar_entradas(entradas)
+atraso = ler_validacao(circuito, nodos, entradas, saidas)
 
 ##### ANALISE MANUAL #####
 if analise_manual:
