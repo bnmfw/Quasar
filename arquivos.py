@@ -184,43 +184,52 @@ def ler_atraso(vdd):
 
 
 # Le a validacao predeterminada em um arquivo "valcircuito.txt"
-def ler_validacao(circuito, nodos, saidas):
+def ler_validacao(circuito, nodos, entradas, saidas):
     arq_validacao = "val" + circuito
     linhas = list()
     # Leitura das linhas
-    with open(arq_validacao, "r") as arquivo:
-        for linha in arquivo:
-            linhas.append(linha)
-    atraso = float(linhas[0].split()[1]) * 10 ** -12
-    for nodo in nodos:
-        validacao = {}
-        for linha in linhas:
-            nome, resto = linha.split(" ", 1)
-            if nome == nodo.nome:
-                sinais_de_entrada = resto.split()
-                for saida in saidas:
-                    sinais_de_entrada.remove(saida.nome)
-                sinais_de_entrada_1 = sinais_de_entrada[:5]
-                for i in range(len(sinais_de_entrada_1)):
-                    try:
-                        sinais_de_entrada_1[i] = int(sinais_de_entrada_1[i])
-                    except ValueError:
-                        pass
-                validacao[saidas[0].nome] = sinais_de_entrada_1
-                sinais_de_entrada_2 = sinais_de_entrada[-5:]
-                # Conversao de string pra inteiro
-                for i in range(len(sinais_de_entrada_2)):
-                    try:
-                        sinais_de_entrada_2[i] = int(sinais_de_entrada_2[i])
-                    except ValueError:
-                        pass
-                validacao[saidas[1].nome] = sinais_de_entrada_2
-                break
-        # FAILSAFE QUE TEM QUE ARRUMAR DEPOIS
-        # if not len(validacao):
-        #     for saida in saidas:
-        #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
-        nodo.validacao = validacao
+    try:
+        with open(arq_validacao, "r") as arquivo:
+            for linha in arquivo:
+                linhas.append(linha)
+        atraso = float(linhas[0].split()[1]) * 10 ** -12
+        for nodo in nodos:
+            validacao = {}
+            for linha in linhas:
+                nome, resto = linha.split(" ", 1)
+                if nome == nodo.nome:
+                    sinais_de_entrada = resto.split()
+                    for saida in saidas:
+                        sinais_de_entrada.remove(saida.nome)
+                    sinais_de_entrada_1 = sinais_de_entrada[:5]
+                    for i in range(len(sinais_de_entrada_1)):
+                        try:
+                            sinais_de_entrada_1[i] = int(sinais_de_entrada_1[i])
+                        except ValueError:
+                            pass
+                    validacao[saidas[0].nome] = sinais_de_entrada_1
+                    sinais_de_entrada_2 = sinais_de_entrada[-5:]
+                    # Conversao de string pra inteiro
+                    for i in range(len(sinais_de_entrada_2)):
+                        try:
+                            sinais_de_entrada_2[i] = int(sinais_de_entrada_2[i])
+                        except ValueError:
+                            pass
+                    validacao[saidas[1].nome] = sinais_de_entrada_2
+                    break
+            # FAILSAFE QUE TEM QUE ARRUMAR DEPOIS
+            # if not len(validacao):
+            #     for saida in saidas:
+            #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
+            nodo.validacao = validacao
+    except FileNotFoundError:
+        for nodo in nodos:
+            for saida in saidas:
+                nodo.validacao[saida.nome] = []
+                for entrada in entradas:
+                    nodo.validacao[saida.nome].append("x")
+        return None
+
     return atraso
 
 

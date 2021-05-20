@@ -45,7 +45,7 @@ validacao = list()
 
 ##### OBJETIFICACAO DOS NODOS E LEITURA DA VALIDACAO #####
 nodos = instanciar_nodos(circuito, saidas)
-atraso = ler_validacao(circuito, nodos, saidas)
+atraso = ler_validacao(circuito, nodos, entrada, saidas)
 entradas = instanciar_entradas(entradas)
 
 ##### ANALISE MANUAL #####
@@ -60,7 +60,8 @@ if analise_manual:
     for i in range(len(vetor_manual)):
         vetor_manual[i] = int(vetor_manual[i])
     print("")
-    current, simulacoes_feitas = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual, vetor_manual)
+    current, simulacoes_feitas = Corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual,
+                                          vetor_manual)
     print("Corrente final: " + str(current))
     # pulso = largura_pulso(circuito, nodo_manual, saida_manual, vdd, atraso)
 
@@ -87,12 +88,12 @@ for nodo in nodos:
 
                 final = converter_binario(bin(k), val)
                 ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
-                for combinacao in [["rise","rise"],["rise","fall"],["fall","fall"],["fall","rise"]]:
+                for combinacao in [["rise", "rise"], ["rise", "fall"], ["fall", "fall"], ["fall", "rise"]]:
 
                     ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
                     chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
-		    print(chave, nodo.LETth[saida.nome][chave])
-		    print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
+                    print(chave, nodo.LETth[saida.nome][chave])
+                    print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
                     current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1], nodo, saida,
                                                    final)
                     simulacoes_feitas += simulacoes
@@ -141,10 +142,10 @@ if not analise_manual:
     for nodo in nodos:
         # print(nodo.nome)
         for saida in nodo.LETth:
-            #print(saida, nodo.LETth[saida])
+            # print(saida, nodo.LETth[saida])
             for orientacao in nodo.LETth[saida]:
                 pass
-		#print(orientacao)
+            # print(orientacao)
     escrever_csv(tabela, nodos)
 
 ##### RELATORIO DE TEMPO DE EXECUCAO #####
