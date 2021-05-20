@@ -6,16 +6,10 @@ class Entrada():
 
 
 class Nodo():
-    def __init__(self, nome, entradas=None, logica=None, relacoes=None, sinal=None, validacao=None):
-        if validacao == None: validacao = []
-        if relacoes == None: relacoes = []
+    def __init__(self, nome):
         self.nome = nome
-        self.entradas = entradas  # Lista de objetos
-        self.logica = logica  # Logica da porta que o tem como saida
-        self.relacoes = relacoes  # Tipo de relacao com cada saida: inv, dir, nao, com
-        self.sinal = sinal  # Sinal logico (usado apenas na validacao)
-        self.validacao = validacao  # Lista que contem 1 lista pra cara saida contendo: [nome da saida, validacao generica]
-        self.LETth = {}
+        self.validacao = {} 
+        self.LETth = {} 
 
 
 analise_manual = False
@@ -54,7 +48,7 @@ def escrever_csv(tabela, nodos):
                     if nodo.LETth[saida][chave][0] < 1111:
                         sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
                         sets.write(str(nodo.LETth[saida][chave][0]) + ",")
-                        sets.write(str((nodo.LETth[saida][chave][0] * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / (
+                        sets.write('{:.2e}'.format((nodo.LETth[saida][chave][0] * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / (
                                     (1.08 * 10 ** -14) * 0.000000021)))
                         sets.write("," + str(len(nodo.LETth[saida][chave][1])))  # Numero de validacoes
                         for validacao in nodo.LETth[saida][chave][1]:

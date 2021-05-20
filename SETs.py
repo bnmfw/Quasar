@@ -90,7 +90,7 @@ for nodo in nodos:
 
                     ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
                     chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
-                    print(chave, nodo.LETth[saida.nome][chave])
+                    #print(chave, nodo.LETth[saida.nome][chave])
                     print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
                     current, simulacoes = Corrente(circuito, vdd, entradas, combinacao[0], combinacao[1], nodo, saida,
                                                    final)
