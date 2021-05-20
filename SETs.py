@@ -30,17 +30,17 @@ if analise_manual: print("-----------EM ANALISE MANUAL-----------")
 #   return(input(key))
 
 ##### ENTRADAS #####
-circuito = raw_input("circuito a ser analisado: ")
+circuito = input("circuito a ser analisado: ")
 tabela = circuito + ".csv"
 circuito = circuito + ".txt"
 vdd = float(input("vdd: "))
 definir_tensao(vdd)
-saidas = raw_input("saidas analisadas: ").split()
+saidas = input("saidas analisadas: ").split()
 lista_auxiliar = []
 for saida in saidas:
     lista_auxiliar.append(Nodo(saida))
 saidas = lista_auxiliar
-entradas = raw_input("entradas: ").split()
+entradas = input("entradas: ").split()
 validacao = list()
 
 ##### OBJETIFICACAO DOS NODOS E LEITURA DA VALIDACAO #####

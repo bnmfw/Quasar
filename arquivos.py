@@ -52,9 +52,9 @@ def escrever_csv(tabela, nodos):
                     #print(saida, comb, nodo.LETth[saida])
                     if nodo.LETth[saida][chave][0] < 1111:
                         sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
-                        sets.write(str(nodo.LETth[saida][chave][0]) + "E-6,=E" + str(linha))
-                        sets.write("*(0.000000000164 - 5E-11)/(1.08E-14*0.000000021),")
-                        sets.write(str(len(nodo.LETth[saida][chave][1])))  # Numero de validacoes
+                        sets.write(str(nodo.LETth[saida][chave][0])+",")
+			sets.write( str((nodo.LETth[saida][chave][0]*10**-6)*(0.000000000164 - (5 * 10**-11))/((1.08 * 10**-14) * 0.000000021)))
+                        sets.write(","+str(len(nodo.LETth[saida][chave][1])))  # Numero de validacoes
                         for validacao in nodo.LETth[saida][chave][1]:
                             sets.write(",'")
                             for num in validacao:
@@ -92,8 +92,8 @@ def instanciar_nodos(circuito, saidas):
                 transistor, coletor, base, emissor, bulk, modelo, nfin = linha.split()
                 nodos_analisaveis = [coletor, base, emissor]
                 for nodo in nodos_analisaveis:
-                    if nodo not in ["vdd", "gnd"] and nodo not in nodos_nomes and nodo not in ignorados:
-                        nodo = Nodo(nodo)
+                    if nodo not in ["vdd", "gnd", *nodos_nomes, *ignorados]:
+I                        nodo = Nodo(nodo)
                         nodos_nomes.append(nodo.nome)
                         for saida in saidas:
                             nodo.LETth[saida.nome] = {"rr": [9999, []], "rf": [9999, []], "fr": [9999, []],
@@ -222,7 +222,7 @@ def ler_validacao(circuito, nodos, entradas, saidas):
             #     for saida in saidas:
             #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
             nodo.validacao = validacao
-    except:
+    except FileNotFoundError:
 	print(len(nodos))
 	print(len(saidas))
 	print(len(entradas))
