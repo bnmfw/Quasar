@@ -46,15 +46,17 @@ def escrever_csv(tabela, nodos):
     with open(tabela, "w") as sets:
         sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
         for nodo in nodos:
-	    print(nodo.LETth)
+            print(nodo.LETth)
             for saida in nodo.LETth:
-                for chave , combinacao in zip(["rr", "ff", "rf", "fr"],[["rise", "rise"],["fall","fall"],["rise","fall"],["fall","rise"]]):
-                    #print(saida, comb, nodo.LETth[saida])
+                for chave, combinacao in zip(["rr", "ff", "rf", "fr"],
+                                             [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]):
+                    # print(saida, comb, nodo.LETth[saida])
                     if nodo.LETth[saida][chave][0] < 1111:
                         sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
-                        sets.write(str(nodo.LETth[saida][chave][0])+",")
-			sets.write( str((nodo.LETth[saida][chave][0]*10**-6)*(0.000000000164 - (5 * 10**-11))/((1.08 * 10**-14) * 0.000000021)))
-                        sets.write(","+str(len(nodo.LETth[saida][chave][1])))  # Numero de validacoes
+                        sets.write(str(nodo.LETth[saida][chave][0]) + ",")
+                        sets.write(str((nodo.LETth[saida][chave][0] * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / (
+                                    (1.08 * 10 ** -14) * 0.000000021)))
+                        sets.write("," + str(len(nodo.LETth[saida][chave][1])))  # Numero de validacoes
                         for validacao in nodo.LETth[saida][chave][1]:
                             sets.write(",'")
                             for num in validacao:
@@ -223,11 +225,11 @@ def ler_validacao(circuito, nodos, entradas, saidas):
             #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
             nodo.validacao = validacao
     except FileNotFoundError:
-	print(len(nodos))
-	print(len(saidas))
-	print(len(entradas))
+        print(len(nodos))
+        print(len(saidas))
+        print(len(entradas))
         for nodo in nodos:
-	    nodo.validacao = {}
+            nodo.validacao = {}
             for saida in saidas:
                 nodo.validacao[saida.nome] = []
                 for entrada in entradas:
