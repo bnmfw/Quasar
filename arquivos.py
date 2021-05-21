@@ -191,20 +191,22 @@ class Circuito():
         self.sets_validos = []
         self.sets_invalidos = []
 
-        self.vdd = int(input("vdd: "))
+        self.vdd = float(input("vdd: "))
         self.definir_tensao(self.vdd)
 
         ##### MONTAGEM DO CIRCUITO #####
         self.instanciar_nodos()
 
-    def analise_total(self):
+    def analise_total(self, vdd = self.vdd):
+	if vdd != self.vdd:
+		self.definir_tensao(vdd)
         self.ler_validacao()
         self.determinar_LETths()
         self.gerar_relatorio_csv()
 
     def instanciar_nodos(self):
         ##### SAIDAS #####
-        saidas = input("saidas:  ").split()
+        saidas = input("saidas: ").split()
         for saida in saidas:
             self.saidas.append(Nodo(saida))
 
@@ -367,11 +369,11 @@ class Circuito():
         #     for saida in nodo.LETth:
         #         for orientacao in nodo.LETth[saida]:
         #             pass
-        self.escrever_csv(self.nome+".csv", self.nodos)
+        self.escrever_csv(self.nome, self.nodos)
 
-    def escrever_csv(self, tabela, nodos):
+    def escrever_csv(self, circuito_nome, nodos):
         linha = 2
-        with open(tabela, "w") as sets:
+        with open(circuito_nome+str(self.vdd)+".csv", "w") as sets:
             sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
             for nodo in nodos:
                 print(nodo.LETth)
@@ -393,7 +395,7 @@ class Circuito():
                                     sets.write(str(num))
                             sets.write("\n")
                             linha += 1
-        print("Tabela " + tabela + " gerada com sucesso\n")
+        print("\nTabela " + tabela + " gerada com sucesso\n")
 
 
 # Escreve os sinais no arquivo "fontes.txt"
