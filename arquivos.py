@@ -1,19 +1,19 @@
-class Entrada():
-    def __init__(self, nome, sinal):
-        self.nome = nome
-        self.sinal = sinal
-        self.atraso = [0, "saida.nome", ["Vetor de validacao"]]
-
-
-class Nodo():
-    def __init__(self, nome):
-        self.nome = nome
-        self.validacao = {} 
-        self.LETth = {} 
-
+import os
 
 analise_manual = False
 
+def converter_binario(binario, validacao, variaveis):  # Converte o binario esquisito numa lista
+    final = list(validacao)
+    flag = 0
+    binary = list()
+    # Transforma binario em uma lista de verdade e ajusta a validacao
+    for i in range(variaveis - (len(binario) - 2)): binary.append(0)
+    for i in range(len(binario) - 2): binary.append(int(binario[i + 2]))
+    for i in range(len(final)):
+        if final[i] == "x":
+            final[i] = binary[flag]
+            flag += 1
+    return final
 
 # Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
 def ajustar_valor(tensao):
@@ -33,69 +33,367 @@ def ajustar_valor(tensao):
     tensao = tensao * 10 ** grandeza
     return tensao
 
+# Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
+def verificar_validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
+    ajustar_pulso(arqv_radiacao, nodo, 0.0, saida, direcao_pulso_nodo)
+    os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
+    tensao_pico_saida = ler_pulso(direcao_pulso_saida, 0)
+    tensao_pico_nodo = ler_pulso(direcao_pulso_nodo, 2)
+    if analise_manual:
+        print("Verificacao de Sinal: Vpico nodo: " + str(tensao_pico_nodo) + " Vpico saida: " + str(
+            tensao_pico_saida) + "\n")
 
-# Recebe o nome de uma tabela e os nodos do circuito analisado, entao escreve nessa tabela os LETs de cada nodo alem de outras informacoes
-def escrever_csv(tabela, nodos):
-    linha = 2
-    with open(tabela, "w") as sets:
-        sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
-        for nodo in nodos:
-            print(nodo.LETth)
-            for saida in nodo.LETth:
-                for chave, combinacao in zip(["rr", "ff", "rf", "fr"],
-                                             [["rise", "rise"], ["fall", "fall"], ["rise", "fall"], ["fall", "rise"]]):
-                    # print(saida, comb, nodo.LETth[saida])
-                    if nodo.LETth[saida][chave][0] < 1111:
-                        sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
-                        sets.write(str(nodo.LETth[saida][chave][0]) + ",")
-                        sets.write('{:.2e}'.format((nodo.LETth[saida][chave][0] * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / (
-                                    (1.08 * 10 ** -14) * 0.000000021)))
-                        sets.write("," + str(len(nodo.LETth[saida][chave][1])))  # Numero de validacoes
-                        for validacao in nodo.LETth[saida][chave][1]:
-                            sets.write(",'")
-                            for num in validacao:
-                                sets.write(str(num))
-                        sets.write("\n")
-                        linha += 1
-    print("Tabela " + tabela + " gerada com sucesso\n")
+    # Leitura sem pulso
+    if direcao_pulso_saida == "rise" and tensao_pico_saida > vdd * 0.51:
+        return [False, 1]
+    elif direcao_pulso_saida == "fall" and tensao_pico_saida < vdd * 0.1:
+        return [False, 1]
+    elif direcao_pulso_nodo == "rise" and tensao_pico_nodo > vdd * 0.51:
+        return [False, 1]
+    elif direcao_pulso_nodo == "fall" and tensao_pico_nodo < vdd * 0.1:
+        return [False, 1]
 
+    ajustar_pulso(arqv_radiacao, nodo, 499.0, saida, direcao_pulso_nodo)
+    os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
+    tensao_pico_saida = ler_pulso(direcao_pulso_saida, 0)
+    tensao_pico_nodo = ler_pulso(direcao_pulso_nodo, 2)
+    if analise_manual:
+        print("Verificacao de Pulso: Vpico nodo: " + str(tensao_pico_nodo) + " Vpico saida: " + str(
+            tensao_pico_saida) + "\n")
+    # Leitura com pulso
+    if direcao_pulso_saida == "rise" and tensao_pico_saida < vdd * 0.50:
+        return [False, 2]
+    elif direcao_pulso_saida == "fall" and tensao_pico_saida > vdd * 0.50:
+        return [False, 2]
+    elif direcao_pulso_nodo == "rise" and tensao_pico_nodo < vdd * 0.50:
+        return [False, 2]
+    elif direcao_pulso_nodo == "fall" and tensao_pico_nodo > vdd * 0.50:
+        return [False, 2]
 
-# Escreve informacoes no arquivo "vdd.txt"
-def definir_tensao(vdd):
-    with open("vdd.txt", "w") as arquivo_vdd:
-        arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
-        arquivo_vdd.write("Vvdd vdd gnd " + str(vdd) + "\n")
-        arquivo_vdd.write("Vvcc vcc gnd " + str(vdd) + "\n")
-        arquivo_vdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
-
-
-# Descobre quais as entradas do circuto a partir do arquivo "fontes.txt" e retorna a lista com elas
-def instanciar_entradas(entradas):
-    novas_entradas = list()
-    for entrada in entradas:
-        novas_entradas.append(Entrada(entrada, "t"))
-    return novas_entradas
+    return [True, 2]
 
 
-# Descobre quais os nodos nao do circuito a partir de um arquivo "circuito.txt"
-def instanciar_nodos(circuito, saidas):
-    nodos = list()
-    nodos_nomes = list()
-    ignorados = ["ta", "tb", "tc", "td", "te", "fa", "fb", "fc", "fd", "fe"]
-    with open(circuito, "r") as circ:
-        for linha in circ:
-            if "M" in linha:
-                transistor, coletor, base, emissor, bulk, modelo, nfin = linha.split()
-                nodos_analisaveis = [coletor, base, emissor]
-                for nodo in nodos_analisaveis:
-                    if nodo not in ["vdd", "gnd", *nodos_nomes, *ignorados]:
-                        nodo = Nodo(nodo)
-                        nodos_nomes.append(nodo.nome)
-                        for saida in saidas:
-                            nodo.LETth[saida.nome] = {"rr": [9999, []], "rf": [9999, []], "fr": [9999, []],
-                                                      "ff": [9999, []]}
-                        nodos.append(nodo)
-    return nodos
+def largura_pulso(circuito, nodo, nodo_saida, vdd, atraso):  ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
+    escrever_largura_pulso(nodo, nodo_saida, vdd)  # Determina os parametros no arquivo de leitura de largura de pulso
+    os.system("hspice " + circuito + " | grep \"pulso\" > texto.txt")
+    largura_de_pulso = ler_largura_pulso()
+    if analise_manual:
+        print("Atraso do circuito: " + str(atraso) + " Largura de pulso: " + str(largura_de_pulso))
+    if atraso < largura_de_pulso:
+        if analise_manual: print("Largura valida")
+        return largura_de_pulso
+    else:
+        if analise_manual: print("Largura invalida")
+        return 4444
+
+
+def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):
+    radiacao = "SETs.txt"
+    fontes = "fontes.txt"
+
+    precisao = 0.05
+
+    # Escreve a validacao no arquivo de fontes
+    for i in range(len(entradas)):
+        entradas[i].sinal = validacao[i]
+    definir_fontes(fontes, vdd, entradas)
+    # Verifica se as saidas estao na tensao correta pra analise de pulsos
+    analise_valida, simulacoes_feitas = verificar_validacao(circuito, radiacao, nodo, direcao_pulso_nodo, saida,
+                                                            direcao_pulso_saida, vdd)
+    if not analise_valida:
+        if simulacoes_feitas == 1:
+            print("Analise invalida - Tensoes improprias\n")
+        elif simulacoes_feitas == 2:
+            print("Analise invalida - Pulso sem efeito\n")
+        else:
+            print("Analise invalida - WTF?\n")
+        return [1111 * simulacoes_feitas, simulacoes_feitas]
+
+    tensao_pico = 0
+
+    # variaveis da busca binaria da corrente
+    corrente_sup = 500
+    corrente = 499
+    corrente_inf = 0
+
+    # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
+    ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
+
+    while not ((1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2):
+
+        # Roda o HSPICE e salva os valores no arquivo de texto
+        os.system("hspice " + circuito + " | grep \"minout\|maxout\" > texto.txt")
+        simulacoes_feitas += 1
+
+        # Le a o pico de tensao na saida do circuito
+        tensao_pico = ler_pulso(direcao_pulso_saida, 0)
+
+        if analise_manual:
+            print("Corrente testada: " + str(corrente) + " Resposta na saida: " + str(tensao_pico) + "\n")
+
+        # Encerramento por excesso de simulacoes
+        if simulacoes_feitas >= 25:
+            if 1 < corrente < 499:
+                print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
+                return [corrente, simulacoes_feitas]
+            else:
+                print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
+                return [3333, simulacoes_feitas]
+
+        # Busca binaria
+        elif direcao_pulso_saida == "fall":
+            if tensao_pico <= (1 - precisao) * vdd / 2:
+                corrente_sup = corrente
+            elif tensao_pico >= (1 + precisao) * vdd / 2:
+                corrente_inf = corrente
+            else:
+                print("Corrente encontrada com sucesso\n")
+                return [corrente, simulacoes_feitas]
+        elif direcao_pulso_saida == "rise":
+            if tensao_pico <= (1 - precisao) * vdd / 2:
+                corrente_inf = corrente
+            elif tensao_pico >= (1 + precisao) * vdd / 2:
+                corrente_sup = corrente
+            else:
+                print("Corrente encontrada com sucesso\n")
+                return [corrente, simulacoes_feitas]
+
+        corrente = float((corrente_sup + corrente_inf) / 2)
+
+        # Escreve os paramtros no arquivo dos SETs
+        ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
+
+
+class Entrada():
+    def __init__(self, nome, sinal):
+        self.nome = nome
+        self.sinal = sinal
+        self.atraso = [0, "saida.nome", ["Vetor de validacao"]]
+
+
+class Nodo():
+    def __init__(self, nome):
+        self.nome = nome
+        self.validacao = {}
+        self.LETth = {}
+
+class Circuito():
+    def __init__(self, nome):
+        ##### ATRIBUTOS DO CIRCUITO #####
+        self.nome = nome
+        self.circuito = self.nome+".txt"
+        self.entradas = []
+        self.saidas = []
+        self.nodos = []
+
+        self.atrasoCC = 0
+        self.simulacoes_feitas = 0
+        self.sets_validos = []
+        self.sets_invalidos = []
+
+        self.vdd = int(input("vdd: "))
+        self.definir_tensao(self.vdd)
+
+        ##### MONTAGEM DO CIRCUITO #####
+        self.instanciar_nodos()
+
+    def analise_total(self):
+        self.ler_validacao()
+        self.determinar_LETths()
+        self.gerar_relatorio_csv()
+
+    def instanciar_nodos(self):
+        ##### SAIDAS #####
+        saidas = input("saidas:  ").split()
+        for saida in saidas:
+            self.saidas.append(Nodo(saida))
+
+        ##### ENTRADAS #####
+        entradas = input("entradas: ").split()
+        for entrada in entradas:
+            self.entradas.append(Entrada(entrada, "t"))
+
+        ##### OUTROS NODOS #####
+        nodos_nomes = list()
+        ignorados_true = ["t"+entrada.nome for entrada in self.entradas]
+        ignorados_false = ["f"+entrada.nome for entrada in self.entradas]
+        with open(self.circuito, "r") as circuito:
+            for linha in circuito:
+                if "M" in linha:
+                    transistor, coletor, base, emissor, bulk, modelo, nfin = linha.split()
+                    for nodo in [coletor, base, emissor]:
+                        if nodo not in ["vdd", "gnd", *nodos_nomes, *ignorados_true, *ignorados_false]:
+                            nodo = Nodo(nodo)
+                            nodos_nomes.append(nodo.nome)
+                            for saida in self.saidas:
+                                nodo.LETth[saida.nome] = {"rr": [9999, []],
+                                                          "rf": [9999, []],
+                                                          "fr": [9999, []],
+                                                          "ff": [9999, []]}
+                            self.nodos.append(nodo)
+
+    # Escreve informacoes no arquivo "vdd.txt"
+    def definir_tensao(self, vdd):
+        with open("vdd.txt", "w") as arquivo_vdd:
+            arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
+            arquivo_vdd.write("Vvdd vdd gnd " + str(vdd) + "\n")
+            arquivo_vdd.write("Vvcc vcc gnd " + str(vdd) + "\n")
+            arquivo_vdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
+
+    # Le a validacao de um arquivo
+    def ler_validacao(self):
+        arq_validacao = "val" + self.circuito
+        linhas = list()
+        # Leitura das linhas
+        try:
+            with open(arq_validacao, "r") as arquivo:
+                for linha in arquivo:
+                    linhas.append(linha)
+            atraso = float(linhas[0].split()[1]) * 10 ** -12
+            for nodo in self.nodos:
+                validacao = {}
+                for linha in linhas:
+                    nome, resto = linha.split(" ", 1)
+                    if nome == nodo.nome:
+                        sinais_de_entrada = resto.split()
+                        for saida in self.saidas:
+                            sinais_de_entrada.remove(saida.nome)
+                        sinais_de_entrada_1 = sinais_de_entrada[:5]
+                        for i in range(len(sinais_de_entrada_1)):
+                            try:
+                                sinais_de_entrada_1[i] = int(sinais_de_entrada_1[i])
+                            except ValueError:
+                                pass
+                        validacao[self.saidas[0].nome] = sinais_de_entrada_1
+                        sinais_de_entrada_2 = sinais_de_entrada[-5:]
+                        # Conversao de string pra inteiro
+                        for i in range(len(sinais_de_entrada_2)):
+                            try:
+                                sinais_de_entrada_2[i] = int(sinais_de_entrada_2[i])
+                            except ValueError:
+                                pass
+                        validacao[self.saidas[1].nome] = sinais_de_entrada_2
+                        break
+                # FAILSAFE QUE TEM QUE ARRUMAR DEPOIS
+                # if not len(validacao):
+                #     for saida in saidas:
+                #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
+                nodo.validacao = validacao
+        except FileNotFoundError:
+            print(len(self.nodos))
+            print(len(self.saidas))
+            print(len(self.entradas))
+            for nodo in self.nodos:
+                nodo.validacao = {}
+                for saida in self.saidas:
+                    nodo.validacao[saida.nome] = []
+                    for entrada in self.entradas:
+                        nodo.validacao[saida.nome].append("x")
+            return None
+
+        self.atrasoCC = atraso
+
+    def determinar_LETths(self):
+        self.simulacoes_feitas = 0
+        self.sets_validos = []
+        self.sets_invalidos = []
+        ##### BUSCA DO LETth DO CIRCUITO #####
+        for nodo in self.nodos:
+            if analise_manual: break
+
+            for saida in self.saidas:
+                ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
+                variaveis = 0
+                val = list(nodo.validacao[saida.nome])
+                for x in range(len(val)):
+                    if val[x] == "x": variaveis += 1
+                if variaveis:
+
+                    for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
+
+                        final = converter_binario(bin(k), val, variaveis)
+                        ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
+                        for combinacao in [["rise", "rise"], ["rise", "fall"], ["fall", "fall"], ["fall", "rise"]]:
+
+                            ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
+                            chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
+                            print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
+                            current, simulacoes = definir_corrente(self.circuito, self.vdd, self.entradas,
+                                                                   combinacao[0], combinacao[1], nodo, saida,
+                                                                   final)
+                            self.simulacoes_feitas += simulacoes
+
+                            if current < nodo.LETth[saida.nome][chave][
+                                0]:  ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
+                                nodo.LETth[saida.nome][chave][0] = current
+                                nodo.LETth[saida.nome][chave][1] = [final]
+
+                            elif current == nodo.LETth[saida.nome][chave][
+                                0]:  ##### SE O LETth EH IGUAL A UM JA EXISTENTE
+                                nodo.LETth[saida.nome][chave][1].append(final)
+
+                            ##### VALIDACAO DE LARGURA DE PULSO #####
+                            # if current < 1000:
+                            #     pulso = largura_pulso(circuito, nodo, saida, vdd, atraso)
+                            #     simulacoes_feitas += 1
+                            #     if pulso == 4444:
+                            #         print("Corrente invalidada por lagura de pulso\n")
+                            #         current = 4444  # Invalida corrente de pulso muito pequeno
+                            #     else:
+                            #         print("Corrente validada\n")
+
+                            #### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
+                            if current < 1000:
+                                self.sets_validos.append(
+                                    [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
+                                break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
+                            else:
+                                self.sets_invalidos.append(
+                                    [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
+
+    def gerar_relatorio_csv(self):
+        for sets in self.sets_validos: print(sets)
+        print("\n")
+        for sets in self.sets_invalidos: print(sets)
+
+        print("\n1111-SET invalidado em analise de tensao")
+        print("2222-SET invalidado em analise de pulso")
+        print("3333-SET Passou validacoes anteriores mas foi mal concluido")
+        print("4444-SET invalidado em validacao de largura de pulso")
+
+        # Retorno do numero de simulacoes feitas e de tempo de execucao
+        print("\n" + str(self.simulacoes_feitas) + " simulacoes feitas\n")
+        # for nodo in self.nodos:
+        #     for saida in nodo.LETth:
+        #         for orientacao in nodo.LETth[saida]:
+        #             pass
+        self.escrever_csv(self.nome+".csv", self.nodos)
+
+    def escrever_csv(self, tabela, nodos):
+        linha = 2
+        with open(tabela, "w") as sets:
+            sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
+            for nodo in nodos:
+                print(nodo.LETth)
+                for saida in nodo.LETth:
+                    for chave, combinacao in zip(["rr", "ff", "rf", "fr"],
+                                                 [["rise", "rise"], ["fall", "fall"], ["rise", "fall"],
+                                                  ["fall", "rise"]]):
+                        # print(saida, comb, nodo.LETth[saida])
+                        if nodo.LETth[saida][chave][0] < 1111:
+                            sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
+                            sets.write(str(nodo.LETth[saida][chave][0]) + ",")
+                            sets.write('{:.2e}'.format(
+                                (nodo.LETth[saida][chave][0] * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / (
+                                        (1.08 * 10 ** -14) * 0.000000021)))
+                            sets.write("," + str(len(nodo.LETth[saida][chave][1])))  # Numero de validacoes
+                            for validacao in nodo.LETth[saida][chave][1]:
+                                sets.write(",'")
+                                for num in validacao:
+                                    sets.write(str(num))
+                            sets.write("\n")
+                            linha += 1
+        print("Tabela " + tabela + " gerada com sucesso\n")
 
 
 # Escreve os sinais no arquivo "fontes.txt"
@@ -177,60 +475,6 @@ def ler_atraso(vdd):
             # print("Pulso menor que 1 nano",largura_pulso_saida)
             return [0, 0, 0, 0]
     return atrasos
-
-
-# Le a validacao predeterminada em um arquivo "valcircuito.txt"
-def ler_validacao(circuito, nodos, entradas, saidas):
-    arq_validacao = "val" + circuito
-    linhas = list()
-    # Leitura das linhas
-    try:
-        with open(arq_validacao, "r") as arquivo:
-            for linha in arquivo:
-                linhas.append(linha)
-        atraso = float(linhas[0].split()[1]) * 10 ** -12
-        for nodo in nodos:
-            validacao = {}
-            for linha in linhas:
-                nome, resto = linha.split(" ", 1)
-                if nome == nodo.nome:
-                    sinais_de_entrada = resto.split()
-                    for saida in saidas:
-                        sinais_de_entrada.remove(saida.nome)
-                    sinais_de_entrada_1 = sinais_de_entrada[:5]
-                    for i in range(len(sinais_de_entrada_1)):
-                        try:
-                            sinais_de_entrada_1[i] = int(sinais_de_entrada_1[i])
-                        except ValueError:
-                            pass
-                    validacao[saidas[0].nome] = sinais_de_entrada_1
-                    sinais_de_entrada_2 = sinais_de_entrada[-5:]
-                    # Conversao de string pra inteiro
-                    for i in range(len(sinais_de_entrada_2)):
-                        try:
-                            sinais_de_entrada_2[i] = int(sinais_de_entrada_2[i])
-                        except ValueError:
-                            pass
-                    validacao[saidas[1].nome] = sinais_de_entrada_2
-                    break
-            # FAILSAFE QUE TEM QUE ARRUMAR DEPOIS
-            # if not len(validacao):
-            #     for saida in saidas:
-            #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
-            nodo.validacao = validacao
-    except FileNotFoundError:
-        print(len(nodos))
-        print(len(saidas))
-        print(len(entradas))
-        for nodo in nodos:
-            nodo.validacao = {}
-            for saida in saidas:
-                nodo.validacao[saida.nome] = []
-                for entrada in entradas:
-                    nodo.validacao[saida.nome].append("x")
-        return None
-
-    return atraso
 
 
 # Escreve informacoes no arquivo "SETs.txt"
