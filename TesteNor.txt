@@ -29,10 +29,10 @@ Xinva2 vcc gnd fa ta NOT
 Xinvb1 vcc gnd b fb NOT
 Xinvb2 vcc gnd fb tb NOT
 
-Mp1 vdd ta 1 ta PMOS_RVT nfin=5
-Mp2 1 tb g1 tb PMOS_RVT nfin=5
-Mn1 g1 ta gnd ta NMOS_RVT nfin=5
-Mn2 g1 tb gnd tb NMOS_RVT nfin=5
+Mp1 vdd ta 1 ta PMOS_RVT nfin=1
+Mp2 1 tb g1 tb PMOS_RVT nfin=1
+Mn1 g1 ta gnd ta NMOS_RVT nfin=1
+Mn2 g1 tb gnd tb NMOS_RVT nfin=1
 
 //Representação de um circuito pós benchmark
 xff1 clk g1 q1 nq1 vcc gnd DFF

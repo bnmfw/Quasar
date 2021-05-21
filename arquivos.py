@@ -212,8 +212,8 @@ class Circuito():
     def analise_tensao_comparativa(self, minvdd, maxvdd):
         self.__ler_validacao()
         lista_comparativa = {}
-        LETth_critico = 9999
         while minvdd <= maxvdd + 0.0001:
+            LETth_critico = 9999
             self.vdd = minvdd
             self.__definir_tensao(minvdd)
             self.__determinar_LETths()
