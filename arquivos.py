@@ -179,6 +179,7 @@ class Nodo():
         self.nome = nome
         self.validacao = {}
         self.LETth = {}
+        self.LETth_critico = 9999
 
 
 class Circuito():
@@ -196,19 +197,34 @@ class Circuito():
         self.sets_invalidos = []
 
         self.vdd = float(input("vdd: "))
-        self.definir_tensao(self.vdd)
+        self.__definir_tensao(self.vdd)
 
         ##### MONTAGEM DO CIRCUITO #####
-        self.instanciar_nodos()
+        self.__instanciar_nodos()
 
     def analise_total(self, vdd):
         self.vdd = vdd
-        self.definir_tensao(vdd)
-        self.ler_validacao()
-        self.determinar_LETths()
-        self.gerar_relatorio_csv()
+        self.__definir_tensao(vdd)
+        self.__ler_validacao()
+        self.__determinar_LETths()
+        self.__gerar_relatorio_csv()
 
-    def instanciar_nodos(self):
+    def analise_tensao_comparativa(self, minvdd, maxvdd):
+        self.__ler_validacao()
+        lista_comparativa = {}
+        LETth_critico = 9999
+        while minvdd <= maxvdd:
+            self.vdd = minvdd
+            self.__definir_tensao(minvdd)
+            self.__determinar_LETths()
+            for nodo in self.nodos:
+                if nodo.LETth_critico < LETth_critico:
+                    LETth_critico = nodo.LETth_critico
+            lista_comparativa[str(minvdd)] = LETth_critico
+            minvdd += 0.5
+        self.__escrever_csv_comparativo(lista_comparativa)
+
+    def __instanciar_nodos(self):
         ##### SAIDAS #####
         saidas = input("saidas: ").split()
         for saida in saidas:
@@ -238,8 +254,16 @@ class Circuito():
                                                           "ff": [9999, []]}
                             self.nodos.append(nodo)
 
+    def __resetar_LETths(self):
+        for nodo in self.nodos:
+            for saida in self.saidas:
+                nodo.LETth[saida.nome] = {"rr": [9999, []],
+                                          "rf": [9999, []],
+                                          "fr": [9999, []],
+                                          "ff": [9999, []]}
+
     # Escreve informacoes no arquivo "vdd.txt"
-    def definir_tensao(self, vdd):
+    def __definir_tensao(self, vdd):
         with open("vdd.txt", "w") as arquivo_vdd:
             arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
             arquivo_vdd.write("Vvdd vdd gnd " + str(vdd) + "\n")
@@ -247,7 +271,7 @@ class Circuito():
             arquivo_vdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
 
     # Le a validacao de um arquivo
-    def ler_validacao(self):
+    def __ler_validacao(self):
         arq_validacao = "val" + self.circuito
         linhas = list()
         # Leitura das linhas
@@ -299,7 +323,8 @@ class Circuito():
 
         self.atrasoCC = atraso
 
-    def determinar_LETths(self):
+    def __determinar_LETths(self):
+        self.__resetar_LETths()
         self.simulacoes_feitas = 0
         self.sets_validos = []
         self.sets_invalidos = []
@@ -314,7 +339,6 @@ class Circuito():
                 for x in range(len(val)):
                     if val[x] == "x": variaveis += 1
                 if variaveis:
-
                     for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
 
                         final = converter_binario(bin(k), val, variaveis)
@@ -329,6 +353,7 @@ class Circuito():
                                                                    final)
                             self.simulacoes_feitas += simulacoes
 
+                            ##### DETERMINA LETth minimo pra aquela saida ####
                             if current < nodo.LETth[saida.nome][chave][
                                 0]:  ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
                                 nodo.LETth[saida.nome][chave][0] = current
@@ -337,6 +362,9 @@ class Circuito():
                             elif current == nodo.LETth[saida.nome][chave][
                                 0]:  ##### SE O LETth EH IGUAL A UM JA EXISTENTE
                                 nodo.LETth[saida.nome][chave][1].append(final)
+
+                            if current < nodo.LETth_critico:
+                                nodo.LETth_critico = current
 
                             ##### VALIDACAO DE LARGURA DE PULSO #####
                             # if current < 1000:
@@ -357,7 +385,7 @@ class Circuito():
                                 self.sets_invalidos.append(
                                     [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
 
-    def gerar_relatorio_csv(self):
+    def __gerar_relatorio_csv(self):
         for sets in self.sets_validos: print(sets)
         print("\n")
         for sets in self.sets_invalidos: print(sets)
@@ -373,14 +401,14 @@ class Circuito():
         #     for saida in nodo.LETth:
         #         for orientacao in nodo.LETth[saida]:
         #             pass
-        self.escrever_csv(self.nome, self.nodos)
+        self.__escrever_csv()
 
-    def escrever_csv(self, circuito_nome, nodos):
+    def __escrever_csv(self):
         linha = 2
-        tabela = circuito_nome+str(self.vdd)+".csv"
+        tabela = self.nome+str(self.vdd)+".csv"
         with open(tabela, "w") as sets:
             sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
-            for nodo in nodos:
+            for nodo in self.nodos:
                 print(nodo.LETth)
                 for saida in nodo.LETth:
                     for chave, combinacao in zip(["rr", "ff", "rf", "fr"],
@@ -402,6 +430,12 @@ class Circuito():
                             linha += 1
         print("\nTabela " + tabela + " gerada com sucesso\n")
 
+    def __escrever_csv_comparativo(self, lista_comparativa):
+        with open(self.nome+"_compara.csv") as tabela:
+            for chave in lista_comparativa:
+                tabela.write(chave+","+lista_comparativa[chave])
+
+        print("\nTabela " + self.nome+"_compara.csv" + " gerada com sucesso\n")
 
 # Escreve os sinais no arquivo "fontes.txt"
 def definir_fontes(fontes, vdd, entradas):
