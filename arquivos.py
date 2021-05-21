@@ -196,7 +196,7 @@ class Circuito():
         self.sets_validos = []
         self.sets_invalidos = []
 
-        self.vdd = float(input("vdd: "))
+        self.vdd = 0.7
         self.__definir_tensao(self.vdd)
 
         ##### MONTAGEM DO CIRCUITO #####
@@ -213,7 +213,7 @@ class Circuito():
         self.__ler_validacao()
         lista_comparativa = {}
         LETth_critico = 9999
-        while minvdd <= maxvdd:
+        while minvdd <= maxvdd+0.0001:
             self.vdd = minvdd
             self.__definir_tensao(minvdd)
             self.__determinar_LETths()
@@ -221,7 +221,7 @@ class Circuito():
                 if nodo.LETth_critico < LETth_critico:
                     LETth_critico = nodo.LETth_critico
             lista_comparativa[str(minvdd)] = LETth_critico
-            minvdd += 0.5
+            minvdd += 0.05
         self.__escrever_csv_comparativo(lista_comparativa)
 
     def __instanciar_nodos(self):
@@ -257,7 +257,8 @@ class Circuito():
     def __resetar_LETths(self):
         for nodo in self.nodos:
             for saida in self.saidas:
-                nodo.LETth[saida.nome] = {"rr": [9999, []],
+                nodo.LETth_critico = 9999
+		nodo.LETth[saida.nome] = {"rr": [9999, []],
                                           "rf": [9999, []],
                                           "fr": [9999, []],
                                           "ff": [9999, []]}
@@ -431,9 +432,9 @@ class Circuito():
         print("\nTabela " + tabela + " gerada com sucesso\n")
 
     def __escrever_csv_comparativo(self, lista_comparativa):
-        with open(self.nome+"_compara.csv") as tabela:
+        with open(self.nome+"_compara.csv","w") as tabela:
             for chave in lista_comparativa:
-                tabela.write(chave+","+lista_comparativa[chave])
+                tabela.write(chave+","+"{:.2f}".format(lista_comparativa[chave])+"\n")
 
         print("\nTabela " + self.nome+"_compara.csv" + " gerada com sucesso\n")
 
