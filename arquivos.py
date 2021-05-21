@@ -202,8 +202,8 @@ class Circuito():
         self.instanciar_nodos()
 
     def analise_total(self, vdd):
-        if vdd != self.vdd:
-            self.definir_tensao(vdd)
+        self.vdd = vdd
+	self.definir_tensao(vdd)
         self.ler_validacao()
         self.determinar_LETths()
         self.gerar_relatorio_csv()
