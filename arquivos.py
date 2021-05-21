@@ -213,7 +213,7 @@ class Circuito():
         self.__ler_validacao()
         lista_comparativa = {}
         LETth_critico = 9999
-        while minvdd <= maxvdd+0.0001:
+        while minvdd <= maxvdd + 0.0001:
             self.vdd = minvdd
             self.__definir_tensao(minvdd)
             self.__determinar_LETths()
@@ -256,9 +256,9 @@ class Circuito():
 
     def __resetar_LETths(self):
         for nodo in self.nodos:
+            nodo.LETth_critico = 9999
             for saida in self.saidas:
-                nodo.LETth_critico = 9999
-		nodo.LETth[saida.nome] = {"rr": [9999, []],
+                nodo.LETth[saida.nome] = {"rr": [9999, []],
                                           "rf": [9999, []],
                                           "fr": [9999, []],
                                           "ff": [9999, []]}
@@ -406,7 +406,7 @@ class Circuito():
 
     def __escrever_csv(self):
         linha = 2
-        tabela = self.nome+str(self.vdd)+".csv"
+        tabela = self.nome + str(self.vdd) + ".csv"
         with open(tabela, "w") as sets:
             sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
             for nodo in self.nodos:
@@ -432,11 +432,12 @@ class Circuito():
         print("\nTabela " + tabela + " gerada com sucesso\n")
 
     def __escrever_csv_comparativo(self, lista_comparativa):
-        with open(self.nome+"_compara.csv","w") as tabela:
+        with open(self.nome + "_compara.csv", "w") as tabela:
             for chave in lista_comparativa:
-                tabela.write(chave+","+"{:.2f}".format(lista_comparativa[chave])+"\n")
+                tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
 
-        print("\nTabela " + self.nome+"_compara.csv" + " gerada com sucesso\n")
+        print("\nTabela " + self.nome + "_compara.csv" + " gerada com sucesso\n")
+
 
 # Escreve os sinais no arquivo "fontes.txt"
 def definir_fontes(fontes, vdd, entradas):
