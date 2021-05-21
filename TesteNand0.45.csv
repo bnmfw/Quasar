@@ -1,5 +1,5 @@
 nodo,saida,pulso,pulso,corrente,set,num val,validacoes->
-g1,g1,rise,rise,27.2890625,1.37e+07,1,'11
-g1,g1,fall,fall,35.0859375,1.76e+07,2,'01,'10
-i1,g1,rise,rise,58.4765625,2.94e+07,1,'11
-i1,g1,fall,fall,35.0859375,1.76e+07,1,'10
+g1,g1,rise,rise,34.111328125,1.71e+07,1,'11
+g1,g1,fall,fall,43.857421875,2.20e+07,1,'01
+i1,g1,rise,rise,70.171875,3.53e+07,1,'11
+i1,g1,fall,fall,43.857421875,2.20e+07,1,'10
