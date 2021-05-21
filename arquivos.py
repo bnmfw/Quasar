@@ -2,6 +2,7 @@ import os
 
 analise_manual = False
 
+
 def converter_binario(binario, validacao, variaveis):  # Converte o binario esquisito numa lista
     final = list(validacao)
     flag = 0
@@ -14,6 +15,7 @@ def converter_binario(binario, validacao, variaveis):  # Converte o binario esqu
             final[i] = binary[flag]
             flag += 1
     return final
+
 
 # Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
 def ajustar_valor(tensao):
@@ -32,6 +34,7 @@ def ajustar_valor(tensao):
     tensao = float(tensao)
     tensao = tensao * 10 ** grandeza
     return tensao
+
 
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
 def verificar_validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
@@ -177,11 +180,12 @@ class Nodo():
         self.validacao = {}
         self.LETth = {}
 
+
 class Circuito():
     def __init__(self, nome):
         ##### ATRIBUTOS DO CIRCUITO #####
         self.nome = nome
-        self.circuito = self.nome+".txt"
+        self.circuito = self.nome + ".txt"
         self.entradas = []
         self.saidas = []
         self.nodos = []
@@ -191,15 +195,15 @@ class Circuito():
         self.sets_validos = []
         self.sets_invalidos = []
 
-        self.vdd = float(input("vdd: "))
-        self.definir_tensao(self.vdd)
+        #self.vdd = float(input("vdd: "))
+        #self.definir_tensao(self.vdd)
 
         ##### MONTAGEM DO CIRCUITO #####
         self.instanciar_nodos()
 
-    def analise_total(self, vdd = self.vdd):
-	if vdd != self.vdd:
-		self.definir_tensao(vdd)
+    def analise_total(self, vdd):
+        if vdd != self.vdd:
+            self.definir_tensao(vdd)
         self.ler_validacao()
         self.determinar_LETths()
         self.gerar_relatorio_csv()
@@ -217,8 +221,8 @@ class Circuito():
 
         ##### OUTROS NODOS #####
         nodos_nomes = list()
-        ignorados_true = ["t"+entrada.nome for entrada in self.entradas]
-        ignorados_false = ["f"+entrada.nome for entrada in self.entradas]
+        ignorados_true = ["t" + entrada.nome for entrada in self.entradas]
+        ignorados_false = ["f" + entrada.nome for entrada in self.entradas]
         with open(self.circuito, "r") as circuito:
             for linha in circuito:
                 if "M" in linha:
@@ -373,7 +377,7 @@ class Circuito():
 
     def escrever_csv(self, circuito_nome, nodos):
         linha = 2
-        with open(circuito_nome+str(self.vdd)+".csv", "w") as sets:
+        with open(circuito_nome + str(self.vdd) + ".csv", "w") as sets:
             sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
             for nodo in nodos:
                 print(nodo.LETth)
