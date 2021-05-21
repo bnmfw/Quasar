@@ -195,8 +195,8 @@ class Circuito():
         self.sets_validos = []
         self.sets_invalidos = []
 
-        #self.vdd = float(input("vdd: "))
-        #self.definir_tensao(self.vdd)
+        self.vdd = float(input("vdd: "))
+        self.definir_tensao(self.vdd)
 
         ##### MONTAGEM DO CIRCUITO #####
         self.instanciar_nodos()
@@ -377,7 +377,8 @@ class Circuito():
 
     def escrever_csv(self, circuito_nome, nodos):
         linha = 2
-        with open(circuito_nome + str(self.vdd) + ".csv", "w") as sets:
+		tabela = circuito_nome+str(self.vdd)+".csv"
+        with open(tabela, "w") as sets:
             sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
             for nodo in nodos:
                 print(nodo.LETth)
