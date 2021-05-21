@@ -224,6 +224,18 @@ class Circuito():
             minvdd += 0.05
         self.__escrever_csv_comparativo(lista_comparativa)
 
+    def analise_manual(self):
+        analise_manual = True
+        self.vdd = float(input("vdd: "))
+        nodo, saida = input("nodo e saida analisados: ").split()
+        pulso_in, pulso_out = input("pulsos na entrada e saida: ").split()
+        nodo = Nodo(nodo)
+        saida = Nodo(saida)
+        vetor = [int(sinal) for sinal in input("vetor analisado: ").split()]
+        current, simulacoes_feitas = definir_corrente(self.circuito, self.vdd, self.entradas, pulso_in, pulso_out,
+                                                      nodo, saida, vetor)
+        print("Corrente final: " + str(current))
+
     def __instanciar_nodos(self):
         ##### SAIDAS #####
         saidas = input("saidas: ").split()
@@ -331,7 +343,6 @@ class Circuito():
         self.sets_invalidos = []
         ##### BUSCA DO LETth DO CIRCUITO #####
         for nodo in self.nodos:
-            if analise_manual: break
 
             for saida in self.saidas:
                 ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
@@ -402,9 +413,9 @@ class Circuito():
         #     for saida in nodo.LETth:
         #         for orientacao in nodo.LETth[saida]:
         #             pass
-        self.__escrever_csv()
+        self.__escrever_csv_total()
 
-    def __escrever_csv(self):
+    def __escrever_csv_total(self):
         linha = 2
         tabela = self.nome + str(self.vdd) + ".csv"
         with open(tabela, "w") as sets:

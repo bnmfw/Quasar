@@ -3,27 +3,23 @@ from time import time
 
 tempo_inicial = time()
 
-if analise_manual: print("-----------EM ANALISE MANUAL-----------")
-
 circuito = Circuito(input("circuito: "))
-circuito.analise_tensao_comparativa(0.4,0.7)
-
-##### ANALISE MANUAL #####
-if analise_manual:
-    circuito = input("circuito a ser analisado: ")
-    vdd = input("vdd: ")
-    nodo_manual, saida_manual = input("nodo e saida analisados: ").split()
-    pulso_in, pulso_out = input("pulsos na entrada e saida: ").split()
-    nodo_manual = Nodo(nodo_manual)
-    saida_manual = Nodo(saida_manual)
-    vetor_manual = input("vetor analisado: ").split()
-    for i in range(len(vetor_manual)):
-        vetor_manual[i] = int(vetor_manual[i])
-    print("")
-    current, simulacoes_feitas = definir_corrente(circuito, vdd, entradas, pulso_in, pulso_out, nodo_manual, saida_manual,
-                                                  vetor_manual)
-    print("Corrente final: " + str(current))
-    # pulso = largura_pulso(circuito, nodo_manual, saida_manual, vdd, atraso)
+analise = None
+while not analise in ["t","c","u"]:
+    analise = input("Total [t]\n"
+                "Comparativa [c]\n"
+                "Unica [u]\n"
+                "Analise desejada:")
+    if analise == "t":
+        circuito.analise_total(float(input("vdd: ")))
+    elif analise == "c":
+        vddmin = float(input("vdd min: "))
+        vddmax = float(input("vdd max: "))
+        circuito.analise_tensao_comparativa(vddmin,vddmax)
+    elif analise == "u":
+        circuito.analise_manual()
+    else:
+        print("Entrada invalida")
 
 ##### RELATORIO DE TEMPO DE EXECUCAO #####
 tempo_final = time()
