@@ -9,7 +9,7 @@ while not analise in ["t","c","u"]:
     analise = input("Total [t]\n"
                 "Comparativa [c]\n"
                 "Unica [u]\n"
-                "Analise desejada:")
+                "Analise desejada: ")
     if analise == "t":
         circuito.analise_total(float(input("vdd: ")))
     elif analise == "c":

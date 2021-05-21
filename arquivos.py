@@ -417,7 +417,7 @@ class Circuito():
 
     def __escrever_csv_total(self):
         linha = 2
-        tabela = self.nome + str(self.vdd) + ".csv"
+        tabela = self.nome + ".csv"
         with open(tabela, "w") as sets:
             sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
             for nodo in self.nodos:
