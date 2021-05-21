@@ -203,7 +203,7 @@ class Circuito():
 
     def analise_total(self, vdd):
         self.vdd = vdd
-	self.definir_tensao(vdd)
+        self.definir_tensao(vdd)
         self.ler_validacao()
         self.determinar_LETths()
         self.gerar_relatorio_csv()
