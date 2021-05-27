@@ -1,4 +1,4 @@
-Teste dos LETths da porta NOR
+te dos LETths da porta NAND
 
 ****** Dispositivos Lógicos ******
 
@@ -26,15 +26,9 @@ Teste dos LETths da porta NOR
 
 Xinva1 vcc gnd a fa NOT
 Xinva2 vcc gnd fa ta NOT
-Xinvb1 vcc gnd b fb NOT
-Xinvb2 vcc gnd fb tb NOT
 
-Mp1 vdd  ta 1 ta PMOS_RVT nfin=5
-Mp2 1   tb e1 tb PMOS_RVT nfin=5
-Mn1 e1 ta gnd ta NMOS_RVT nfin=5
-Mn2 e1 tb gnd tb NMOS_RVT nfin=5
-Mp3 vdd e1 g1 e1 PMOS_RVT nfin=5
-Mn3 g1 e1 gnd e1 NMOS_RVT nfin=5
+Mp1 vdd ta g1 ta PMOS_RVT nfin=5
+Mn1 g1 ta gnd ta NMOS_RVT nfin=5
 
 //Representação de um circuito pós benchmark
 xff1 clk g1 q1 nq1 vcc gnd DFF
@@ -48,3 +42,4 @@ xinv11 vcc gnd q1 nnq1 NOT
 
 ************
 .end
+
