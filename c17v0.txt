@@ -57,8 +57,8 @@ Mn42 i4 e3 gnd e3 NMOS_RVT nfin=3
 
 Mp51 vdd te i5 te PMOS_RVT nfin=3
 Mp52 i5 tc e4 tc PMOS_RVT nfin=3
-Mn51 e4 te gnd te NMOS_RVT nfin=5
-Mn52 e4 tc gnd tc NMOS_RVT nfin=5
+Mn51 e4 te gnd te NMOS_RVT nfin=3
+Mn52 e4 tc gnd tc NMOS_RVT nfin=3
 
 Mp61 vdd td i62 td PMOS_RVT nfin=3
 Mp62 vdd tb i62 tb PMOS_RVT nfin=3
@@ -70,8 +70,8 @@ Mn63 e5 i62 gnd i62 NMOS_RVT nfin=3
 
 Mp71 vdd e4 i7 e4 PMOS_RVT nfin=3
 Mp72 i7 e5 g2 e5 PMOS_RVT nfin=3
-Mn71 g2 e4 gnd e4 NMOS_RVT nfin=5
-Mn72 g2 e5 gnd e5 NMOS_RVT nfin=5
+Mn71 g2 e4 gnd e4 NMOS_RVT nfin=3
+Mn72 g2 e5 gnd e5 NMOS_RVT nfin=3
 
 //Representação de um circuito pós benchmark
 xff1 clk g1 q1 nq1 vcc gnd DFF
