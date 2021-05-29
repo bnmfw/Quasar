@@ -61,18 +61,18 @@ MnI1 nd td gnd td NMOS_RVT nfin=3
 MpI2 vdd tb nb tb PMOS_RVT nfin=3
 MnI2 nb tb gnd tb NMOS_RVT nfin=3
 
-Mp51 vdd tc i5 tc PMOS_RVT nfin=3
-Mp52 i5 te e4 te PMOS_RVT nfin=3
+Mp51 vdd tc i5 tc PMOS_RVT nfin=5
+Mp52 i5 te e4 te PMOS_RVT nfin=5
 Mn51 e4 tc gnd tc NMOS_RVT nfin=3
 Mn52 e4 te gnd te NMOS_RVT nfin=3
 
-Mp61 vdd nb i6 nb PMOS_RVT nfin=3
-Mp62 i6 nd e5 nd PMOS_RVT nfin=3
+Mp61 vdd nb i6 nb PMOS_RVT nfin=5
+Mp62 i6 nd e5 nd PMOS_RVT nfin=5
 Mn61 e5 nb gnd nb NMOS_RVT nfin=3
 Mn62 e5 nd gnd nd NMOS_RVT nfin=3
 
-Mp71 vdd e4 i7 e4 PMOS_RVT nfin=3
-Mp72 i7 e5 g2 e5 PMOS_RVT nfin=3
+Mp71 vdd e4 i7 e4 PMOS_RVT nfin=5
+Mp72 i7 e5 g2 e5 PMOS_RVT nfin=5
 Mn71 g2 e4 gnd e4 NMOS_RVT nfin=3
 Mn72 g2 e5 gnd e5 NMOS_RVT nfin=3
 
