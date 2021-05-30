@@ -59,8 +59,8 @@ Mp32 i3 e2 e3 e2 PMOS_RVT nfin=5
 Mn31 e3 nc gnd nc NMOS_RVT nfin=3
 Mn32 e3 e2 gnd e2 NMOS_RVT nfin=3
 
-Mp41 vdd e1 i41 e1 PMOS_RVT nfin=3
-Mp42 i41 e3 i42 e3 PMOS_RVT nfin=3
+Mp41 vdd e1 i41 e1 PMOS_RVT nfin=5
+Mp42 i41 e3 i42 e3 PMOS_RVT nfin=5
 Mn41 i42 e1 gnd e1 NMOS_RVT nfin=3
 Mn42 i42 e3 gnd e3 NMOS_RVT nfin=3
 
