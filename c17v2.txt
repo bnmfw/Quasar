@@ -55,10 +55,10 @@ Mp42 vdd e3 g1 e3 PMOS_RVT nfin=3
 Mn41 g1 e1 i4 e1 NMOS_RVT nfin=5
 Mn42 i4 e3 gnd e3 NMOS_RVT nfin=5
 
-Mp51 vdd tc i51 tc PMOS_RVT nfin=3
-Mp52 i51 te i52 te PMOS_RVT nfin=3
-Mn51 i52 tc gnd tc NMOS_RVT nfin=5
-Mn52 i52 te gnd te NMOS_RVT nfin=5
+Mp51 vdd tc i51 tc PMOS_RVT nfin=5
+Mp52 i51 te i52 te PMOS_RVT nfin=5
+Mn51 i52 tc gnd tc NMOS_RVT nfin=3
+Mn52 i52 te gnd te NMOS_RVT nfin=3
 
 Mp53 vdd i52 e4 i52 PMOS_RVT nfin=3
 Mn53 e4 i52 gnd i52 NMOS_RVT nfin=3
