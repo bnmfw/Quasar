@@ -419,7 +419,7 @@ class Circuito():
         linha = 2
         tabela = self.nome + ".csv"
         with open(tabela, "w") as sets:
-            sets.write("nodo,saida,pulso,pulso,corrente,set,num val,validacoes->\n")
+            sets.write("Nodo,Saida,Pulso,Pulso,Corrente,LETth,Num Val,Validacoes->\n")
             for nodo in self.nodos:
                 print(nodo.LETth)
                 for saida in nodo.LETth:

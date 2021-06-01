@@ -37,8 +37,8 @@ Xinve2 vcc gnd fe te NOT
 
 Mp11 vdd ta e1 ta PMOS_RVT nfin=3
 Mp12 vdd tb e1 tb PMOS_RVT nfin=3
-Mn11 e1 ta i1 ta NMOS_RVT nfin=5
-Mn12 i1 tb gnd tb NMOS_RVT nfin=5
+Mn11 e1 ta i1 ta NMOS_RVT nfin=3
+Mn12 i1 tb gnd tb NMOS_RVT nfin=3
 
 Mp21 vdd td e2 td PMOS_RVT nfin=3
 Mp22 vdd tb e2 tb PMOS_RVT nfin=3
@@ -52,22 +52,31 @@ Mn32 i3 e2 gnd e2 NMOS_RVT nfin=3
 
 Mp41 vdd te e4 te PMOS_RVT nfin=3
 Mp42 vdd e2 e4 e2 PMOS_RVT nfin=3
-Mn41 e4 te i4 te NMOS_RVT nfin=5
-Mn42 i4 e2 gnd e2 NMOS_RVT nfin=5
+Mn41 e4 te i4 te NMOS_RVT nfin=3
+Mn42 i4 e2 gnd e2 NMOS_RVT nfin=3
 
 Mp51 vdd e1 g1 e1 PMOS_RVT nfin=3
 Mp52 vdd e3 g1 e3 PMOS_RVT nfin=3
-Mn51 g1 e1 i5 e1 NMOS_RVT nfin=5
-Mn52 i5 e3 gnd e3 NMOS_RVT nfin=5
+Mn51 g1 e1 i5 e1 NMOS_RVT nfin=3
+Mn52 i5 e3 gnd e3 NMOS_RVT nfin=3
 
 Mp61 vdd e4 g2 e4 PMOS_RVT nfin=3
 Mp62 vdd e3 g2 e3 PMOS_RVT nfin=3
-Mn61 g2 e4 i6 e4 NMOS_RVT nfin=5
-Mn62 i6 e3 gnd e3 NMOS_RVT nfin=5
+Mn61 g2 e4 i6 e4 NMOS_RVT nfin=3
+Mn62 i6 e3 gnd e3 NMOS_RVT nfin=3
+
+Mp81 vdd g1 nm1 g1 PMOS_RVT nfin=3
+Mn81 nm1 g1 gnd g1 NMOS_RVT nfin=3
+Mp82 vdd nm1 m1 nm1 PMOS_RVT nfin=3
+Mn82 m1 nm1 gnd nm1 NMOS_RVT nfin=3
+Mp91 vdd g2 nm2 g2 PMOS_RVT nfin=3
+Mn91 nm2 g2 gnd g2 NMOS_RVT nfin=3
+Mp92 vdd nm2 m2 nm2 PMOS_RVT nfin=3
+Mn92 m2 nm2 gnd nm2 NMOS_RVT nfin=3
 
 //Representação de um circuito pós benchmark
-xff1 clk g1 q1 nq1 vcc gnd DFF
-xff2 clk g2 q2 nq2 vcc gnd DFF
+xff1 clk m1 q1 nq1 vcc gnd DFF
+xff2 clk m2 q2 nq2 vcc gnd DFF
 xinv11 vcc gnd q1 nnq1 NOT
 xinv12 vcc gnd q2 nnq2 NOT  
 
