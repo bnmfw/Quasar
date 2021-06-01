@@ -288,51 +288,51 @@ class Circuito():
         arq_validacao = "val" + self.circuito
         linhas = list()
         # Leitura das linhas
-        try:
-            with open(arq_validacao, "r") as arquivo:
-                for linha in arquivo:
-                    linhas.append(linha)
-            atraso = float(linhas[0].split()[1]) * 10 ** -12
-            for nodo in self.nodos:
-                validacao = {}
-                for linha in linhas:
-                    nome, resto = linha.split(" ", 1)
-                    if nome == nodo.nome:
-                        sinais_de_entrada = resto.split()
-                        for saida in self.saidas:
-                            sinais_de_entrada.remove(saida.nome)
-                        sinais_de_entrada_1 = sinais_de_entrada[:5]
-                        for i in range(len(sinais_de_entrada_1)):
-                            try:
-                                sinais_de_entrada_1[i] = int(sinais_de_entrada_1[i])
-                            except ValueError:
-                                pass
-                        validacao[self.saidas[0].nome] = sinais_de_entrada_1
-                        sinais_de_entrada_2 = sinais_de_entrada[-5:]
-                        # Conversao de string pra inteiro
-                        for i in range(len(sinais_de_entrada_2)):
-                            try:
-                                sinais_de_entrada_2[i] = int(sinais_de_entrada_2[i])
-                            except ValueError:
-                                pass
-                        validacao[self.saidas[1].nome] = sinais_de_entrada_2
-                        break
-                # FAILSAFE QUE TEM QUE ARRUMAR DEPOIS
-                # if not len(validacao):
-                #     for saida in saidas:
-                #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
-                nodo.validacao = validacao
-        except FileNotFoundError:
-            print(len(self.nodos))
-            print(len(self.saidas))
-            print(len(self.entradas))
-            for nodo in self.nodos:
-                nodo.validacao = {}
-                for saida in self.saidas:
-                    nodo.validacao[saida.nome] = []
-                    for entrada in self.entradas:
-                        nodo.validacao[saida.nome].append("x")
-            return None
+        # try:
+        #     with open(arq_validacao, "r") as arquivo:
+        #         for linha in arquivo:
+        #             linhas.append(linha)
+        #     atraso = float(linhas[0].split()[1]) * 10 ** -12
+        #     for nodo in self.nodos:
+        #         validacao = {}
+        #         for linha in linhas:
+        #             nome, resto = linha.split(" ", 1)
+        #             if nome == nodo.nome:
+        #                 sinais_de_entrada = resto.split()
+        #                 for saida in self.saidas:
+        #                     sinais_de_entrada.remove(saida.nome)
+        #                 sinais_de_entrada_1 = sinais_de_entrada[:5]
+        #                 for i in range(len(sinais_de_entrada_1)):
+        #                     try:
+        #                         sinais_de_entrada_1[i] = int(sinais_de_entrada_1[i])
+        #                     except ValueError:
+        #                         pass
+        #                 validacao[self.saidas[0].nome] = sinais_de_entrada_1
+        #                 sinais_de_entrada_2 = sinais_de_entrada[-5:]
+        #                 # Conversao de string pra inteiro
+        #                 for i in range(len(sinais_de_entrada_2)):
+        #                     try:
+        #                         sinais_de_entrada_2[i] = int(sinais_de_entrada_2[i])
+        #                     except ValueError:
+        #                         pass
+        #                 validacao[self.saidas[1].nome] = sinais_de_entrada_2
+        #                 break
+        #         # FAILSAFE QUE TEM QUE ARRUMAR DEPOIS
+        #         # if not len(validacao):
+        #         #     for saida in saidas:
+        #         #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
+        #         nodo.validacao = validacao
+        # except FileNotFoundError:
+        print(len(self.nodos))
+        print(len(self.saidas))
+        print(len(self.entradas))
+        for nodo in self.nodos:
+            nodo.validacao = {}
+            for saida in self.saidas:
+                nodo.validacao[saida.nome] = []
+                for entrada in self.entradas:
+                    nodo.validacao[saida.nome].append("x")
+        return None
 
         self.atrasoCC = atraso
 
