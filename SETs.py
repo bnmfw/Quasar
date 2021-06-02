@@ -28,7 +28,7 @@ dias_de_simulacao = int(tempo_total / 86400)
 horas_de_simulacao = int((tempo_total % 86400) / 3600)
 minutos_de_simulacao = int((tempo_total % 3600) / 60)
 if dias_de_simulacao:
-    print(str(dias_de_simulacao) + " dias, ")
+    print(str(dias_de_simulacao) + " dias, ", end='')
 if horas_de_simulacao:
-    print(str(horas_de_simulacao) + " horas, ")
+    print(str(horas_de_simulacao) + " horas, ", end='')
 print(str(minutos_de_simulacao) + " minutos e " + str(tempo_total % 60) + " segundos de execucao\n")

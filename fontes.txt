@@ -1,5 +1,5 @@
 *Fontes de sinal a serem editadas pelo roteiro
-Va a gnd 0.0
+Va a gnd 0.4
 Vb b gnd 0.4
 Vc c gnd 0.4
 Vd d gnd 0.4
