@@ -75,19 +75,40 @@ def verificar_validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida
 
     return [True, 2]
 
+# Altera o arquivo "largura_pulso.txt"
+def escrever_largura_pulso(nodo, saida, vdd, dir_nodo, dir_saida):
+    with open("largura_pulso.txt", "w") as larg:
+        larg.write("*Arquivo com a leitura da largura dos pulsos\n")
+        tensao = str(vdd * 0.5)
+        larg.write(
+            ".meas tran atraso TRIG v("+nodo+") val='"+tensao+"' "+dir_nodo+"=1 TARG v("+saida+") val='"+tensao+"' "+dir_saida+"=1\n"
+            ".meas tran larg TRIG v("+nodo+") val='"+tensao+"' rise=1 TARG v("+nodo+") val='"+tensao+"' fall=1\n")
 
-def largura_pulso(circuito, nodo, nodo_saida, vdd, atraso):  ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
-    escrever_largura_pulso(nodo, nodo_saida, vdd)  # Determina os parametros no arquivo de leitura de largura de pulso
-    os.system("hspice " + circuito + " | grep \"pulso\" > texto.txt")
-    largura_de_pulso = ler_largura_pulso()
-    if analise_manual:
-        print("Atraso do circuito: " + str(atraso) + " Largura de pulso: " + str(largura_de_pulso))
-    if atraso < largura_de_pulso:
-        if analise_manual: print("Largura valida")
-        return largura_de_pulso
-    else:
-        if analise_manual: print("Largura invalida")
-        return 4444
+
+# Leitura do arquivo "leitura_pulso.txt"
+def ler_largura_pulso():
+    with open("texto.txt", "r") as texto:
+        atraso = texto.readline().split()
+        larg = texto.readline().split()
+    #if analise_manual: print(atraso)
+    if atraso[0][0] == "*":
+        return 0
+    if "-" in atraso[0]:
+        atraso = atraso[0].split("-")
+    atraso = ajustar_valor(atraso[1])
+
+    if larg[0][0] == "*":
+        return 0
+    if "-" in larg[0]:
+        larg = larg[0].split("-")
+    larg = ajustar_valor(larg[1])
+    return larg-atraso
+
+def largura_pulso(circuito, nodo, nodo_saida, vdd, direcao_pulso_nodo, direcao_pulso_saida):  ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
+    escrever_largura_pulso(nodo, nodo_saida, vdd, direcao_pulso_nodo, direcao_pulso_saida)  # Determina os parametros no arquivo de leitura de largura de pulso
+    os.system("hspice " + circuito + " | grep \"atraso\|larg\" > texto.txt")
+    diferenca_largura = ler_largura_pulso()
+    return diferenca_largura
 
 
 def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):
@@ -122,6 +143,23 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
     # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
     ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
 
+    # Busca binaria para largura de pulso
+    diferenca_largura = 100
+    while not (-0.05 < diferenca_largura < 0.05):
+        diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, direcao_pulso_nodo, direcao_pulso_saida)
+        if diferenca_largura > 0.05:
+            corrente_sup = corrente
+        elif diferenca_largura < -0.05:
+            corrente_inf = corrente
+        corrente = float((corrente_sup + corrente_inf) / 2)
+        print(corrente_inf, diferenca_largura)
+
+    # variaveis da busca binaria da corrente
+    corrente_sup = 500
+    corrente = 499
+    corrente_inf = corrente_inf
+
+    # Busca binaria para dar bit flip
     while not ((1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2):
 
         # Roda o HSPICE e salva os valores no arquivo de texto
@@ -180,6 +218,7 @@ class Nodo():
         self.validacao = {}
         self.LETth = {}
         self.LETth_critico = 9999
+        self.atraso = {}
 
 
 class Circuito():
@@ -264,6 +303,7 @@ class Circuito():
                                                           "rf": [9999, []],
                                                           "fr": [9999, []],
                                                           "ff": [9999, []]}
+                                nodo.atraso[saida.nome] = 1111
                             self.nodos.append(nodo)
 
     def __resetar_LETths(self):
@@ -561,25 +601,3 @@ def escrever_atraso(entrada, saida, vdd):
             ".meas tran atraso_fr TRIG v(" + entrada.nome + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
         atraso.write(
             ".meas tran largura TRIG v(" + saida + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
-
-
-# Altera o arquivo "largura_pulso.txt"
-def escrever_largura_pulso(nodo, saida, vdd):
-    with open("largura_pulso.txt", "w") as larg:
-        larg.write("*Arquivo com a leitura da lergura dos pulsos\n")
-        tensao = str(vdd * 0.5)
-        larg.write(
-            ".meas tran pulso TRIG v(" + saida + ") val='" + tensao + "' rise=1 TARG v(" + saida + ") val='" + tensao + "' fall=1\n")
-
-
-# Leitura do arquivo "leitura_pulso.txt"
-def ler_largura_pulso():
-    with open("texto.txt", "r") as larg:
-        pulso = larg.readline().split()
-    if analise_manual: print(pulso)
-    if pulso[0][0] == "*":
-        return 0
-    if "-" in pulso[0]:
-        pulso = pulso[0].split("-")
-        pulso = ajustar_valor(pulso[1])
-        return pulso
