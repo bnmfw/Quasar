@@ -105,7 +105,7 @@ def ler_largura_pulso():
     return larg-atraso
 
 def largura_pulso(circuito, nodo, nodo_saida, vdd, direcao_pulso_nodo, direcao_pulso_saida):  ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
-    escrever_largura_pulso(nodo.nome, nodo_saida, vdd, direcao_pulso_nodo, direcao_pulso_saida)  # Determina os parametros no arquivo de leitura de largura de pulso
+    escrever_largura_pulso(nodo.nome, nodo_saida.nome, vdd, direcao_pulso_nodo, direcao_pulso_saida)  # Determina os parametros no arquivo de leitura de largura de pulso
     os.system("hspice " + circuito + " | grep \"atraso\|larg\" > texto.txt")
     diferenca_largura = ler_largura_pulso()
     return diferenca_largura
