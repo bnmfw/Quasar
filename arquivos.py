@@ -156,7 +156,6 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
             corrente_inf = corrente
         corrente = float((corrente_sup + corrente_inf) / 2)
         print(corrente_inf, diferenca_largura)
-        return None
 
     # variaveis da busca binaria da corrente
     corrente_sup = 500
