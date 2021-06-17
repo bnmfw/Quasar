@@ -148,7 +148,9 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
 
     # Busca binaria para largura de pulso
     diferenca_largura = 100
+    print(-0.05*10**-9, 0.05*10**-9)
     while not (-0.05*10**-9 < diferenca_largura < 0.05*10**-9):
+        #
         diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
         if diferenca_largura > 0.05:
             corrente_sup = corrente
