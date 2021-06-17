@@ -1,4 +1,5 @@
 import os
+import time
 
 analise_manual = False
 
@@ -138,7 +139,7 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
 
     # variaveis da busca binaria da corrente
     corrente_sup = 500
-    corrente = 499
+    corrente = 499.5
     corrente_inf = 0
 
     # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
@@ -154,6 +155,7 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
             corrente_inf = corrente
         corrente = float((corrente_sup + corrente_inf) / 2)
         print(corrente_inf, diferenca_largura)
+        return None
 
     # variaveis da busca binaria da corrente
     corrente_sup = 500
