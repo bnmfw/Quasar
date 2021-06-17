@@ -103,6 +103,7 @@ def ler_largura_pulso():
     if "-" in larg[0]:
         larg = larg[0].split("-")
     larg = ajustar_valor(larg[1])
+    print(larg, atraso, larg-atraso)
     return larg-atraso
 
 def largura_pulso(circuito, nodo, nodo_saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida):  ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
