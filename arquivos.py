@@ -154,16 +154,18 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
 
     # Busca binaria para largura de pulso
     diferenca_largura = 100
-    print(-0.5*10**-9, 0.5*10**-9)
+    precisao_largura = 1
+    precisao_largura = precisao_largura * 10 ** -9
+    print(-precisao_largura, precisao_largura)
     while (diferenca_largura == "pulso_muito_pequeno") or not (-0.05*10**-9 < diferenca_largura < 0.05*10**-9):
         #
         diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
         print("1.",diferenca_largura)
         if diferenca_largura == "pulso_muito_pequeno": #Caso que o pulso foi tao pequeno que o atraso sequer foi medido
             corrente_inf = corrente
-        elif diferenca_largura > 0.05*10**-9:
+        elif diferenca_largura > precisao_largura:
             corrente_sup = corrente
-        elif diferenca_largura < -0.05*10**-9:
+        elif diferenca_largura < -precisao_largura:
             corrente_inf = corrente
         print("2.", diferenca_largura)
         print("corrente: ", corrente)
