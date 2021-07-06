@@ -95,13 +95,13 @@ def ler_largura_pulso():
         print(larg)
     #if analise_manual: print(atraso)
     if atraso[0][0] == "*":
-        return "pmp" #pulso muito pequeno
+        return "pulso_muito_pequeno" #pulso muito pequeno
     if "-" in atraso[0]:
         atraso = atraso[0].split("-")
     atraso = ajustar_valor(atraso[1])
 
     if larg[0][0] == "*":
-        return "pmp" #pulso muito pequeno
+        return "pulso_muito_pequeno" #pulso muito pequeno
     if "-" in larg[0]:
         larg = larg[0].split("-")
     larg = ajustar_valor(larg[1])
@@ -155,11 +155,11 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
     # Busca binaria para largura de pulso
     diferenca_largura = 100
     print(-0.05*10**-9, 0.05*10**-9)
-    while not (-0.05*10**-9 < diferenca_largura < 0.05*10**-9):
+    while (diferenca_largura == "pulso_muito_pequeno") or not (-0.05*10**-9 < diferenca_largura < 0.05*10**-9):
         #
         diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
         print("1.",diferenca_largura)
-        if diferenca_largura == "pmp": #Caso que o pulso foi tao pequeno que o atraso sequer foi medido
+        if diferenca_largura == "pulso_muito_pequeno": #Caso que o pulso foi tao pequeno que o atraso sequer foi medido
             corrente_inf = corrente
         elif diferenca_largura > 0.05*10**-9:
             corrente_sup = corrente
