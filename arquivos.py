@@ -107,11 +107,14 @@ def ler_largura_pulso():
     return larg-atraso
 
 def largura_pulso(circuito, nodo, nodo_saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida):  ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
-    print("rotina de largura_pulso")
+    print("\nRotina de largura_pulso")
     escrever_largura_pulso(nodo.nome, nodo_saida.nome, vdd, direcao_pulso_nodo, direcao_pulso_saida)  # Determina os parametros no arquivo de leitura de largura de pulso
+    print("Largura escrita")
     ajustar_pulso("SETs.txt", nodo, corrente, nodo_saida, direcao_pulso_nodo)
+    print("Pulso ajustado")
     os.system("hspice " + circuito + " | grep \"atraso\|larg\" > texto.txt")
     diferenca_largura = ler_largura_pulso()
+    print("Diferenca lida\n")
     return diferenca_largura
 
 
@@ -159,9 +162,8 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
         elif diferenca_largura < -0.05*10**-9:
             corrente_inf = corrente
         print("2.", diferenca_largura)
-        print("sup: ",corrente_sup,"inf: ",corrente_inf)
         corrente = float((corrente_sup + corrente_inf) / 2)
-        print("corrente",corrente_inf)
+        print("corrente: ",corrente)
 
     print("PULSO MINIMO ENCONTRADO")
     return None
