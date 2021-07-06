@@ -140,7 +140,7 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
 
     # variaveis da busca binaria da corrente
     corrente_sup = 500
-    corrente = 499.5
+    corrente = 499
     corrente_inf = 0
 
     # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
@@ -152,12 +152,14 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
     while not (-0.05*10**-9 < diferenca_largura < 0.05*10**-9):
         #
         diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
+        print("1.",diferenca_largura)
         if diferenca_largura > 0.05*10**-9:
             corrente_sup = corrente
         elif diferenca_largura < -0.05*10**-9:
             corrente_inf = corrente
+        print("2.", diferenca_largura)
         corrente = float((corrente_sup + corrente_inf) / 2)
-        print(corrente_inf, diferenca_largura)
+        print("corrente",corrente_inf)
 
     print("PULSO MINIMO ENCONTRADO")
     return None
