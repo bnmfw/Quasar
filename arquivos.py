@@ -90,7 +90,9 @@ def escrever_largura_pulso(nodo, saida, vdd, dir_nodo, dir_saida):
 def ler_largura_pulso():
     with open("texto.txt", "r") as texto:
         atraso = texto.readline().split()
+        print(atraso)
         larg = texto.readline().split()
+        print(larg)
     #if analise_manual: print(atraso)
     if atraso[0][0] == "*":
         return 0
