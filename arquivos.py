@@ -112,6 +112,34 @@ def largura_pulso(circuito, nodo, nodo_saida, vdd, corrente, direcao_pulso_nodo,
     diferenca_largura = ler_largura_pulso()
     return diferenca_largura
 
+def encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_pulso_nodo, direcao_pulso_saida):
+    # variaveis da busca binaria da corrente
+    corrente_sup = 500
+    corrente = 499
+    corrente_inf = 0
+
+    # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
+    ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
+
+    # Busca binaria para largura de pulso
+    diferenca_largura = 100
+    precisao_largura = 0.095
+    precisao_largura = precisao_largura * 10 ** -9
+    while (diferenca_largura == "pulso_muito_pequeno") or not (
+            -precisao_largura < diferenca_largura < precisao_largura):
+        #
+        diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
+        if diferenca_largura == "pulso_muito_pequeno":  # Caso que o pulso foi tao pequeno que o atraso sequer foi medido
+            corrente_inf = corrente
+        elif diferenca_largura > precisao_largura:
+            corrente_sup = corrente
+        elif diferenca_largura < -precisao_largura:
+            corrente_inf = corrente
+        corrente = float((corrente_sup + corrente_inf) / 2)
+        print(corrente)
+
+    print("PULSO MINIMO ENCONTRADO")
+    return corrente
 
 def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):
     radiacao = "SETs.txt"
@@ -139,34 +167,8 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
 
     # variaveis da busca binaria da corrente
     corrente_sup = 500
-    corrente = 499
-    corrente_inf = 0
-
-    # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
-    ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
-
-    # Busca binaria para largura de pulso
-    diferenca_largura = 100
-    precisao_largura = 0.095
-    precisao_largura = precisao_largura * 10 ** -9
-    while (diferenca_largura == "pulso_muito_pequeno") or not (-precisao_largura < diferenca_largura < precisao_largura):
-        #
-        diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
-        if diferenca_largura == "pulso_muito_pequeno": #Caso que o pulso foi tao pequeno que o atraso sequer foi medido
-            corrente_inf = corrente
-        elif diferenca_largura > precisao_largura:
-            corrente_sup = corrente
-        elif diferenca_largura < -precisao_largura:
-            corrente_inf = corrente
-        corrente = float((corrente_sup + corrente_inf) / 2)
-        print(corrente)
-
-    print("PULSO MINIMO ENCONTRADO")
-
-    # variaveis da busca binaria da corrente
-    corrente_sup = 500
-    corrente = 499
-    corrente_inf = corrente_inf
+    corrente_inf = encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_pulso_nodo, direcao_pulso_saida)
+    corrente = corrente_inf
 
     # Busca binaria para dar bit flip
     while not ((1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2):
@@ -189,6 +191,14 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
             else:
                 print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
                 return [3333, simulacoes_feitas]
+
+        elif corrente_sup-corrente_inf < 1:
+            if 1 < corrente < 499:
+                print("Corrente encontrada - Aproximacao nao convencional\n")
+                return [corrente, simulacoes_feitas]
+            else:
+                print("Corrente nao encontrada - Aproximacao extrema\n")
+                return [5555, simulacoes_feitas]
 
         # Busca binaria
         elif direcao_pulso_saida == "fall":
