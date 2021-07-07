@@ -130,7 +130,7 @@ def encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_puls
             -precisao_largura < diferenca_largura < precisao_largura):
         #
         diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
-        if corrente - corrente_anterior < 5:
+        if abs(corrente - corrente_anterior) < 5:
             print("PULSO MINIMO ENCONTRADO")
             return corrente
         elif diferenca_largura == "pulso_muito_pequeno":  # Caso que o pulso foi tao pequeno que o atraso sequer foi medido
@@ -140,6 +140,7 @@ def encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_puls
         elif diferenca_largura < -precisao_largura:
             corrente_inf = corrente
         corrente = float((corrente_sup + corrente_inf) / 2)
+        print(corrente)
 
     print("PULSO MINIMO ENCONTRADO")
     return corrente
