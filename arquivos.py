@@ -90,9 +90,7 @@ def escrever_largura_pulso(nodo, saida, vdd, dir_nodo, dir_saida):
 def ler_largura_pulso():
     with open("texto.txt", "r") as texto:
         atraso = texto.readline().split()
-        print(atraso)
         larg = texto.readline().split()
-        print(larg)
     #if analise_manual: print(atraso)
     if atraso[0][0] == "*":
         return "pulso_muito_pequeno" #pulso muito pequeno
@@ -105,18 +103,13 @@ def ler_largura_pulso():
     if "-" in larg[0]:
         larg = larg[0].split("-")
     larg = ajustar_valor(larg[1])
-    print(larg, atraso, larg-atraso)
     return larg-atraso
 
 def largura_pulso(circuito, nodo, nodo_saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida):  ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
-    print("\nRotina de largura_pulso")
     escrever_largura_pulso(nodo.nome, nodo_saida.nome, vdd, direcao_pulso_nodo, direcao_pulso_saida)  # Determina os parametros no arquivo de leitura de largura de pulso
-    print("Largura escrita")
     ajustar_pulso("SETs.txt", nodo, corrente, nodo_saida, direcao_pulso_nodo)
-    print("Pulso ajustado")
     os.system("hspice " + circuito + " | grep \"atraso\|larg\" > texto.txt")
     diferenca_largura = ler_largura_pulso()
-    print("Diferenca lida\n")
     return diferenca_largura
 
 
@@ -160,15 +153,12 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
     while (diferenca_largura == "pulso_muito_pequeno") or not (-precisao_largura < diferenca_largura < precisao_largura):
         #
         diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
-        print("1.",diferenca_largura)
         if diferenca_largura == "pulso_muito_pequeno": #Caso que o pulso foi tao pequeno que o atraso sequer foi medido
             corrente_inf = corrente
         elif diferenca_largura > precisao_largura:
             corrente_sup = corrente
         elif diferenca_largura < -precisao_largura:
             corrente_inf = corrente
-        print("2.", diferenca_largura)
-        print("corrente: ", corrente)
         corrente = float((corrente_sup + corrente_inf) / 2)
 
     print("PULSO MINIMO ENCONTRADO")
