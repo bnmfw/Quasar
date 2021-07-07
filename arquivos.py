@@ -40,6 +40,7 @@ def ajustar_valor(tensao):
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
 def verificar_validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
     ajustar_pulso(arqv_radiacao, nodo, 0.0, saida, direcao_pulso_nodo)
+    print("Verificacao de tensao: ", end='')
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
     tensao_pico_saida = ler_pulso(direcao_pulso_saida, 0)
     tensao_pico_nodo = ler_pulso(direcao_pulso_nodo, 2)
@@ -58,6 +59,7 @@ def verificar_validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida
         return [False, 1]
 
     ajustar_pulso(arqv_radiacao, nodo, 499.0, saida, direcao_pulso_nodo)
+    print("Verificacao de pulso: ", end='')
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
     tensao_pico_saida = ler_pulso(direcao_pulso_saida, 0)
     tensao_pico_nodo = ler_pulso(direcao_pulso_nodo, 2)
