@@ -117,7 +117,7 @@ def encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_puls
     corrente_sup = 500
     corrente = 499
     corrente_inf = 0
-    corrente_anterior = corrente
+    corrente_anterior = 0
 
     # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
     ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
@@ -139,8 +139,8 @@ def encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_puls
             corrente_sup = corrente
         elif diferenca_largura < -precisao_largura:
             corrente_inf = corrente
+        corrente_anterior = corrente
         corrente = float((corrente_sup + corrente_inf) / 2)
-        print(corrente)
 
     print("PULSO MINIMO ENCONTRADO")
     return corrente
