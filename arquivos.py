@@ -149,7 +149,6 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
     diferenca_largura = 100
     precisao_largura = 0.08
     precisao_largura = precisao_largura * 10 ** -9
-    print(-precisao_largura, precisao_largura)
     while (diferenca_largura == "pulso_muito_pequeno") or not (-precisao_largura < diferenca_largura < precisao_largura):
         #
         diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
@@ -160,6 +159,7 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
         elif diferenca_largura < -precisao_largura:
             corrente_inf = corrente
         corrente = float((corrente_sup + corrente_inf) / 2)
+        print(corrente,"\n")
 
     print("PULSO MINIMO ENCONTRADO")
     return None
