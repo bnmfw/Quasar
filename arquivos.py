@@ -174,6 +174,7 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
     # variaveis da busca binaria da corrente
     corrente_sup = 500
     corrente_inf = encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_pulso_nodo, direcao_pulso_saida)
+    return None
     corrente = corrente_inf
 
     # Busca binaria para dar bit flip
