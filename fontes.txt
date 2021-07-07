@@ -2,5 +2,5 @@
 Va a gnd 0.0
 Vb b gnd 0.0
 Vc c gnd 0.0
-Vd d gnd 0.0
+Vd d gnd 0.7
 Ve e gnd 0.0
