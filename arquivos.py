@@ -108,6 +108,20 @@ class ManejadorArquivo():
             # Leitura das 4 linhas com atraso
             for i in range(4):
                 linhas_de_atraso.append(text.readline().split())
+
+                #Ajuse de leitura
+                for index, palavra in enumerate(linhas_de_atraso):
+                    if "=-" in palavra:
+                        linhas_de_atraso.append("lixo")
+                        palavra_atual = len(linhas_de_atraso)
+                        while palavra_atual>index:
+                            linhas_de_atraso[palavra_atual+1] = palavra_atual
+                        termos = palavra.split("=-")
+                        linhas_de_atraso[index + 1] = termos[1]
+                        linhas_de_atraso[index] = termos[0]
+
+
+                #Retorno por erro
                 if linhas_de_atraso[i][0][0] == "*":
                     # print(linhas_de_atraso[i][0])
                     return [0, 0, 0, 0]
