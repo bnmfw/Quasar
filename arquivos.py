@@ -449,7 +449,6 @@ class Circuito():
 
                     # Etapa de medicao de atraso
                     entrada.sinal = "atraso"
-                    for entrada in self.entradas:
                     MA.set_delay_param(entrada, saida, self.vdd)
                     MA.set_signals(self.vdd, self.entradas)
                     os.system(
