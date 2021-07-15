@@ -132,12 +132,14 @@ class ManejadorArquivo():
 
                 atrasos.append(linhas_de_atraso[i][1])  # salva os 4 atrasos
                 atrasos[i] = ajustar_valor(atrasos[i])
-            linhas_de_atraso.append(text.readline().split())
-            largura_pulso_saida = linhas_de_atraso[4][1]
-            largura_pulso_saida = abs(ajustar_valor(largura_pulso_saida))
-            if largura_pulso_saida < 1 * 10 ** -9:  # Largura de pulso menor que 1 nanosegundo
-                # print("Pulso menor que 1 nano",largura_pulso_saida)
-                return [0, 0, 0, 0]
+
+            # linhas_de_atraso.append(text.readline().split())
+            # largura_pulso_saida = linhas_de_atraso[4][1]
+            # largura_pulso_saida = abs(ajustar_valor(largura_pulso_saida))
+            # if largura_pulso_saida < 1 * 10 ** -9:  # Largura de pulso menor que 1 nanosegundo
+            #     # print("Pulso menor que 1 nano",largura_pulso_saida)
+            #     return [0, 0, 0, 0]
+
         return atrasos
 
     # Leitura do arquivo "leitura_pulso.txt"
