@@ -159,7 +159,8 @@ class ManejadorArquivo():
         if "-" in larg[0]:
             larg = larg[0].split("-")
         larg = ajustar_valor(larg[1])
-        return larg - atraso
+        return larg - ajustar_valor("18.6p")
+        #return larg - atraso
 
 MA = ManejadorArquivo()
 
@@ -400,7 +401,7 @@ class Circuito():
     def analise_total(self, vdd):
         self.vdd = vdd
         MA.set_vdd(vdd)
-        self.__get_atrasoCC()
+        #self.__get_atrasoCC()
         self.__ler_validacao()
         self.__determinar_LETths()
         self.__gerar_relatorio_csv()
