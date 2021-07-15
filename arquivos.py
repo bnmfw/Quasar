@@ -423,10 +423,11 @@ class Circuito():
                     binary = list()
                     for j in range((len(self.entradas) - 1) - (len(binario) - 2)): binary.append(0)
                     for j in range(len(binario) - 2): binary.append(int(binario[j + 2]))
-                    for index, entrada_qq in enumerate(self.entradas):
-                        print(binary, index)
+                    flag = 0
+                    for entrada_qq in self.entradas:
                         if entrada_qq != entrada:
-                            entrada_qq.sinal = binary[index]
+                            entrada_qq.sinal = binary[flag]
+                            flag += 1
 
                     for entrada in self.entradas:
                         print(entrada.sinal, end = " ")
