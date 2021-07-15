@@ -461,6 +461,7 @@ class Circuito():
                     # if entradaAnalisada.nome == "a":
                     #    print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
                     if atraso[0] > atraso[1]: paridade = 1
+                    print(atraso)
                     maior_atraso = max(atraso[0 + paridade], atraso[2 + paridade])
                     print(maior_atraso, self.entradas[0].sinal, self.entradas[1].sinal, self.entradas[2].sinal,
                           self.entradas[3].sinal, self.entradas[4].sinal)
