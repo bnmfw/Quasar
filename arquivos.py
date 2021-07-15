@@ -8,6 +8,22 @@ class ManejadorArquivo():
         pass
 
     # Escreve vdd no arquivo "vdd.txt"
+    def split_spice(self, linha):
+        lista = []
+        split_nativo = linha.split()
+        # Ajuse de leitura
+        for index, palavra in enumerate(split_nativo):
+            if "=-" in palavra:
+                index_atual = len(split_nativo)
+                split_nativo.append("lixo")
+                while index_atual > index:
+                    split_nativo[index_atual + 1] = split_nativo[index_atual]
+                    index_atual -= 1
+                termos = palavra.split("=-")
+                split_nativo[index + 1] = termos[1]
+                split_nativo[index] = termos[0]
+        return lista
+
     def set_vdd(self, vdd):
         with open("vdd.txt", "w") as arquivo_vdd:
             arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
@@ -107,19 +123,7 @@ class ManejadorArquivo():
         with open("texto.txt", "r") as text:
             # Leitura das 4 linhas com atraso
             for i in range(4):
-                linhas_de_atraso.append(text.readline().split())
-
-                #Ajuse de leitura
-                for index, palavra in enumerate(linhas_de_atraso):
-                    if "=-" in palavra:
-                        linhas_de_atraso.append("lixo")
-                        palavra_atual = len(linhas_de_atraso)
-                        while palavra_atual>index:
-                            linhas_de_atraso[palavra_atual+1] = palavra_atual
-                        termos = palavra.split("=-")
-                        linhas_de_atraso[index + 1] = termos[1]
-                        linhas_de_atraso[index] = termos[0]
-
+                linhas_de_atraso.append(self.split_spice(text.readline()))
 
                 #Retorno por erro
                 if linhas_de_atraso[i][0][0] == "*":
