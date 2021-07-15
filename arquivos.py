@@ -377,6 +377,7 @@ class Circuito():
 
     def analise_total(self, vdd):
         MA.set_vdd(vdd)
+        self.__get_atrasoCC()
         self.__ler_validacao()
         self.__determinar_LETths()
         self.__gerar_relatorio_csv()
@@ -410,6 +411,7 @@ class Circuito():
 
     def __get_atrasoCC(self):
         simulacoes_feitas = 0
+        maior_atraso = 0
         for entrada in self.entradas:
             for saida in self.saidas:
                 for i in range(2 ** (len(self.entradas) - 1)):
@@ -445,6 +447,8 @@ class Circuito():
                         entrada.atraso[1] = [self.entradas[0].sinal, self.entradas[1].sinal, self.entradas[2].sinal,
                                                        self.entradas[3].sinal, self.entradas[4].sinal]
                 print("Atraso encontrado para " + entrada.nome + " em " + saida)
+        print(maior_atraso)
+        return maior_atraso
 
     def __instanciar_nodos(self):
         ##### SAIDAS #####
