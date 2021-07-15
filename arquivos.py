@@ -429,11 +429,10 @@ class Circuito():
                             entrada_qq.sinal = binary[flag]
                             flag += 1
 
-                    for entrada in self.entradas:
-                        print(entrada.sinal, end = " ")
-
                     # Etapa de medicao de atraso
                     entrada.sinal = "atraso"
+                    for entrada in self.entradas:
+                        print(entrada.sinal, end = " ")
                     MA.set_delay_param(entrada, saida, self.vdd)
                     MA.set_signals(self.vdd, self.entradas)
                     os.system(
