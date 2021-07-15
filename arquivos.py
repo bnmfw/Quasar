@@ -366,6 +366,7 @@ class Circuito():
         self.entradas = []
         self.saidas = []
         self.nodos = []
+        self.vdd = 0
 
         self.atrasoCC = 0
         self.simulacoes_feitas = 0
@@ -376,6 +377,7 @@ class Circuito():
         self.__instanciar_nodos()
 
     def analise_total(self, vdd):
+        self.vdd = vdd
         MA.set_vdd(vdd)
         self.__get_atrasoCC()
         self.__ler_validacao()
