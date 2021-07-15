@@ -49,6 +49,7 @@ class ManejadorArquivo():
         with open("atraso.txt", "w") as atraso:
             atraso.write("*Arquivo com atraso a ser medido\n")
             tensao = str(vdd * 0.5)
+            saida = saida.nome
             atraso.write(
                 ".meas tran atraso_rr TRIG v(" + entrada.nome + ") val='" + tensao + "' rise=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
             atraso.write(
