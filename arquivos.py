@@ -9,7 +9,6 @@ class ManejadorArquivo():
 
     # Escreve vdd no arquivo "vdd.txt"
     def split_spice(self, linha):
-        lista = []
         split_nativo = linha.split()
         # Ajuse de leitura
         for index, palavra in enumerate(split_nativo):
@@ -22,7 +21,7 @@ class ManejadorArquivo():
                 termos = palavra.split("=-")
                 split_nativo[index + 1] = termos[1]
                 split_nativo[index] = termos[0]
-        return lista
+        return split_nativo
 
     def set_vdd(self, vdd):
         with open("vdd.txt", "w") as arquivo_vdd:
