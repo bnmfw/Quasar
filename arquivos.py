@@ -3,6 +3,144 @@ import time
 
 analise_manual = False
 
+class ManejadorArquivo():
+    def __init__(self):
+        pass
+
+    # Escreve vdd no arquivo "vdd.txt"
+    def set_vdd(self, vdd):
+        with open("vdd.txt", "w") as arquivo_vdd:
+            arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
+            arquivo_vdd.write("Vvdd vdd gnd " + str(vdd) + "\n")
+            arquivo_vdd.write("Vvcc vcc gnd " + str(vdd) + "\n")
+            arquivo_vdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
+
+    # Escreve os sinais no arquivo "fontes.txt"
+    def set_signals(self, vdd, entradas):
+        with open("fontes.txt", "w") as sinais:
+            sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
+
+            #Escreve o sinal analogico a partir do sinal logico
+            for i in range(len(entradas)):
+                sinais.write("V" + entradas[i].nome + " " + entradas[i].nome + " gnd ")
+                if entradas[i].sinal == 1: sinais.write(str(vdd) + "\n")
+                elif entradas[i].sinal == 0: sinais.write("0.0\n")
+                elif entradas[i].sinal == "atraso":
+                    sinais.write("PWL(0n 0 1n 0 1.01n " + str(vdd) + " 3n " + str(vdd) + " 3.01n 0)\n")
+                else:
+                    print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
+
+    # Escreve informacoes no arquivo "SETs.txt"
+    def set_pulse(self, nodo, corrente, saida, direcao_pulso_nodo):
+        with open("SETs.txt", "w") as sets:
+            sets.write("*SETs para serem usados nos benchmarks\n")
+            if direcao_pulso_nodo == "fall": sets.write("*")
+            sets.write("Iseu gnd " + nodo.nome + " EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //rise\n")
+            if direcao_pulso_nodo == "rise": sets.write("*")
+            sets.write("Iseu " + nodo.nome + " gnd EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //fall\n")
+            sets.write(".meas tran minout min V(" + saida.nome + ") from=1.0n to=4.0n\n")
+            sets.write(".meas tran maxout max V(" + saida.nome + ") from=1.0n to=4.0n\n")
+            # Usado apenas na verificacao de validacao:
+            sets.write(".meas tran minnod min V(" + nodo.nome + ") from=1.0n to=4.0n\n")
+            sets.write(".meas tran maxnod max V(" + nodo.nome + ") from=1.0n to=4.0n\n")
+
+    # Altera o arquivo "atraso.txt"
+    def set_delay_param(self, entrada, saida, vdd):
+        with open("atraso.txt", "w") as atraso:
+            atraso.write("*Arquivo com atraso a ser medido\n")
+            tensao = str(vdd * 0.5)
+            atraso.write(
+                ".meas tran atraso_rr TRIG v(" + entrada.nome + ") val='" + tensao + "' rise=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
+            atraso.write(
+                ".meas tran atraso_rf TRIG v(" + entrada.nome + ") val='" + tensao + "' rise=1 TARG v(" + saida + ") val='" + tensao + "' fall=1\n")
+            atraso.write(
+                ".meas tran atraso_ff TRIG v(" + entrada.nome + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' fall=1\n")
+            atraso.write(
+                ".meas tran atraso_fr TRIG v(" + entrada.nome + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
+            atraso.write(
+                ".meas tran largura TRIG v(" + saida + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
+
+    # Le a resposta do pulso no arquivo "texto.txt"
+    def get_peak_tension(self, direcao_pulso_saida, offset):
+        linha_texto = list(range(4))
+        tensao_pico = 3333
+        with open("texto.txt", "r") as text:
+            if offset:
+                linha_texto[0] = text.readline()
+                linha_texto[1] = text.readline()
+
+            linha_texto[0 + offset] = text.readline()
+            linha_de_tensao = linha_texto[0 + offset].split()
+            if len(linha_de_tensao[0]) != 7:
+                min_tensao = linha_de_tensao[0][7:]
+            else:
+                min_tensao = linha_de_tensao[1]
+
+            linha_texto[1 + offset] = text.readline()
+            linha_de_tensao = linha_texto[1 + offset].split()
+            if len(linha_de_tensao[0]) != 7:
+                max_tensao = linha_de_tensao[0][7:]
+            else:
+                max_tensao = linha_de_tensao[1]
+
+        # Converte as strings lidas em floats
+        max_tensao = ajustar_valor(max_tensao)
+        min_tensao = ajustar_valor(min_tensao)
+        if analise_manual: print("Tensao max: " + str(max_tensao) + " Tensao min: " + str(min_tensao))
+
+        # Identifica se o pico procurado e do tipo rise ou fall
+        if direcao_pulso_saida == "rise":
+            tensao_pico = max_tensao
+        elif direcao_pulso_saida == "fall":
+            tensao_pico = min_tensao
+        else:
+            print("ERRO: O TIPO DE PULSO NAO FOI IDENTIFICADO")
+
+        # retorna a tensao de pico lida
+        return tensao_pico
+
+    # Le o atraso do nodo a saida no arquivo "texto.txt"
+    def get_delay(self):
+        linhas_de_atraso = list()
+        atrasos = list()  # 0 rr, 1 rf, 2 ff, 3 fr
+        with open("texto.txt", "r") as text:
+            # Leitura das 4 linhas com atraso
+            for i in range(4):
+                linhas_de_atraso.append(text.readline().split())
+                if linhas_de_atraso[i][0][0] == "*":
+                    # print(linhas_de_atraso[i][0])
+                    return [0, 0, 0, 0]
+
+                atrasos.append(linhas_de_atraso[i][1])  # salva os 4 atrasos
+                atrasos[i] = ajustar_valor(atrasos[i])
+            linhas_de_atraso.append(text.readline().split())
+            largura_pulso_saida = linhas_de_atraso[4][1]
+            largura_pulso_saida = abs(ajustar_valor(largura_pulso_saida))
+            if largura_pulso_saida < 1 * 10 ** -9:  # Largura de pulso menor que 1 nanosegundo
+                # print("Pulso menor que 1 nano",largura_pulso_saida)
+                return [0, 0, 0, 0]
+        return atrasos
+
+    # Leitura do arquivo "leitura_pulso.txt"
+    def get_pulse_delay_validation(self):
+        with open("texto.txt", "r") as texto:
+            atraso = texto.readline().split()
+            larg = texto.readline().split()
+        # if analise_manual: print(atraso)
+        if atraso[0][0] == "*":
+            return "pulso_muito_pequeno"  # pulso muito pequeno
+        if "-" in atraso[0]:
+            atraso = atraso[0].split("-")
+        atraso = ajustar_valor(atraso[1])
+
+        if larg[0][0] == "*":
+            return "pulso_muito_pequeno"  # pulso muito pequeno
+        if "-" in larg[0]:
+            larg = larg[0].split("-")
+        larg = ajustar_valor(larg[1])
+        return larg - atraso
+
+MA = ManejadorArquivo()
 
 def converter_binario(binario, validacao, variaveis):  # Converte o binario esquisito numa lista
     final = list(validacao)
@@ -16,7 +154,6 @@ def converter_binario(binario, validacao, variaveis):  # Converte o binario esqu
             final[i] = binary[flag]
             flag += 1
     return final
-
 
 # Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
 def ajustar_valor(tensao):
@@ -36,33 +173,29 @@ def ajustar_valor(tensao):
     tensao = tensao * 10 ** grandeza
     return tensao
 
-
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
-def verificar_validacao(circuito, arqv_radiacao, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
-    ajustar_pulso(arqv_radiacao, nodo, 0.0, saida, direcao_pulso_nodo)
+def verificar_validacao(circuito, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
+    MA.set_pulse(nodo, 0.0, saida, direcao_pulso_nodo)
     print("Verificacao de tensao: ", end='')
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
-    tensao_pico_saida = ler_pulso(direcao_pulso_saida, 0)
-    tensao_pico_nodo = ler_pulso(direcao_pulso_nodo, 2)
+    tensao_pico_saida = MA.get_peak_tension(direcao_pulso_saida, 0)
+    tensao_pico_nodo = MA.get_peak_tension(direcao_pulso_nodo, 2)
+
     if analise_manual:
         print("Verificacao de Sinal: Vpico nodo: " + str(tensao_pico_nodo) + " Vpico saida: " + str(
             tensao_pico_saida) + "\n")
 
     # Leitura sem pulso
-    if direcao_pulso_saida == "rise" and tensao_pico_saida > vdd * 0.51:
-        return [False, 1]
-    elif direcao_pulso_saida == "fall" and tensao_pico_saida < vdd * 0.1:
-        return [False, 1]
-    elif direcao_pulso_nodo == "rise" and tensao_pico_nodo > vdd * 0.51:
-        return [False, 1]
-    elif direcao_pulso_nodo == "fall" and tensao_pico_nodo < vdd * 0.1:
-        return [False, 1]
+    if direcao_pulso_saida == "rise" and tensao_pico_saida > vdd * 0.51: return [False, 1]
+    elif direcao_pulso_saida == "fall" and tensao_pico_saida < vdd * 0.1: return [False, 1]
+    elif direcao_pulso_nodo == "rise" and tensao_pico_nodo > vdd * 0.51: return [False, 1]
+    elif direcao_pulso_nodo == "fall" and tensao_pico_nodo < vdd * 0.1: return [False, 1]
 
-    ajustar_pulso(arqv_radiacao, nodo, 499.0, saida, direcao_pulso_nodo)
+    MA.set_pulse(nodo, 499.0, saida, direcao_pulso_nodo)
     print("Verificacao de pulso: ", end='')
     os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
-    tensao_pico_saida = ler_pulso(direcao_pulso_saida, 0)
-    tensao_pico_nodo = ler_pulso(direcao_pulso_nodo, 2)
+    tensao_pico_saida = MA.get_peak_tension(direcao_pulso_saida, 0)
+    tensao_pico_nodo = MA.get_peak_tension(direcao_pulso_nodo, 2)
     if analise_manual:
         print("Verificacao de Pulso: Vpico nodo: " + str(tensao_pico_nodo) + " Vpico saida: " + str(
             tensao_pico_saida) + "\n")
@@ -87,34 +220,13 @@ def escrever_largura_pulso(nodo, saida, vdd, dir_nodo, dir_saida):
             ".meas tran atraso TRIG v("+nodo+") val='"+tensao+"' "+dir_nodo+"=1 TARG v("+saida+") val='"+tensao+"' "+dir_saida+"=1\n"
             ".meas tran larg TRIG v("+nodo+") val='"+tensao+"' rise=1 TARG v("+nodo+") val='"+tensao+"' fall=1\n")
 
-
-# Leitura do arquivo "leitura_pulso.txt"
-def ler_largura_pulso():
-    with open("texto.txt", "r") as texto:
-        atraso = texto.readline().split()
-        larg = texto.readline().split()
-    #if analise_manual: print(atraso)
-    if atraso[0][0] == "*":
-        return "pulso_muito_pequeno" #pulso muito pequeno
-    if "-" in atraso[0]:
-        atraso = atraso[0].split("-")
-    atraso = ajustar_valor(atraso[1])
-
-    if larg[0][0] == "*":
-        return "pulso_muito_pequeno" #pulso muito pequeno
-    if "-" in larg[0]:
-        larg = larg[0].split("-")
-    larg = ajustar_valor(larg[1])
-    return larg-atraso
-
 def largura_pulso(circuito, nodo, nodo_saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida):  ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
     escrever_largura_pulso(nodo.nome, nodo_saida.nome, vdd, direcao_pulso_nodo, direcao_pulso_saida)  # Determina os parametros no arquivo de leitura de largura de pulso
-    ajustar_pulso("SETs.txt", nodo, corrente, nodo_saida, direcao_pulso_nodo)
+    MA.set_pulse(nodo, corrente, nodo_saida, direcao_pulso_nodo)
     os.system("hspice " + circuito + " | grep \"atraso\|larg\" > texto.txt")
-    diferenca_largura = ler_largura_pulso()
-    return diferenca_largura
+    return MA.get_pulse_delay_validation()
 
-def encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_pulso_nodo, direcao_pulso_saida):
+def encontrar_corrente_minima(circuito, vdd, nodo, saida, direcao_pulso_nodo, direcao_pulso_saida):
     # variaveis da busca binaria da corrente
     corrente_sup = 500
     corrente = 499
@@ -122,7 +234,7 @@ def encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_puls
     corrente_anterior = 0
 
     # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
-    ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
+    MA.set_pulse(nodo, corrente, saida, direcao_pulso_nodo)
 
     # Busca binaria para largura de pulso
     diferenca_largura = 100
@@ -148,17 +260,16 @@ def encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_puls
     return corrente
 
 def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):
-    radiacao = "SETs.txt"
-    fontes = "fontes.txt"
 
     precisao = 0.05
 
     # Escreve a validacao no arquivo de fontes
     for i in range(len(entradas)):
         entradas[i].sinal = validacao[i]
-    definir_fontes(fontes, vdd, entradas)
+    MA.set_signals(vdd, entradas)
+
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
-    analise_valida, simulacoes_feitas = verificar_validacao(circuito, radiacao, nodo, direcao_pulso_nodo, saida,
+    analise_valida, simulacoes_feitas = verificar_validacao(circuito, nodo, direcao_pulso_nodo, saida,
                                                             direcao_pulso_saida, vdd)
     if not analise_valida:
         if simulacoes_feitas == 1:
@@ -173,8 +284,7 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
 
     # variaveis da busca binaria da corrente
     corrente_sup = 500
-    corrente_inf = encontrar_corrente_minima(circuito, vdd, radiacao, nodo, saida, direcao_pulso_nodo, direcao_pulso_saida)
-    return None
+    corrente_inf = encontrar_corrente_minima(circuito, vdd, nodo, saida, direcao_pulso_nodo, direcao_pulso_saida)
     corrente = corrente_inf
 
     # Busca binaria para dar bit flip
@@ -185,7 +295,7 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
         simulacoes_feitas += 1
 
         # Le a o pico de tensao na saida do circuito
-        tensao_pico = ler_pulso(direcao_pulso_saida, 0)
+        tensao_pico = MA.get_peak_tension(direcao_pulso_saida, 0)
 
         if analise_manual:
             print("Corrente testada: " + str(corrente) + " Resposta na saida: " + str(tensao_pico) + "\n")
@@ -199,6 +309,7 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
                 print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
                 return [3333, simulacoes_feitas]
 
+        # Encerramento por precisao satisfatoria
         elif corrente_sup-corrente_inf < 1:
             if 1 < corrente < 499:
                 print("Corrente encontrada - Aproximacao nao convencional\n")
@@ -227,8 +338,8 @@ def definir_corrente(circuito, vdd, entradas, direcao_pulso_nodo, direcao_pulso_
 
         corrente = float((corrente_sup + corrente_inf) / 2)
 
-        # Escreve os paramtros no arquivo dos SETs
-        ajustar_pulso(radiacao, nodo, corrente, saida, direcao_pulso_nodo)
+        # Escreve os parametros no arquivo dos SETs
+        MA.set_pulse(nodo, corrente, saida, direcao_pulso_nodo)
 
 
 class Entrada():
@@ -261,15 +372,11 @@ class Circuito():
         self.sets_validos = []
         self.sets_invalidos = []
 
-        self.vdd = 0.7
-        self.__definir_tensao(self.vdd)
-
         ##### MONTAGEM DO CIRCUITO #####
         self.__instanciar_nodos()
 
     def analise_total(self, vdd):
-        self.vdd = vdd
-        self.__definir_tensao(vdd)
+        MA.set_vdd(vdd)
         self.__ler_validacao()
         self.__determinar_LETths()
         self.__gerar_relatorio_csv()
@@ -280,7 +387,7 @@ class Circuito():
         while minvdd <= maxvdd + 0.0001:
             LETth_critico = 9999
             self.vdd = minvdd
-            self.__definir_tensao(minvdd)
+            MA.set_vdd(minvdd)
             self.__determinar_LETths()
             for nodo in self.nodos:
                 if nodo.LETth_critico < LETth_critico:
@@ -291,7 +398,7 @@ class Circuito():
 
     def analise_manual(self):
         analise_manual = True
-        self.vdd = float(input("vdd: "))
+        MA.set_vdd(float(input("vdd: ")))
         nodo, saida = input("nodo e saida analisados: ").split()
         pulso_in, pulso_out = input("pulsos na entrada e saida: ").split()
         nodo = Nodo(nodo)
@@ -300,6 +407,44 @@ class Circuito():
         current, simulacoes_feitas = definir_corrente(self.circuito, self.vdd, self.entradas, pulso_in, pulso_out,
                                                       nodo, saida, vetor)
         print("Corrente final: " + str(current))
+
+    def __get_atrasoCC(self):
+        simulacoes_feitas = 0
+        for entrada in self.entradas:
+            for saida in self.saidas:
+                for i in range(2 ** (len(self.entradas) - 1)):
+                    # Atribui o sinal das entradas que nao estao em analise
+                    binario = bin(i)
+                    binary = list()
+                    for j in range((len(self.entradas) - 1) - (len(binario) - 2)): binary.append(0)
+                    for j in range(len(binario) - 2): binary.append(int(binario[j + 2]))
+                    flag = 0
+                    for entrada in self.entradas:
+                        if entrada != entrada:
+                            entrada.sinal = binary[flag]
+                            flag += 1
+
+                    # Etapa de medicao de atraso
+                    entrada.sinal = "atraso"
+                    MA.set_delay_param(entrada, saida, self.vdd)
+                    MA.set_signals(self.vdd, self.entradas)
+                    os.system(
+                        "hspice " + self.circuito + " | grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
+                    simulacoes_feitas += 1
+                    atraso = MA.get_delay()
+                    paridade = 0
+                    # if entradaAnalisada.nome == "a":
+                    #    print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
+                    if atraso[0] > atraso[1]: paridade = 1
+                    maior_atraso = max(atraso[0 + paridade], atraso[2 + paridade])
+                    print(maior_atraso, self.entradas[0].sinal, self.entradas[1].sinal, self.entradas[2].sinal,
+                          self.entradas[3].sinal, self.entradas[4].sinal)
+                    if maior_atraso > entrada.atraso[0]:
+                        entrada.atraso[0] = maior_atraso
+                        entrada.atraso[1] = saida
+                        entrada.atraso[1] = [self.entradas[0].sinal, self.entradas[1].sinal, self.entradas[2].sinal,
+                                                       self.entradas[3].sinal, self.entradas[4].sinal]
+                print("Atraso encontrado para " + entrada.nome + " em " + saida)
 
     def __instanciar_nodos(self):
         ##### SAIDAS #####
@@ -340,14 +485,6 @@ class Circuito():
                                           "rf": [9999, []],
                                           "fr": [9999, []],
                                           "ff": [9999, []]}
-
-    # Escreve informacoes no arquivo "vdd.txt"
-    def __definir_tensao(self, vdd):
-        with open("vdd.txt", "w") as arquivo_vdd:
-            arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
-            arquivo_vdd.write("Vvdd vdd gnd " + str(vdd) + "\n")
-            arquivo_vdd.write("Vvcc vcc gnd " + str(vdd) + "\n")
-            arquivo_vdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
 
     # Le a validacao de um arquivo
     def __ler_validacao(self):
@@ -398,9 +535,9 @@ class Circuito():
                 nodo.validacao[saida.nome] = []
                 for entrada in self.entradas:
                     nodo.validacao[saida.nome].append("x")
-        return None
+        #return None
 
-        self.atrasoCC = atraso
+        #self.atrasoCC = atraso
 
     def __determinar_LETths(self):
         self.__resetar_LETths()
@@ -472,6 +609,7 @@ class Circuito():
         print("2222-SET invalidado em analise de pulso")
         print("3333-SET Passou validacoes anteriores mas foi mal concluido")
         print("4444-SET invalidado em validacao de largura de pulso")
+        print("5555-SET Aproximou indeterminadamente de um limite")
 
         # Retorno do numero de simulacoes feitas e de tempo de execucao
         print("\n" + str(self.simulacoes_feitas) + " simulacoes feitas\n")
@@ -514,116 +652,3 @@ class Circuito():
                 tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
 
         print("\nTabela " + self.nome + "_compara.csv" + " gerada com sucesso\n")
-
-
-# Escreve os sinais no arquivo "fontes.txt"
-def definir_fontes(fontes, vdd, entradas):
-    with open(fontes, "w") as sinais:
-        sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
-        for i in range(len(entradas)):
-            sinais.write("V" + entradas[i].nome + " " + entradas[i].nome + " gnd ")
-            if entradas[i].sinal == 1:
-                sinais.write(str(vdd) + "\n")
-            elif entradas[i].sinal == 0:
-                sinais.write("0.0\n")
-            elif entradas[i].sinal == "atraso":
-                sinais.write("PWL(0n 0 1n 0 1.01n " + str(vdd) + " 3n " + str(vdd) + " 3.01n 0)\n")
-            else:
-                print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
-
-
-# Le a resposta do pulso no arquivo "texto.txt"
-def ler_pulso(direcao_pulso_saida, offset):
-    linha_texto = list(range(4))
-    texto = "texto.txt"
-    tensao_pico = 3333
-    with open(texto, "r") as text:
-        if offset:
-            linha_texto[0] = text.readline()
-            linha_texto[1] = text.readline()
-
-        linha_texto[0 + offset] = text.readline()
-        linha_de_tensao = linha_texto[0 + offset].split()
-        if len(linha_de_tensao[0]) != 7:
-            min_tensao = linha_de_tensao[0][7:]
-        else:
-            min_tensao = linha_de_tensao[1]
-
-        linha_texto[1 + offset] = text.readline()
-        linha_de_tensao = linha_texto[1 + offset].split()
-        if len(linha_de_tensao[0]) != 7:
-            max_tensao = linha_de_tensao[0][7:]
-        else:
-            max_tensao = linha_de_tensao[1]
-
-    # Converte as strings lidas em floats
-    max_tensao = ajustar_valor(max_tensao)
-    min_tensao = ajustar_valor(min_tensao)
-    if analise_manual: print("Tensao max: " + str(max_tensao) + " Tensao min: " + str(min_tensao))
-
-    # Identifica se o pico procurado e do tipo rise ou fall
-    if direcao_pulso_saida == "rise":
-        tensao_pico = max_tensao
-    elif direcao_pulso_saida == "fall":
-        tensao_pico = min_tensao
-    else:
-        print("ERRO: O TIPO DE PULSO NAO FOI IDENTIFICADO")
-
-    # retorna a tensao de pico lida
-    return tensao_pico
-
-
-# Le o atraso do nodo a saida no arquivo "texto.txt"
-def ler_atraso(vdd):
-    texto = "texto.txt"
-    linhas_de_atraso = list()
-    atrasos = list()  # 0 rr, 1 rf, 2 ff, 3 fr
-    with open(texto, "r") as text:
-        # Leitura das 4 linhas com atraso
-        for i in range(4):
-            linhas_de_atraso.append(text.readline().split())
-            if linhas_de_atraso[i][0][0] == "*":
-                # print(linhas_de_atraso[i][0])
-                return [0, 0, 0, 0]
-
-            atrasos.append(linhas_de_atraso[i][1])  # salva os 4 atrasos
-            atrasos[i] = ajustar_valor(atrasos[i])
-        linhas_de_atraso.append(text.readline().split())
-        largura_pulso_saida = linhas_de_atraso[4][1]
-        largura_pulso_saida = abs(ajustar_valor(largura_pulso_saida))
-        if largura_pulso_saida < 1 * 10 ** -9:  # Largura de pulso menor que 1 nanosegundo
-            # print("Pulso menor que 1 nano",largura_pulso_saida)
-            return [0, 0, 0, 0]
-    return atrasos
-
-
-# Escreve informacoes no arquivo "SETs.txt"
-def ajustar_pulso(arqv_radiacao, nodo, corrente, saida, direcao_pulso_nodo):
-    with open(arqv_radiacao, "w") as sets:
-        sets.write("*SETs para serem usados nos benchmarks\n")
-        if direcao_pulso_nodo == "fall": sets.write("*")
-        sets.write("Iseu gnd " + nodo.nome + " EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //rise\n")
-        if direcao_pulso_nodo == "rise": sets.write("*")
-        sets.write("Iseu " + nodo.nome + " gnd EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //fall\n")
-        sets.write(".meas tran minout min V(" + saida.nome + ") from=1.0n to=4.0n\n")
-        sets.write(".meas tran maxout max V(" + saida.nome + ") from=1.0n to=4.0n\n")
-        # Usado apenas na verificacao de validacao:
-        sets.write(".meas tran minnod min V(" + nodo.nome + ") from=1.0n to=4.0n\n")
-        sets.write(".meas tran maxnod max V(" + nodo.nome + ") from=1.0n to=4.0n\n")
-
-
-# Altera o arquivo "atraso.txt"
-def escrever_atraso(entrada, saida, vdd):
-    with open("atraso.txt", "w") as atraso:
-        atraso.write("*Arquivo com atraso a ser medido\n")
-        tensao = str(vdd * 0.5)
-        atraso.write(
-            ".meas tran atraso_rr TRIG v(" + entrada.nome + ") val='" + tensao + "' rise=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
-        atraso.write(
-            ".meas tran atraso_rf TRIG v(" + entrada.nome + ") val='" + tensao + "' rise=1 TARG v(" + saida + ") val='" + tensao + "' fall=1\n")
-        atraso.write(
-            ".meas tran atraso_ff TRIG v(" + entrada.nome + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' fall=1\n")
-        atraso.write(
-            ".meas tran atraso_fr TRIG v(" + entrada.nome + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
-        atraso.write(
-            ".meas tran largura TRIG v(" + saida + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
