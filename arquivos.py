@@ -467,10 +467,16 @@ class Circuito():
                     if maior_atraso > entrada.atraso[0]:
                         entrada.atraso[0] = maior_atraso
                         entrada.atraso[1] = saida
-                        entrada.atraso[1] = [self.entradas[0].sinal, self.entradas[1].sinal, self.entradas[2].sinal,
-                                                       self.entradas[3].sinal, self.entradas[4].sinal]
+                        entrada.atraso[1] = [self.entradas[0].sinal,
+                                             self.entradas[1].sinal,
+                                             self.entradas[2].sinal,
+                                             self.entradas[3].sinal,
+                                             self.entradas[4].sinal]
+
+                        if maior_atraso > self.atrasoCC: self.atrasoCC = maior_atraso
+
                 print("Atraso encontrado para " + entrada.nome + " em " + saida.nome)
-        print(maior_atraso)
+        print("Atraso CC do circuito: ", self.atrasoCC)
         return maior_atraso
 
     def __instanciar_nodos(self):
