@@ -7,7 +7,7 @@ class ManejadorArquivo():
     def __init__(self):
         pass
 
-    # Escreve vdd no arquivo "vdd.txt"
+    # Maneja a leitura de linhas no arquivo spice
     def split_spice(self, linha):
         split_nativo = linha.split()
         # Ajuse de leitura
@@ -23,6 +23,7 @@ class ManejadorArquivo():
                 split_nativo[index] = termos[0]
         return split_nativo
 
+    # Escreve vdd no arquivo "vdd.txt"
     def set_vdd(self, vdd):
         with open("vdd.txt", "w") as arquivo_vdd:
             arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
@@ -468,7 +469,7 @@ class Circuito():
                         entrada.atraso[1] = saida
                         entrada.atraso[1] = [self.entradas[0].sinal, self.entradas[1].sinal, self.entradas[2].sinal,
                                                        self.entradas[3].sinal, self.entradas[4].sinal]
-                print("Atraso encontrado para " + entrada.nome + " em " + saida)
+                print("Atraso encontrado para " + entrada.nome + " em " + saida.nome)
         print(maior_atraso)
         return maior_atraso
 
