@@ -15,8 +15,8 @@ class ManejadorArquivo():
             if "=-" in palavra:
                 index_atual = len(split_nativo)
                 split_nativo.append("lixo")
-                while index_atual > index:
-                    split_nativo[index_atual + 1] = split_nativo[index_atual]
+                while index_atual > index+1:
+                    split_nativo[index_atual] = split_nativo[index_atual-1]
                     index_atual -= 1
                 termos = palavra.split("=-")
                 split_nativo[index + 1] = termos[1]
