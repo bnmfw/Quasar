@@ -378,7 +378,7 @@ class Circuito():
         print("Carregamento do Json realizado com sucesso\n")
 
     def __decodificar_de_json(self):
-        circuito_codificado = json.load(open(self.nome+"json","r"))
+        circuito_codificado = json.load(open(self.nome+".json","r"))
         #Desempacotamento dos dados
         self.vdd = circuito_codificado["vdd"]
         self.atrasoCC = circuito_codificado["atrasoCC"]
@@ -396,7 +396,7 @@ class Circuito():
 
         #Carregamento dos nodos
         for nodo in dicionario_de_nodos:
-            nodo_obj = Nodo(nodo["nome"])
+            print(dicionario_de_nodos)#nodo_obj = Nodo(nodo["nome"])
             nodo_obj.LETth = nodo["LETth"]
             nodo_obj.validacao = nodo["validacao"]
             nodo_obj.LETth_critico = nodo["LETth_critico"]
