@@ -35,7 +35,7 @@ class Circuito():
         self.saidas = []
         self.nodos = []
         self.vdd = 0
-        self.atrasoCC = 0
+        self.atrasoCC = 9999
 
         ##### RELATORIO DO CIRCUITO #####
         self.simulacoes_feitas = 0
@@ -43,7 +43,13 @@ class Circuito():
         self.sets_invalidos = []
 
         ##### MONTAGEM DO CIRCUITO #####
-        self.__instanciar_nodos()
+        escolha = None
+        while (escolha != "m" and escolha != "j"):
+            escolha = input("Instanciacao [m]anual ou por [j]son?: ")
+            if escolha == "m":
+                self.__instanciar_nodos()
+            elif escolha == "j":
+                self.__decodificar_de_json()
 
     def analise_total(self, vdd):
         self.vdd = vdd
@@ -86,8 +92,8 @@ class Circuito():
         print("Corrente final: " + str(current))
 
     def analise_monte_carlo(self):
-        # self.vdd = input("vdd: ")
-        # SR.set_vdd(float(self.vdd))
+        for nodo in self.nodos:
+            print(nodo.LETth)
         SR.set_monte_carlo(10)
         os.system("hspice " + self.arquivo)
 
@@ -368,3 +374,33 @@ class Circuito():
         circuito_codificado["atrasoCC"] = self.atrasoCC
 
         json.dump(circuito_codificado, open(self.nome+".json","w"))
+
+        print("Carregamento do Json realizado com sucesso\n")
+
+    def __decodificar_de_json(self):
+        circuito_codificado = json.load(open(self.nome+"json","r"))
+        #Desempacotamento dos dados
+        self.vdd = circuito_codificado["vdd"]
+        self.atrasoCC = circuito_codificado["atrasoCC"]
+        dicionario_de_nodos = circuito_codificado["nodos"]
+        lista_de_saidas = circuito_codificado["saidas"]
+        lista_de_entradas = circuito_codificado["entradas"]
+
+        #Carregamento das saidas
+        for saida in lista_de_saidas:
+            self.saidas.append(Nodo(saida))
+
+        #Carregamento das entradas
+        for entrada in lista_de_entradas:
+            self.entradas.append(Entrada(entrada, "t"))
+
+        #Carregamento dos nodos
+        for nodo in dicionario_de_nodos:
+            nodo_obj = Nodo(nodo["nome"])
+            nodo_obj.LETth = nodo["LETth"]
+            nodo_obj.validacao = nodo["validacao"]
+            nodo_obj.LETth_critico = nodo["LETth_critico"]
+            nodo_obj.atraso = nodo["atraso"]
+            self.nodos.append(nodo_obj)
+
+        print("Leitura do Json realizada com sucesso\n")
