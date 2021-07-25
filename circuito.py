@@ -1,6 +1,7 @@
 from arquivos import *
 from math import *
 from corrente import *
+import json
 
 class Entrada():
     def __init__(self, nome, sinal):
@@ -13,7 +14,14 @@ class Nodo():
     def __init__(self, nome):
         self.nome = nome
         self.validacao = {}
+        # self.validacao[saida.nome] = [0,0,"x",1,"t"]
+        # Eh um dicionario de vetores
         self.LETth = {}
+        # self.LETth[saida.nome] = {"rr": [valor, [//vetor com as validacoes para tal LETth//]],
+        #                           "rf": [valor, [//vetor com as validacoes para tal LETth//]],
+        #                           "fr": [valor, [//vetor com as validacoes para tal LETth//]],
+        #                           "ff": [valor, [//vetor com as validacoes para tal LETth//]]}
+        # Eh um dicionario de dicionarios
         self.LETth_critico = 9999
         self.atraso = {}
 
@@ -27,8 +35,9 @@ class Circuito():
         self.saidas = []
         self.nodos = []
         self.vdd = 0
-
         self.atrasoCC = 0
+
+        ##### RELATORIO DO CIRCUITO #####
         self.simulacoes_feitas = 0
         self.sets_validos = []
         self.sets_invalidos = []
@@ -44,6 +53,7 @@ class Circuito():
         self.__ler_validacao()
         self.__determinar_LETths()
         self.__gerar_relatorio_csv()
+        self.__codificar_para_json()
 
     def analise_tensao_comparativa(self, minvdd, maxvdd):
         SR.set_monte_carlo(0)
@@ -300,7 +310,9 @@ class Circuito():
                 print(nodo.LETth)
                 for saida in nodo.LETth:
                     for chave, combinacao in zip(["rr", "ff", "rf", "fr"],
-                                                 [["rise", "rise"], ["fall", "fall"], ["rise", "fall"],
+                                                 [["rise", "rise"],
+                                                  ["fall", "fall"],
+                                                  ["rise", "fall"],
                                                   ["fall", "rise"]]):
                         # print(saida, comb, nodo.LETth[saida])
                         if nodo.LETth[saida][chave][0] < 1111:
@@ -324,3 +336,35 @@ class Circuito():
                 tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
 
         print("\nTabela " + self.nome + "_compara.csv" + " gerada com sucesso\n")
+
+    def __codificar_para_json(self):
+        #Codificacao dos nodos
+        dicionario_de_nodos = {} #criacao do dicionario que tera o dicionario de todos os nodos
+        for nodo in self.nodos:
+            este_nodo = {} #dicionario contendo as informacoes deste nodo
+            este_nodo["nome"] = nodo.nome
+            este_nodo["validacao"] = nodo.validacao
+            este_nodo["LETth"] = nodo.LETth
+            este_nodo["LETth_critico"] = nodo.LETth_critico
+            este_nodo["atraso"] = nodo.atraso
+            dicionario_de_nodos[nodo.nome] = este_nodo
+
+        #Codificacao de entradas
+        lista_de_saidas = []
+        for saida in self.saidas:
+            lista_de_saidas.append(saida.nome)
+
+        #Codificacao de saidas
+        lista_de_entradas = []
+        for entrada in self.entradas:
+            lista_de_entradas.append(entrada.nome)
+
+        circuito_codificado = {}
+        circuito_codificado["nome"] = self.nome
+        circuito_codificado["entradas"] = lista_de_entradas
+        circuito_codificado["saidas"] = lista_de_saidas
+        circuito_codificado["nodos"] = dicionario_de_nodos
+        circuito_codificado["vdd"] = self.vdd
+        circuito_codificado["atrasoCC"] = self.atrasoCC
+
+        json.dump(circuito_codificado, open(self.nome+".json","w"))
