@@ -396,7 +396,8 @@ class Circuito():
 
         #Carregamento dos nodos
         for nodo in dicionario_de_nodos:
-            print(dicionario_de_nodos)#nodo_obj = Nodo(nodo["nome"])
+            nodo = dicionario_de_nodos[nodo]
+            nodo_obj = Nodo(nodo["nome"])
             nodo_obj.LETth = nodo["LETth"]
             nodo_obj.validacao = nodo["validacao"]
             nodo_obj.LETth_critico = nodo["LETth_critico"]
