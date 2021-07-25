@@ -4,7 +4,7 @@ from time import time
 
 tempo_inicial = time()
 
-circuito = Circuito(input("arquivo: "))
+circuito = Circuito(input("circuito: "))
 analise = None
 while not analise in ["t","c","u","m"]:
     analise = input("Total [t]\n"

@@ -90,7 +90,7 @@ class SpiceManager():
 
     # Altera o valor de simulacoes monte carlo a serem feitas
     def set_monte_carlo(self, simulacoes):
-        with open("monte_carlo.txt") as mc:
+        with open("monte_carlo.txt", "w") as mc:
             mc.write("*Arquivo Analise Monte Carlo\n")
             mc.write(".tran 0.01n 4n")
             if simulacoes: mc.write(" sweep monte="+str(simulacoes))

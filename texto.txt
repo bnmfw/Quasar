@@ -1,4 +1,57 @@
- minout= -81.8504u    at=   3.0135n
- maxout=  82.2659u    at=   3.0158n
- minnod=  -1.5459m    at=   3.0100n
- maxnod=   1.0736m    at=   2.0200n
+  **warning** (atraso.txt:2) .MEASURE  atraso_rr never reached the trigger value, Measurement failed!
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+ largura= 240.1324p  targ=   2.2724n   trig=   2.0322n
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+ largura= 104.0337p  targ=   2.1625n   trig=   2.0585n
+  **warning** (largura_pulso.txt:2) .MEASURE  atraso never reached the target value, Measurement failed!
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+   largura= failed                          trig= not found
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+   largura= failed                          trig= not found
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+ largura= 239.2805p  targ=   2.2711n   trig=   2.0318n
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+ largura=  88.7594p  targ=   2.1511n   trig=   2.0624n
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+   largura= failed                          trig= not found
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+ largura= 102.8866p  targ=   2.1615n   trig=   2.0586n
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+   largura= failed                          trig= not found
+   atraso_rr= failed                          trig= not found
+   atraso_rf= failed                          trig= not found
+   atraso_ff= failed                          trig= not found
+   atraso_fr= failed                          trig= not found
+ largura=  58.0510p  targ=   2.1325n   trig=   2.0744n
+   meas_variable = atraso_rr
+   meas_variable = atraso_rf
+   meas_variable = atraso_ff
+   meas_variable = atraso_fr
+   meas_variable = largura
