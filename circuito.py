@@ -92,8 +92,25 @@ class Circuito():
         print("Corrente final: " + str(current))
 
     def analise_monte_carlo(self):
-        for nodo in self.nodos:
-            print(nodo.LETth)
+        nodo_analisado = self.nodos[0]
+        saida_analisada = self.saidas[0]
+        for saida in nodo_analisado.LETth:
+            if saida != saida_analisada.nome: pass
+            else:
+                for orientacao in nodo_analisado.LETth[saida]:
+                    corrente = nodo_analisado.LETth[saida][orientacao][0]
+                    if corrente < 1000:
+
+                        self.__escolher_validacao(nodo_analisado.LETth[saida][orientacao][1][0])
+                        SR.set_signals(self.vdd, self.entradas)
+
+                        direcao_pulso = None
+                        if orientacao[0] == "r": direcao_pulso = "rise"
+                        elif orientacao[0] == "f": direcao_pulso = "fall"
+                        else: print("DIRECAO DE PULSO NAO IDENTIFICADA")
+
+                        SR.set_pulse(nodo_analisado, corrente, saida_analisada, direcao_pulso)
+
         SR.set_monte_carlo(10)
         os.system("hspice " + self.arquivo)
 
@@ -237,6 +254,11 @@ class Circuito():
         #return None
 
         #self.atrasoCC = atraso
+
+    def __escolher_validacao(self, validacao):
+        if len(validacao) != len(self.entradas): print("VALIDACAO INCOMPATIVEL")
+        for indice, entrada in enumerate(self.entradas):
+            entrada.sinal = validacao[indice]
 
     def __determinar_LETths(self):
         self.__resetar_LETths()
