@@ -111,6 +111,7 @@ class Circuito():
                         else: print("DIRECAO DE PULSO NAO IDENTIFICADA")
 
                         SR.set_pulse(nodo_analisado, corrente, saida_analisada, direcao_pulso)
+                    break
 
         SR.set_monte_carlo(10)
         os.system("hspice " + self.arquivo)
