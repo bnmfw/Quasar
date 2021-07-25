@@ -6,10 +6,11 @@ tempo_inicial = time()
 
 circuito = Circuito(input("arquivo: "))
 analise = None
-while not analise in ["t","c","u"]:
+while not analise in ["t","c","u","m"]:
     analise = input("Total [t]\n"
                 "Comparativa [c]\n"
                 "Unica [u]\n"
+                "Monte Carlo [m]\n"
                 "Analise desejada: ")
     if analise == "t":
         circuito.analise_total(float(input("vdd: ")))
@@ -19,6 +20,8 @@ while not analise in ["t","c","u"]:
         circuito.analise_tensao_comparativa(vddmin,vddmax)
     elif analise == "u":
         circuito.analise_manual()
+    elif analise == "m":
+        circuito.analise_monte_carlo()
     else:
         print("Entrada invalida")
 

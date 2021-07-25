@@ -12,7 +12,7 @@ Benchmark C17 V2
 ****** HSPICE ******
 
 .option measform = 3
-.option post = 2
+.option post = 0
 
 ****** Fontes de Tensão Geral ******
 
@@ -90,7 +90,7 @@ xinv12 vcc gnd q2 nnq2 NOT
 
 .include largura_pulso.txt
 .include atraso.txt
-.tran 0.01n 4n
+.include monte_carlo.txt
 
 ************
 .end

@@ -39,12 +39,14 @@ class Circuito():
     def analise_total(self, vdd):
         self.vdd = vdd
         SR.set_vdd(vdd)
+        SR.set_monte_carlo(0)
         #self.__get_atrasoCC()
         self.__ler_validacao()
         self.__determinar_LETths()
         self.__gerar_relatorio_csv()
 
     def analise_tensao_comparativa(self, minvdd, maxvdd):
+        SR.set_monte_carlo(0)
         self.__ler_validacao()
         lista_comparativa = {}
         while minvdd <= maxvdd + 0.0001:
@@ -61,6 +63,7 @@ class Circuito():
 
     def analise_manual(self):
         analise_manual = True
+        SR.set_monte_carlo(0)
         self.vdd = input("vdd: ")
         SR.set_vdd(float(self.vdd))
         nodo, saida = input("nodo e saida analisados: ").split()
@@ -71,6 +74,12 @@ class Circuito():
         current, simulacoes_feitas = definir_corrente(self, pulso_in, pulso_out,
                                                       nodo, saida, vetor)
         print("Corrente final: " + str(current))
+
+    def analise_monte_carlo(self):
+        # self.vdd = input("vdd: ")
+        # SR.set_vdd(float(self.vdd))
+        SR.set_monte_carlo(10)
+        os.system("hspice " + self.arquivo)
 
     def __get_atrasoCC(self):
         simulacoes_feitas = 0

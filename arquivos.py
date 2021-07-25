@@ -21,7 +21,7 @@ class SpiceManager():
                     split_nativo[index_atual] = split_nativo[index_atual-1]
                     index_atual -= 1
                 termos = palavra.split("=-")
-                split_nativo[index + 1] = termos[1]
+                split_nativo[index + 1] = "-"+termos[1]
                 split_nativo[index] = termos[0]
         return split_nativo
 
@@ -87,6 +87,13 @@ class SpiceManager():
             larg.write(
                 ".meas tran atraso TRIG v(" + nodo + ") val='" + tensao + "' " + dir_nodo + "=1 TARG v(" + saida + ") val='" + tensao + "' " + dir_saida + "=1\n"
                 ".meas tran larg TRIG v(" + nodo + ") val='" + tensao + "' rise=1 TARG v(" + nodo + ") val='" + tensao + "' fall=1\n")
+
+    # Altera o valor de simulacoes monte carlo a serem feitas
+    def set_monte_carlo(self, simulacoes):
+        with open("monte_carlo.txt") as mc:
+            mc.write("*Arquivo Analise Monte Carlo\n")
+            mc.write(".tran 0.01n 4n")
+            if simulacoes: mc.write(" sweep monte="+str(simulacoes))
 
     # Le a resposta do pulso no arquivo "texto.txt"
     def get_peak_tension(self, direcao_pulso_saida, offset):

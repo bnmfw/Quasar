@@ -1,6 +1,8 @@
 **** Portas logicas usando finfet ****
 
-.include 7nm_FF.pm 
+.include 7nm_FF.pm
+.param phig_var_p = gauss(4.8108, 0.05, 3)
+.param phig_var_n = gauss(4.372, 0.05, 3)
 
 **** Subcircuito TRANSMISSION ****
 
