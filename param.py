@@ -180,7 +180,7 @@ def Validar(alvo, entradas, nodos, saida, saidas):
 
     alvo.validacao.append([saida.nome, logica_entrada])
 
-# Funcao que recebe o circuito e retorna os parametros
+# Funcao que recebe o arquivo e retorna os parametros
 def Parametrar(circuito, entradas, saidas):
     # Instanciacao de todos os nodos que nao entradas
 

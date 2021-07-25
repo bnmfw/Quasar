@@ -1,9 +1,10 @@
 from arquivos import *
+from circuito import *
 from time import time
 
 tempo_inicial = time()
 
-circuito = Circuito(input("circuito: "))
+circuito = Circuito(input("arquivo: "))
 analise = None
 while not analise in ["t","c","u"]:
     analise = input("Total [t]\n"
@@ -20,6 +21,8 @@ while not analise in ["t","c","u"]:
         circuito.analise_manual()
     else:
         print("Entrada invalida")
+
+
 
 ##### RELATORIO DE TEMPO DE EXECUCAO #####
 tempo_final = time()
