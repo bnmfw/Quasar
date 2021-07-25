@@ -1,7 +1,7 @@
 import os
 import time
 
-from math import *
+from matematica import *
 
 analise_manual = False
 

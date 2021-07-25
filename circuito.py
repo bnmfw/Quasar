@@ -1,5 +1,5 @@
 from arquivos import *
-from math import *
+from matematica import converter_binario, converter_binario_lista, ajustar_valor
 from corrente import *
 import json
 
