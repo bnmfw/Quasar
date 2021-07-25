@@ -98,6 +98,7 @@ class Circuito():
             if saida != saida_analisada.nome: pass
             else:
                 for orientacao in nodo_analisado.LETth[saida]:
+                    print(orientacao)
                     corrente = nodo_analisado.LETth[saida][orientacao][0]
                     if corrente < 1000:
 
