@@ -87,7 +87,6 @@ def definir_corrente(circuito, direcao_pulso_nodo, direcao_pulso_saida, nodo, sa
     circuito = circuito.arquivo
 
     # Escreve a validacao no arquivo de fontes
-    print(entradas, validacao)
     for i in range(len(entradas)):
         entradas[i].sinal = validacao[i]
     SR.set_signals(vdd, entradas)
