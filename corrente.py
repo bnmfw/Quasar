@@ -50,7 +50,6 @@ def encontrar_corrente_minima(circuito, vdd, nodo, saida, direcao_pulso_nodo, di
     corrente_sup = 500
     corrente = 499
     corrente_inf = 0
-    corrente_anterior = 0
 
     # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
     SR.set_pulse(nodo, corrente, saida, direcao_pulso_nodo)
@@ -59,12 +58,13 @@ def encontrar_corrente_minima(circuito, vdd, nodo, saida, direcao_pulso_nodo, di
     diferenca_largura = 100
     precisao_largura = 0.05
     precisao_largura = precisao_largura * 10 ** -9
-    while (diferenca_largura == "pulso_muito_pequeno") or not (
-            -precisao_largura < diferenca_largura < precisao_largura):
+
+    # Busca binaria para corrente minima
+    while (diferenca_largura == "pulso_muito_pequeno") or not (-precisao_largura < diferenca_largura < precisao_largura):
         #
         diferenca_largura = largura_pulso(circuito, nodo, saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida)
-        if abs(corrente - corrente_anterior) < 5:
-            print("PULSO MINIMO ENCONTRADO")
+        if abs(corrente_sup - corrente_inf) < 3:
+            print("PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA")
             return corrente
         elif diferenca_largura == "pulso_muito_pequeno":  # Caso que o pulso foi tao pequeno que o atraso sequer foi medido
             corrente_inf = corrente
@@ -72,10 +72,9 @@ def encontrar_corrente_minima(circuito, vdd, nodo, saida, direcao_pulso_nodo, di
             corrente_sup = corrente
         elif diferenca_largura < -precisao_largura:
             corrente_inf = corrente
-        corrente_anterior = corrente
         corrente = float((corrente_sup + corrente_inf) / 2)
 
-    print("PULSO MINIMO ENCONTRADO")
+    print("PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA")
     return corrente
 
 def definir_corrente(circuito, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):

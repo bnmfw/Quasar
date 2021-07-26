@@ -43,27 +43,36 @@ class Circuito():
         self.sets_invalidos = []
 
         ##### MONTAGEM DO CIRCUITO #####
-        escolha = None
-        while (escolha != "m" and escolha != "j"):
-            escolha = input("Instanciacao [m]anual ou por [j]son?: ")
-            if escolha == "m":
+        self.escolha = None
+        while self.escolha != "m" and self.escolha != "j":
+            self.escolha = input("Instanciacao [m]anual ou por [j]son?: ")
+            if self.escolha == "m":
                 self.__instanciar_nodos()
-            elif escolha == "j":
-                self.__decodificar_de_json()
+            elif self.escolha == "j":
+                self.__decodificar_de_json(0)
+
+    def run(self):
+        acao = self.__escolher_geracao_de_dados()
+        if acao == "desistir": return
+        if acao[:2] == "ler":
+            self.__decodificar_de_json(float(acao[-3:]))
+        elif acao[6:] == "tudo":
+            self.analise_total(float(input("vdd: ")))
+        else:
+            self.__decodificar_de_json(0.0)
+            self.__atualizar_LETths()
 
     def analise_total(self, vdd):
         self.vdd = vdd
         SR.set_vdd(vdd)
         SR.set_monte_carlo(0)
         #self.__get_atrasoCC()
-        self.__ler_validacao()
         self.__determinar_LETths()
         self.__gerar_relatorio_csv()
         self.__codificar_para_json()
 
     def analise_tensao_comparativa(self, minvdd, maxvdd):
         SR.set_monte_carlo(0)
-        self.__ler_validacao()
         lista_comparativa = {}
         while minvdd <= maxvdd + 0.0001:
             LETth_critico = 9999
@@ -113,7 +122,7 @@ class Circuito():
                         SR.set_pulse(nodo_analisado, corrente, saida_analisada, direcao_pulso)
                     break
 
-        SR.set_monte_carlo(10)
+        SR.set_monte_carlo(int(input("Quantidade de analises: ")))
         os.system("hspice " + self.arquivo)
 
     def __get_atrasoCC(self):
@@ -204,58 +213,9 @@ class Circuito():
                                           "fr": [9999, []],
                                           "ff": [9999, []]}
 
-    # Le a validacao de um arquivo
-    def __ler_validacao(self):
-        arq_validacao = "val" + self.arquivo
-        linhas = list()
-        # Leitura das linhas
-        # try:
-        #     with open(arq_validacao, "r") as arquivo:
-        #         for linha in arquivo:
-        #             linhas.append(linha)
-        #     atraso = float(linhas[0].split()[1]) * 10 ** -12
-        #     for nodo in self.nodos:
-        #         validacao = {}
-        #         for linha in linhas:
-        #             nome, resto = linha.split(" ", 1)
-        #             if nome == nodo.nome:
-        #                 sinais_de_entrada = resto.split()
-        #                 for saida in self.saidas:
-        #                     sinais_de_entrada.remove(saida.nome)
-        #                 sinais_de_entrada_1 = sinais_de_entrada[:5]
-        #                 for i in range(len(sinais_de_entrada_1)):
-        #                     try:
-        #                         sinais_de_entrada_1[i] = int(sinais_de_entrada_1[i])
-        #                     except ValueError:
-        #                         pass
-        #                 validacao[self.saidas[0].nome] = sinais_de_entrada_1
-        #                 sinais_de_entrada_2 = sinais_de_entrada[-5:]
-        #                 # Conversao de string pra inteiro
-        #                 for i in range(len(sinais_de_entrada_2)):
-        #                     try:
-        #                         sinais_de_entrada_2[i] = int(sinais_de_entrada_2[i])
-        #                     except ValueError:
-        #                         pass
-        #                 validacao[self.saidas[1].nome] = sinais_de_entrada_2
-        #                 break
-        #         # FAILSAFE QUE TEM QUE ARRUMAR DEPOIS
-        #         # if not len(validacao):
-        #         #     for saida in saidas:
-        #         #         validacao.append([saida.nome, ["x", "x", "x", "x", "x"]])
-        #         nodo.validacao = validacao
-        # except FileNotFoundError:
-        print(len(self.nodos))
-        print(len(self.saidas))
-        print(len(self.entradas))
-        for nodo in self.nodos:
-            nodo.validacao = {}
-            for saida in self.saidas:
-                nodo.validacao[saida.nome] = []
+                nodo.validacao = {}
                 for entrada in self.entradas:
                     nodo.validacao[saida.nome].append("x")
-        #return None
-
-        #self.atrasoCC = atraso
 
     def __escolher_validacao(self, validacao):
         if len(validacao) != len(self.entradas): print("VALIDACAO INCOMPATIVEL")
@@ -311,6 +271,27 @@ class Circuito():
                             else:
                                 self.sets_invalidos.append(
                                     [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
+
+    def __atualizar_LETths(self):
+        self.simulacoes_feitas = 0
+        ##### BUSCA DO LETth DO CIRCUITO #####
+        for nodo in self.nodos:
+            for saida in self.saidas:
+                ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
+                for orientacao in nodo.LETth[saida.nome]:
+                    if nodo.LETth[saida.nome][orientacao][0] < 1000: pass
+                    else:
+                        combinacao = []
+                        if orientacao == "rr": combinacao = ["rise", "rise"]
+                        elif orientacao == "rf": combinacao = ["rise", "fall"]
+                        elif orientacao == "fr": combinacao = ["fall", "rise"]
+                        else: combinacao = ["fall", "fall"]
+                        nodo.LETth[saida.nome][orientacao][0], simulacoes = definir_corrente(self, combinacao[0],
+                                                                                             combinacao[1], nodo, saida,
+                                                                                             nodo.LETth[saida.nome][orientacao][1][0])
+                        self.simulacoes_feitas += simulacoes
+                        if nodo.LETth[saida.nome][orientacao][0] < nodo.LETth_critico:
+                            nodo.LETth_critico = nodo.LETth[saida.nome][orientacao][0]
 
     def __gerar_relatorio_csv(self):
         for sets in self.sets_validos: print(sets)
@@ -401,8 +382,34 @@ class Circuito():
 
         print("Carregamento do Json realizado com sucesso\n")
 
-    def __decodificar_de_json(self):
-        circuito_codificado = json.load(open(self.nome+".json","r"))
+    def __escolher_geracao_de_dados(self):
+        escolha = "0"
+        while not escolha.lower() in ["n", "y", "nao", "sim", "no", "yes"]:
+            escolha = input("Usar LETths do arquivo? (Se sera calculado) (y/n): ")
+        if escolha in ["n", "nao", "no"]: return "gerar_tudo"
+        tensao = None
+        while type(tensao) != float:
+            tensao = float(input("Tensao de vdd: "))
+        try:
+            with open(self.nome + "_" + str(tensao) + ".json", "r") as arquivo:
+                return "ler_"+self.nome + "_" + str(tensao) + ".json"
+            #circuito_codificado = json.load(open(self.nome + "_" + str(tensao) + ".json", "r"))
+        except FileNotFoundError:
+            gerar_novo_arquivo = "0"
+            while not gerar_novo_arquivo.lower() in ["n", "y", "nao", "sim", "no", "yes"]:
+                gerar_novo_arquivo = input(
+                    "Arquivo nao encontrado, deseja gerar (se nao o programa encerra) (y/n):")
+            if gerar_novo_arquivo in ["n", "nao", "no"]:
+                return "desistir"
+            return "gerar_"+str(tensao)
+
+    def __decodificar_de_json(self, tensao):
+        circuito_codificado = []
+        if tensao > 0.0:
+            circuito_codificado = json.load(open(self.nome+"_"+str(tensao)+".json", "r"))
+        else:
+            circuito_codificado = json.load(open(self.nome + ".json", "r"))
+
         #Desempacotamento dos dados
         self.vdd = circuito_codificado["vdd"]
         self.atrasoCC = circuito_codificado["atrasoCC"]
