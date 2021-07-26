@@ -296,6 +296,7 @@ class Circuito():
 
     def __atualizar_LETths(self):
         self.simulacoes_feitas = 0
+        print(self.nodos)
         ##### BUSCA DO LETth DO CIRCUITO #####
         for nodo in self.nodos:
             print(nodo.nome)
