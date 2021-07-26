@@ -286,6 +286,7 @@ class Circuito():
                         elif orientacao == "rf": combinacao = ["rise", "fall"]
                         elif orientacao == "fr": combinacao = ["fall", "rise"]
                         else: combinacao = ["fall", "fall"]
+                        print(nodo.LETth[saida.nome][orientacao][1][0])
                         nodo.LETth[saida.nome][orientacao][0], simulacoes = definir_corrente(self, combinacao[0],
                                                                                              combinacao[1], nodo, saida,
                                                                                              nodo.LETth[saida.nome][orientacao][1][0])
