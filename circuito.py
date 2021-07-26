@@ -54,6 +54,9 @@ class Circuito():
     def run(self):
         acao = self.__escolher_geracao_de_dados()
         print(acao)
+        print(acao[:2])
+        print(acao[6:])
+        print(acao[-3:])
         if acao == "desistir": return
         if acao[:2] == "ler":
             self.__decodificar_de_json(float(acao[-3:]))
@@ -73,7 +76,7 @@ class Circuito():
             tensao = float(input("Tensao de vdd: "))
         try:
             with open(self.nome + "_" + str(tensao) + ".json", "r") as arquivo:
-                return "ler_"+self.nome + "_" + str(tensao) + ".json"
+                return "ler_"+self.nome + "_" + str(tensao)
             #circuito_codificado = json.load(open(self.nome + "_" + str(tensao) + ".json", "r"))
         except FileNotFoundError:
             gerar_novo_arquivo = "0"
