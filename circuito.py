@@ -59,13 +59,10 @@ class Circuito():
         print(acao[-3:])
         if acao == "desistir": return
         if acao[:3] == "ler":
-            print("Leitura")
             self.__decodificar_de_json(float(acao[-3:]))
         elif acao[6:] == "tudo":
-            print("Gerando tudo")
             self.analise_total(float(input("vdd: ")))
         else:
-            print("Gerando a partir do padrao")
             self.__decodificar_de_json(0.0)
             self.__atualizar_LETths()
 
@@ -234,14 +231,14 @@ class Circuito():
 
     def __resetar_LETths(self):
         for nodo in self.nodos:
+            nodo.validacao = {}
             nodo.LETth_critico = 9999
             for saida in self.saidas:
                 nodo.LETth[saida.nome] = {"rr": [9999, []],
                                           "rf": [9999, []],
                                           "fr": [9999, []],
                                           "ff": [9999, []]}
-
-                nodo.validacao = {}
+                nodo.validacao[saida.nome] = []
                 for entrada in self.entradas:
                     nodo.validacao[saida.nome].append("x")
 
