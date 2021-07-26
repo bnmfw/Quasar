@@ -305,7 +305,7 @@ class Circuito():
             for saida in self.saidas:
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                 for orientacao in nodo.LETth[saida.nome]:
-                    if nodo.LETth[saida.nome][orientacao][0] < 1000: pass
+                    if nodo.LETth[saida.nome][orientacao][0] > 1000: pass
                     else:
                         combinacao = []
                         if orientacao == "rr": combinacao = ["rise", "rise"]
