@@ -53,6 +53,7 @@ class Circuito():
 
     def run(self):
         acao = self.__escolher_geracao_de_dados()
+        print(acao)
         if acao == "desistir": return
         if acao[:2] == "ler":
             self.__decodificar_de_json(float(acao[-3:]))
@@ -61,6 +62,27 @@ class Circuito():
         else:
             self.__decodificar_de_json(0.0)
             self.__atualizar_LETths()
+
+    def __escolher_geracao_de_dados(self):
+        escolha = "0"
+        while not escolha.lower() in ["n", "y", "nao", "sim", "no", "yes"]:
+            escolha = input("Usar LETths do arquivo? (Se sera calculado) (y/n): ")
+        if escolha in ["n", "nao", "no"]: return "gerar_tudo"
+        tensao = None
+        while type(tensao) != float:
+            tensao = float(input("Tensao de vdd: "))
+        try:
+            with open(self.nome + "_" + str(tensao) + ".json", "r") as arquivo:
+                return "ler_"+self.nome + "_" + str(tensao) + ".json"
+            #circuito_codificado = json.load(open(self.nome + "_" + str(tensao) + ".json", "r"))
+        except FileNotFoundError:
+            gerar_novo_arquivo = "0"
+            while not gerar_novo_arquivo.lower() in ["n", "y", "nao", "sim", "no", "yes"]:
+                gerar_novo_arquivo = input(
+                    "Arquivo nao encontrado, deseja gerar (se nao o programa encerra) (y/n):")
+            if gerar_novo_arquivo in ["n", "nao", "no"]:
+                return "desistir"
+            return "gerar_"+str(tensao)
 
     def analise_total(self, vdd):
         self.vdd = vdd
@@ -381,27 +403,6 @@ class Circuito():
         json.dump(circuito_codificado, open(self.nome+".json","w"))
 
         print("Carregamento do Json realizado com sucesso\n")
-
-    def __escolher_geracao_de_dados(self):
-        escolha = "0"
-        while not escolha.lower() in ["n", "y", "nao", "sim", "no", "yes"]:
-            escolha = input("Usar LETths do arquivo? (Se sera calculado) (y/n): ")
-        if escolha in ["n", "nao", "no"]: return "gerar_tudo"
-        tensao = None
-        while type(tensao) != float:
-            tensao = float(input("Tensao de vdd: "))
-        try:
-            with open(self.nome + "_" + str(tensao) + ".json", "r") as arquivo:
-                return "ler_"+self.nome + "_" + str(tensao) + ".json"
-            #circuito_codificado = json.load(open(self.nome + "_" + str(tensao) + ".json", "r"))
-        except FileNotFoundError:
-            gerar_novo_arquivo = "0"
-            while not gerar_novo_arquivo.lower() in ["n", "y", "nao", "sim", "no", "yes"]:
-                gerar_novo_arquivo = input(
-                    "Arquivo nao encontrado, deseja gerar (se nao o programa encerra) (y/n):")
-            if gerar_novo_arquivo in ["n", "nao", "no"]:
-                return "desistir"
-            return "gerar_"+str(tensao)
 
     def __decodificar_de_json(self, tensao):
         circuito_codificado = []
