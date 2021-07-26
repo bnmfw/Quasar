@@ -308,6 +308,8 @@ class Circuito():
                         elif orientacao == "rf": combinacao = ["rise", "fall"]
                         elif orientacao == "fr": combinacao = ["fall", "rise"]
                         else: combinacao = ["fall", "fall"]
+
+                        print(nodo.nome, saida.nome, combinacao[0], combinacao[1], nodo.LETth[saida.nome][orientacao][1][0])
                         nodo.LETth[saida.nome][orientacao][0], simulacoes = definir_corrente(self, combinacao[0],
                                                                                              combinacao[1], nodo, saida,
                                                                                              nodo.LETth[saida.nome][orientacao][1][0])
@@ -396,11 +398,11 @@ class Circuito():
 
         circuito_codificado = {}
         circuito_codificado["nome"] = self.nome
+        circuito_codificado["vdd"] = self.vdd
+        circuito_codificado["atrasoCC"] = self.atrasoCC
         circuito_codificado["entradas"] = lista_de_entradas
         circuito_codificado["saidas"] = lista_de_saidas
         circuito_codificado["nodos"] = dicionario_de_nodos
-        circuito_codificado["vdd"] = self.vdd
-        circuito_codificado["atrasoCC"] = self.atrasoCC
 
         json.dump(circuito_codificado, open(self.nome+"_"+str(self.vdd)+".json","w"))
 
@@ -416,11 +418,12 @@ class Circuito():
         circuito_codificado = []
         if tensao > 0.0:
             circuito_codificado = json.load(open(self.nome+"_"+str(tensao)+".json", "r"))
+            self.vdd = circuito_codificado["vdd"]
         else:
             circuito_codificado = json.load(open(self.nome + ".json", "r"))
+            self.vdd = tensao
 
         #Desempacotamento dos dados
-        self.vdd = circuito_codificado["vdd"]
         self.atrasoCC = circuito_codificado["atrasoCC"]
         dicionario_de_nodos = circuito_codificado["nodos"]
         lista_de_saidas = circuito_codificado["saidas"]
