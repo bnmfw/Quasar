@@ -421,7 +421,7 @@ class Circuito():
             self.vdd = circuito_codificado["vdd"]
         else:
             circuito_codificado = json.load(open(self.nome + ".json", "r"))
-            self.vdd = tensao
+            self.vdd = float(input("Insira o vdd novamente: "))
 
         #Desempacotamento dos dados
         self.atrasoCC = circuito_codificado["atrasoCC"]
