@@ -54,15 +54,18 @@ class Circuito():
     def run(self):
         acao = self.__escolher_geracao_de_dados()
         print(acao)
-        print(acao[:2])
+        print(acao[:3])
         print(acao[6:])
         print(acao[-3:])
         if acao == "desistir": return
         if acao[:3] == "ler":
+            print("Leitura")
             self.__decodificar_de_json(float(acao[-3:]))
         elif acao[6:] == "tudo":
+            print("Gerando tudo")
             self.analise_total(float(input("vdd: ")))
         else:
+            print("Gerando a partir do padrao")
             self.__decodificar_de_json(0.0)
             self.__atualizar_LETths()
 
@@ -428,7 +431,6 @@ class Circuito():
         #Carregamento das entradas
         for entrada in lista_de_entradas:
             self.entradas.append(Entrada(entrada, "t"))
-        print(self.entradas)
 
         #Carregamento dos nodos
         for nodo in dicionario_de_nodos:
