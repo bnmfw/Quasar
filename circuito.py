@@ -53,10 +53,6 @@ class Circuito():
 
     def run(self):
         acao = self.__escolher_geracao_de_dados()
-        print(acao)
-        print(acao[:3])
-        print(acao[6:])
-        print(acao[-3:])
         if acao == "desistir": return
         if acao[:3] == "ler":
             self.__decodificar_de_json(float(acao[-3:]))
@@ -302,9 +298,12 @@ class Circuito():
         self.simulacoes_feitas = 0
         ##### BUSCA DO LETth DO CIRCUITO #####
         for nodo in self.nodos:
+            print(nodo.nome)
             for saida in self.saidas:
+                print(saida.nome)
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                 for orientacao in nodo.LETth[saida.nome]:
+                    print(orientacao)
                     if nodo.LETth[saida.nome][orientacao][0] > 1000: pass
                     else:
                         combinacao = []
