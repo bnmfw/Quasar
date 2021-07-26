@@ -78,7 +78,7 @@ class Circuito():
             gerar_novo_arquivo = "0"
             while not gerar_novo_arquivo.lower() in ["n", "y", "nao", "sim", "no", "yes"]:
                 gerar_novo_arquivo = input(
-                    "Arquivo nao encontrado, deseja gerar (se nao o programa encerra) (y/n):")
+                    "Arquivo nao encontrado, deseja gerar (se nao o programa encerra) (y/n): ")
             if gerar_novo_arquivo in ["n", "nao", "no"]:
                 return "desistir"
             return "gerar_"+str(tensao)
@@ -440,5 +440,7 @@ class Circuito():
             nodo_obj.LETth_critico = nodo["LETth_critico"]
             nodo_obj.atraso = nodo["atraso"]
             self.nodos.append(nodo_obj)
+
+        print(self.nodos)
 
         print("Leitura do Json realizada com sucesso\n")
