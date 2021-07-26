@@ -432,6 +432,7 @@ class Circuito():
             self.entradas.append(Entrada(entrada, "t"))
 
         #Carregamento dos nodos
+        print(circuito_codificado)
         print(dicionario_de_nodos)
         for nodo in dicionario_de_nodos:
             nodo = dicionario_de_nodos[nodo]
