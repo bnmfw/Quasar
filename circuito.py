@@ -251,6 +251,7 @@ class Circuito():
             entrada.sinal = validacao[indice]
 
     def __determinar_LETths(self):
+        self.__instanciar_nodos()
         self.__resetar_LETths()
         self.simulacoes_feitas = 0
         self.sets_validos = []
