@@ -43,13 +43,13 @@ class Circuito():
         self.sets_invalidos = []
 
         ##### MONTAGEM DO CIRCUITO #####
-        self.escolha = None
-        while self.escolha != "m" and self.escolha != "j":
-            self.escolha = input("Instanciacao [m]anual ou por [j]son?: ")
-            if self.escolha == "m":
-                self.__instanciar_nodos()
-            elif self.escolha == "j":
-                self.__decodificar_de_json(0)
+        # self.escolha = None
+        # while self.escolha != "m" and self.escolha != "j":
+        #     self.escolha = input("Instanciacao [m]anual ou por [j]son?: ")
+        #     if self.escolha == "m":
+        #         self.__instanciar_nodos()
+        #     elif self.escolha == "j":
+        #         self.__decodificar_de_json(0)
 
     def run(self):
         acao = self.__escolher_geracao_de_dados()
