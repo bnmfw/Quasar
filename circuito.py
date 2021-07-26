@@ -296,16 +296,11 @@ class Circuito():
 
     def __atualizar_LETths(self):
         self.simulacoes_feitas = 0
-        print("dab")
-        print(self.nodos)
         ##### BUSCA DO LETth DO CIRCUITO #####
         for nodo in self.nodos:
-            print(nodo.nome)
             for saida in self.saidas:
-                print(saida.nome)
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                 for orientacao in nodo.LETth[saida.nome]:
-                    print(orientacao)
                     if nodo.LETth[saida.nome][orientacao][0] > 1000: pass
                     else:
                         combinacao = []
@@ -440,7 +435,5 @@ class Circuito():
             nodo_obj.LETth_critico = nodo["LETth_critico"]
             nodo_obj.atraso = nodo["atraso"]
             self.nodos.append(nodo_obj)
-
-        print(self.nodos)
 
         print("Leitura do Json realizada com sucesso\n")
