@@ -315,6 +315,8 @@ class Circuito():
                         if nodo.LETth[saida.nome][orientacao][0] < nodo.LETth_critico:
                             nodo.LETth_critico = nodo.LETth[saida.nome][orientacao][0]
 
+        self.__codificar_para_json()
+
     def __gerar_relatorio_csv(self):
         for sets in self.sets_validos: print(sets)
         print("\n")
@@ -400,7 +402,13 @@ class Circuito():
         circuito_codificado["vdd"] = self.vdd
         circuito_codificado["atrasoCC"] = self.atrasoCC
 
-        json.dump(circuito_codificado, open(self.nome+".json","w"))
+        json.dump(circuito_codificado, open(self.nome+"_"+str(self.vdd)+".json","w"))
+
+        try:
+            with open(self.nome+".json","r"):
+                pass
+        except FileNotFoundError:
+            json.dump(circuito_codificado, open(self.nome + ".json", "w"))
 
         print("Carregamento do Json realizado com sucesso\n")
 
