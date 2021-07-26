@@ -58,7 +58,7 @@ class Circuito():
         print(acao[6:])
         print(acao[-3:])
         if acao == "desistir": return
-        if acao[:2] == "ler":
+        if acao[:3] == "ler":
             self.__decodificar_de_json(float(acao[-3:]))
         elif acao[6:] == "tudo":
             self.analise_total(float(input("vdd: ")))
