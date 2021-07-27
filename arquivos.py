@@ -1,6 +1,3 @@
-import os
-import time
-
 from matematica import *
 
 analise_manual = False
@@ -179,5 +176,3 @@ class SpiceManager():
         larg = ajustar_valor(larg[1])
         return larg - ajustar_valor("18.6p")
         #return larg - atraso
-
-SR = SpiceManager()

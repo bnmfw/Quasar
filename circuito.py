@@ -1,32 +1,10 @@
-from arquivos import *
+from arquivos import SpiceManager
+from codificador import JsonManager
 from matematica import converter_binario, converter_binario_lista, ajustar_valor
 from corrente import *
-import json
+from components import Nodo, Entrada
 
 barra_comprida = "---------------------------"
-
-class Entrada():
-    def __init__(self, nome, sinal):
-        self.nome = nome
-        self.sinal = sinal
-        self.atraso = [0, "saida.nome", ["Vetor de validacao"]]
-
-
-class Nodo():
-    def __init__(self, nome):
-        self.nome = nome
-        self.validacao = {}
-        # self.validacao[saida.nome] = [0,0,"x",1,"t"]
-        # Eh um dicionario de vetores
-        self.LETth = {}
-        # self.LETth[saida.nome] = {"rr": [valor, [//vetor com as validacoes para tal LETth//]],
-        #                           "rf": [valor, [//vetor com as validacoes para tal LETth//]],
-        #                           "fr": [valor, [//vetor com as validacoes para tal LETth//]],
-        #                           "ff": [valor, [//vetor com as validacoes para tal LETth//]]}
-        # Eh um dicionario de dicionarios
-        self.LETth_critico = 9999
-        self.atraso = {}
-
 
 class Circuito():
     def __init__(self):
@@ -36,22 +14,17 @@ class Circuito():
         self.entradas = []
         self.saidas = []
         self.nodos = []
-        self.vdd = 0
-        self.atrasoCC = 9999
+        self.vdd: float = 0.0
+        self.atrasoCC: float = 9999.9
 
         ##### RELATORIO DO CIRCUITO #####
-        self.simulacoes_feitas = 0
+        self.simulacoes_feitas: int = 0
         self.sets_validos = []
         self.sets_invalidos = []
 
-        ##### MONTAGEM DO CIRCUITO #####
-        # self.escolha = None
-        # while self.escolha != "m" and self.escolha != "j":
-        #     self.escolha = input("Instanciacao [m]anual ou por [j]son?: ")
-        #     if self.escolha == "m":
-        #         self.__instanciar_nodos()
-        #     elif self.escolha == "j":
-        #         self.__decodificar_de_json(0)
+        ##### MANEJADORES DE ARQUIVOS #####
+        self.SM = SpiceManager()
+        self.JM = JsonManager()
 
     def run(self):
         self.__tela_inicial()
@@ -72,18 +45,18 @@ class Circuito():
             try:
                 with open(circuito+"_"+str(tensao)+".json","r") as cadastro:
                     print(barra_comprida+"\nCadastro com essa tensao encontrado")
-                    self.__decodificar_de_json(tensao, True) # LEITURA SIMPLES DO CIRCUITO
+                    self.JM.decodificar(self, tensao, True) # LEITURA SIMPLES DO CIRCUITO
             except FileNotFoundError:
                 print(barra_comprida+"\nCadastro com essa tensao nao encontrado\nGeracao sendo feita")
-                self.__decodificar_de_json(tensao, False)
+                self.JM.decodificar(self, tensao, False)
                 self.__atualizar_LETths() # ATUALIZACAO DO CIRCUITO
 
         except FileNotFoundError:
             cadastro = "0"
             while not cadastro in ["y", "n"]:
-                cadastro = input(barra_comprida+"\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n)")
+                cadastro = input(barra_comprida+"\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n) ")
             if cadastro == "y":
-                self.analise_total(float(input("vdd: "))) # GERA TODOS OS DADOS DO CIRCUITO
+                self.analise_total() # GERA TODOS OS DADOS DO CIRCUITO
             else:
                 print(barra_comprida+"\nPrograma encerrado")
                 exit()
@@ -97,7 +70,7 @@ class Circuito():
                      "4. Sair\n"
                      "Resposta: "))
         if not acao:
-            self.__gerar_relatorio_csv()
+            self.__escrever_csv_total()
         elif acao == 1:
             self.analise_monte_carlo()
         elif acao == 4:
@@ -105,22 +78,21 @@ class Circuito():
         else:
             print("Comando invalido")
 
-    def analise_total(self, vdd):
-        self.vdd = vdd
-        SR.set_vdd(vdd)
-        SR.set_monte_carlo(0)
+    def analise_total(self):
+        self.vdd = float(input("vdd: "))
+        self.SM.set_vdd(self.vdd)
+        self.SM.set_monte_carlo(0)
         #self.__get_atrasoCC()
         self.__determinar_LETths()
-        #self.__gerar_relatorio_csv()
-        self.__codificar_para_json()
+        self.JM.codificar(self)
 
     def analise_tensao_comparativa(self, minvdd, maxvdd):
-        SR.set_monte_carlo(0)
+        self.SM.set_monte_carlo(0)
         lista_comparativa = {}
         while minvdd <= maxvdd + 0.0001:
             LETth_critico = 9999
             self.vdd = minvdd
-            SR.set_vdd(minvdd)
+            self.SM.set_vdd(minvdd)
             self.__determinar_LETths()
             for nodo in self.nodos:
                 if nodo.LETth_critico < LETth_critico:
@@ -131,9 +103,9 @@ class Circuito():
 
     def analise_manual(self):
         analise_manual = True
-        SR.set_monte_carlo(0)
+        self.SM.set_monte_carlo(0)
         self.vdd = input("vdd: ")
-        SR.set_vdd(float(self.vdd))
+        self.SM.set_vdd(float(self.vdd))
         nodo, saida = input("nodo e saida analisados: ").split()
         pulso_in, pulso_out = input("pulsos na entrada e saida: ").split()
         nodo = Nodo(nodo)
@@ -155,17 +127,17 @@ class Circuito():
                     if corrente < 1000:
 
                         self.__escolher_validacao(nodo_analisado.LETth[saida][orientacao][1][0])
-                        SR.set_signals(self.vdd, self.entradas)
+                        self.SM.set_signals(self.vdd, self.entradas)
 
                         direcao_pulso = None
                         if orientacao[0] == "r": direcao_pulso = "rise"
                         elif orientacao[0] == "f": direcao_pulso = "fall"
                         else: print("DIRECAO DE PULSO NAO IDENTIFICADA")
 
-                        SR.set_pulse(nodo_analisado, corrente, saida_analisada, direcao_pulso)
+                        self.SM.set_pulse(nodo_analisado, corrente, saida_analisada, direcao_pulso)
                     break
 
-        SR.set_monte_carlo(int(input("Quantidade de analises: ")))
+        self.SM.set_monte_carlo(int(input(f"{barra_comprida}\nQuantidade de analises: ")))
         os.system("hspice " + self.arquivo + "| grep \"minout\|maxout\" > texto.txt")
         print("Analise monte carlo realizada com sucesso")
 
@@ -188,12 +160,12 @@ class Circuito():
                     # SINAIS AQUI OU SAO INTEIROS OU ATRASO
 
                     # Etapa de medicao de atraso
-                    SR.set_delay_param(entrada_analisada, saida, self.vdd)
-                    SR.set_signals(self.vdd, self.entradas)
+                    self.SM.set_delay_param(entrada_analisada, saida, self.vdd)
+                    self.SM.set_signals(self.vdd, self.entradas)
                     os.system(
                         "hspice " + self.arquivo + " | grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
                     simulacoes_feitas += 1
-                    atraso = SR.get_delay()
+                    atraso = self.SM.get_delay()
                     paridade = 0
                     # if entradaAnalisada.nome == "a":
                     #    print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
@@ -340,7 +312,7 @@ class Circuito():
                         if nodo.LETth[saida.nome][orientacao][0] < nodo.LETth_critico:
                             nodo.LETth_critico = nodo.LETth[saida.nome][orientacao][0]
 
-        self.__codificar_para_json()
+        self.JM.codificar(self)
 
     def __gerar_relatorio_csv(self):
         # for sets in self.sets_validos: print(sets)
@@ -356,7 +328,6 @@ class Circuito():
         # # Retorno do numero de simulacoes feitas e de tempo de execucao
         # print("\n" + str(self.simulacoes_feitas) + " simulacoes feitas\n")
         self.__escrever_csv_total()
-        print("CSV GERADO COM SUCESSO")
 
     def __escrever_csv_total(self):
         linha = 2
@@ -393,78 +364,3 @@ class Circuito():
                 tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
 
         print("\nTabela " + self.nome + "_compara.csv" + " gerada com sucesso\n")
-
-    def __codificar_para_json(self):
-        #Codificacao dos nodos
-        dicionario_de_nodos = {} #criacao do dicionario que tera o dicionario de todos os nodos
-        for nodo in self.nodos:
-            este_nodo = {} #dicionario contendo as informacoes deste nodo
-            este_nodo["nome"] = nodo.nome
-            este_nodo["validacao"] = nodo.validacao
-            este_nodo["LETth"] = nodo.LETth
-            este_nodo["LETth_critico"] = nodo.LETth_critico
-            este_nodo["atraso"] = nodo.atraso
-            dicionario_de_nodos[nodo.nome] = este_nodo
-
-        #Codificacao de entradas
-        lista_de_saidas = []
-        for saida in self.saidas:
-            lista_de_saidas.append(saida.nome)
-
-        #Codificacao de saidas
-        lista_de_entradas = []
-        for entrada in self.entradas:
-            lista_de_entradas.append(entrada.nome)
-
-        circuito_codificado = {}
-        circuito_codificado["nome"] = self.nome
-        circuito_codificado["vdd"] = self.vdd
-        circuito_codificado["atrasoCC"] = self.atrasoCC
-        circuito_codificado["entradas"] = lista_de_entradas
-        circuito_codificado["saidas"] = lista_de_saidas
-        circuito_codificado["nodos"] = dicionario_de_nodos
-
-        json.dump(circuito_codificado, open(self.nome+"_"+str(self.vdd)+".json","w"))
-
-        try:
-            with open(self.nome+".json","r"):
-                pass
-        except FileNotFoundError:
-            json.dump(circuito_codificado, open(self.nome + ".json", "w"))
-
-        print("Carregamento do Json realizado com sucesso\n")
-
-    def __decodificar_de_json(self, tensao, nao_usar_template):
-        circuito_codificado = []
-        if nao_usar_template:
-            circuito_codificado = json.load(open(self.nome+"_"+str(tensao)+".json", "r"))
-            self.vdd = circuito_codificado["vdd"]
-        else:
-            circuito_codificado = json.load(open(self.nome + ".json", "r"))
-            self.vdd = tensao
-
-        #Desempacotamento dos dados
-        self.atrasoCC = circuito_codificado["atrasoCC"]
-        dicionario_de_nodos = circuito_codificado["nodos"]
-        lista_de_saidas = circuito_codificado["saidas"]
-        lista_de_entradas = circuito_codificado["entradas"]
-
-        #Carregamento das saidas
-        for saida in lista_de_saidas:
-            self.saidas.append(Nodo(saida))
-
-        #Carregamento das entradas
-        for entrada in lista_de_entradas:
-            self.entradas.append(Entrada(entrada, "t"))
-
-        #Carregamento dos nodos
-        for nodo in dicionario_de_nodos:
-            nodo = dicionario_de_nodos[nodo]
-            nodo_obj = Nodo(nodo["nome"])
-            nodo_obj.LETth = nodo["LETth"]
-            nodo_obj.validacao = nodo["validacao"]
-            nodo_obj.LETth_critico = nodo["LETth_critico"]
-            nodo_obj.atraso = nodo["atraso"]
-            self.nodos.append(nodo_obj)
-
-        print("Leitura do Json realizada com sucesso\n")

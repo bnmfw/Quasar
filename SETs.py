@@ -1,4 +1,3 @@
-from arquivos import *
 from circuito import *
 from time import time
 
@@ -7,25 +6,6 @@ def main():
 
     circuito = Circuito()
     circuito.run()
-    # analise = None
-    # while not analise in ["t","c","u","m"]:
-    #     analise = input("Total [t]\n"
-    #                 "Comparativa [c]\n"
-    #                 "Unica [u]\n"
-    #                 "Monte Carlo [m]\n"
-    #                 "Analise desejada: ")
-    #     if analise == "t":
-    #         circuito.analise_total(float(input("vdd: ")))
-    #     elif analise == "c":
-    #         vddmin = float(input("vdd min: "))
-    #         vddmax = float(input("vdd max: "))
-    #         circuito.analise_tensao_comparativa(vddmin,vddmax)
-    #     elif analise == "u":
-    #         circuito.analise_manual()
-    #     elif analise == "m":
-    #         circuito.analise_monte_carlo()
-    #     else:
-    #         print("Entrada invalida")
 
 
 

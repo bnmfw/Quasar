@@ -1,6 +1,8 @@
 from arquivos import *
 import os
 
+SR = SpiceManager()
+
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
 def verificar_validacao(circuito, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
     SR.set_pulse(nodo, 0.0, saida, direcao_pulso_nodo)
