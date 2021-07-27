@@ -90,11 +90,12 @@ class Circuito():
 
     def __tela_principal(self):
         acao = int(input(f"{barra_comprida}\n"
-                     f"Trabalhando com o {self.nome} em {self.vdd} volts"
+                     f"Trabalhando com o {self.nome} em {self.vdd} volts\n"
                      "O que deseja fazer?\n"
-                     "0. Gerar CSV com os LETths"
-                     "1. Analise Monte Carlo"
-                     "4. Sair"))
+                     "0. Gerar CSV com os LETths\n"
+                     "1. Analise Monte Carlo\n"
+                     "4. Sair\n"
+                     "Resposta: "))
         if not acao:
             self.__gerar_relatorio_csv()
         elif acao == 1:
