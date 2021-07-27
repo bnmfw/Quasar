@@ -29,10 +29,10 @@ class Nodo():
 
 
 class Circuito():
-    def __init__(self, nome):
+    def __init__(self):
         ##### ATRIBUTOS DO CIRCUITO #####
-        self.nome = nome
-        self.arquivo = self.nome + ".txt"
+        self.nome = "nome"
+        self.arquivo = "nome.txt"
         self.entradas = []
         self.saidas = []
         self.nodos = []
@@ -54,13 +54,16 @@ class Circuito():
         #         self.__decodificar_de_json(0)
 
     def run(self):
-        # Escolha de carregamento ou cadastro
         self.__tela_inicial()
+        while True:
+            self.__tela_principal()
 
 
     def __tela_inicial(self):
         # Escolha de dados do circuito
         circuito = input(barra_comprida+"\nEscolha o circuito: ")
+        self.nome = circuito
+        self.arquivo = self.nome + ".txt"
         try:
             tensao = 0.0
             with open(circuito+".json","r") as teste:
