@@ -150,7 +150,7 @@ class Circuito():
             if saida != saida_analisada.nome: pass
             else:
                 for orientacao in nodo_analisado.LETth[saida]:
-                    print(orientacao)
+                    #print(orientacao)
                     corrente = nodo_analisado.LETth[saida][orientacao][0]
                     if corrente < 1000:
 
@@ -166,7 +166,8 @@ class Circuito():
                     break
 
         SR.set_monte_carlo(int(input("Quantidade de analises: ")))
-        os.system("hspice " + self.arquivo)
+        os.system("hspice " + self.arquivo + "| grep \"minout\|maxout\" > texto.txt")
+        print("Analise monte carlo realizada com sucesso")
 
     def __get_atrasoCC(self):
         simulacoes_feitas = 0
@@ -363,7 +364,7 @@ class Circuito():
         with open(tabela, "w") as sets:
             sets.write("Nodo,Saida,Pulso,Pulso,Corrente,LETth,Num Val,Validacoes->\n")
             for nodo in self.nodos:
-                print(nodo.LETth)
+                # print(nodo.LETth)
                 for saida in nodo.LETth:
                     for chave, combinacao in zip(["rr", "ff", "rf", "fr"],
                                                  [["rise", "rise"],
