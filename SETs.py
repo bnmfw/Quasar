@@ -5,7 +5,7 @@ from time import time
 def main():
     tempo_inicial = time()
 
-    circuito = Circuito(input("circuito: "))
+    circuito = Circuito(input("\nCircuito a ser analisado: "))
     circuito.run()
     # analise = None
     # while not analise in ["t","c","u","m"]:

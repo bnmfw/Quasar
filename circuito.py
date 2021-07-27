@@ -3,6 +3,8 @@ from matematica import converter_binario, converter_binario_lista, ajustar_valor
 from corrente import *
 import json
 
+barra_comprida = "---------------------------"
+
 class Entrada():
     def __init__(self, nome, sinal):
         self.nome = nome
@@ -52,36 +54,52 @@ class Circuito():
         #         self.__decodificar_de_json(0)
 
     def run(self):
-        acao = self.__escolher_geracao_de_dados()
-        if acao == "desistir": return
-        if acao[:3] == "ler":
-            self.__decodificar_de_json(float(acao[-3:]))
-        elif acao[6:] == "tudo":
-            self.analise_total(float(input("vdd: ")))
-        else:
-            self.__decodificar_de_json(0.0)
-            self.__atualizar_LETths()
+        # Escolha de carregamento ou cadastro
+        self.__tela_inicial()
 
-    def __escolher_geracao_de_dados(self):
-        escolha = "0"
-        while not escolha.lower() in ["n", "y", "nao", "sim", "no", "yes"]:
-            escolha = input("Usar LETths do arquivo? (Se sera calculado) (y/n): ")
-        if escolha in ["n", "nao", "no"]: return "gerar_tudo"
-        tensao = None
-        while type(tensao) != float:
-            tensao = float(input("Tensao de vdd: "))
+
+    def __tela_inicial(self):
+        # Escolha de dados do circuito
+        circuito = input(barra_comprida+"\nEscolha o circuito: ")
         try:
-            with open(self.nome + "_" + str(tensao) + ".json", "r") as arquivo:
-                return "ler_"+self.nome + "_" + str(tensao)
-            #circuito_codificado = json.load(open(self.nome + "_" + str(tensao) + ".json", "r"))
+            tensao = 0.0
+            with open(circuito+".json","r") as teste:
+                tensao = float(input(barra_comprida+"\nCadastro encontrado\nQual vdd deseja analisar: "))
+                self.vdd = tensao
+            try:
+                with open(circuito+"_"+str(tensao)+".json","r") as cadastro:
+                    print(barra_comprida+"\nCadastro com essa tensao encontrado")
+                    self.__decodificar_de_json(tensao, True) # LEITURA SIMPLES DO CIRCUITO
+            except FileNotFoundError:
+                print(barra_comprida+"\nCadastro com essa tensao nao encontrado\nGeracao sendo feita")
+                self.__decodificar_de_json(tensao, False)
+                self.__atualizar_LETths() # ATUALIZACAO DO CIRCUITO
+
         except FileNotFoundError:
-            gerar_novo_arquivo = "0"
-            while not gerar_novo_arquivo.lower() in ["n", "y", "nao", "sim", "no", "yes"]:
-                gerar_novo_arquivo = input(
-                    "Arquivo nao encontrado, deseja gerar (se nao o programa encerra) (y/n): ")
-            if gerar_novo_arquivo in ["n", "nao", "no"]:
-                return "desistir"
-            return "gerar_"+str(tensao)
+            cadastro = "0"
+            while not cadastro in ["y", "n"]:
+                cadastro = input(barra_comprida+"\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n)")
+            if cadastro == "y":
+                self.analise_total(float(input("vdd: "))) # GERA TODOS OS DADOS DO CIRCUITO
+            else:
+                print(barra_comprida+"\nPrograma encerrado")
+                exit()
+
+    def __tela_principal(self):
+        acao = int(input(f"{barra_comprida}\n"
+                     f"Trabalhando com o {self.nome} em {self.vdd} volts"
+                     "O que deseja fazer?\n"
+                     "0. Gerar CSV com os LETths"
+                     "1. Analise Monte Carlo"
+                     "4. Sair"))
+        if not acao:
+            self.__gerar_relatorio_csv()
+        elif acao == 1:
+            self.analise_monte_carlo()
+        elif acao == 4:
+            exit()
+        else:
+            print("Comando invalido")
 
     def analise_total(self, vdd):
         self.vdd = vdd
@@ -89,7 +107,7 @@ class Circuito():
         SR.set_monte_carlo(0)
         #self.__get_atrasoCC()
         self.__determinar_LETths()
-        self.__gerar_relatorio_csv()
+        #self.__gerar_relatorio_csv()
         self.__codificar_para_json()
 
     def analise_tensao_comparativa(self, minvdd, maxvdd):
@@ -105,7 +123,7 @@ class Circuito():
                     LETth_critico = nodo.LETth_critico
             lista_comparativa[str(minvdd)] = LETth_critico
             minvdd += 0.05
-        self.__escrever_csv_comparativo(lista_comparativa)
+        #self.__escrever_csv_comparativo(lista_comparativa)
 
     def analise_manual(self):
         analise_manual = True
@@ -225,6 +243,11 @@ class Circuito():
                                 nodo.atraso[saida.nome] = 1111
                             self.nodos.append(nodo)
 
+    def __escolher_validacao(self, validacao):
+        if len(validacao) != len(self.entradas): print("VALIDACAO INCOMPATIVEL")
+        for indice, entrada in enumerate(self.entradas):
+            entrada.sinal = validacao[indice]
+
     def __resetar_LETths(self):
         for nodo in self.nodos:
             nodo.validacao = {}
@@ -237,11 +260,6 @@ class Circuito():
                 nodo.validacao[saida.nome] = []
                 for entrada in self.entradas:
                     nodo.validacao[saida.nome].append("x")
-
-    def __escolher_validacao(self, validacao):
-        if len(validacao) != len(self.entradas): print("VALIDACAO INCOMPATIVEL")
-        for indice, entrada in enumerate(self.entradas):
-            entrada.sinal = validacao[indice]
 
     def __determinar_LETths(self):
         self.__instanciar_nodos()
@@ -320,23 +338,20 @@ class Circuito():
         self.__codificar_para_json()
 
     def __gerar_relatorio_csv(self):
-        for sets in self.sets_validos: print(sets)
-        print("\n")
-        for sets in self.sets_invalidos: print(sets)
-
-        print("\n1111-SET invalidado em analise de tensao")
-        print("2222-SET invalidado em analise de pulso")
-        print("3333-SET Passou validacoes anteriores mas foi mal concluido")
-        print("4444-SET invalidado em validacao de largura de pulso")
-        print("5555-SET Aproximou indeterminadamente de um limite")
-
-        # Retorno do numero de simulacoes feitas e de tempo de execucao
-        print("\n" + str(self.simulacoes_feitas) + " simulacoes feitas\n")
-        # for nodo in self.nodos:
-        #     for saida in nodo.LETth:
-        #         for orientacao in nodo.LETth[saida]:
-        #             pass
+        # for sets in self.sets_validos: print(sets)
+        # print("\n")
+        # for sets in self.sets_invalidos: print(sets)
+        #
+        # print("\n1111-SET invalidado em analise de tensao")
+        # print("2222-SET invalidado em analise de pulso")
+        # print("3333-SET Passou validacoes anteriores mas foi mal concluido")
+        # print("4444-SET invalidado em validacao de largura de pulso")
+        # print("5555-SET Aproximou indeterminadamente de um limite")
+        #
+        # # Retorno do numero de simulacoes feitas e de tempo de execucao
+        # print("\n" + str(self.simulacoes_feitas) + " simulacoes feitas\n")
         self.__escrever_csv_total()
+        print("CSV GERADO COM SUCESSO")
 
     def __escrever_csv_total(self):
         linha = 2
@@ -414,14 +429,14 @@ class Circuito():
 
         print("Carregamento do Json realizado com sucesso\n")
 
-    def __decodificar_de_json(self, tensao):
+    def __decodificar_de_json(self, tensao, nao_usar_template):
         circuito_codificado = []
-        if tensao > 0.0:
+        if nao_usar_template:
             circuito_codificado = json.load(open(self.nome+"_"+str(tensao)+".json", "r"))
             self.vdd = circuito_codificado["vdd"]
         else:
             circuito_codificado = json.load(open(self.nome + ".json", "r"))
-            self.vdd = float(input("Insira o vdd novamente: "))
+            self.vdd = tensao
 
         #Desempacotamento dos dados
         self.atrasoCC = circuito_codificado["atrasoCC"]
