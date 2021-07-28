@@ -314,21 +314,6 @@ class Circuito():
 
         self.JM.codificar(self)
 
-    def __gerar_relatorio_csv(self):
-        # for sets in self.sets_validos: print(sets)
-        # print("\n")
-        # for sets in self.sets_invalidos: print(sets)
-        #
-        # print("\n1111-SET invalidado em analise de tensao")
-        # print("2222-SET invalidado em analise de pulso")
-        # print("3333-SET Passou validacoes anteriores mas foi mal concluido")
-        # print("4444-SET invalidado em validacao de largura de pulso")
-        # print("5555-SET Aproximou indeterminadamente de um limite")
-        #
-        # # Retorno do numero de simulacoes feitas e de tempo de execucao
-        # print("\n" + str(self.simulacoes_feitas) + " simulacoes feitas\n")
-        self.__escrever_csv_total()
-
     def __escrever_csv_total(self):
         linha = 2
         tabela = self.nome + ".csv"

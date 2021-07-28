@@ -1,11 +1,22 @@
-class Entrada():
+from dataclasses import dataclass
+
+@dataclass(order=True)
+class LET:
+    valor: float
+    vdd: float
+    nodo: str
+    saida: str
+    orientacao: str
+    validacoes: list
+
+class Entrada:
     def __init__(self, nome, sinal):
         self.nome = nome
         self.sinal = sinal
         self.atraso = [0, "saida.nome", ["Vetor de validacao"]]
 
 
-class Nodo():
+class Nodo:
     def __init__(self, nome):
         self.nome = nome
         self.validacao = {}
