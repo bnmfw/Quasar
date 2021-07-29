@@ -2,7 +2,7 @@ from arquivos import SpiceManager
 from codificador import JsonManager
 from matematica import converter_binario, converter_binario_lista, ajustar_valor
 from corrente import *
-from components import Nodo, Entrada
+from components import Nodo, Entrada, LET
 
 barra_comprida = "---------------------------"
 
@@ -40,25 +40,25 @@ class Circuito():
         try:
             tensao = 0.0
             with open(circuito+".json","r") as teste:
-                tensao = float(input(barra_comprida+"\nCadastro encontrado\nQual vdd deseja analisar: "))
+                tensao = float(input(f"{barra_comprida}\nCadastro encontrado\nQual vdd deseja analisar: "))
                 self.vdd = tensao
             try:
-                with open(circuito+"_"+str(tensao)+".json","r") as cadastro:
-                    print(barra_comprida+"\nCadastro com essa tensao encontrado")
+                with open(f"{circuito}_{tensao}.json","r") as cadastro:
+                    print(f"{barra_comprida}\nCadastro com essa tensao encontrado")
                     self.JM.decodificar(self, tensao, True) # LEITURA SIMPLES DO CIRCUITO
             except FileNotFoundError:
-                print(barra_comprida+"\nCadastro com essa tensao nao encontrado\nGeracao sendo feita")
+                print(f"{barra_comprida}\nCadastro com essa tensao nao encontrado\nGeracao sendo feita")
                 self.JM.decodificar(self, tensao, False)
                 self.__atualizar_LETths() # ATUALIZACAO DO CIRCUITO
 
         except FileNotFoundError:
             cadastro = "0"
             while not cadastro in ["y", "n"]:
-                cadastro = input(barra_comprida+"\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n) ")
+                cadastro = input(f"{barra_comprida}\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n) ")
             if cadastro == "y":
                 self.analise_total() # GERA TODOS OS DADOS DO CIRCUITO
             else:
-                print(barra_comprida+"\nPrograma encerrado")
+                print(f"{barra_comprida}\nPrograma encerrado")
                 exit()
 
     def __tela_principal(self):
@@ -113,7 +113,7 @@ class Circuito():
         vetor = [int(sinal) for sinal in input("vetor analisado: ").split()]
         current, simulacoes_feitas = definir_corrente(self, pulso_in, pulso_out,
                                                       nodo, saida, vetor)
-        print("Corrente final: " + str(current))
+        print(f"Corrente final: {current}")
 
     def analise_monte_carlo(self):
         nodo_analisado = self.nodos[0]
@@ -138,7 +138,7 @@ class Circuito():
                     break
 
         self.SM.set_monte_carlo(int(input(f"{barra_comprida}\nQuantidade de analises: ")))
-        os.system("hspice " + self.arquivo + "| grep \"minout\|maxout\" > texto.txt")
+        os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
         print("Analise monte carlo realizada com sucesso")
 
     def __get_atrasoCC(self):
@@ -163,7 +163,7 @@ class Circuito():
                     self.SM.set_delay_param(entrada_analisada, saida, self.vdd)
                     self.SM.set_signals(self.vdd, self.entradas)
                     os.system(
-                        "hspice " + self.arquivo + " | grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
+                        f"hspice {self.arquivo}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
                     simulacoes_feitas += 1
                     atraso = self.SM.get_delay()
                     paridade = 0
@@ -185,7 +185,7 @@ class Circuito():
 
                         if maior_atraso > self.atrasoCC: self.atrasoCC = maior_atraso
 
-                print("Atraso encontrado para " + entrada_analisada.nome + " em " + saida.nome)
+                print(f"Atraso encontrado para {entrada_analisada.nome} em {saida.nome}")
         print("Atraso CC do arquivo: ", self.atrasoCC)
         return maior_atraso
 
@@ -259,13 +259,23 @@ class Circuito():
                         ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
                         for combinacao in [["rise", "rise"], ["rise", "fall"], ["fall", "fall"], ["fall", "rise"]]:
 
-                            ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
+                            ##### ENCONTRA O LET PARA AQUELA COMBINACAO #####
                             chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
                             print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
                             current, simulacoes = definir_corrente(self,
                                                                    combinacao[0], combinacao[1], nodo, saida,
                                                                    final)
                             self.simulacoes_feitas += simulacoes
+
+                            # if current < 1111:
+                            #     let_analisado = LET(current, self.vdd, nodo.nome, saida.nome, chave)
+                            #
+                            #     for let in nodo.LETth:
+                            #         if let_analisado == let:
+                            #             let.validacoes.append(final)
+                            #             break
+                            #     else:
+                            #         nodo.LETth.append(let_analisado)
 
                             ##### DETERMINA LETth minimo pra aquela saida ####
                             if current < nodo.LETth[saida.nome][chave][0]:
@@ -341,11 +351,11 @@ class Circuito():
                                     sets.write(str(num))
                             sets.write("\n")
                             linha += 1
-        print("\nTabela " + tabela + " gerada com sucesso\n")
+        print(f"\nTabela {tabela} gerada com sucesso\n")
 
     def __escrever_csv_comparativo(self, lista_comparativa):
-        with open(self.nome + "_compara.csv", "w") as tabela:
+        with open(f"{self.nome}_compara.csv", "w") as tabela:
             for chave in lista_comparativa:
                 tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
 
-        print("\nTabela " + self.nome + "_compara.csv" + " gerada com sucesso\n")
+        print(f"\nTabela {self.nome}_compara.csv" + " gerada com sucesso\n")

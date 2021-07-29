@@ -26,9 +26,9 @@ class SpiceManager():
     def set_vdd(self, vdd):
         with open("vdd.txt", "w") as arquivo_vdd:
             arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
-            arquivo_vdd.write("Vvdd vdd gnd " + str(vdd) + "\n")
-            arquivo_vdd.write("Vvcc vcc gnd " + str(vdd) + "\n")
-            arquivo_vdd.write("Vclk clk gnd PULSE(0 " + str(vdd) + " 1n 0.01n 0.01n 1n 2n)")
+            arquivo_vdd.write(f"Vvdd vdd gnd {vdd}\n")
+            arquivo_vdd.write(f"Vvcc vcc gnd {vdd}\n")
+            arquivo_vdd.write(f"Vclk clk gnd PULSE(0 {vdd} 1n 0.01n 0.01n 1n 2n)")
 
     # Escreve os sinais no arquivo "fontes.txt"
     def set_signals(self, vdd, entradas):
@@ -37,11 +37,11 @@ class SpiceManager():
 
             #Escreve o sinal analogico a partir do sinal logico
             for i in range(len(entradas)):
-                sinais.write("V" + entradas[i].nome + " " + entradas[i].nome + " gnd ")
-                if entradas[i].sinal == 1: sinais.write(str(vdd) + "\n")
+                sinais.write(f"V{entradas[i].nome} {entradas[i].nome} gnd ")
+                if entradas[i].sinal == 1: sinais.write(f"{vdd}\n")
                 elif entradas[i].sinal == 0: sinais.write("0.0\n")
                 elif entradas[i].sinal == "atraso":
-                    sinais.write("PWL(0n 0 1n 0 1.01n " + str(vdd) + " 3n " + str(vdd) + " 3.01n 0)\n")
+                    sinais.write(f"PWL(0n 0 1n 0 1.01n {vdd} 3n {vdd} 3.01n 0)\n")
                 else:
                     print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
@@ -50,31 +50,32 @@ class SpiceManager():
         with open("SETs.txt", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
             if direcao_pulso_nodo == "fall": sets.write("*")
-            sets.write("Iseu gnd " + nodo.nome + " EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //rise\n")
+            sets.write(f"Iseu gnd {nodo.nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
             if direcao_pulso_nodo == "rise": sets.write("*")
-            sets.write("Iseu " + nodo.nome + " gnd EXP(0 " + str(corrente) + "u 2n 50p 164p 200p) //fall\n")
-            sets.write(".meas tran minout min V(" + saida.nome + ") from=1.0n to=4.0n\n")
-            sets.write(".meas tran maxout max V(" + saida.nome + ") from=1.0n to=4.0n\n")
+            sets.write(f"Iseu {nodo.nome} gnd EXP(0 {corrente}u 2n 50p 164p 200p) //fall\n")
+            sets.write(f".meas tran minout min V({saida.nome}) from=1.0n to=4.0n\n")
+            sets.write(f".meas tran maxout max V({saida.nome}) from=1.0n to=4.0n\n")
             # Usado apenas na verificacao de validacao:
-            sets.write(".meas tran minnod min V(" + nodo.nome + ") from=1.0n to=4.0n\n")
-            sets.write(".meas tran maxnod max V(" + nodo.nome + ") from=1.0n to=4.0n\n")
+            sets.write(f".meas tran minnod min V({nodo.nome}) from=1.0n to=4.0n\n")
+            sets.write(f".meas tran maxnod max V({nodo.nome}) from=1.0n to=4.0n\n")
 
     # Altera o arquivo "atraso.txt"
     def set_delay_param(self, entrada, saida, vdd):
         with open("atraso.txt", "w") as atraso:
             atraso.write("*Arquivo com atraso a ser medido\n")
             tensao = str(vdd * 0.5)
+            entrada = entrada.nome
             saida = saida.nome
             atraso.write(
-                ".meas tran atraso_rr TRIG v(" + entrada.nome + ") val='" + tensao + "' rise=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
+                f".meas tran atraso_rr TRIG v({entrada}) val='{tensao}' rise=1 TARG v({saida}) val='{tensao}' rise=1\n")
             atraso.write(
-                ".meas tran atraso_rf TRIG v(" + entrada.nome + ") val='" + tensao + "' rise=1 TARG v(" + saida + ") val='" + tensao + "' fall=1\n")
+                f".meas tran atraso_rf TRIG v({entrada}) val='{tensao}' rise=1 TARG v({saida}) val='{tensao}' fall=1\n")
             atraso.write(
-                ".meas tran atraso_ff TRIG v(" + entrada.nome + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' fall=1\n")
+                f".meas tran atraso_ff TRIG v({entrada}) val='{tensao}' fall=1 TARG v({saida}) val='{tensao}' fall=1\n")
             atraso.write(
-                ".meas tran atraso_fr TRIG v(" + entrada.nome + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
+                f".meas tran atraso_fr TRIG v({entrada}) val='{tensao}' fall=1 TARG v({saida}) val='{tensao}' rise=1\n")
             atraso.write(
-                ".meas tran largura TRIG v(" + saida + ") val='" + tensao + "' fall=1 TARG v(" + saida + ") val='" + tensao + "' rise=1\n")
+                f".meas tran largura TRIG v({saida}) val='{tensao}' fall=1 TARG v({saida}) val='{tensao}' rise=1\n")
 
     # Altera o arquivo "largura_pulso.txt"
     def set_pulse_width_param(self, nodo, saida, vdd, dir_nodo, dir_saida):
@@ -82,15 +83,15 @@ class SpiceManager():
             larg.write("*Arquivo com a leitura da largura dos pulsos\n")
             tensao = str(vdd * 0.5)
             larg.write(
-                ".meas tran atraso TRIG v(" + nodo + ") val='" + tensao + "' " + dir_nodo + "=1 TARG v(" + saida + ") val='" + tensao + "' " + dir_saida + "=1\n"
-                ".meas tran larg TRIG v(" + nodo + ") val='" + tensao + "' rise=1 TARG v(" + nodo + ") val='" + tensao + "' fall=1\n")
+                f".meas tran atraso TRIG v({nodo}) val='{tensao}' {dir_nodo}=1 TARG v({saida}) val='{tensao}' {dir_saida}=1\n"
+                f".meas tran larg TRIG v({nodo}) val='{tensao}' rise=1 TARG v({nodo}) val='{tensao}' fall=1\n")
 
     # Altera o valor de simulacoes monte carlo a serem feitas
     def set_monte_carlo(self, simulacoes):
         with open("monte_carlo.txt", "w") as mc:
             mc.write("*Arquivo Analise Monte Carlo\n")
             mc.write(".tran 0.01n 4n")
-            if simulacoes: mc.write(" sweep monte="+str(simulacoes))
+            if simulacoes: mc.write(f" sweep monte={simulacoes}")
 
     # Le a resposta do pulso no arquivo "texto.txt"
     def get_peak_tension(self, direcao_pulso_saida, offset):
@@ -118,7 +119,7 @@ class SpiceManager():
         # Converte as strings lidas em floats
         max_tensao = ajustar_valor(max_tensao)
         min_tensao = ajustar_valor(min_tensao)
-        if analise_manual: print("Tensao max: " + str(max_tensao) + " Tensao min: " + str(min_tensao))
+        if analise_manual: print(f"Tensao max: {max_tensao} Tensao min: {min_tensao}")
 
         # Identifica se o pico procurado e do tipo rise ou fall
         if direcao_pulso_saida == "rise":

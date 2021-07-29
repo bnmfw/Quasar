@@ -6,13 +6,12 @@ SR = SpiceManager()
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
 def verificar_validacao(circuito, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
     SR.set_pulse(nodo, 0.0, saida, direcao_pulso_nodo)
-    os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
+    os.system(f"hspice {circuito} | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
     tensao_pico_saida = SR.get_peak_tension(direcao_pulso_saida, 0)
     tensao_pico_nodo = SR.get_peak_tension(direcao_pulso_nodo, 2)
 
     if analise_manual:
-        print("Verificacao de Sinal: Vpico nodo: " + str(tensao_pico_nodo) + " Vpico saida: " + str(
-            tensao_pico_saida) + "\n")
+        print(f"Verificacao de Sinal: Vpico nodo: {tensao_pico_nodo} Vpico saida: {tensao_pico_saida}\n")
 
     # Leitura sem pulso
     if direcao_pulso_saida == "rise" and tensao_pico_saida > vdd * 0.51: return [False, 1]
@@ -21,14 +20,13 @@ def verificar_validacao(circuito, nodo, direcao_pulso_nodo, saida, direcao_pulso
     elif direcao_pulso_nodo == "fall" and tensao_pico_nodo < vdd * 0.1: return [False, 1]
 
     SR.set_pulse(nodo, 499.0, saida, direcao_pulso_nodo)
-    os.system("hspice " + circuito + " | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
+    os.system(f"hspice {circuito} | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
 
     tensao_pico_saida = SR.get_peak_tension(direcao_pulso_saida, 0)
     tensao_pico_nodo = SR.get_peak_tension(direcao_pulso_nodo, 2)
 
     if analise_manual:
-        print("Verificacao de Pulso: Vpico nodo: " + str(tensao_pico_nodo) + " Vpico saida: " + str(
-            tensao_pico_saida) + "\n")
+        print(f"Verificacao de Pulso: Vpico nodo: {tensao_pico_nodo} Vpico saida: {tensao_pico_saida}\n")
     # Leitura com pulso
     if direcao_pulso_saida == "rise" and tensao_pico_saida < vdd * 0.50:
         return [False, 2]
@@ -44,7 +42,7 @@ def verificar_validacao(circuito, nodo, direcao_pulso_nodo, saida, direcao_pulso
 def largura_pulso(circuito, nodo, nodo_saida, vdd, corrente, direcao_pulso_nodo, direcao_pulso_saida):  ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
     SR.set_pulse_width_param(nodo.nome, nodo_saida.nome, vdd, direcao_pulso_nodo, direcao_pulso_saida)  # Determina os parametros no arquivo de leitura de largura de pulso
     SR.set_pulse(nodo, corrente, nodo_saida, direcao_pulso_nodo)
-    os.system("hspice " + circuito + " | grep \"atraso\|larg\" > texto.txt")
+    os.system(f"hspice {circuito} | grep \"atraso\|larg\" > texto.txt")
     return SR.get_pulse_delay_validation()
 
 def encontrar_corrente_minima(circuito, vdd, nodo, saida, direcao_pulso_nodo, direcao_pulso_saida):
@@ -116,14 +114,14 @@ def definir_corrente(circuito, direcao_pulso_nodo, direcao_pulso_saida, nodo, sa
     while not ((1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2):
 
         # Roda o HSPICE e salva os valores no arquivo de texto
-        os.system("hspice " + circuito + " | grep \"minout\|maxout\" > texto.txt")
+        os.system(f"hspice {circuito} | grep \"minout\|maxout\" > texto.txt")
         simulacoes_feitas += 1
 
         # Le a o pico de tensao na saida do arquivo
         tensao_pico = SR.get_peak_tension(direcao_pulso_saida, 0)
 
         if analise_manual:
-            print("Corrente testada: " + str(corrente) + " Resposta na saida: " + str(tensao_pico) + "\n")
+            print(f"Corrente testada: {corrente} Resposta na saida: {tensao_pico}\n")
 
         # Encerramento por excesso de simulacoes
         if simulacoes_feitas >= 25:

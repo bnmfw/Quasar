@@ -29,7 +29,7 @@ for entrada_analisada in entradas:
             entrada_analisada.sinal = "atraso"
             escrever_atraso(entrada_analisada, saida, vdd)
             definir_fontes("fontes.txt",vdd,entradas)
-            os.system("hspice " + circuito + " | grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
+            os.system(f"hspice {circuito} | grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
             simulacoes_feitas += 1
             atraso = ler_atraso(vdd)
             paridade = 0
@@ -42,9 +42,9 @@ for entrada_analisada in entradas:
                 entrada_analisada.atraso[0] = maior_atraso
                 entrada_analisada.atraso[1] = saida
                 entrada_analisada.atraso[1] = [entradas[0].sinal, entradas[1].sinal, entradas[2].sinal, entradas[3].sinal, entradas[4].sinal]
-        print("Atraso encontrado para " + entrada_analisada.nome + " em " + saida)
+        print(f"Atraso encontrado para {entrada_analisada.nome} em {saida}")
 
-    print("Atraso encontrado para entrada " + entrada_analisada.nome + "\n")
+    print(f"Atraso encontrado para entrada {entrada_analisada.nome}\n")
 
 for entrada in entradas:
     print(entrada.atraso)

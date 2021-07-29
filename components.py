@@ -7,7 +7,8 @@ class LET:
     nodo: str
     saida: str
     orientacao: str
-    validacoes: list
+    def __post_init__(self):
+        self.validacoes = []
 
 class Entrada:
     def __init__(self, nome, sinal):
