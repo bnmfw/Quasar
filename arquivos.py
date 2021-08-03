@@ -7,7 +7,8 @@ class SpiceManager():
         pass
 
     # Maneja a leitura de linhas no arquivo spice
-    def split_spice(self, linha):
+    @staticmethod
+    def split_spice(linha):
         split_nativo = linha.split()
         # Ajuse de leitura
         for index, palavra in enumerate(split_nativo):
@@ -23,7 +24,8 @@ class SpiceManager():
         return split_nativo
 
     # Escreve vdd no arquivo "vdd.txt"
-    def set_vdd(self, vdd):
+    @staticmethod
+    def set_vdd(vdd):
         with open("vdd.txt", "w") as arquivo_vdd:
             arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
             arquivo_vdd.write(f"Vvdd vdd gnd {vdd}\n")
@@ -31,7 +33,8 @@ class SpiceManager():
             arquivo_vdd.write(f"Vclk clk gnd PULSE(0 {vdd} 1n 0.01n 0.01n 1n 2n)")
 
     # Escreve os sinais no arquivo "fontes.txt"
-    def set_signals(self, vdd, entradas):
+    @staticmethod
+    def set_signals(vdd, entradas):
         with open("fontes.txt", "w") as sinais:
             sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
 
@@ -46,7 +49,8 @@ class SpiceManager():
                     print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
     # Escreve informacoes no arquivo "SETs.txt"
-    def set_pulse(self, nodo, corrente, saida, direcao_pulso_nodo):
+    @staticmethod
+    def set_pulse(nodo, corrente, saida, direcao_pulso_nodo):
         with open("SETs.txt", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
             if direcao_pulso_nodo == "fall": sets.write("*")
@@ -60,7 +64,8 @@ class SpiceManager():
             sets.write(f".meas tran maxnod max V({nodo.nome}) from=1.0n to=4.0n\n")
 
     # Altera o arquivo "atraso.txt"
-    def set_delay_param(self, entrada, saida, vdd):
+    @staticmethod
+    def set_delay_param(entrada, saida, vdd):
         with open("atraso.txt", "w") as atraso:
             atraso.write("*Arquivo com atraso a ser medido\n")
             tensao = str(vdd * 0.5)
@@ -78,7 +83,8 @@ class SpiceManager():
                 f".meas tran largura TRIG v({saida}) val='{tensao}' fall=1 TARG v({saida}) val='{tensao}' rise=1\n")
 
     # Altera o arquivo "largura_pulso.txt"
-    def set_pulse_width_param(self, nodo, saida, vdd, dir_nodo, dir_saida):
+    @staticmethod
+    def set_pulse_width_param(nodo, saida, vdd:float, dir_nodo:str, dir_saida:str):
         with open("largura_pulso.txt", "w") as larg:
             larg.write("*Arquivo com a leitura da largura dos pulsos\n")
             tensao = str(vdd * 0.5)
@@ -87,14 +93,17 @@ class SpiceManager():
                 f".meas tran larg TRIG v({nodo}) val='{tensao}' rise=1 TARG v({nodo}) val='{tensao}' fall=1\n")
 
     # Altera o valor de simulacoes monte carlo a serem feitas
-    def set_monte_carlo(self, simulacoes):
+    @staticmethod
+    def set_monte_carlo(simulacoes:int):
         with open("monte_carlo.txt", "w") as mc:
             mc.write("*Arquivo Analise Monte Carlo\n")
             mc.write(".tran 0.01n 4n")
             if simulacoes: mc.write(f" sweep monte={simulacoes}")
 
     # Le a resposta do pulso no arquivo "texto.txt"
-    def get_peak_tension(self, direcao_pulso_saida, offset):
+    @staticmethod
+    def get_peak_tension(dir_pulso_saida:str, offset:int) -> float:
+        if dir_pulso_saida != "rise" and dir_pulso_saida != "fall": raise ValueError("direcao pulso_saida nao esta entre rise e fall")
         linha_texto = list(range(4))
         tensao_pico = 3333
         with open("texto.txt", "r") as text:
@@ -122,15 +131,32 @@ class SpiceManager():
         if analise_manual: print(f"Tensao max: {max_tensao} Tensao min: {min_tensao}")
 
         # Identifica se o pico procurado e do tipo rise ou fall
-        if direcao_pulso_saida == "rise":
-            tensao_pico = max_tensao
-        elif direcao_pulso_saida == "fall":
-            tensao_pico = min_tensao
-        else:
-            print("ERRO: O TIPO DE PULSO NAO FOI IDENTIFICADO")
+        tensao_pico = max_tensao if (dir_pulso_saida == "rise") else min_tensao
 
         # retorna a tensao de pico lida
         return tensao_pico
+
+    @staticmethod
+    def get_monte_carlo_results(circuito, num_analises:int, dir_pulso_saida:str) -> int:
+        if dir_pulso_saida != "rise" and dir_pulso_saida != "fall": raise ValueError("direcao pulso_saida nao esta entre rise e fall")
+        analises_validas = 0
+        with open(f"{circuito.nome}.mt0.csv", "w") as mc:
+            for i in range(3): lixo = mc.readline()
+            cabecalho = mc.readline().split()
+            orientacao = "minout" if (dir_pulso_saida == "fall") else "maxnod"
+            tensao_pico_indice = cabecalho.index(orientacao)
+            largura_indice = cabecalho.index("larg")
+            for i in range(num_analises):
+                linha_lida = mc.readline().split()
+                if float(linha_lida[largura_indice]) == condicao_satisfatoria:
+                    if dir_pulso_saida == "rise":
+                        if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
+                            analises_validas += 1
+                    else:
+                        if float(linha_lida[tensao_pico_indice]) > circuito.vdd / 2:
+                            analises_validas += 1
+        return analises_validas
+
 
     # Le o atraso do nodo a saida no arquivo "texto.txt"
     def get_delay(self):
@@ -159,7 +185,8 @@ class SpiceManager():
         return atrasos
 
     # Leitura do arquivo "leitura_pulso.txt"
-    def get_pulse_delay_validation(self):
+    @staticmethod
+    def get_pulse_delay_validation():
         with open("texto.txt", "r") as texto:
             atraso = texto.readline().split()
             larg = texto.readline().split()

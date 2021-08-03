@@ -5,17 +5,13 @@ class JsonManager():
     def __init__(self):
         pass
 
+
     def codificar(self, circuito):
         #Codificacao dos nodos
         dicionario_de_nodos = {} #criacao do dicionario que tera o dicionario de todos os nodos
+        lista_de_nodos = []
         for nodo in circuito.nodos:
-            este_nodo = {} #dicionario contendo as informacoes deste nodo
-            este_nodo["nome"] = nodo.nome
-            este_nodo["validacao"] = nodo.validacao
-            este_nodo["LETth"] = nodo.LETth
-            este_nodo["LETth_critico"] = nodo.LETth_critico
-            este_nodo["atraso"] = nodo.atraso
-            dicionario_de_nodos[nodo.nome] = este_nodo
+            lista_de_nodos.append(nodo.__dict__)
 
         #Codificacao de entradas
         lista_de_saidas = []
@@ -33,7 +29,7 @@ class JsonManager():
         circuito_codificado["atrasoCC"] = circuito.atrasoCC
         circuito_codificado["entradas"] = lista_de_entradas
         circuito_codificado["saidas"] = lista_de_saidas
-        circuito_codificado["nodos"] = dicionario_de_nodos
+        circuito_codificado["nodos"] = lista_de_nodos
 
         json.dump(circuito_codificado, open(circuito.nome+"_"+str(circuito.vdd)+".json","w"))
 
@@ -56,7 +52,7 @@ class JsonManager():
 
         #Desempacotamento dos dados
         circuito.atrasoCC = circuito_codificado["atrasoCC"]
-        dicionario_de_nodos = circuito_codificado["nodos"]
+        lista_de_nodos = circuito_codificado["nodos"]
         lista_de_saidas = circuito_codificado["saidas"]
         lista_de_entradas = circuito_codificado["entradas"]
 
@@ -69,14 +65,9 @@ class JsonManager():
             circuito.entradas.append(Entrada(entrada, "t"))
 
         #Carregamento dos nodos
-        for nodo in dicionario_de_nodos:
-            nodo = dicionario_de_nodos[nodo]
-            nodo_obj = Nodo(nodo["nome"])
-            nodo_obj.LETth = nodo["LETth"]
-            nodo_obj.validacao = nodo["validacao"]
-            nodo_obj.LETth_critico = nodo["LETth_critico"]
-            nodo_obj.atraso = nodo["atraso"]
-            circuito.nodos.append(nodo_obj)
+        for nodo_analisado in lista_de_nodos:
+            nodo = Nodo("nome")
+            nodo.decodec(nodo_analisado, circuito.vdd)
 
         print("Leitura do Json realizada com sucesso\n")
 
@@ -93,4 +84,4 @@ def alternar_combinacao(combinacao):
         elif combinacao == ["rise", "fall"]: return "rf"
         elif combinacao == ["fall", "rise"]: return "fr"
         else: return "ff"
-    else: raise TypeError
+    else: raise TypeError("Entrada nao foi uma lista (ex: [\"rise\",\"fall\"]) ou uma string (ex: \"rf\"")

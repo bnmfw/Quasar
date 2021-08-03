@@ -26,6 +26,9 @@ class Circuito():
         self.SM = SpiceManager()
         self.JM = JsonManager()
 
+        ##### CONFIGURACOES PADRAO #####
+        self.SM.set_monte_carlo(0)
+
     def run(self):
         self.__tela_inicial()
         while True:
@@ -94,7 +97,6 @@ class Circuito():
         self.JM.codificar(self)
 
     def analise_tensao_comparativa(self, minvdd, maxvdd):
-        self.SM.set_monte_carlo(0)
         lista_comparativa = {}
         while minvdd <= maxvdd + 0.0001:
             LETth_critico = 9999
@@ -102,15 +104,14 @@ class Circuito():
             self.SM.set_vdd(minvdd)
             self.__determinar_LETths()
             for nodo in self.nodos:
-                if nodo.LETth_critico < LETth_critico:
-                    LETth_critico = nodo.LETth_critico
+                if nodo.LETth < LETth_critico:
+                    LETth_critico = nodo.LETth
             lista_comparativa[str(minvdd)] = LETth_critico
             minvdd += 0.05
         #self.__escrever_csv_comparativo(lista_comparativa)
 
     def analise_manual(self):
         analise_manual = True
-        self.SM.set_monte_carlo(0)
         self.vdd = input("vdd: ")
         self.SM.set_vdd(float(self.vdd))
         nodo, saida = input("nodo e saida analisados: ").split()
@@ -118,14 +119,16 @@ class Circuito():
         nodo = Nodo(nodo)
         saida = Nodo(saida)
         vetor = [int(sinal) for sinal in input("vetor analisado: ").split()]
-        current, simulacoes_feitas = definir_corrente(self, pulso_in, pulso_out, nodo, saida, vetor)
-        print(f"Corrente final: {current}")
+        let_analisado = LET(9999, self.vdd, nodo.nome, saida.nome, alternar_combinacao([pulso_in,pulso_out]))
+        definir_corrente(self, let_analisado, vetor)
+        print(f"Corrente final: {let_analisado.corrente}")
 
     def analise_monte_carlo(self):
         self.__configurar_LET()
         self.SM.set_monte_carlo(int(input(f"{barra_comprida}\nQuantidade de analises: ")))
         os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
         print("Analise monte carlo realizada com sucesso")
+        self.SM.set_monte_carlo(0)
 
     def __get_atrasoCC(self):
         simulacoes_feitas = 0
@@ -175,7 +178,7 @@ class Circuito():
         print("Atraso CC do arquivo: ", self.atrasoCC)
         return maior_atraso
 
-    def __encontrar_nodo(self, nome):
+    def encontrar_nodo(self, nome):
         for nodo in self.nodos:
             if nodo.nome == nome:
                 return nodo
@@ -186,6 +189,14 @@ class Circuito():
         for nodo in self.entradas:
             if nodo.nome == nome:
                 return nodo
+
+    def encontrar_let(self, nodo: Nodo, saida: Nodo, orientacao: str) -> LET:
+        if type(nodo)!= Nodo and type(saida)!= Nodo and type(orientacao) != str: raise TypeError
+        let_equivalente = LET(9999, self.vdd, nodo.nome, saida.nome, orientacao)
+        for let in nodo.LETs:
+            if let_equivalente == let:
+                return let
+        raise RuntimeError("Let nao encontrado")
 
     def __instanciar_nodos(self):
         ##### SAIDAS #####
@@ -211,15 +222,15 @@ class Circuito():
                             nodo = Nodo(nodo)
                             nodos_nomes.append(nodo.nome)
                             for saida in self.saidas:
-                                nodo.LETth[saida.nome] = {"rr": [9999, []],
+                                nodo.LETs[saida.nome] = {"rr": [9999, []],
                                                           "rf": [9999, []],
                                                           "fr": [9999, []],
                                                           "ff": [9999, []]}
                                 nodo.atraso[saida.nome] = 1111
                             self.nodos.append(nodo)
 
-    def __escolher_validacao(self, validacao):
-        if len(validacao) != len(self.entradas): print("VALIDACAO INCOMPATIVEL")
+    def __escolher_validacao(self, validacao:list):
+        if len(validacao) != len(self.entradas): raise IndexError("Numero de entradas eh diferente do tamanho de vetor validacao")
         for indice, entrada in enumerate(self.entradas):
             entrada.sinal = validacao[indice]
 
@@ -229,7 +240,10 @@ class Circuito():
         pulso_in, pulso_out = input("pulsos na entrada e saida do LET: ").split()
         chave = alternar_combinacao([pulso_in, pulso_out])
         nodo = self.__encontrar_nodo(nodo)
-        corrente = nodo.LETth[saida][chave][0]
+        corrente = nodo.LETs[saida][chave][0]
+        if corrente > 1000:
+            print("LET invalido")
+            return
         saida = self.__encontrar_nodo(saida)
         SR.set_pulse(nodo, corrente, saida, pulso_in)
 
@@ -244,9 +258,9 @@ class Circuito():
     def __resetar_LETths(self):
         for nodo in self.nodos:
             nodo.validacao = {}
-            nodo.LETth_critico = 9999
+            nodo.LETth = 9999
             for saida in self.saidas:
-                nodo.LETth[saida.nome] = {"rr": [9999, []],
+                nodo.LETs[saida.nome] = {"rr": [9999, []],
                                           "rf": [9999, []],
                                           "fr": [9999, []],
                                           "ff": [9999, []]}
@@ -255,13 +269,12 @@ class Circuito():
                     nodo.validacao[saida.nome].append("x")
 
     def __determinar_LETths(self):
-        self.SM.set_monte_carlo(0)
         self.__instanciar_nodos()
         self.__resetar_LETths()
         self.simulacoes_feitas = 0
         self.sets_validos = []
         self.sets_invalidos = []
-        ##### BUSCA DO LETth DO CIRCUITO #####
+        ##### BUSCA DO LETs DO CIRCUITO #####
         for nodo in self.nodos:
             for saida in self.saidas:
                 ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
@@ -273,68 +286,61 @@ class Circuito():
                     for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
 
                         final = converter_binario(bin(k), val, variaveis)
-                        ##### DECOBRE OS LETth PARA TODAS AS COBINACOES DE rise E fall #####
+                        ##### DECOBRE OS LETs PARA TODAS AS COBINACOES DE rise E fall #####
                         for combinacao in [["rise", "rise"], ["rise", "fall"], ["fall", "fall"], ["fall", "rise"]]:
 
                             ##### ENCONTRA O LET PARA AQUELA COMBINACAO #####
                             chave = alternar_combinacao(combinacao)  # Faz coisa tipo ["rise","fall"] virar "rf"
+                            let_analisado = LET(9999, self.vdd, nodo.nome, saida.nome, chave)
                             print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
-                            current, simulacoes = definir_corrente(self,
-                                                                   combinacao[0], combinacao[1], nodo, saida,
-                                                                   final)
+                            simulacoes = definir_corrente(self, let_analisado, final)
                             self.simulacoes_feitas += simulacoes
 
                             # if current < 1111:
                             #     let_analisado = LET(current, self.vdd, nodo.nome, saida.nome, chave)
                             #
-                            #     for let in nodo.LETth:
+                            #     for let in nodo.LETs:
                             #         if let_analisado == let:
                             #             let.validacoes.append(final)
                             #             break
                             #     else:
-                            #         nodo.LETth.append(let_analisado)
+                            #         nodo.LETs.append(let_analisado)
 
-                            ##### DETERMINA LETth minimo pra aquela saida ####
-                            if current < nodo.LETth[saida.nome][chave][0]:
-                                ##### SE O LETth EH MENOR DO QUE UM JA EXISTENTE
-                                nodo.LETth[saida.nome][chave][0] = current
-                                nodo.LETth[saida.nome][chave][1] = [final]
+                            for let in nodo.LETs:
+                                if let_analisado == let:
+                                    let.adicionar_entrada(final)
+                                    break
+                            else:
+                                nodo.LETs.append(let_analisado)
 
-                            elif current == nodo.LETth[saida.nome][chave][0]:
-                                ##### SE O LETth EH IGUAL A UM JA EXISTENTE
-                                nodo.LETth[saida.nome][chave][1].append(final)
-
-                            if current < nodo.LETth_critico:
-                                nodo.LETth_critico = current
+                            if let_analisado.corrente < nodo.LETth:
+                                nodo.LETth = let_analisado.corrente
 
                             #### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
-                            if current < 1000:
+                            if let.corrente < 1000:
                                 self.sets_validos.append(
-                                    [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
+                                    [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
                                 break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
                             else:
                                 self.sets_invalidos.append(
-                                    [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
+                                    [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
 
     def __atualizar_LETths(self):
-        self.SM.set_monte_carlo(0)
         self.simulacoes_feitas = 0
-        ##### BUSCA DO LETth DO CIRCUITO #####
+        ##### BUSCA DO LETs DO CIRCUITO #####
         for nodo in self.nodos:
             for saida in self.saidas:
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
-                for orientacao in nodo.LETth[saida.nome]:
-                    if nodo.LETth[saida.nome][orientacao][0] > 1000: pass
+                for orientacao in nodo.LETs[saida.nome]:
+                    if nodo.LETs[saida.nome][orientacao][0] > 1000: pass
                     else:
                         combinacao = alternar_combinacao(orientacao)
-
-                        print(nodo.nome, saida.nome, combinacao[0], combinacao[1], nodo.LETth[saida.nome][orientacao][1][0])
-                        nodo.LETth[saida.nome][orientacao][0], simulacoes = definir_corrente(self, combinacao[0],
-                                                                                             combinacao[1], nodo, saida,
-                                                                                             nodo.LETth[saida.nome][orientacao][1][0])
+                        let_analisado = self.__encontrar_let(nodo, saida, combinacao)
+                        print(nodo.nome, saida.nome, combinacao[0], combinacao[1], nodo.LETs[saida.nome][orientacao][1][0])
+                        simulacoes = definir_corrente(self, let_analisado, let_analisado.validacoes[0])
                         self.simulacoes_feitas += simulacoes
-                        if nodo.LETth[saida.nome][orientacao][0] < nodo.LETth_critico:
-                            nodo.LETth_critico = nodo.LETth[saida.nome][orientacao][0]
+                        if nodo.LETs[saida.nome][orientacao][0] < nodo.LETth:
+                            nodo.LETth = nodo.LETs[saida.nome][orientacao][0]
 
         self.JM.codificar(self)
 
@@ -342,24 +348,24 @@ class Circuito():
         linha = 2
         tabela = self.nome + ".csv"
         with open(tabela, "w") as sets:
-            sets.write("Nodo,Saida,Pulso,Pulso,Corrente,LETth,Num Val,Validacoes->\n")
+            sets.write("Nodo,Saida,Pulso,Pulso,Corrente,LETs,Num Val,Validacoes->\n")
             for nodo in self.nodos:
-                # print(nodo.LETth)
-                for saida in nodo.LETth:
+                # print(nodo.LETs)
+                for saida in nodo.LETs:
                     for chave, combinacao in zip(["rr", "ff", "rf", "fr"],
                                                  [["rise", "rise"],
                                                   ["fall", "fall"],
                                                   ["rise", "fall"],
                                                   ["fall", "rise"]]):
-                        # print(saida, comb, nodo.LETth[saida])
-                        if nodo.LETth[saida][chave][0] < 1111:
+                        # print(saida, comb, nodo.LETs[saida])
+                        if nodo.LETs[saida][chave][0] < 1111:
                             sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
-                            sets.write(str(nodo.LETth[saida][chave][0]) + ",")
+                            sets.write(str(nodo.LETs[saida][chave][0]) + ",")
                             sets.write('{:.2e}'.format(
-                                (nodo.LETth[saida][chave][0] * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / (
+                                (nodo.LETs[saida][chave][0] * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / (
                                         (1.08 * 10 ** -14) * 0.000000021)))
-                            sets.write("," + str(len(nodo.LETth[saida][chave][1])))  # Numero de validacoes
-                            for validacao in nodo.LETth[saida][chave][1]:
+                            sets.write("," + str(len(nodo.LETs[saida][chave][1])))  # Numero de validacoes
+                            for validacao in nodo.LETs[saida][chave][1]:
                                 sets.write(",'")
                                 for num in validacao:
                                     sets.write(str(num))

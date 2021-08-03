@@ -1,4 +1,6 @@
 from arquivos import *
+from components import LET
+from codificador import alternar_combinacao
 import os
 
 SR = SpiceManager()
@@ -77,8 +79,11 @@ def encontrar_corrente_minima(circuito, vdd, nodo, saida, direcao_pulso_nodo, di
     print("PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA")
     return corrente
 
-def definir_corrente(circuito, direcao_pulso_nodo, direcao_pulso_saida, nodo, saida, validacao):
-
+def definir_corrente(circuito, let:LET, validacao:list) -> list:
+    direcao_pulso_nodo = alternar_combinacao(let.orientacao)[0]
+    direcao_pulso_saida = alternar_combinacao(let.orientacao)[1]
+    nodo = circuito.encontrar_nodo(let.nodo_nome)
+    saida = circuito.encontrar_nodo(let.saida_nome)
     precisao = 0.05
 
     # Renomeamento de variaveis
@@ -101,7 +106,8 @@ def definir_corrente(circuito, direcao_pulso_nodo, direcao_pulso_saida, nodo, sa
             print("Analise invalida - Pulso sem efeito\n")
         else:
             print("Analise invalida - WTF?\n")
-        return [1111 * simulacoes_feitas, simulacoes_feitas]
+        let.corrente = 1111*simulacoes_feitas
+        return simulacoes_feitas
 
     tensao_pico = 0
 
@@ -127,19 +133,21 @@ def definir_corrente(circuito, direcao_pulso_nodo, direcao_pulso_saida, nodo, sa
         if simulacoes_feitas >= 25:
             if 1 < corrente < 499:
                 print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
-                return [corrente, simulacoes_feitas]
+                let.corrente = corrente
             else:
                 print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
-                return [3333, simulacoes_feitas]
+                let.corrente = 3333
+            return simulacoes_feitas
 
         # Encerramento por precisao satisfatoria
         elif corrente_sup-corrente_inf < 1:
             if 1 < corrente < 499:
                 print("Corrente encontrada - Aproximacao nao convencional\n")
-                return [corrente, simulacoes_feitas]
+                let.corrente = corrente
             else:
                 print("Corrente nao encontrada - Aproximacao extrema\n")
-                return [5555, simulacoes_feitas]
+                let.corrente = 5555
+            return simulacoes_feitas
 
         # Busca binaria
         elif direcao_pulso_saida == "fall":
@@ -149,7 +157,8 @@ def definir_corrente(circuito, direcao_pulso_nodo, direcao_pulso_saida, nodo, sa
                 corrente_inf = corrente
             else:
                 print("Corrente encontrada com sucesso\n")
-                return [corrente, simulacoes_feitas]
+                let.corrente = corrente
+                return simulacoes_feitas
         elif direcao_pulso_saida == "rise":
             if tensao_pico <= (1 - precisao) * vdd / 2:
                 corrente_inf = corrente
@@ -157,7 +166,8 @@ def definir_corrente(circuito, direcao_pulso_nodo, direcao_pulso_saida, nodo, sa
                 corrente_sup = corrente
             else:
                 print("Corrente encontrada com sucesso\n")
-                return [corrente, simulacoes_feitas]
+                let.corrente = corrente
+                return simulacoes_feitas
 
         corrente = float((corrente_sup + corrente_inf) / 2)
 
