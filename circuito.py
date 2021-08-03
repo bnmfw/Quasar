@@ -1,5 +1,5 @@
 from arquivos import SpiceManager
-from codificador import JsonManager
+from codificador import JsonManager, alternar_combinacao
 from matematica import converter_binario, converter_binario_lista, ajustar_valor
 from corrente import *
 from components import Nodo, Entrada, LET
@@ -65,15 +65,22 @@ class Circuito():
         acao = int(input(f"{barra_comprida}\n"
                      f"Trabalhando com o {self.nome} em {self.vdd} volts\n"
                      "O que deseja fazer?\n"
-                     "0. Gerar CSV com os LETths\n"
-                     "1. Analise Monte Carlo\n"
-                     "4. Sair\n"
+                     "0. Atualizar LETs\n"
+                     "1. Gerar CSV de LETs\n"
+                     "2. Analisar LET unico\n"
+                     "3. Analise Monte Carlo\n"
+                     "5. Sair\n"
                      "Resposta: "))
         if not acao:
-            self.__escrever_csv_total()
+            self.__atualizar_LETths()
         elif acao == 1:
+            self.__escrever_csv_total()
+        elif acao == 2:
+            self.analise_manual()
+        elif acao == 3:
             self.analise_monte_carlo()
-        elif acao == 4:
+        #elif acao == 4:
+        elif acao == 5:
             exit()
         else:
             print("Comando invalido")
@@ -111,32 +118,11 @@ class Circuito():
         nodo = Nodo(nodo)
         saida = Nodo(saida)
         vetor = [int(sinal) for sinal in input("vetor analisado: ").split()]
-        current, simulacoes_feitas = definir_corrente(self, pulso_in, pulso_out,
-                                                      nodo, saida, vetor)
+        current, simulacoes_feitas = definir_corrente(self, pulso_in, pulso_out, nodo, saida, vetor)
         print(f"Corrente final: {current}")
 
     def analise_monte_carlo(self):
-        nodo_analisado = self.nodos[0]
-        saida_analisada = self.saidas[0]
-        for saida in nodo_analisado.LETth:
-            if saida != saida_analisada.nome: pass
-            else:
-                for orientacao in nodo_analisado.LETth[saida]:
-                    #print(orientacao)
-                    corrente = nodo_analisado.LETth[saida][orientacao][0]
-                    if corrente < 1000:
-
-                        self.__escolher_validacao(nodo_analisado.LETth[saida][orientacao][1][0])
-                        self.SM.set_signals(self.vdd, self.entradas)
-
-                        direcao_pulso = None
-                        if orientacao[0] == "r": direcao_pulso = "rise"
-                        elif orientacao[0] == "f": direcao_pulso = "fall"
-                        else: print("DIRECAO DE PULSO NAO IDENTIFICADA")
-
-                        self.SM.set_pulse(nodo_analisado, corrente, saida_analisada, direcao_pulso)
-                    break
-
+        self.__configurar_LET()
         self.SM.set_monte_carlo(int(input(f"{barra_comprida}\nQuantidade de analises: ")))
         os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
         print("Analise monte carlo realizada com sucesso")
@@ -189,6 +175,18 @@ class Circuito():
         print("Atraso CC do arquivo: ", self.atrasoCC)
         return maior_atraso
 
+    def __encontrar_nodo(self, nome):
+        for nodo in self.nodos:
+            if nodo.nome == nome:
+                return nodo
+        #Eu nem sei se essa funcao passa dessa linha, mas se nao passar nem importa tambem
+        for nodo in self.saidas:
+            if nodo.nome == nome:
+                return nodo
+        for nodo in self.entradas:
+            if nodo.nome == nome:
+                return nodo
+
     def __instanciar_nodos(self):
         ##### SAIDAS #####
         saidas = input("saidas: ").split()
@@ -225,6 +223,24 @@ class Circuito():
         for indice, entrada in enumerate(self.entradas):
             entrada.sinal = validacao[indice]
 
+    def __configurar_LET(self):
+        # Configuracao de pulso
+        nodo, saida = input("nodo e saida do LET: ").split()
+        pulso_in, pulso_out = input("pulsos na entrada e saida do LET: ").split()
+        chave = alternar_combinacao([pulso_in, pulso_out])
+        nodo = self.__encontrar_nodo(nodo)
+        corrente = nodo.LETth[saida][chave][0]
+        saida = self.__encontrar_nodo(saida)
+        SR.set_pulse(nodo, corrente, saida, pulso_in)
+
+        # Configuracao do vetor de entrada
+        # vetor = [int(sinal) for sinal in input("vetor de entrada do LET (irrelevante pra MC): ").split()]
+        # for i in range(len(self.entradas)):
+        #     self.entradas[i].sinal = vetor[i]
+        # SR.set_signals(self.vdd, self.entradas)
+
+        print("LET configurado com sucesso")
+
     def __resetar_LETths(self):
         for nodo in self.nodos:
             nodo.validacao = {}
@@ -260,7 +276,7 @@ class Circuito():
                         for combinacao in [["rise", "rise"], ["rise", "fall"], ["fall", "fall"], ["fall", "rise"]]:
 
                             ##### ENCONTRA O LET PARA AQUELA COMBINACAO #####
-                            chave = combinacao[0][0] + combinacao[1][0]  # Faz coisa tipo ["rise","fall"] virar "rf"
+                            chave = alternar_combinacao(combinacao)  # Faz coisa tipo ["rise","fall"] virar "rf"
                             print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
                             current, simulacoes = definir_corrente(self,
                                                                    combinacao[0], combinacao[1], nodo, saida,
@@ -308,11 +324,7 @@ class Circuito():
                 for orientacao in nodo.LETth[saida.nome]:
                     if nodo.LETth[saida.nome][orientacao][0] > 1000: pass
                     else:
-                        combinacao = []
-                        if orientacao == "rr": combinacao = ["rise", "rise"]
-                        elif orientacao == "rf": combinacao = ["rise", "fall"]
-                        elif orientacao == "fr": combinacao = ["fall", "rise"]
-                        else: combinacao = ["fall", "fall"]
+                        combinacao = alternar_combinacao(orientacao)
 
                         print(nodo.nome, saida.nome, combinacao[0], combinacao[1], nodo.LETth[saida.nome][orientacao][1][0])
                         nodo.LETth[saida.nome][orientacao][0], simulacoes = definir_corrente(self, combinacao[0],

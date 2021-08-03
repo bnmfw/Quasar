@@ -81,3 +81,16 @@ class JsonManager():
         print("Leitura do Json realizada com sucesso\n")
 
 JM = JsonManager()
+
+def alternar_combinacao(combinacao):
+    if type(combinacao) == str:
+        if combinacao == "rr": return ["rise", "rise"]
+        elif combinacao == "rf": return ["rise", "fall"]
+        elif combinacao == "fr": return ["fall", "rise"]
+        else: return ["fall", "fall"]
+    elif type(combinacao) == list:
+        if combinacao == ["rise", "rise"]: return "rr"
+        elif combinacao == ["rise", "fall"]: return "rf"
+        elif combinacao == ["fall", "rise"]: return "fr"
+        else: return "ff"
+    else: raise TypeError
