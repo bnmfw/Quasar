@@ -239,12 +239,12 @@ class Circuito():
         nodo, saida = input("nodo e saida do LET: ").split()
         pulso_in, pulso_out = input("pulsos na entrada e saida do LET: ").split()
         chave = alternar_combinacao([pulso_in, pulso_out])
-        nodo = self.__encontrar_nodo(nodo)
+        nodo = self.encontrar_nodo(nodo)
         corrente = nodo.LETs[saida][chave][0]
         if corrente > 1000:
             print("LET invalido")
             return
-        saida = self.__encontrar_nodo(saida)
+        saida = self.encontrar_nodo(saida)
         SR.set_pulse(nodo, corrente, saida, pulso_in)
 
         # Configuracao do vetor de entrada
@@ -313,7 +313,7 @@ class Circuito():
                                 nodo.LETth = let_analisado.corrente
 
                             #### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
-                            if let.corrente < 1000:
+                            if let_analisado.corrente < 1000:
                                 self.sets_validos.append(
                                     [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
                                 break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
