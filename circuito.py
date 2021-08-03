@@ -222,10 +222,10 @@ class Circuito():
                             nodo = Nodo(nodo)
                             nodos_nomes.append(nodo.nome)
                             for saida in self.saidas:
-                                nodo.LETs[saida.nome] = {"rr": [9999, []],
-                                                          "rf": [9999, []],
-                                                          "fr": [9999, []],
-                                                          "ff": [9999, []]}
+                                # nodo.LETs[saida.nome] = {"rr": [9999, []],
+                                #                           "rf": [9999, []],
+                                #                           "fr": [9999, []],
+                                #                           "ff": [9999, []]}
                                 nodo.atraso[saida.nome] = 1111
                             self.nodos.append(nodo)
 
