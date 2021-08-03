@@ -259,6 +259,10 @@ class Circuito():
         for nodo in self.nodos:
             nodo.validacao = {}
             nodo.LETs = []
+            for saida in self.saidas:
+                nodo.validacao[saida.nome] = []
+                for entrada in self.entradas:
+                    nodo.validacao[saida.nome].append("x")
 
     def __determinar_LETths(self):
         self.__instanciar_nodos()
