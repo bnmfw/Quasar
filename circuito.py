@@ -292,19 +292,13 @@ class Circuito():
                             simulacoes = definir_corrente(self, let_analisado, final)
                             self.simulacoes_feitas += simulacoes
 
-                            # if current < 1111:
-                            #     let_analisado = LET(current, self.vdd, nodo.nome, saida.nome, chave)
-                            #
-                            #     for let in nodo.LETs:
-                            #         if let_analisado == let:
-                            #             let.validacoes.append(final)
-                            #             break
-                            #     else:
-                            #         nodo.LETs.append(let_analisado)
-
                             for let in nodo.LETs:
-                                if let_analisado == let:
-                                    let.adicionar_entrada(final)
+                                if let_analisado == let: #encontrou a combinacao correta
+                                    if let_analisado.corrente == let.corrente:
+                                        let.adicionar_entrada(final)
+                                    elif let_analisado.corrente < let.corrente:
+                                        nodo.LETs.remove(let)
+                                        nodo.LETs.append(let_analisado)
                                     break
                             else:
                                 nodo.LETs.append(let_analisado)
