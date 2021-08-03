@@ -255,6 +255,7 @@ class Circuito():
                     nodo.validacao[saida.nome].append("x")
 
     def __determinar_LETths(self):
+        self.SM.set_monte_carlo(0)
         self.__instanciar_nodos()
         self.__resetar_LETths()
         self.simulacoes_feitas = 0
@@ -316,6 +317,7 @@ class Circuito():
                                     [nodo.nome, saida.nome, combinacao[0], combinacao[1], current, final])
 
     def __atualizar_LETths(self):
+        self.SM.set_monte_carlo(0)
         self.simulacoes_feitas = 0
         ##### BUSCA DO LETth DO CIRCUITO #####
         for nodo in self.nodos:
