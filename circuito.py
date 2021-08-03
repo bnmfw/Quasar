@@ -258,15 +258,7 @@ class Circuito():
     def __resetar_LETths(self):
         for nodo in self.nodos:
             nodo.validacao = {}
-            nodo.LETth = 9999
-            for saida in self.saidas:
-                nodo.LETs[saida.nome] = {"rr": [9999, []],
-                                          "rf": [9999, []],
-                                          "fr": [9999, []],
-                                          "ff": [9999, []]}
-                nodo.validacao[saida.nome] = []
-                for entrada in self.entradas:
-                    nodo.validacao[saida.nome].append("x")
+            nodo.LETs = []
 
     def __determinar_LETths(self):
         self.__instanciar_nodos()
