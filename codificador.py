@@ -39,7 +39,7 @@ class JsonManager():
         except FileNotFoundError:
             json.dump(circuito_codificado, open(circuito.nome + ".json", "w"))
 
-        print("Carregamento do Json realizado com sucesso\n")
+        print("Carregamento do Json realizado com sucesso")
 
     def decodificar(self, circuito, tensao, nao_usar_template):
         circuito_codificado = []
@@ -65,12 +65,15 @@ class JsonManager():
             circuito.entradas.append(Entrada(entrada, "t"))
 
         #Carregamento dos nodos
+        print(lista_de_nodos)
         for nodo_analisado in lista_de_nodos:
             nodo = Nodo("nome")
             nodo.decodec(nodo_analisado, circuito.vdd)
             circuito.nodos.append(nodo)
 
-        print("Leitura do Json realizada com sucesso\n")
+        print(circuito.nodos)
+
+        print("Leitura do Json realizada com sucesso")
 
 JM = JsonManager()
 
