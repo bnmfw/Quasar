@@ -302,7 +302,8 @@ class Circuito():
                                         nodo.LETs.append(let_analisado)
                                     break
                             else:
-                                nodo.LETs.append(let_analisado)
+                                if let_analisado.corrente < 1111:
+                                    nodo.LETs.append(let_analisado)
 
                             if let_analisado.corrente < nodo.LETth:
                                 nodo.LETth = let_analisado.corrente

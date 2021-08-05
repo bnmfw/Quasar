@@ -9,6 +9,9 @@ SR = SpiceManager()
 def verificar_validacao(circuito, nodo, direcao_pulso_nodo, saida, direcao_pulso_saida, vdd):
     SR.set_pulse(nodo, 0.0, saida, direcao_pulso_nodo)
     os.system(f"hspice {circuito} | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
+    print("Verificacao 1")
+    with open("texto.txt", "r") as arq:
+        print(arq.readline())
     tensao_pico_saida = SR.get_peak_tension(direcao_pulso_saida, 0)
     tensao_pico_nodo = SR.get_peak_tension(direcao_pulso_nodo, 2)
 
