@@ -319,6 +319,7 @@ class Circuito():
     def __atualizar_LETths(self):
         simulacoes_feitas = 0
         ##### BUSCA DO LETs DO CIRCUITO #####
+        print(self.nodos)
         for nodo in self.nodos:
             print(nodo)
             for let in nodo.LETs:

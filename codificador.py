@@ -68,6 +68,7 @@ class JsonManager():
         for nodo_analisado in lista_de_nodos:
             nodo = Nodo("nome")
             nodo.decodec(nodo_analisado, circuito.vdd)
+            circuito.nodos.append(nodo)
 
         print("Leitura do Json realizada com sucesso\n")
 
