@@ -29,7 +29,7 @@ class Nodo:
         self.atraso = {}
 
     def __repr__(self):
-        return f"nome: {self.nome}, LETth: {self.LETth}, Quantidade de LETs:{len(self.LETs)}"
+        return f"nome: {self.nome}, LETth: {self.LETth}, Quantidade de LETs:{len(self.LETs)}\n"
 
     def codec(self):
         dic = {}
