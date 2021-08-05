@@ -86,5 +86,5 @@ class LET:
         self.corrente = dic["corr"]
         self.orientacao = dic["orie"]
         self.nodo_nome = dic["nodo"]
-        self.saida_nome = ["said"]
+        self.saida_nome = dic["said"]
         self.validacoes = dic["val"]
