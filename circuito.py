@@ -320,7 +320,9 @@ class Circuito():
         simulacoes_feitas = 0
         ##### BUSCA DO LETs DO CIRCUITO #####
         for nodo in self.nodos:
+            print(nodo)
             for let in nodo.LETs:
+                print(let)
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                 simulacoes = definir_corrente(self, let, let.validacoes[0])
                 simulacoes_feitas += simulacoes
