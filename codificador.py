@@ -1,4 +1,4 @@
-from components import Nodo, Entrada
+from components import Nodo, Entrada, LET
 import json
 
 class JsonManager():
@@ -11,7 +11,7 @@ class JsonManager():
         dicionario_de_nodos = {} #criacao do dicionario que tera o dicionario de todos os nodos
         lista_de_nodos = []
         for nodo in circuito.nodos:
-            lista_de_nodos.append(nodo.__dict__)
+            lista_de_nodos.append(nodo.codec())
 
         #Codificacao de entradas
         lista_de_saidas = []
@@ -31,7 +31,7 @@ class JsonManager():
         circuito_codificado["saidas"] = lista_de_saidas
         circuito_codificado["nodos"] = lista_de_nodos
 
-        json.dump(circuito_codificado, open(circuito.nome+"_"+str(circuito.vdd)+".json","w"))
+        json.dump(circuito_codificado, open(f"{circuito.nome}_{circuito.vdd}.json","w"))
 
         try:
             with open(circuito.nome+".json","r"):
@@ -85,3 +85,45 @@ def alternar_combinacao(combinacao):
         elif combinacao == ["fall", "rise"]: return "fr"
         else: return "ff"
     else: raise TypeError("Entrada nao foi uma lista (ex: [\"rise\",\"fall\"]) ou uma string (ex: \"rf\"")
+
+if __name__ == "__main__":
+
+    print("Rodando Teste de Codificacao...")
+
+    let1 = LET(154.3, 0.7, "nodo1", "saida1", "fr")
+    let2 = LET(300, 0.7, "nodo1", "saida1", "rf")
+    let3 = LET(190.8, 0.7, "nodo2", "saida1", "fr")
+    let4 = LET(156.9, 0.7, "nodo2", "saida1", "ff")
+    let5 = LET(7.4, 0.7, "saida", "saida1", "rr")
+    let6 = LET(288.1, 0.7, "saida", "saida1", "rf")
+
+    nodo1 = Nodo("nodo1")
+    nodo1.validacao = {"saida1":["x","x","x","x","x"]}
+    nodo1.LETs = [let1, let2]
+    nodo1.LETth = 154.3
+
+    nodo2 = Nodo("nodo2")
+    nodo2.validacao = {"saida1": ["x", "x", "x", "x", "x"]}
+    nodo2.LETs = [let2, let3]
+    nodo2.LETth = 156.9
+
+    nodo3 = Nodo("saida1")
+    nodo3.validacao = {"saida1": ["x", "x", "x", "x", "x"]}
+    nodo3.LETs = [let4, let5]
+    nodo3.LETth = 7.4
+
+    class FakeCircuit:
+        def __init__(self):
+            self.nome = "teste_circuito"
+            self.entradas = [Entrada("a", "t"), Entrada("b", "t")]
+            self.saidas = [nodo3]
+            self.nodos = [nodo1, nodo2, nodo3]
+            self.vdd = 0.7
+            self.atrasoCC = 9999.0
+
+    circuito = FakeCircuit()
+
+    JM.codificar(circuito)
+    JM.decodificar(circuito, 0.7, True)
+
+    print("Testes realizados com sucesso")

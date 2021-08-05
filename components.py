@@ -28,16 +28,16 @@ class Nodo:
         self.LETth: float = 9999.9
         self.atraso = {}
 
-    def __dict__(self):
+    def codec(self):
         dic = {}
         dic["nome"] = self.nome
         dic["val"] = self.validacao
         dic["critico"] = self.LETth
         dic["atraso"] = self.atraso
-        lista_de_nodos = []
+        lista_de_lets = []
         for let in self.LETs:
-            lista_de_nodos.append(let.__dict__)
-        dic["lets"] = lista_de_nodos
+            lista_de_lets.append(let.codec())
+        dic["lets"] = lista_de_lets
         return dic
 
     def decodec(self, dic:dict, vdd:float):
@@ -67,7 +67,7 @@ class LET:
         if type(validacao) != list: raise TypeError("Validacao nao eh uma lista")
         self.validacoes.append(validacao)
 
-    def __dict__(self):
+    def codec(self):
         dic = {}
         dic["corr"] = self.corrente
         dic["orie"] = self.orientacao
