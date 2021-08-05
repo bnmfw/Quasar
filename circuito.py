@@ -189,7 +189,7 @@ class Circuito():
         for nodo in self.entradas:
             if nodo.nome == nome:
                 return nodo
-        raise RuntimeError("Nodo nao encontrado")
+        raise RuntimeError(f"Nodo nao encontrado: {nome}")
 
     def encontrar_let(self, nodo: Nodo, saida: Nodo, orientacao: str) -> LET:
         if type(nodo)!= Nodo and type(saida)!= Nodo and type(orientacao) != str: raise TypeError

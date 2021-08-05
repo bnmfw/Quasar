@@ -65,13 +65,10 @@ class JsonManager():
             circuito.entradas.append(Entrada(entrada, "t"))
 
         #Carregamento dos nodos
-        print(lista_de_nodos)
         for nodo_analisado in lista_de_nodos:
             nodo = Nodo("nome")
             nodo.decodec(nodo_analisado, circuito.vdd)
             circuito.nodos.append(nodo)
-
-        print(circuito.nodos)
 
         print("Leitura do Json realizada com sucesso")
 
