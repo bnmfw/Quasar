@@ -1,5 +1,5 @@
 # Nao tenho certeza
-def converter_binario(binario, validacao, variaveis):  # Converte o binario esquisito numa lista
+def converter_binario(binario: str, validacao: list, variaveis:int):  # Converte o binario esquisito numa lista
     final = list(validacao)
     flag = 0
     binary = list()
@@ -13,7 +13,7 @@ def converter_binario(binario, validacao, variaveis):  # Converte o binario esqu
     return final
 
 # Recebe um inteiro e retonra uma lista com seus digitos binarios
-def converter_binario_lista(inteiro, tamanho):
+def converter_binario_lista(inteiro: int, tamanho:int) -> list:
     lista = []
     binario = bin(inteiro)[2:] #Transforma o inteiro no binario em texto
     for digito in range(tamanho-len(binario)):
@@ -39,3 +39,17 @@ def ajustar_valor(tensao):
     tensao = float(tensao)
     tensao = tensao * 10 ** grandeza
     return tensao
+
+if __name__ == "__main__":
+    print("Realizando testes de arquivo")
+    if ajustar_valor("24.56u") == (24.56 * 10 ** -6):
+        print("ajuste_valor PASSOU")
+    else: print("ajuste_valor FALHOU")
+
+    if converter_binario_lista(14, 4) == [1,1,1,0]:
+        print("converter_binario_lista PASSOU")
+    else: print("converter_binario_lista FALHOU")
+
+    if converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0]:
+        print("converter_binario PASSOU")
+    else: print("converter_binario FALHOU")

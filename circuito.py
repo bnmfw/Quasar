@@ -189,6 +189,7 @@ class Circuito():
         for nodo in self.entradas:
             if nodo.nome == nome:
                 return nodo
+        raise RuntimeError("Nodo nao encontrado")
 
     def encontrar_let(self, nodo: Nodo, saida: Nodo, orientacao: str) -> LET:
         if type(nodo)!= Nodo and type(saida)!= Nodo and type(orientacao) != str: raise TypeError
@@ -316,22 +317,14 @@ class Circuito():
                                     [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
 
     def __atualizar_LETths(self):
-        self.simulacoes_feitas = 0
+        simulacoes_feitas = 0
         ##### BUSCA DO LETs DO CIRCUITO #####
         for nodo in self.nodos:
-            for saida in self.saidas:
+            for let in nodo.LETs:
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
-                for orientacao in nodo.LETs[saida.nome]:
-                    if nodo.LETs[saida.nome][orientacao][0] > 1000: pass
-                    else:
-                        combinacao = alternar_combinacao(orientacao)
-                        let_analisado = self.__encontrar_let(nodo, saida, combinacao)
-                        print(nodo.nome, saida.nome, combinacao[0], combinacao[1], nodo.LETs[saida.nome][orientacao][1][0])
-                        simulacoes = definir_corrente(self, let_analisado, let_analisado.validacoes[0])
-                        self.simulacoes_feitas += simulacoes
-                        if nodo.LETs[saida.nome][orientacao][0] < nodo.LETth:
-                            nodo.LETth = nodo.LETs[saida.nome][orientacao][0]
-
+                simulacoes = definir_corrente(self, let, let.validacoes[0])
+                simulacoes_feitas += simulacoes
+        print(f"{simulacoes_feitas} simulacoes feitas na atualizacao")
         self.JM.codificar(self)
 
     def __escrever_csv_total(self):

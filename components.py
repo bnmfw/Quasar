@@ -1,5 +1,5 @@
 class Entrada:
-    def __init__(self, nome, sinal):
+    def __init__(self, nome: str, sinal: str):
         self.nome = nome
         self.sinal = sinal
         self.atraso = [0, "saida.nome", ["Vetor de validacao"]]
@@ -19,7 +19,7 @@ class Entrada:
 
 
 class Nodo:
-    def __init__(self, nome):
+    def __init__(self, nome: str):
         self.nome = nome
         self.validacao = {}
         # self.validacao[saida.nome] = [0,0,"x",1,"t"]
