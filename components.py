@@ -29,7 +29,7 @@ class Nodo:
         self.atraso = {}
 
     def __repr__(self):
-        return f"nome: {self.nome}, LETth: {self.LETth}, Quantidade de LETs:{len(self.LETs)}\n"
+        return f"\nnome: {self.nome}, LETth: {self.LETth}, Quantidade de LETs:{len(self.LETs)}"
 
     def codec(self):
         dic = {}
@@ -67,7 +67,7 @@ class LET:
         return (self.nodo_nome == other.nodo_nome and self.saida_nome == other.saida_nome and self.orientacao == other.orientacao)
 
     def __repr__(self):
-        return f"corrente: {self.corrente}, orientacao: {self.orientacao}, vdd: {self.vdd}, nodo: {self.nodo_nome}, saida: {self.saida_nome}"
+        return f"\ncorrente: {self.corrente}, orientacao: {self.orientacao}, vdd: {self.vdd}, nodo: {self.nodo_nome}, saida: {self.saida_nome}"
 
     def adicionar_entrada(self, validacao:list):
         if type(validacao) != list: raise TypeError("Validacao nao eh uma lista")

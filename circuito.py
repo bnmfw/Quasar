@@ -322,6 +322,7 @@ class Circuito():
         print(self.nodos)
         for nodo in self.nodos:
             print(nodo)
+            print(nodo.LETs)
             for let in nodo.LETs:
                 print(let)
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
