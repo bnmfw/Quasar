@@ -355,13 +355,4 @@ if __name__ == "__main__":
     circuito_teste.arquivo = "Teste.txt"
     circuito_teste.vdd = 0.7
 
-    entrada_a = Entrada("a","t")
-    entrada_b = Entrada("b","t")
-    nodo = Nodo("e1")
-    saida = Nodo("e1")
-
-    circuito_teste.entradas = [entrada_a, entrada_b]
-    circuito_teste.nodos = [nodo, saida]
-    circuito_teste.saidas = [saida]
-
     circuito_teste.teste()
