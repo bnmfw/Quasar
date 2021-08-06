@@ -50,7 +50,7 @@ class SpiceManager():
 
     # Escreve informacoes no arquivo "SETs.txt"
     @staticmethod
-    def set_pulse(nodo_nome, corrente, saida_nome, direcao_pulso_nodo):
+    def set_pulse(nodo_nome: str, corrente: float, saida_nome: str, direcao_pulso_nodo: str):
         with open("SETs.txt", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
             if direcao_pulso_nodo == "fall": sets.write("*")

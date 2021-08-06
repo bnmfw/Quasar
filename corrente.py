@@ -53,37 +53,37 @@ def verificar_validacao(circuito, vdd: float, let: LET) -> list:
 
 ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
 def largura_pulso(circuito, corrente: float, let: LET):
-    direcao_pulso_nodo = alternar_combinacao(let.orientacao)[0]
-    direcao_pulso_saida = alternar_combinacao(let.orientacao)[1]
-    nodo = circuito.encontrar_nodo(let.nodo_nome)
-    saida = circuito.encontrar_nodo(let.saida_nome)
-    vdd = circuito.vdd
+    direcao_pulso_nodo: str = alternar_combinacao(let.orientacao)[0]
+    direcao_pulso_saida: str = alternar_combinacao(let.orientacao)[1]
+    nodo: Nodo = circuito.encontrar_nodo(let.nodo_nome)
+    saida: Nodo = circuito.encontrar_nodo(let.saida_nome)
+    vdd: float = circuito.vdd
     # Determina os parametros no arquivo de leitura de largura de pulso
     SR.set_pulse_width_param(nodo.nome, saida.nome, vdd, direcao_pulso_nodo, direcao_pulso_saida)
-    SR.set_pulse(nodo, corrente, saida.nome, direcao_pulso_nodo)
+    SR.set_pulse(nodo.nome, corrente, saida.nome, direcao_pulso_nodo)
     os.system(f"hspice {circuito.arquivo} | grep \"atraso\|larg\" > texto.txt")
     return SR.get_pulse_delay_validation()
 
 
 def encontrar_corrente_minima(circuito, let: LET) -> float:
-    direcao_pulso_nodo = alternar_combinacao(let.orientacao)[0]
+    direcao_pulso_nodo: str = alternar_combinacao(let.orientacao)[0]
 
     # variaveis da busca binaria da corrente
-    corrente_sup = 500
-    corrente = 499
-    corrente_inf = 0
+    corrente_sup: float = 500
+    corrente: float = 499
+    corrente_inf: float = 0
 
     # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
     SR.set_pulse(let.nodo_nome, corrente, let.saida_nome, direcao_pulso_nodo)
 
     # Busca binaria para largura de pulso
-    diferenca_largura = 100
-    precisao_largura = 0.05 * 10 ** -9
+    diferenca_largura: float = 100
+    precisao_largura: float = 0.05 * 10 ** -9
 
     # Busca binaria para corrente minima
     while not (-precisao_largura < diferenca_largura < precisao_largura):
         #
-        diferenca_largura = largura_pulso(circuito, corrente, let)
+        diferenca_largura: float = largura_pulso(circuito, corrente, let)
 
         if abs(corrente_sup - corrente_inf) < 3:
             print("PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA")
@@ -97,13 +97,13 @@ def encontrar_corrente_minima(circuito, let: LET) -> float:
 
 
 def definir_corrente(circuito, let: LET, validacao: list) -> list:
-    direcao_pulso_nodo = alternar_combinacao(let.orientacao)[0]
-    direcao_pulso_saida = alternar_combinacao(let.orientacao)[1]
-    precisao = 0.05
+    direcao_pulso_nodo: str = alternar_combinacao(let.orientacao)[0]
+    direcao_pulso_saida: str = alternar_combinacao(let.orientacao)[1]
+    precisao: float = 0.05
 
     # Renomeamento de variaveis
-    vdd = circuito.vdd
-    entradas = circuito.entradas
+    vdd: float = circuito.vdd
+    entradas: list = circuito.entradas
 
     # Escreve a validacao no arquivo de fontes
     for i in range(len(entradas)):
@@ -122,12 +122,12 @@ def definir_corrente(circuito, let: LET, validacao: list) -> list:
         let.corrente = 1111 * simulacoes_feitas
         return simulacoes_feitas
 
-    tensao_pico = 0
+    tensao_pico: float = 0
 
     # variaveis da busca binaria da corrente
-    corrente_sup = 500
-    corrente_inf = encontrar_corrente_minima(circuito, let)
-    corrente = corrente_inf
+    corrente_sup: float = 500
+    corrente_inf: float = encontrar_corrente_minima(circuito, let)
+    corrente: float = corrente_inf
 
     # Busca binaria para dar bit flip
     while not ((1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2):
@@ -182,7 +182,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> list:
                 let.corrente = corrente
                 return simulacoes_feitas
 
-        corrente = float((corrente_sup + corrente_inf) / 2)
+        corrente: float = float((corrente_sup + corrente_inf) / 2)
 
         # Escreve os parametros no arquivo dos SETs
         SR.set_pulse(let.nodo_nome, corrente, let.saida_nome, direcao_pulso_nodo)
