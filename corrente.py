@@ -7,13 +7,13 @@ SR = SpiceManager()
 
 
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
-def verificar_validacao(circuito: str, vdd: float, let: LET) -> list:
+def verificar_validacao(circuito, vdd: float, let: LET) -> list:
     direcao_pulso_nodo = alternar_combinacao(let.orientacao)[0]
     direcao_pulso_saida = alternar_combinacao(let.orientacao)[1]
     nodo_nome = let.nodo_nome
     saida_nome = let.saida_nome
     SR.set_pulse(nodo_nome, 0.0, saida_nome, direcao_pulso_nodo)
-    os.system(f"hspice {circuito} | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
+    os.system(f"hspice {circuito.arquivo} | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
     tensao_pico_saida = SR.get_peak_tension(direcao_pulso_saida, 0)
     tensao_pico_nodo = SR.get_peak_tension(direcao_pulso_nodo, 2)
 
@@ -31,7 +31,7 @@ def verificar_validacao(circuito: str, vdd: float, let: LET) -> list:
         return [False, 1]
 
     SR.set_pulse(nodo_nome, 499.0, saida_nome, direcao_pulso_nodo)
-    os.system(f"hspice {circuito} | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
+    os.system(f"hspice {circuito.arquivo} | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
 
     tensao_pico_saida = SR.get_peak_tension(direcao_pulso_saida, 0)
     tensao_pico_nodo = SR.get_peak_tension(direcao_pulso_nodo, 2)
@@ -52,7 +52,7 @@ def verificar_validacao(circuito: str, vdd: float, let: LET) -> list:
 
 
 ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
-def largura_pulso(circuito, corrente, let):
+def largura_pulso(circuito, corrente: float, let: LET):
     direcao_pulso_nodo = alternar_combinacao(let.orientacao)[0]
     direcao_pulso_saida = alternar_combinacao(let.orientacao)[1]
     nodo = circuito.encontrar_nodo(let.nodo_nome)
@@ -61,7 +61,7 @@ def largura_pulso(circuito, corrente, let):
     # Determina os parametros no arquivo de leitura de largura de pulso
     SR.set_pulse_width_param(nodo.nome, saida.nome, vdd, direcao_pulso_nodo, direcao_pulso_saida)
     SR.set_pulse(nodo, corrente, saida.nome, direcao_pulso_nodo)
-    os.system(f"hspice {circuito} | grep \"atraso\|larg\" > texto.txt")
+    os.system(f"hspice {circuito.arquivo} | grep \"atraso\|larg\" > texto.txt")
     return SR.get_pulse_delay_validation()
 
 
@@ -104,7 +104,6 @@ def definir_corrente(circuito, let: LET, validacao: list) -> list:
     # Renomeamento de variaveis
     vdd = circuito.vdd
     entradas = circuito.entradas
-    circuito = circuito.arquivo
 
     # Escreve a validacao no arquivo de fontes
     for i in range(len(entradas)):
@@ -134,7 +133,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> list:
     while not ((1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2):
 
         # Roda o HSPICE e salva os valores no arquivo de texto
-        os.system(f"hspice {circuito} | grep \"minout\|maxout\" > texto.txt")
+        os.system(f"hspice {circuito.arquivo} | grep \"minout\|maxout\" > texto.txt")
         simulacoes_feitas += 1
 
         # Le a o pico de tensao na saida do arquivo
