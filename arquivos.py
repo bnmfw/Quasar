@@ -50,37 +50,30 @@ class SpiceManager():
 
     # Escreve informacoes no arquivo "SETs.txt"
     @staticmethod
-    def set_pulse(nodo, corrente, saida, direcao_pulso_nodo):
+    def set_pulse(nodo_nome, corrente, saida_nome, direcao_pulso_nodo):
         with open("SETs.txt", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
             if direcao_pulso_nodo == "fall": sets.write("*")
-            sets.write(f"Iseu gnd {nodo.nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
+            sets.write(f"Iseu gnd {nodo_nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
             if direcao_pulso_nodo == "rise": sets.write("*")
-            sets.write(f"Iseu {nodo.nome} gnd EXP(0 {corrente}u 2n 50p 164p 200p) //fall\n")
-            sets.write(f".meas tran minout min V({saida.nome}) from=1.0n to=4.0n\n")
-            sets.write(f".meas tran maxout max V({saida.nome}) from=1.0n to=4.0n\n")
+            sets.write(f"Iseu {nodo_nome} gnd EXP(0 {corrente}u 2n 50p 164p 200p) //fall\n")
+            sets.write(f".meas tran minout min V({saida_nome}) from=1.0n to=4.0n\n")
+            sets.write(f".meas tran maxout max V({saida_nome}) from=1.0n to=4.0n\n")
             # Usado apenas na verificacao de validacao:
-            sets.write(f".meas tran minnod min V({nodo.nome}) from=1.0n to=4.0n\n")
-            sets.write(f".meas tran maxnod max V({nodo.nome}) from=1.0n to=4.0n\n")
+            sets.write(f".meas tran minnod min V({nodo_nome}) from=1.0n to=4.0n\n")
+            sets.write(f".meas tran maxnod max V({nodo_nome}) from=1.0n to=4.0n\n")
 
     # Altera o arquivo "atraso.txt"
     @staticmethod
-    def set_delay_param(entrada, saida, vdd):
-        with open("atraso.txt", "w") as atraso:
-            atraso.write("*Arquivo com atraso a ser medido\n")
-            tensao = str(vdd * 0.5)
-            entrada = entrada.nome
-            saida = saida.nome
-            atraso.write(
-                f".meas tran atraso_rr TRIG v({entrada}) val='{tensao}' rise=1 TARG v({saida}) val='{tensao}' rise=1\n")
-            atraso.write(
-                f".meas tran atraso_rf TRIG v({entrada}) val='{tensao}' rise=1 TARG v({saida}) val='{tensao}' fall=1\n")
-            atraso.write(
-                f".meas tran atraso_ff TRIG v({entrada}) val='{tensao}' fall=1 TARG v({saida}) val='{tensao}' fall=1\n")
-            atraso.write(
-                f".meas tran atraso_fr TRIG v({entrada}) val='{tensao}' fall=1 TARG v({saida}) val='{tensao}' rise=1\n")
-            atraso.write(
-                f".meas tran largura TRIG v({saida}) val='{tensao}' fall=1 TARG v({saida}) val='{tensao}' rise=1\n")
+    def set_delay_param(inp, out, vdd):
+        with open("atraso.txt", "w") as at:
+            at.write("*Arquivo com atraso a ser medido\n")
+            tensao = str(vdd/2)
+            at.write(f".meas tran atraso_rr TRIG v({inp}) val='{tensao}' rise=1 TARG v({out}) val='{tensao}' rise=1\n")
+            at.write(f".meas tran atraso_rf TRIG v({inp}) val='{tensao}' rise=1 TARG v({out}) val='{tensao}' fall=1\n")
+            at.write(f".meas tran atraso_ff TRIG v({inp}) val='{tensao}' fall=1 TARG v({out}) val='{tensao}' fall=1\n")
+            at.write(f".meas tran atraso_fr TRIG v({inp}) val='{tensao}' fall=1 TARG v({out}) val='{tensao}' rise=1\n")
+            at.write(f".meas tran largura TRIG v({out}) val='{tensao}' fall=1 TARG v({out}) val='{tensao}' rise=1\n")
 
     # Altera o arquivo "largura_pulso.txt"
     @staticmethod
@@ -99,6 +92,8 @@ class SpiceManager():
             mc.write("*Arquivo Analise Monte Carlo\n")
             mc.write(".tran 0.01n 4n")
             if simulacoes: mc.write(f" sweep monte={simulacoes}")
+
+    ################### SEPARACAO SETS E GETS ################################
 
     # Le a resposta do pulso no arquivo "texto.txt"
     @staticmethod
@@ -159,7 +154,7 @@ class SpiceManager():
 
 
     # Le o atraso do nodo a saida no arquivo "texto.txt"
-    def get_delay(self):
+    def get_delay(self) -> list:
         linhas_de_atraso = list()
         atrasos = list()  # 0 rr, 1 rf, 2 ff, 3 fr
         with open("texto.txt", "r") as text:
@@ -186,19 +181,19 @@ class SpiceManager():
 
     # Leitura do arquivo "leitura_pulso.txt"
     @staticmethod
-    def get_pulse_delay_validation():
+    def get_pulse_delay_validation() -> float:
         with open("texto.txt", "r") as texto:
             atraso = texto.readline().split()
             larg = texto.readline().split()
         # if analise_manual: print(atraso)
         if atraso[0][0] == "*":
-            return "pulso_muito_pequeno"  # pulso muito pequeno
+            return -1.0  # pulso muito pequeno
         if "-" in atraso[0]:
             atraso = atraso[0].split("-")
         atraso = ajustar_valor(atraso[1])
 
         if larg[0][0] == "*":
-            return "pulso_muito_pequeno"  # pulso muito pequeno
+            return -1.0  # pulso muito pequeno
         if "-" in larg[0]:
             larg = larg[0].split("-")
         larg = ajustar_valor(larg[1])

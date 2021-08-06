@@ -1,8 +1,9 @@
-from arquivos import SpiceManager
+from arquivos import SpiceManager, analise_manual
 from codificador import JsonManager, alternar_combinacao
 from matematica import converter_binario, converter_binario_lista, ajustar_valor
-from corrente import *
+from corrente import definir_corrente
 from components import Nodo, Entrada, LET
+import os
 
 barra_comprida = "---------------------------"
 
@@ -34,6 +35,9 @@ class Circuito():
         while True:
             self.__tela_principal()
 
+    def teste(self):
+        print("Teste de analise total")
+        self.analise_total()
 
     def __tela_inicial(self):
         # Escolha de dados do circuito
@@ -119,7 +123,7 @@ class Circuito():
         nodo = Nodo(nodo)
         saida = Nodo(saida)
         vetor = [int(sinal) for sinal in input("vetor analisado: ").split()]
-        let_analisado = LET(9999, self.vdd, nodo.nome, saida.nome, alternar_combinacao([pulso_in,pulso_out]))
+        let_analisado = LET(9999, float(self.vdd), nodo.nome, saida.nome, alternar_combinacao([pulso_in,pulso_out]))
         definir_corrente(self, let_analisado, vetor)
         print(f"Corrente final: {let_analisado.corrente}")
 
@@ -137,7 +141,7 @@ class Circuito():
             for saida in self.saidas:
                 for i in range(2 ** (len(self.entradas) - 1)):
 
-                    # Atribui o sinal das entradas que nao estao em analise
+                    # Atribui o Sinal das Entradas que Nao Estao em Analise
                     sinais_entrada = converter_binario_lista(i, len(self.entradas)-1)
                     index = 0
                     for entrada in self.entradas:
@@ -146,38 +150,32 @@ class Circuito():
                             index += 1
                     entrada_analisada.sinal = "atraso"
 
-                    # SINAIS AQUI OU SAO INTEIROS OU ATRASO
+                    # VERIFICACAO DE ERRO
+                    for entrada in self.entradas:
+                        if not entrada.sinal in [0, 1, "atraso"]:
+                            raise ValueError(f"Sinais de entrada nao identificado: {entrada.sinal}")
 
                     # Etapa de medicao de atraso
-                    self.SM.set_delay_param(entrada_analisada, saida, self.vdd)
+                    self.SM.set_delay_param(entrada_analisada.nome, saida.nome, self.vdd)
                     self.SM.set_signals(self.vdd, self.entradas)
                     os.system(
                         f"hspice {self.arquivo}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
                     simulacoes_feitas += 1
                     atraso = self.SM.get_delay()
+                    # Magia Negra
                     paridade = 0
-                    # if entradaAnalisada.nome == "a":
-                    #    print(entradas[0].sinal,entradas[1].sinal,entradas[2].sinal,entradas[3].sinal,entradas[4].sinal)
                     if atraso[0] > atraso[1]: paridade = 1
                     print(atraso)
                     maior_atraso = max(atraso[0 + paridade], atraso[2 + paridade])
-                    print(maior_atraso, self.entradas[0].sinal, self.entradas[1].sinal, self.entradas[2].sinal,
-                          self.entradas[3].sinal, self.entradas[4].sinal)
-                    if maior_atraso > entrada_analisada.atraso[0]:
-                        entrada_analisada.atraso[0] = maior_atraso
-                        entrada_analisada.atraso[1] = saida
-                        entrada_analisada.atraso[1] = [self.entradas[0].sinal,
-                                             self.entradas[1].sinal,
-                                             self.entradas[2].sinal,
-                                             self.entradas[3].sinal,
-                                             self.entradas[4].sinal]
-
-                        if maior_atraso > self.atrasoCC: self.atrasoCC = maior_atraso
+                    # Salvamento do Maior Atraso
+                    print(maior_atraso, self.entradas)
+                    if maior_atraso > self.atrasoCC: self.atrasoCC = maior_atraso
 
                 print(f"Atraso encontrado para {entrada_analisada.nome} em {saida.nome}")
         print("Atraso CC do arquivo: ", self.atrasoCC)
         return maior_atraso
 
+    ##### METODOS PARA ENCONTRAR INSTANCIAS #####
     def encontrar_nodo(self, nome):
         for nodo in self.nodos:
             if nodo.nome == nome:
@@ -223,10 +221,6 @@ class Circuito():
                             nodo = Nodo(nodo)
                             nodos_nomes.append(nodo.nome)
                             for saida in self.saidas:
-                                # nodo.LETs[saida.nome] = {"rr": [9999, []],
-                                #                           "rf": [9999, []],
-                                #                           "fr": [9999, []],
-                                #                           "ff": [9999, []]}
                                 nodo.atraso[saida.nome] = 1111
                             self.nodos.append(nodo)
 
@@ -237,23 +231,11 @@ class Circuito():
 
     def __configurar_LET(self):
         # Configuracao de pulso
-        nodo, saida = input("nodo e saida do LET: ").split()
+        nodo_nome, saida_nome = input("nodo e saida do LET: ").split()
         pulso_in, pulso_out = input("pulsos na entrada e saida do LET: ").split()
-        chave = alternar_combinacao([pulso_in, pulso_out])
-        nodo = self.encontrar_nodo(nodo)
-        corrente = nodo.LETs[saida][chave][0]
-        if corrente > 1000:
-            print("LET invalido")
-            return
-        saida = self.encontrar_nodo(saida)
-        SR.set_pulse(nodo, corrente, saida, pulso_in)
-
-        # Configuracao do vetor de entrada
-        # vetor = [int(sinal) for sinal in input("vetor de entrada do LET (irrelevante pra MC): ").split()]
-        # for i in range(len(self.entradas)):
-        #     self.entradas[i].sinal = vetor[i]
-        # SR.set_signals(self.vdd, self.entradas)
-
+        let = self.encontrar_let(self.encontrar_nodo(nodo_nome), self.encontrar_nodo(saida_nome), alternar_combinacao([pulso_in, pulso_out]))
+        corrente = let.corrente
+        SR.set_pulse(nodo_nome, corrente, saida_nome, pulso_in)
         print("LET configurado com sucesso")
 
     def __resetar_LETths(self):
@@ -290,8 +272,7 @@ class Circuito():
                             chave = alternar_combinacao(combinacao)  # Faz coisa tipo ["rise","fall"] virar "rf"
                             let_analisado = LET(9999, self.vdd, nodo.nome, saida.nome, chave)
                             print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
-                            simulacoes = definir_corrente(self, let_analisado, final)
-                            self.simulacoes_feitas += simulacoes
+                            self.simulacoes_feitas += definir_corrente(self, let_analisado, final)
 
                             for let in nodo.LETs:
                                 if let_analisado == let: #encontrou a combinacao correta
@@ -308,27 +289,24 @@ class Circuito():
                             if let_analisado.corrente < nodo.LETth:
                                 nodo.LETth = let_analisado.corrente
 
-                            #### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
-                            if let_analisado.corrente < 1000:
-                                self.sets_validos.append(
-                                    [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
-                                break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
-                            else:
-                                self.sets_invalidos.append(
-                                    [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
+                            if let_analisado.corrente < 1111: break
+                            # #### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
+                            # if let_analisado.corrente < 1000:
+                            #     self.sets_validos.append(
+                            #         [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
+                            #     break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
+                            # else:
+                            #     self.sets_invalidos.append(
+                            #         [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
 
     def __atualizar_LETths(self):
         simulacoes_feitas = 0
         ##### BUSCA DO LETs DO CIRCUITO #####
         print(self.nodos)
         for nodo in self.nodos:
-            print(nodo)
-            print(nodo.LETs)
             for let in nodo.LETs:
-                print(let)
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
-                simulacoes = definir_corrente(self, let, let.validacoes[0])
-                simulacoes_feitas += simulacoes
+                simulacoes_feitas += definir_corrente(self, let, let.validacoes[0])
         print(f"{simulacoes_feitas} simulacoes feitas na atualizacao")
         self.JM.codificar(self)
 
@@ -367,3 +345,23 @@ class Circuito():
                 tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
 
         print(f"\nTabela {self.nome}_compara.csv" + " gerada com sucesso\n")
+
+if __name__ == "__main__":
+
+    print("Testando funcionalidades basicas do circuito...")
+
+    circuito_teste = Circuito()
+    circuito_teste.nome = "Teste"
+    circuito_teste.arquivo = "Teste.txt"
+    circuito_teste.vdd = 0.7
+
+    entrada_a = Entrada("a","t")
+    entrada_b = Entrada("b","t")
+    nodo = Nodo("e1")
+    saida = Nodo("e1")
+
+    circuito_teste.entradas = [entrada_a, entrada_b]
+    circuito_teste.nodos = [nodo, saida]
+    circuito_teste.saidas = [saida]
+
+    circuito_teste.teste()

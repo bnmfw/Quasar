@@ -4,7 +4,7 @@ class Entrada:
         self.sinal = sinal
         self.atraso = [0, "saida.nome", ["Vetor de validacao"]]
 
-    def __dict__(self):
+    def codec(self):
         dic = {}
         dic["nome"] = self.nome
         dic["sinal"] = self.sinal
@@ -15,6 +15,9 @@ class Entrada:
         self.nome = dic["nome"]
         self.sinal = dic["sinal"]
         self.atraso = dic["atraso"]
+
+    def __repr__(self):
+        return self.sinal
 
 
 
@@ -88,3 +91,41 @@ class LET:
         self.nodo_nome = dic["nodo"]
         self.saida_nome = dic["said"]
         self.validacoes = dic["val"]
+
+if __name__ == "__main__":
+    print("Rodando Testes de Componentes...")
+
+    #TESTES DE ENTRADA
+    entrada1 = Entrada("ent1", "t")
+    entrada2 = Entrada("ent2", "t")
+    entrada2.decodec(entrada1.codec())
+    if entrada1.nome == entrada2.nome and entrada1.sinal == entrada2.sinal and entrada1.atraso == entrada2.atraso:
+        print("Entrada PASSOU")
+    else:
+        print("Entrada FALHOU")
+
+    # TESTE DE NODO
+    nodo1 = Nodo("nodo1")
+    nodo2 = Nodo("nodo2")
+    nodo2.decodec(nodo1.codec(),0.7)
+    if nodo1.nome == nodo2.nome and nodo1.validacao == nodo2.validacao and nodo1.atraso == nodo2.atraso and \
+            nodo1.LETs == nodo2.LETs and nodo1.LETth == nodo2.LETth:
+        print("Nodo PASSOU")
+    else:
+        print("Nodo FALHOU")
+
+    # TESTE DE LET
+    let1 = LET(154.3, 0.7, "nodo1", "saida1", "fr")
+    let2 = LET(300, 0.7, "nodo1", "saida1", "rf")
+    let2.decodec(let1.codec())
+    if let1 == let2:
+        print("LET PASSOU no teste de Overloading e Codificacao")
+    else:
+        print("LET FALHOU no teste de Overloading e Codificacao")
+
+    entrada = [0,0,1,0,1]
+    let1.adicionar_entrada(entrada)
+    if entrada in let1.validacoes:
+        print("LET PASSOU no teste de Append")
+    else:
+        print("LET FALHOU no teste de Append")

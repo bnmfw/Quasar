@@ -127,4 +127,4 @@ if __name__ == "__main__":
     JM.codificar(circuito)
     JM.decodificar(circuito, 0.7, True)
 
-    print("Testes realizados com sucesso")
+    print("Testes realizados com sucesso!")
