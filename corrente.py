@@ -7,12 +7,11 @@ SR = SpiceManager()
 
 
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
-def verificar_validacao(circuito, let: LET) -> list:
+def verificar_validacao(circuito: str, vdd: float, let: LET) -> list:
     direcao_pulso_nodo = alternar_combinacao(let.orientacao)[0]
     direcao_pulso_saida = alternar_combinacao(let.orientacao)[1]
     nodo_nome = let.nodo_nome
     saida_nome = let.saida_nome
-    vdd = circuito.vdd
     SR.set_pulse(nodo_nome, 0.0, saida_nome, direcao_pulso_nodo)
     os.system(f"hspice {circuito} | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
     tensao_pico_saida = SR.get_peak_tension(direcao_pulso_saida, 0)
@@ -113,7 +112,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> list:
     SR.set_signals(vdd, entradas)
 
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
-    analise_valida, simulacoes_feitas = verificar_validacao(circuito, let)
+    analise_valida, simulacoes_feitas = verificar_validacao(circuito, vdd, let)
     if not analise_valida:
         if simulacoes_feitas == 1:
             print("Analise invalida - Tensoes improprias\n")
