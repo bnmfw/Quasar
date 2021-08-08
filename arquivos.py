@@ -77,13 +77,13 @@ class SpiceManager():
 
     # Altera o arquivo "largura_pulso.txt"
     @staticmethod
-    def set_pulse_width_param(nodo, saida, vdd:float, dir_nodo:str, dir_saida:str):
+    def set_pulse_width_param(nodo_nome:str, saida_nome:str, vdd:float, dir_nodo:str, dir_saida:str):
         with open("largura_pulso.txt", "w") as larg:
             larg.write("*Arquivo com a leitura da largura dos pulsos\n")
             tensao = str(vdd * 0.5)
             larg.write(
-                f".meas tran atraso TRIG v({nodo}) val='{tensao}' {dir_nodo}=1 TARG v({saida}) val='{tensao}' {dir_saida}=1\n"
-                f".meas tran larg TRIG v({nodo}) val='{tensao}' rise=1 TARG v({nodo}) val='{tensao}' fall=1\n")
+                f".meas tran atraso TRIG v({nodo_nome}) val='{tensao}' {dir_nodo}=1 TARG v({saida_nome}) val='{tensao}' {dir_saida}=1\n"
+                f".meas tran larg TRIG v({nodo_nome}) val='{tensao}' rise=1 TARG v({nodo_nome}) val='{tensao}' fall=1\n")
 
     # Altera o valor de simulacoes monte carlo a serem feitas
     @staticmethod

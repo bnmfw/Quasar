@@ -235,7 +235,8 @@ class Circuito():
         pulso_in, pulso_out = input("pulsos na entrada e saida do LET: ").split()
         let = self.encontrar_let(self.encontrar_nodo(nodo_nome), self.encontrar_nodo(saida_nome), alternar_combinacao([pulso_in, pulso_out]))
         corrente = let.corrente
-        SR.set_pulse(nodo_nome, corrente, saida_nome, pulso_in)
+        self.SM.set_pulse(nodo_nome, corrente, saida_nome, pulso_in)
+        self.SM.set_pulse_width_param(nodo_nome, saida_nome, self.vdd, pulso_in, pulso_out)
         print("LET configurado com sucesso")
 
     def __resetar_LETths(self):
