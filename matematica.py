@@ -1,16 +1,16 @@
 # Nao tenho certeza
-def converter_binario(binario: str, validacao: list, variaveis:int):  # Converte o binario esquisito numa lista
-    final = list(validacao)
-    flag = 0
-    binary = list()
-    # Transforma binario em uma lista de verdade e ajusta a validacao
-    for i in range(variaveis - (len(binario) - 2)): binary.append(0)
-    for i in range(len(binario) - 2): binary.append(int(binario[i + 2]))
-    for i in range(len(final)):
-        if final[i] == "x":
-            final[i] = binary[flag]
-            flag += 1
-    return final
+# def converter_binario(binario: str, validacao: list, variaveis:int):  # Converte o binario esquisito numa lista
+#     final = list(validacao)
+#     flag = 0
+#     binary = list()
+#     # Transforma binario em uma lista de verdade e ajusta a validacao
+#     for i in range(variaveis - (len(binario) - 2)): binary.append(0)
+#     for i in range(len(binario) - 2): binary.append(int(binario[i + 2]))
+#     for i in range(len(final)):
+#         if final[i] == "x":
+#             final[i] = binary[flag]
+#             flag += 1
+#     return final
 
 # Recebe um inteiro e retonra uma lista com seus digitos binarios
 def converter_binario_lista(inteiro: int, tamanho:int) -> list:
@@ -49,5 +49,5 @@ if __name__ == "__main__":
     assert ajustar_valor("  24.56u ") == (24.56 * 10 ** -6), "ajuste_valor FALHOU"
     assert ajustar_valor("2.349e-02") == 0.02349, "ajuste_valor FALHOU"
     assert converter_binario_lista(14, 4) == [1,1,1,0], "converter_binario_lista FALHOU"
-    assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
+    #assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
     assert corrente_para_let(100) == 50264550.26455026, "corrente_para_let FALHOU" # DEFINIDO PELA PROPRIA FUNCAO

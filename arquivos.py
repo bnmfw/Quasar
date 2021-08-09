@@ -1,4 +1,5 @@
 from matematica import *
+from codificador import alternar_combinacao
 
 analise_manual = False
 
@@ -218,3 +219,32 @@ class SpiceManager():
         larg = ajustar_valor(larg[1])
         return larg - ajustar_valor("18.6p")
         # return larg - atraso
+
+class CSVManager():
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def escrever_csv_total(circuito):
+        linha = 2
+        tabela = circuito.nome + ".csv"
+        with open(tabela, "w") as sets:
+            sets.write("Nodo,Saida,Pulso,Pulso,Corrente,LETs,Num Val,Validacoes->\n")
+            for nodo in circuito.nodos:
+                for let in nodo.LETs:
+                    c0, c1 = alternar_combinacao(let.orientacao)
+                    sets.write(f"{nodo.nome},{let.saida_nome},{c0},{c1},{let.corrente:.2f},{let.valor:.2e},{len(let)}")
+                    for validacao in let.validacoes:
+                        sets.write(",'")
+                        for num in validacao: sets.write(f"{num}")
+                    sets.write("\n")
+                    linha += 1
+        print(f"\nTabela {tabela} gerada com sucesso\n")
+
+    @staticmethod
+    def escrever_csv_comparativo(circuito, lista_comparativa):
+        with open(f"{circuito.nome}_compara.csv", "w") as tabela:
+            for chave in lista_comparativa:
+                tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
+
+        print(f"\nTabela {circuito.nome}_compara.csv" + " gerada com sucesso\n")

@@ -1,14 +1,12 @@
-from arquivos import SpiceManager, analise_manual
+from arquivos import SpiceManager, CSVManager, analise_manual
 from codificador import JsonManager, alternar_combinacao
-from matematica import converter_binario, converter_binario_lista, ajustar_valor
+from matematica import converter_binario_lista, ajustar_valor
 from corrente import definir_corrente
 from components import Nodo, Entrada, LET
 from time import time
 import os
 
 barra_comprida = "---------------------------"
-
-MCManager = SpiceManager()
 
 def relatorio_de_tempo(func):
     def wrapper(*args, **kwargs):
@@ -19,23 +17,24 @@ def relatorio_de_tempo(func):
         dias: int = tempo // 86400
         horas: int = (tempo % 86400) // 3600
         minutos: int = (tempo % 3600) // 60
-        if dias:
-            print(str(dias) + " dias, ", end='')
-        if horas:
-            print(str(horas) + " horas, ", end='')
-        print(str(minutos) + " minutos e " + str(tempo % 60) + " segundos de execucao\n")
+        if dias: print(f"{dias} dias, ", end='')
+        if horas: print(f"{horas} horas, ", end='')
+        if minutos: print(f"{minutos} minutos e ")
+        print(f"{tempo % 60} segundos de execucao")
         return rv
     return wrapper
+
 
 class Monte_Carlo(object):
     def __init__ (self, num_testes):
         self.num = num_testes
+        self.MCManager = SpiceManager()
 
     def __enter__(self):
-        MCManager.set_monte_carlo(self.num)
+        self.MCManager.set_monte_carlo(self.num)
 
     def __exit__(self, type, value, traceback):
-        MCManager.set_monte_carlo(0)
+        self.MCManager.set_monte_carlo(0)
 
 class Circuito():
     def __init__(self):
@@ -56,6 +55,7 @@ class Circuito():
         ##### MANEJADORES DE ARQUIVOS #####
         self.SM = SpiceManager()
         self.JM = JsonManager()
+        self.CM = CSVManager()
 
         ##### CONFIGURACOES PADRAO #####
         self.SM.set_monte_carlo(0)
@@ -73,9 +73,9 @@ class Circuito():
         # Escolha de dados do circuito
         circuito = input(barra_comprida+"\nEscolha o circuito: ")
         self.nome = circuito
-        self.arquivo = self.nome + ".txt"
+        self.arquivo: str = self.nome + ".txt"
         try:
-            tensao = 0.0
+            tensao: float = 0.0
             with open(circuito+".json","r") as teste:
                 tensao = float(input(f"{barra_comprida}\nCadastro encontrado\nQual vdd deseja analisar: "))
                 self.vdd = tensao
@@ -111,7 +111,7 @@ class Circuito():
         if not acao:
             self.__atualizar_LETths()
         elif acao == 1:
-            self.__escrever_csv_total()
+            self.CM.escrever_csv_total(self)
         elif acao == 2:
             self.analise_manual()
         elif acao == 3:
@@ -299,48 +299,42 @@ class Circuito():
         ##### BUSCA DO LETs DO CIRCUITO #####
         for nodo in self.nodos:
             for saida in self.saidas:
-                ##### FAZ A CONTAGEM DE VARIAVEIS NUMA VALIDACAO  #####
-                variaveis = 0
-                val = list(nodo.validacao[saida.nome])
-                for x in range(len(val)):
-                    if val[x] == "x": variaveis += 1
-                if variaveis:
-                    for k in range(2 ** variaveis):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
+                for k in range(2 ** len(self.entradas)):  # PASSA POR TODAS AS COMBINACOES DE ENTRADA
 
-                        final = converter_binario(bin(k), val, variaveis)
-                        ##### DECOBRE OS LETs PARA TODAS AS COBINACOES DE rise E fall #####
-                        for combinacao in [["rise", "rise"], ["rise", "fall"], ["fall", "fall"], ["fall", "rise"]]:
+                    final = converter_binario_lista(k, len(self.entradas))
+                    ##### DECOBRE OS LETs PARA TODAS AS COBINACOES DE rise E fall #####
+                    for combinacao in [["rise", "rise"], ["rise", "fall"], ["fall", "fall"], ["fall", "rise"]]:
 
-                            ##### ENCONTRA O LET PARA AQUELA COMBINACAO #####
-                            chave = alternar_combinacao(combinacao)  # Faz coisa tipo ["rise","fall"] virar "rf"
-                            let_analisado = LET(9999, self.vdd, nodo.nome, saida.nome, chave)
-                            print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
-                            self.simulacoes_feitas += definir_corrente(self, let_analisado, final)
+                        ##### ENCONTRA O LET PARA AQUELA COMBINACAO #####
+                        chave = alternar_combinacao(combinacao)  # Faz coisa tipo ["rise","fall"] virar "rf"
+                        let_analisado = LET(9999, self.vdd, nodo.nome, saida.nome, chave)
+                        print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
+                        self.simulacoes_feitas += definir_corrente(self, let_analisado, final)
 
-                            for let in nodo.LETs:
-                                if let_analisado == let: #encontrou a combinacao correta
-                                    if let_analisado.corrente == let.corrente:
-                                        let.adicionar_entrada(final)
-                                    elif let_analisado.corrente < let.corrente:
-                                        nodo.LETs.remove(let)
-                                        nodo.LETs.append(let_analisado)
-                                    break
-                            else:
-                                if let_analisado.corrente < 1111:
+                        for let in nodo.LETs:
+                            if let_analisado == let: #encontrou a combinacao correta
+                                if let_analisado.corrente == let.corrente:
+                                    let.adicionar_entrada(final)
+                                elif let_analisado.corrente < let.corrente:
+                                    nodo.LETs.remove(let)
                                     nodo.LETs.append(let_analisado)
+                                break
+                        else:
+                            if let_analisado.corrente < 1111:
+                                nodo.LETs.append(let_analisado)
 
-                            if let_analisado.corrente < nodo.LETth:
-                                nodo.LETth = let_analisado.corrente
+                        if let_analisado.corrente < nodo.LETth.corrente:
+                            nodo.LETth = let_analisado
 
-                            if let_analisado.corrente < 1111: break
-                            # #### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
-                            # if let_analisado.corrente < 1000:
-                            #     self.sets_validos.append(
-                            #         [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
-                            #     break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
-                            # else:
-                            #     self.sets_invalidos.append(
-                            #         [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
+                        if let_analisado.corrente < 1111: break
+                        # #### ADMINISTRACAO DE SETS VALIDOS E INVALIDOS PRA DEBUG
+                        # if let_analisado.corrente < 1000:
+                        #     self.sets_validos.append(
+                        #         [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
+                        #     break  # Se ja encontrou a combinacao valida praquela validacao nao tem pq repetir
+                        # else:
+                        #     self.sets_invalidos.append(
+                        #         [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
 
     @relatorio_de_tempo
     def __atualizar_LETths(self):
@@ -348,35 +342,13 @@ class Circuito():
         ##### BUSCA DO LETs DO CIRCUITO #####
         print(self.nodos)
         for nodo in self.nodos:
+            simulacoes_feitas += definir_corrente(self, nodo.LETth, nodo.LETth.validacoes[0])
             for let in nodo.LETs:
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                 print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
                 simulacoes_feitas += definir_corrente(self, let, let.validacoes[0])
         print(f"{simulacoes_feitas} simulacoes feitas na atualizacao")
         self.JM.codificar(self)
-
-    def __escrever_csv_total(self):
-        linha = 2
-        tabela = self.nome + ".csv"
-        with open(tabela, "w") as sets:
-            sets.write("Nodo,Saida,Pulso,Pulso,Corrente,LETs,Num Val,Validacoes->\n")
-            for nodo in self.nodos:
-                for let in nodo.LETs:
-                    c0, c1 = alternar_combinacao(let.orientacao)
-                    sets.write(f"{nodo.nome},{let.saida_nome},{c0},{c1},{let.corrente:.2f},{let.valor:.2e},{len(let)}")
-                    for validacao in let.validacoes:
-                        sets.write(",'")
-                        for num in validacao: sets.write(f"{num}")
-                    sets.write("\n")
-                    linha += 1
-        print(f"\nTabela {tabela} gerada com sucesso\n")
-
-    def __escrever_csv_comparativo(self, lista_comparativa):
-        with open(f"{self.nome}_compara.csv", "w") as tabela:
-            for chave in lista_comparativa:
-                tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
-
-        print(f"\nTabela {self.nome}_compara.csv" + " gerada com sucesso\n")
 
 if __name__ == "__main__":
 

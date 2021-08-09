@@ -30,7 +30,7 @@ class Nodo:
         # self.validacao[saida.nome] = [0,0,"x",1,"t"]
         self.LETs = []
         # Eh um dicionario de dicionarios
-        self.LETth: float = 9999.9
+        self.LETth: LET = LET(9999, 0.0, self.nome, "saida", "aa")
         self.atraso = {}
 
     def __repr__(self):
