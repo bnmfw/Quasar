@@ -128,9 +128,11 @@ class Circuito():
         print(f"Corrente final: {let_analisado.corrente}")
 
     def analise_monte_carlo(self):
-        self.__configurar_LET()
-        self.SM.set_monte_carlo(int(input(f"{barra_comprida}\nQuantidade de analises: ")))
+        pulso_out = self.__configurar_LET()
+        num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
+        self.SM.set_monte_carlo(num_analises)
         os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
+        self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
         print("Analise monte carlo realizada com sucesso")
         self.SM.set_monte_carlo(0)
 
@@ -215,7 +217,7 @@ class Circuito():
         with open(self.arquivo, "r") as circuito:
             for linha in circuito:
                 if "M" in linha:
-                    transistor, coletor, base, emissor, bulk, modelo, nfin = linha.split()
+                    _, coletor, base, emissor, _, _, _ = linha.split()
                     for nodo in [coletor, base, emissor]:
                         if nodo not in ["vdd", "gnd", *nodos_nomes, *ignorados_true, *ignorados_false]:
                             nodo = Nodo(nodo)
@@ -229,7 +231,7 @@ class Circuito():
         for indice, entrada in enumerate(self.entradas):
             entrada.sinal = validacao[indice]
 
-    def __configurar_LET(self):
+    def __configurar_LET(self) -> str:
         # Configuracao de pulso
         nodo_nome, saida_nome = input("nodo e saida do LET: ").split()
         nodo = self.encontrar_nodo(nodo_nome)
@@ -245,6 +247,7 @@ class Circuito():
         self.SM.set_pulse(nodo_nome, corrente, saida_nome, pulso_in)
         self.SM.set_pulse_width_param(nodo_nome, saida_nome, self.vdd, pulso_in, pulso_out)
         print("LET configurado com sucesso")
+        return pulso_out # Eu uso isso na analise monte carlo, se tirar vai dar pau
 
     def __resetar_LETths(self):
         for nodo in self.nodos:

@@ -136,20 +136,22 @@ class SpiceManager():
         if dir_pulso_saida != "rise" and dir_pulso_saida != "fall": raise ValueError("direcao pulso_saida nao esta entre rise e fall")
         analises_validas = 0
         with open(f"{circuito.nome}.mt0.csv", "w") as mc:
-            for i in range(3): lixo = mc.readline()
+            for i in range(3): _ = mc.readline() # Decarte das 3 linhas iniciais
             cabecalho = mc.readline().split()
             orientacao = "minout" if (dir_pulso_saida == "fall") else "maxnod"
             tensao_pico_indice = cabecalho.index(orientacao)
             largura_indice = cabecalho.index("larg")
+
             for i in range(num_analises):
                 linha_lida = mc.readline().split()
-                if float(linha_lida[largura_indice]) == condicao_satisfatoria:
-                    if dir_pulso_saida == "rise":
-                        if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
-                            analises_validas += 1
-                    else:
-                        if float(linha_lida[tensao_pico_indice]) > circuito.vdd / 2:
-                            analises_validas += 1
+                print(f"linha: {i} tensao_pico: {linha_lida[tensao_pico_indice]} largura: {linha_lida[largura_indice]}")
+                # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
+                #     if dir_pulso_saida == "rise":
+                #         if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
+                #             analises_validas += 1
+                #     else:
+                #         if float(linha_lida[tensao_pico_indice]) > circuito.vdd / 2:
+                #             analises_validas += 1
         return analises_validas
 
 
