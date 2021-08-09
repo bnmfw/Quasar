@@ -140,11 +140,17 @@ class SpiceManager():
             cabecalho = mc.readline().split(",")
             orientacao = "minout" if (dir_pulso_saida == "fall") else "maxnod"
             tensao_pico_indice = cabecalho.index(orientacao)
+            tensao_min = cabecalho.index("minnod")
+            tensao_max = cabecalho.index("maxnod")
             largura_indice = cabecalho.index("larg")
 
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
-                print(f"linha: {i} \ttensao_pico: {ajustar_valor(linha_lida[tensao_pico_indice])} \tlargura: {linha_lida[largura_indice].strip()}")
+                print(f"linha: {i}"
+                      f"\ttensao_pico: {ajustar_valor(linha_lida[tensao_pico_indice])}"
+                      f"\tmin: {ajustar_valor(linha_lida[tensao_min])}"
+                      f"\tmax: {ajustar_valor(linha_lida[tensao_max])}"
+                      f"\tlargura: {linha_lida[largura_indice].strip()}")
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
                 #     if dir_pulso_saida == "rise":
                 #         if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
