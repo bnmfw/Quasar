@@ -304,6 +304,8 @@ class JsonManager():
         circuito_codificado["saidas"] = lista_de_saidas
         circuito_codificado["nodos"] = lista_de_nodos
 
+        print(circuito_codificado)
+
         json.dump(circuito_codificado, open(f"{circuito.nome}_{circuito.vdd}.json", "w"))
 
         try:
