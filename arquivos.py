@@ -138,10 +138,10 @@ class SpiceManager():
         with open(f"{circuito.nome}.mt0.csv", "r") as mc:
             for i in range(3): _ = mc.readline() # Decarte das 3 linhas iniciais
             cabecalho = mc.readline().split(",")
-            orientacao = "minout" if (dir_pulso_saida == "fall") else "maxnod"
+            orientacao = "minout" if (dir_pulso_saida == "fall") else "maxout"
             tensao_pico_indice = cabecalho.index(orientacao)
-            tensao_min = cabecalho.index("minnod")
-            tensao_max = cabecalho.index("maxnod")
+            tensao_min = cabecalho.index("minout")
+            tensao_max = cabecalho.index("maxout")
             largura_indice = cabecalho.index("larg")
 
             for i in range(num_analises):
