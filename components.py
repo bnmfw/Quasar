@@ -59,12 +59,13 @@ class Nodo:
 
 class LET:
     def __init__(self, corrente:float, vdd:float, nodo_nome:str, saida_nome:str, orientacao:str):
-        self.corrente = corrente
-        self.orientacao = orientacao
-        self.vdd = vdd
-        self.nodo_nome = nodo_nome
-        self.saida_nome = saida_nome
-        self.validacoes = []
+        self.corrente: float = corrente
+        self.orientacao: str = orientacao
+        self.vdd: float = vdd
+        self.nodo_nome: str = nodo_nome
+        self.saida_nome: str = saida_nome
+        self.validacoes: list = []
+        self.aproximacao: int = 0 # 1 - Precisao satisfatoria 2 - minimo de largura 3 - ciclos maximos
 
     def __eq__(self, other):
         return (self.nodo_nome == other.nodo_nome and self.saida_nome == other.saida_nome and self.orientacao == other.orientacao)

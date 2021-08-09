@@ -139,7 +139,6 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
 
         # Le a o pico de tensao na saida do arquivo
         tensao_pico = SR.get_peak_tension(direcao_pulso_saida, 0)
-        print(tensao_pico)
 
         if analise_manual:
             print(f"Corrente testada: {corrente} Resposta na saida: {tensao_pico}\n")
@@ -149,6 +148,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             if 1 < corrente < 499:
                 print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
                 let.corrente = corrente
+                let.aproximacao = 3 # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
             else:
                 print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
                 let.corrente = 3333
@@ -159,6 +159,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             if 1 < corrente < 499:
                 print("Corrente encontrada - Aproximacao nao convencional\n")
                 let.corrente = corrente
+                let.aproximacao = 2 # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
             else:
                 print("Corrente nao encontrada - Aproximacao extrema\n")
                 let.corrente = 5555
@@ -173,6 +174,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             else:
                 print("Corrente encontrada com sucesso\n")
                 let.corrente = corrente
+                let.aproximacao = 1 # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
                 return simulacoes_feitas
         elif direcao_pulso_saida == "rise":
             if tensao_pico <= (1 - precisao) * vdd / 2:
@@ -182,6 +184,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             else:
                 print("Corrente encontrada com sucesso\n")
                 let.corrente = corrente
+                let.aproximacao = 1 # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
                 return simulacoes_feitas
 
         corrente: float = float((corrente_sup + corrente_inf) / 2)
