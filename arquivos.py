@@ -147,11 +147,11 @@ class SpiceManager():
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
                 tp = ajustar_valor(linha_lida[tensao_pico_indice].strip())
-                print(f"linha: {i}"
-                      f"\ttensao_pico: {tp}"
+                print(f"{i}"
+                      f"\tpico: {tp}"
                       f"\tmin: {ajustar_valor(linha_lida[tensao_min].strip())}"
                       f"\tmax: {ajustar_valor(linha_lida[tensao_max].strip())}"
-                      f"\tlargura: {linha_lida[largura_indice].strip()}")
+                      f"\tlarg: {linha_lida[largura_indice].strip()}")
                 if (orientacao == 'minout' and tp < circuito.vdd/2) or (orientacao == 'maxout' and tp > circuito.vdd/2):
                     print("\tSatisfez!")
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
