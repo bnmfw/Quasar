@@ -44,7 +44,7 @@ class Nodo:
         dic["atraso"] = self.atraso
         lista_de_lets = []
         for let in self.LETs:
-            lista_de_lets.append(dict(let))
+            lista_de_lets.append(let.codec())
         dic["lets"] = lista_de_lets
         return dic
 
