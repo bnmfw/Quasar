@@ -6,7 +6,7 @@ class Entrada:
         self.sinal = sinal
         self.atraso = [0, "saida.nome", ["Vetor de validacao"]]
 
-    def __dict__(self):
+    def codec(self):
         dic = {}
         dic["nome"] = self.nome
         dic["sinal"] = self.sinal
@@ -36,7 +36,7 @@ class Nodo:
     def __repr__(self):
         return f"\nnome: {self.nome}\tLETth: {self.LETth:.2f}\tQuantidade de LETs:{len(self.LETs)}"
 
-    def __dict__(self):
+    def codec(self):
         dic = {}
         dic["nome"] = self.nome
         dic["val"] = self.validacao
@@ -92,7 +92,7 @@ class LET:
         if type(validacao) != list: raise TypeError("Validacao nao eh uma lista")
         self.validacoes.append(validacao)
 
-    def __dict__(self):
+    def codec(self):
         dic = {}
         dic["corr"] = self.corrente
         dic["orie"] = self.orientacao
@@ -113,6 +113,7 @@ if __name__ == "__main__":
     #TESTES DE ENTRADA
     e1 = Entrada("ent1", "t")
     e2 = Entrada("ent2", "t")
+    print(e1.codec())
     e2.decodec(e1.codec())
     assert e1.nome == e2.nome and e1.sinal == e2.sinal and e1.atraso == e2.atraso, "Entrada FALHOU"
 

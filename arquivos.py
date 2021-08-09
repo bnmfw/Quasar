@@ -284,7 +284,7 @@ class JsonManager():
         dicionario_de_nodos = {}  # criacao do dicionario que tera o dicionario de todos os nodos
         lista_de_nodos = []
         for nodo in circuito.nodos:
-            lista_de_nodos.append(dict(nodo))
+            lista_de_nodos.append(nodo.codec())
 
         # Codificacao de entradas
         lista_de_saidas = []
