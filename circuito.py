@@ -317,7 +317,7 @@ class Circuito():
         for nodo in self.nodos:
             for let in nodo.LETs:
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
-                print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoe[0])
+                print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
                 simulacoes_feitas += definir_corrente(self, let, let.validacoes[0])
         print(f"{simulacoes_feitas} simulacoes feitas na atualizacao")
         self.JM.codificar(self)
