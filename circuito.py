@@ -341,7 +341,7 @@ class Circuito():
             for nodo in self.nodos:
                 for let in nodo.LETs:
                     c0, c1 = alternar_combinacao(let.orientacao)
-                    sets.write(f"{nodo.nome},{let.saida_nome},{c0},{c1},{let.corrente},{let.valor:.2e},{len(let)}")
+                    sets.write(f"{nodo.nome},{let.saida_nome},{c0},{c1},{let.corrente:.2f},{let.valor:.2e},{len(let)}")
                     for validacao in let.validacoes:
                         sets.write(",'")
                         for num in validacao: sets.write(f"{num}")
