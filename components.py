@@ -40,7 +40,7 @@ class Nodo:
         dic = {}
         dic["nome"] = self.nome
         dic["val"] = self.validacao
-        dic["critico"] = self.LETth
+        dic["critico"] = self.LETth.codec()
         dic["atraso"] = self.atraso
         lista_de_lets = []
         for let in self.LETs:
@@ -51,7 +51,8 @@ class Nodo:
     def decodec(self, dic:dict, vdd:float):
         self.nome = dic["nome"]
         self.validacao = dic["val"]
-        self.LETth = dic["critico"]
+        self.LETth = LET(9999, vdd, "nodo", "saida", "orientacao")
+        self.LETth.decodec(dic["critico"])
         self.atraso = dic["atraso"]
         for dicionario_let in dic["lets"]:
             let = LET(9999, vdd, "nodo", "saida", "orientacao")
@@ -122,7 +123,8 @@ if __name__ == "__main__":
     n2 = Nodo("nodo2")
     n2.decodec(n1.codec(),0.7)
     assert n1.nome == n2.nome and n1.validacao == n2.validacao and n1.atraso == n2.atraso and \
-            n1.LETs == n2.LETs and n1.LETth == n2.LETth, "Nodo FALHOU"
+            n1.LETs == n2.LETs and\
+           n1.LETth == n2.LETth, "Nodo FALHOU"
 
     # TESTE DE LET
     let1 = LET(154.3, 0.7, "nodo1", "saida1", "fr")
