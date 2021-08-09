@@ -232,9 +232,16 @@ class Circuito():
     def __configurar_LET(self):
         # Configuracao de pulso
         nodo_nome, saida_nome = input("nodo e saida do LET: ").split()
+        nodo = self.encontrar_nodo(nodo_nome)
+        print("Orientacoes disponiveis: ")
+        for let_disponivel in nodo.LETs:
+            if let_disponivel.saida_nome == saida_nome:
+                print(alternar_combinacao(let_disponivel.orientacao))
         pulso_in, pulso_out = input("pulsos na entrada e saida do LET: ").split()
-        let = self.encontrar_let(self.encontrar_nodo(nodo_nome), self.encontrar_nodo(saida_nome), alternar_combinacao([pulso_in, pulso_out]))
+        let = self.encontrar_let(nodo, self.encontrar_nodo(saida_nome), alternar_combinacao([pulso_in, pulso_out]))
         corrente = let.corrente
+        self.__escolher_validacao(let.validacoes[0])
+        self.SM.set_signals(self.vdd, self.entradas)
         self.SM.set_pulse(nodo_nome, corrente, saida_nome, pulso_in)
         self.SM.set_pulse_width_param(nodo_nome, saida_nome, self.vdd, pulso_in, pulso_out)
         print("LET configurado com sucesso")
