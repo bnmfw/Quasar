@@ -1,11 +1,23 @@
 from arquivos import SpiceManager, analise_manual
 from codificador import JsonManager, alternar_combinacao
-from matematica import converter_binario, converter_binario_lista, ajustar_valor, corrente_para_let
+from matematica import converter_binario, converter_binario_lista, ajustar_valor
 from corrente import definir_corrente
 from components import Nodo, Entrada, LET
 import os
 
 barra_comprida = "---------------------------"
+
+MCManager = SpiceManager()
+
+class Monte_Carlo(object):
+    def __init__ (self, num_testes):
+        self.num = num_testes
+
+    def __enter__(self):
+        MCManager.set_monte_carlo(self.num)
+
+    def __exit__(self, type, value, traceback):
+        MCManager.set_monte_carlo(0)
 
 class Circuito():
     def __init__(self):
@@ -130,11 +142,10 @@ class Circuito():
     def analise_monte_carlo(self):
         pulso_out = self.__configurar_LET()
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
-        self.SM.set_monte_carlo(num_analises)
-        os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
-        self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
-        print("Analise monte carlo realizada com sucesso")
-        self.SM.set_monte_carlo(0)
+        with Monte_Carlo(num_analises):
+            os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
+            self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
+            print("Analise monte carlo realizada com sucesso")
 
     def __get_atrasoCC(self):
         simulacoes_feitas = 0
@@ -330,8 +341,7 @@ class Circuito():
             for nodo in self.nodos:
                 for let in nodo.LETs:
                     c0, c1 = alternar_combinacao(let.orientacao)
-                    sets.write(f"{nodo.nome},{let.saida_nome},{c0},{c1},{let.corrente},")
-                    sets.write(f"{corrente_para_let(let.corrente):.2e},{len(let.validacoes)}")
+                    sets.write(f"{nodo.nome},{let.saida_nome},{c0},{c1},{let.corrente},{let.valor:.2e},{len(let)}")
                     for validacao in let.validacoes:
                         sets.write(",'")
                         for num in validacao: sets.write(f"{num}")

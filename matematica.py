@@ -41,20 +41,13 @@ def ajustar_valor(tensao: str) -> float:
     tensao = tensao * 10 ** grandeza
     return tensao
 
+# Converte uma corrente para LET
 def corrente_para_let(corrente: float) -> float:
     return (corrente * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / ((1.08 * 10 ** -14) * 0.000000021)
 
 
 if __name__ == "__main__":
-    print("Realizando testes de arquivo")
-    if ajustar_valor("  24.56u ") == (24.56 * 10 ** -6):
-        print("ajuste_valor PASSOU")
-    else: print("ajuste_valor FALHOU")
-
-    if converter_binario_lista(14, 4) == [1,1,1,0]:
-        print("converter_binario_lista PASSOU")
-    else: print("converter_binario_lista FALHOU")
-
-    if converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0]:
-        print("converter_binario PASSOU")
-    else: print("converter_binario FALHOU")
+    assert ajustar_valor("  24.56u ") == (24.56 * 10 ** -6), "ajuste_valor FALHOU"
+    assert converter_binario_lista(14, 4) == [1,1,1,0], "converter_binario_lista FALHOU"
+    assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
+    assert corrente_para_let(100) == 50264550.26455026, "corrente_para_let FALHOU" # DEFINIDO PELA PROPRIA FUNCAO

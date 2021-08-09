@@ -1,3 +1,5 @@
+from matematica import corrente_para_let
+
 class Entrada:
     def __init__(self, nome: str, sinal: str):
         self.nome = nome
@@ -32,7 +34,7 @@ class Nodo:
         self.atraso = {}
 
     def __repr__(self):
-        return f"\nnome: {self.nome}, LETth: {self.LETth}, Quantidade de LETs:{len(self.LETs)}"
+        return f"\nnome: {self.nome}\tLETth: {self.LETth:.2f}\tQuantidade de LETs:{len(self.LETs)}"
 
     def codec(self):
         dic = {}
@@ -59,7 +61,8 @@ class Nodo:
 
 class LET:
     def __init__(self, corrente:float, vdd:float, nodo_nome:str, saida_nome:str, orientacao:str):
-        self.corrente: float = corrente
+        self.valor: float = 1111
+        self.__corrente: float = corrente
         self.orientacao: str = orientacao
         self.vdd: float = vdd
         self.nodo_nome: str = nodo_nome
@@ -67,11 +70,23 @@ class LET:
         self.validacoes: list = []
         self.aproximacao: int = 0 # 1 - Precisao satisfatoria 2 - minimo de largura 3 - ciclos maximos
 
+    @property
+    def corrente(self):
+        return self.__corrente
+
+    @corrente.setter
+    def corrente(self, corrente):
+        self.__corrente = corrente
+        self.valor = corrente_para_let(corrente)
+
     def __eq__(self, other):
         return (self.nodo_nome == other.nodo_nome and self.saida_nome == other.saida_nome and self.orientacao == other.orientacao)
 
     def __repr__(self):
         return f"\ncorrente: {self.corrente}, orientacao: {self.orientacao}, vdd: {self.vdd}, nodo: {self.nodo_nome}, saida: {self.saida_nome}"
+
+    def __len__(self):
+        return len(self.validacoes)
 
     def adicionar_entrada(self, validacao:list):
         if type(validacao) != list: raise TypeError("Validacao nao eh uma lista")
@@ -94,39 +109,26 @@ class LET:
         self.validacoes = dic["val"]
 
 if __name__ == "__main__":
-    print("Rodando Testes de Componentes...")
 
     #TESTES DE ENTRADA
-    entrada1 = Entrada("ent1", "t")
-    entrada2 = Entrada("ent2", "t")
-    entrada2.decodec(entrada1.codec())
-    if entrada1.nome == entrada2.nome and entrada1.sinal == entrada2.sinal and entrada1.atraso == entrada2.atraso:
-        print("Entrada PASSOU")
-    else:
-        print("Entrada FALHOU")
+    e1 = Entrada("ent1", "t")
+    e2 = Entrada("ent2", "t")
+    e2.decodec(e1.codec())
+    assert e1.nome == e2.nome and e1.sinal == e2.sinal and e1.atraso == e2.atraso, "Entrada FALHOU"
 
     # TESTE DE NODO
-    nodo1 = Nodo("nodo1")
-    nodo2 = Nodo("nodo2")
-    nodo2.decodec(nodo1.codec(),0.7)
-    if nodo1.nome == nodo2.nome and nodo1.validacao == nodo2.validacao and nodo1.atraso == nodo2.atraso and \
-            nodo1.LETs == nodo2.LETs and nodo1.LETth == nodo2.LETth:
-        print("Nodo PASSOU")
-    else:
-        print("Nodo FALHOU")
+    n1 = Nodo("nodo1")
+    n2 = Nodo("nodo2")
+    n2.decodec(n1.codec(),0.7)
+    assert n1.nome == n2.nome and n1.validacao == n2.validacao and n1.atraso == n2.atraso and \
+            n1.LETs == n2.LETs and n1.LETth == n2.LETth, "Nodo FALHOU"
 
     # TESTE DE LET
     let1 = LET(154.3, 0.7, "nodo1", "saida1", "fr")
     let2 = LET(300, 0.7, "nodo1", "saida1", "rf")
     let2.decodec(let1.codec())
-    if let1 == let2:
-        print("LET PASSOU no teste de Overloading e Codificacao")
-    else:
-        print("LET FALHOU no teste de Overloading e Codificacao")
+    assert let1 == let2, "LET FALHOU no teste de Overloading e Codificacao"
 
     entrada = [0,0,1,0,1]
     let1.adicionar_entrada(entrada)
-    if entrada in let1.validacoes:
-        print("LET PASSOU no teste de Append")
-    else:
-        print("LET FALHOU no teste de Append")
+    assert entrada in let1.validacoes, "LET FALHOU no teste de Append"
