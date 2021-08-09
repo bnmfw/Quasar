@@ -1,6 +1,6 @@
 from arquivos import SpiceManager, analise_manual
 from codificador import JsonManager, alternar_combinacao
-from matematica import converter_binario, converter_binario_lista, ajustar_valor
+from matematica import converter_binario, converter_binario_lista, ajustar_valor, corrente_para_let
 from corrente import definir_corrente
 from components import Nodo, Entrada, LET
 import os
@@ -327,27 +327,15 @@ class Circuito():
         with open(tabela, "w") as sets:
             sets.write("Nodo,Saida,Pulso,Pulso,Corrente,LETs,Num Val,Validacoes->\n")
             for nodo in self.nodos:
-                # print(nodo.LETs)
-                for saida in nodo.LETs:
-                    for chave, combinacao in zip(["rr", "ff", "rf", "fr"],
-                                                 [["rise", "rise"],
-                                                  ["fall", "fall"],
-                                                  ["rise", "fall"],
-                                                  ["fall", "rise"]]):
-                        # print(saida, comb, nodo.LETs[saida])
-                        if nodo.LETs[saida][chave][0] < 1111:
-                            sets.write(nodo.nome + "," + saida + "," + combinacao[0] + "," + combinacao[1] + ",")
-                            sets.write(str(nodo.LETs[saida][chave][0]) + ",")
-                            sets.write('{:.2e}'.format(
-                                (nodo.LETs[saida][chave][0] * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / (
-                                        (1.08 * 10 ** -14) * 0.000000021)))
-                            sets.write("," + str(len(nodo.LETs[saida][chave][1])))  # Numero de validacoes
-                            for validacao in nodo.LETs[saida][chave][1]:
-                                sets.write(",'")
-                                for num in validacao:
-                                    sets.write(str(num))
-                            sets.write("\n")
-                            linha += 1
+                for let in nodo.LETs:
+                    c0, c1 = alternar_combinacao(let.orientacao)
+                    sets.write(f"{nodo.nome},{let.saida_nome},{c0},{c1},{let.corrente},")
+                    sets.write(f"{corrente_para_let(let.corrente):.2e},{len(let.validacoes)}")
+                    for validacao in let.validacoes:
+                        sets.write(",'")
+                        for num in validacao: sets.write(f"{num}")
+                    sets.write("\n")
+                    linha += 1
         print(f"\nTabela {tabela} gerada com sucesso\n")
 
     def __escrever_csv_comparativo(self, lista_comparativa):

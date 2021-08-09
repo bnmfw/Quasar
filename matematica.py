@@ -41,6 +41,10 @@ def ajustar_valor(tensao: str) -> float:
     tensao = tensao * 10 ** grandeza
     return tensao
 
+def corrente_para_let(corrente: float) -> float:
+    return (corrente * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / ((1.08 * 10 ** -14) * 0.000000021)
+
+
 if __name__ == "__main__":
     print("Realizando testes de arquivo")
     if ajustar_valor("  24.56u ") == (24.56 * 10 ** -6):
