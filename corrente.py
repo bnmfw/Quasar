@@ -139,6 +139,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
 
         # Le a o pico de tensao na saida do arquivo
         tensao_pico = SR.get_peak_tension(direcao_pulso_saida, 0)
+        print(tensao_pico)
 
         if analise_manual:
             print(f"Corrente testada: {corrente} Resposta na saida: {tensao_pico}\n")
@@ -184,7 +185,6 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
                 return simulacoes_feitas
 
         corrente: float = float((corrente_sup + corrente_inf) / 2)
-        print(corrente)
 
         # Escreve os parametros no arquivo dos SETs
         SR.set_pulse(let.nodo_nome, corrente, let.saida_nome, direcao_pulso_nodo)
