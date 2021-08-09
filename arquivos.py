@@ -154,6 +154,7 @@ class SpiceManager():
                       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
                 if (orientacao == 'minout' and tp < circuito.vdd/2) or (orientacao == 'maxout' and tp > circuito.vdd/2):
                     print("\tSatisfez!")
+                else: print("")
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
                 #     if dir_pulso_saida == "rise":
                 #         if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
