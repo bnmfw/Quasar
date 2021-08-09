@@ -3,11 +3,29 @@ from codificador import JsonManager, alternar_combinacao
 from matematica import converter_binario, converter_binario_lista, ajustar_valor
 from corrente import definir_corrente
 from components import Nodo, Entrada, LET
+from time import time
 import os
 
 barra_comprida = "---------------------------"
 
 MCManager = SpiceManager()
+
+def relatorio_de_tempo(func):
+    def wrapper(*args, **kwargs):
+        start = time()
+        rv = func(*args, **kwargs)
+        end = time()
+        tempo = int(end - start)
+        dias: int = tempo // 86400
+        horas: int = (tempo % 86400) // 3600
+        minutos: int = (tempo % 3600) // 60
+        if dias:
+            print(str(dias) + " dias, ", end='')
+        if horas:
+            print(str(horas) + " horas, ", end='')
+        print(str(minutos) + " minutos e " + str(tempo % 60) + " segundos de execucao\n")
+        return rv
+    return wrapper
 
 class Monte_Carlo(object):
     def __init__ (self, num_testes):
@@ -97,7 +115,7 @@ class Circuito():
         elif acao == 2:
             self.analise_manual()
         elif acao == 3:
-            self.analise_monte_carlo()
+            self.__analise_monte_carlo()
         #elif acao == 4:
         elif acao == 5:
             exit()
@@ -139,7 +157,8 @@ class Circuito():
         definir_corrente(self, let_analisado, vetor)
         print(f"Corrente final: {let_analisado.corrente}")
 
-    def analise_monte_carlo(self):
+    @relatorio_de_tempo
+    def __analise_monte_carlo(self):
         pulso_out = self.__configurar_LET()
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
         with Monte_Carlo(num_analises):
@@ -147,6 +166,7 @@ class Circuito():
             self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
             print("Analise monte carlo realizada com sucesso")
 
+    @relatorio_de_tempo
     def __get_atrasoCC(self):
         simulacoes_feitas = 0
         maior_atraso = 0
@@ -269,6 +289,7 @@ class Circuito():
                 for entrada in self.entradas:
                     nodo.validacao[saida.nome].append("x")
 
+    @relatorio_de_tempo
     def __determinar_LETths(self):
         self.__instanciar_nodos()
         self.__resetar_LETths()
@@ -321,6 +342,7 @@ class Circuito():
                             #     self.sets_invalidos.append(
                             #         [nodo.nome, saida.nome, combinacao[0], combinacao[1], let_analisado.corrente, final])
 
+    @relatorio_de_tempo
     def __atualizar_LETths(self):
         simulacoes_feitas = 0
         ##### BUSCA DO LETs DO CIRCUITO #####
