@@ -23,7 +23,8 @@ def converter_binario_lista(inteiro: int, tamanho:int) -> list:
     return lista
 
 # Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
-def ajustar_valor(tensao):
+def ajustar_valor(tensao: str) -> float:
+    tensao = tensao.strip()
     grandeza = 0
     if tensao[-1] == "m":
         grandeza = -3
@@ -42,7 +43,7 @@ def ajustar_valor(tensao):
 
 if __name__ == "__main__":
     print("Realizando testes de arquivo")
-    if ajustar_valor("24.56u") == (24.56 * 10 ** -6):
+    if ajustar_valor("  24.56u ") == (24.56 * 10 ** -6):
         print("ajuste_valor PASSOU")
     else: print("ajuste_valor FALHOU")
 

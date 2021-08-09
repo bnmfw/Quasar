@@ -144,7 +144,7 @@ class SpiceManager():
 
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
-                print(f"linha: {i} tensao_pico: {linha_lida[tensao_pico_indice]} largura: {linha_lida[largura_indice]}")
+                print(f"linha: {i} tensao_pico: {ajustar_valor(linha_lida[tensao_pico_indice])} largura: {linha_lida[largura_indice].strip}")
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
                 #     if dir_pulso_saida == "rise":
                 #         if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
