@@ -152,7 +152,8 @@ class SpiceManager():
                       f"\tmin: {ajustar_valor(linha_lida[tensao_min].strip())}"
                       f"\tmax: {ajustar_valor(linha_lida[tensao_max].strip())}"
                       f"\tlargura: {linha_lida[largura_indice].strip()}")
-                print("\tsatisfez") if ((orientacao == 'minout' and tp < circuito.vdd/2) or (orientacao == 'maxout' and tp > circuito.vdd/2))
+                if (orientacao == 'minout' and tp < circuito.vdd/2) or (orientacao == 'maxout' and tp > circuito.vdd/2):
+                    print("\tSatisfez!")
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
                 #     if dir_pulso_saida == "rise":
                 #         if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
