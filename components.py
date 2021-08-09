@@ -6,7 +6,7 @@ class Entrada:
         self.sinal = sinal
         self.atraso = [0, "saida.nome", ["Vetor de validacao"]]
 
-    def codec(self):
+    def __dict__(self):
         dic = {}
         dic["nome"] = self.nome
         dic["sinal"] = self.sinal
@@ -36,7 +36,7 @@ class Nodo:
     def __repr__(self):
         return f"\nnome: {self.nome}\tLETth: {self.LETth:.2f}\tQuantidade de LETs:{len(self.LETs)}"
 
-    def codec(self):
+    def __dict__(self):
         dic = {}
         dic["nome"] = self.nome
         dic["val"] = self.validacao
@@ -44,7 +44,7 @@ class Nodo:
         dic["atraso"] = self.atraso
         lista_de_lets = []
         for let in self.LETs:
-            lista_de_lets.append(let.codec())
+            lista_de_lets.append(dict(let))
         dic["lets"] = lista_de_lets
         return dic
 
@@ -88,11 +88,11 @@ class LET:
     def __len__(self):
         return len(self.validacoes)
 
-    def adicionar_entrada(self, validacao:list):
+    def append(self, validacao:list):
         if type(validacao) != list: raise TypeError("Validacao nao eh uma lista")
         self.validacoes.append(validacao)
 
-    def codec(self):
+    def __dict__(self):
         dic = {}
         dic["corr"] = self.corrente
         dic["orie"] = self.orientacao
@@ -130,5 +130,5 @@ if __name__ == "__main__":
     assert let1 == let2, "LET FALHOU no teste de Overloading e Codificacao"
 
     entrada = [0,0,1,0,1]
-    let1.adicionar_entrada(entrada)
+    let1.append(entrada)
     assert entrada in let1.validacoes, "LET FALHOU no teste de Append"

@@ -1,5 +1,4 @@
-from arquivos import SpiceManager, analise_manual
-from codificador import alternar_combinacao
+from arquivos import SpiceManager, analise_manual, alternar_combinacao
 from components import Entrada, Nodo, LET
 import os
 
@@ -8,8 +7,7 @@ SR = SpiceManager()
 
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
 def verificar_validacao(circuito, vdd: float, let: LET) -> list:
-    direcao_pulso_nodo = alternar_combinacao(let.orientacao)[0]
-    direcao_pulso_saida = alternar_combinacao(let.orientacao)[1]
+    direcao_pulso_nodo, direcao_pulso_saida = alternar_combinacao(let.orientacao)
     nodo_nome = let.nodo_nome
     saida_nome = let.saida_nome
     SR.set_pulse(nodo_nome, 0.0, saida_nome, direcao_pulso_nodo)
@@ -65,6 +63,7 @@ def largura_pulso(circuito, corrente: float, let: LET):
     return SR.get_pulse_delay_validation()
 
 
+##### ENCONTRA A CORRENTE MINIMA PARA UM LET #####
 def encontrar_corrente_minima(circuito, let: LET) -> float:
     direcao_pulso_nodo: str = alternar_combinacao(let.orientacao)[0]
 
@@ -88,14 +87,17 @@ def encontrar_corrente_minima(circuito, let: LET) -> float:
         if abs(corrente_sup - corrente_inf) < 3:
             print("PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA")
             return corrente
-        elif diferenca_largura > precisao_largura: corrente_sup = corrente
-        elif diferenca_largura < -precisao_largura: corrente_inf = corrente
+        elif diferenca_largura > precisao_largura:
+            corrente_sup = corrente
+        elif diferenca_largura < -precisao_largura:
+            corrente_inf = corrente
         corrente = float((corrente_sup + corrente_inf) / 2)
 
     print("PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA")
     return corrente
 
 
+##### ENCONTRA A CORRENTE DE UM LET ######
 def definir_corrente(circuito, let: LET, validacao: list) -> int:
     direcao_pulso_nodo: str = alternar_combinacao(let.orientacao)[0]
     direcao_pulso_saida: str = alternar_combinacao(let.orientacao)[1]
@@ -143,29 +145,28 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
         if analise_manual:
             print(f"Corrente testada: {corrente} Resposta na saida: {tensao_pico}\n")
 
-        # Encerramento por excesso de simulacoes
+        ##### ENCERRAMENTOS NAO CONVENCIONAIS #####
         if simulacoes_feitas >= 25:
             if 1 < corrente < 499:
                 print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
                 let.corrente = corrente
-                let.aproximacao = 3 # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
+                let.aproximacao = 3  # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
             else:
                 print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
                 let.corrente = 3333
             return simulacoes_feitas
 
-        # Encerramento por precisao satisfatoria
         elif corrente_sup - corrente_inf < 1:
             if 1 < corrente < 499:
                 print("Corrente encontrada - Aproximacao nao convencional\n")
                 let.corrente = corrente
-                let.aproximacao = 2 # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
+                let.aproximacao = 2  # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
             else:
                 print("Corrente nao encontrada - Aproximacao extrema\n")
                 let.corrente = 5555
             return simulacoes_feitas
 
-        # Busca binaria
+        ##### BUSCA BINARIA #####
         elif direcao_pulso_saida == "fall":
             if tensao_pico <= (1 - precisao) * vdd / 2:
                 corrente_sup = corrente
@@ -174,7 +175,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             else:
                 print("Corrente encontrada com sucesso\n")
                 let.corrente = corrente
-                let.aproximacao = 1 # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
+                let.aproximacao = 1  # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
                 return simulacoes_feitas
         elif direcao_pulso_saida == "rise":
             if tensao_pico <= (1 - precisao) * vdd / 2:
@@ -184,7 +185,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             else:
                 print("Corrente encontrada com sucesso\n")
                 let.corrente = corrente
-                let.aproximacao = 1 # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
+                let.aproximacao = 1  # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
                 return simulacoes_feitas
 
         corrente: float = float((corrente_sup + corrente_inf) / 2)
@@ -192,8 +193,8 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
         # Escreve os parametros no arquivo dos SETs
         SR.set_pulse(let.nodo_nome, corrente, let.saida_nome, direcao_pulso_nodo)
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     # Criacao de um circuito falso
     let1 = LET(154.3, 0.7, "nodo1", "saida1", "fr")
     let2 = LET(300, 0.7, "nodo1", "saida1", "rf")

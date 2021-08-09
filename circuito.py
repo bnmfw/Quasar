@@ -1,6 +1,5 @@
-from arquivos import SpiceManager, CSVManager, analise_manual
-from codificador import JsonManager, alternar_combinacao
-from matematica import converter_binario_lista, ajustar_valor
+from arquivos import SpiceManager, CSVManager, JsonManager, alternar_combinacao, analise_manual
+from matematica import converter_binario_lista
 from corrente import definir_corrente
 from components import Nodo, Entrada, LET
 from time import time
@@ -48,7 +47,6 @@ class Circuito():
         self.atrasoCC: float = 9999.9
 
         ##### RELATORIO DO CIRCUITO #####
-        self.simulacoes_feitas: int = 0
         self.sets_validos = []
         self.sets_invalidos = []
 
@@ -56,9 +54,6 @@ class Circuito():
         self.SM = SpiceManager()
         self.JM = JsonManager()
         self.CM = CSVManager()
-
-        ##### CONFIGURACOES PADRAO #####
-        self.SM.set_monte_carlo(0)
 
     def run(self):
         self.__tela_inicial()
@@ -293,9 +288,7 @@ class Circuito():
     def __determinar_LETths(self):
         self.__instanciar_nodos()
         self.__resetar_LETths()
-        self.simulacoes_feitas = 0
-        self.sets_validos = []
-        self.sets_invalidos = []
+        simulacoes_feitas: int = 0
         ##### BUSCA DO LETs DO CIRCUITO #####
         for nodo in self.nodos:
             for saida in self.saidas:
@@ -309,12 +302,12 @@ class Circuito():
                         chave = alternar_combinacao(combinacao)  # Faz coisa tipo ["rise","fall"] virar "rf"
                         let_analisado = LET(9999, self.vdd, nodo.nome, saida.nome, chave)
                         print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
-                        self.simulacoes_feitas += definir_corrente(self, let_analisado, final)
+                        simulacoes_feitas += definir_corrente(self, let_analisado, final)
 
                         for let in nodo.LETs:
                             if let_analisado == let: #encontrou a combinacao correta
                                 if let_analisado.corrente == let.corrente:
-                                    let.adicionar_entrada(final)
+                                    let.append(final)
                                 elif let_analisado.corrente < let.corrente:
                                     nodo.LETs.remove(let)
                                     nodo.LETs.append(let_analisado)
