@@ -149,8 +149,8 @@ class SpiceManager():
                 tp = ajustar_valor(linha_lida[tensao_pico_indice].strip())
                 print(f"{i}"
                       f"\tpico: {tp}"
-                      f"\tmin: {ajustar_valor(linha_lida[tensao_min].strip())}"
-                      f"\tmax: {ajustar_valor(linha_lida[tensao_max].strip())}"
+                      f"\tmin: {ajustar_valor(linha_lida[tensao_min].strip()):.2f}"
+                      f"\tmax: {ajustar_valor(linha_lida[tensao_max].strip()):.2f}"
                       f"\tlarg: {linha_lida[largura_indice].strip()}")
                 if (orientacao == 'minout' and tp < circuito.vdd/2) or (orientacao == 'maxout' and tp > circuito.vdd/2):
                     print("\tSatisfez!")
