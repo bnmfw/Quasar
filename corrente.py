@@ -96,7 +96,7 @@ def encontrar_corrente_minima(circuito, let: LET) -> float:
     return corrente
 
 
-def definir_corrente(circuito, let: LET, validacao: list) -> list:
+def definir_corrente(circuito, let: LET, validacao: list) -> int:
     direcao_pulso_nodo: str = alternar_combinacao(let.orientacao)[0]
     direcao_pulso_saida: str = alternar_combinacao(let.orientacao)[1]
     precisao: float = 0.05
@@ -111,6 +111,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> list:
     SR.set_signals(vdd, entradas)
 
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
+    simulacoes_feitas: int = 0
     analise_valida, simulacoes_feitas = verificar_validacao(circuito, vdd, let)
     if not analise_valida:
         if simulacoes_feitas == 1:
@@ -183,6 +184,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> list:
                 return simulacoes_feitas
 
         corrente: float = float((corrente_sup + corrente_inf) / 2)
+        print(corrente)
 
         # Escreve os parametros no arquivo dos SETs
         SR.set_pulse(let.nodo_nome, corrente, let.saida_nome, direcao_pulso_nodo)
