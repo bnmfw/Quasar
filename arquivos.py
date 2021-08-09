@@ -147,9 +147,9 @@ class SpiceManager():
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
                 print(f"linha: {i}"
-                      f"\ttensao_pico: {linha_lida[tensao_pico_indice].strip()}"
-                      f"\tmin: {linha_lida[tensao_min].strip()}"
-                      f"\tmax: {linha_lida[tensao_max].strip()}"
+                      f"\ttensao_pico: {ajustar_valor(linha_lida[tensao_pico_indice].strip())}"
+                      f"\tmin: {ajustar_valor(linha_lida[tensao_min].strip())}"
+                      f"\tmax: {ajustar_valor(linha_lida[tensao_max].strip())}"
                       f"\tlargura: {linha_lida[largura_indice].strip()}")
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
                 #     if dir_pulso_saida == "rise":
