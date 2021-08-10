@@ -43,7 +43,7 @@ class Nodo:
         return dic
 
     def decodec(self, dic:dict, vdd:float):
-        if type(dic)!= dict or type(vdd)!=vdd: raise TypeError("Algo deu errado")
+        if type(dic)!= dict or type(vdd)!=vdd: raise TypeError(f"dic (dict): {type(dic)}, vdd (float): {type(vdd)}")
         self.nome = dic["nome"]
         self.LETth = LET(9999, vdd, "nodo", "saida", "orientacao")
         self.LETth.decodec(dic["critico"])
