@@ -18,7 +18,7 @@ def relatorio_de_tempo(func):
         minutos: int = (tempo % 3600) // 60
         if dias: print(f"{dias} dias, ", end='')
         if horas: print(f"{horas} horas, ", end='')
-        if minutos: print(f"{minutos} minutos e ")
+        if minutos: print(f"{minutos} minutos e ", end='')
         print(f"{tempo % 60} segundos de execucao")
         return rv
     return wrapper
@@ -71,7 +71,7 @@ class Circuito():
         self.arquivo: str = self.nome + ".txt"
         try:
             tensao: float = 0.0
-            with open(circuito+".json","r") as teste:
+            with open(circuito+".json","r"):
                 tensao = float(input(f"{barra_comprida}\nCadastro encontrado\nQual vdd deseja analisar: "))
                 self.vdd = tensao
             try:
@@ -89,6 +89,7 @@ class Circuito():
                 cadastro = input(f"{barra_comprida}\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n) ")
             if cadastro == "y":
                 self.analise_total() # GERA TODOS OS DADOS DO CIRCUITO
+                self.__get_atrasoCC()
             else:
                 print(f"{barra_comprida}\nPrograma encerrado")
                 exit()
@@ -105,6 +106,7 @@ class Circuito():
                      "Resposta: "))
         if not acao:
             self.__atualizar_LETths()
+            self.__get_atrasoCC()
         elif acao == 1:
             self.CM.escrever_csv_total(self)
         elif acao == 2:
@@ -164,7 +166,6 @@ class Circuito():
     @relatorio_de_tempo
     def __get_atrasoCC(self):
         simulacoes_feitas = 0
-        maior_atraso = 0
         for entrada_analisada in self.entradas:
             for saida in self.saidas:
                 for i in range(2 ** (len(self.entradas) - 1)):
@@ -190,18 +191,20 @@ class Circuito():
                         f"hspice {self.arquivo}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
                     simulacoes_feitas += 1
                     atraso = self.SM.get_delay()
+
                     # Magia Negra
                     paridade = 0
                     if atraso[0] > atraso[1]: paridade = 1
                     print(atraso)
                     maior_atraso = max(atraso[0 + paridade], atraso[2 + paridade])
-                    # Salvamento do Maior Atraso
-                    print(maior_atraso, self.entradas)
-                    if maior_atraso > self.atrasoCC: self.atrasoCC = maior_atraso
 
-                print(f"Atraso encontrado para {entrada_analisada.nome} em {saida.nome}")
+                    # Salvamento do Maior Atraso
+                    # print(maior_atraso, self.entradas)
+                    if maior_atraso > self.atrasoCC:
+                        self.atrasoCC = maior_atraso
+
+                #print(f"Atraso encontrado para {entrada_analisada.nome} em {saida.nome}")
         print("Atraso CC do arquivo: ", self.atrasoCC)
-        return maior_atraso
 
     ##### METODOS PARA ENCONTRAR INSTANCIAS #####
     def encontrar_nodo(self, nome):
@@ -253,9 +256,13 @@ class Circuito():
                             self.nodos.append(nodo)
 
     def __escolher_validacao(self, validacao:list):
-        if len(validacao) != len(self.entradas): raise IndexError("Numero de entradas eh diferente do tamanho de vetor validacao")
+        ##### ERROS #####
+        if len(validacao) != len(self.entradas):
+            raise IndexError("Numero de entradas eh diferente do tamanho de vetor validacao")
+
         for indice, entrada in enumerate(self.entradas):
             entrada.sinal = validacao[indice]
+        self.SM.set_signals(self.vdd, self.entradas)
 
     def __configurar_LET(self) -> str:
         # Configuracao de pulso
@@ -269,25 +276,16 @@ class Circuito():
         let = self.encontrar_let(nodo, self.encontrar_nodo(saida_nome), alternar_combinacao([pulso_in, pulso_out]))
         corrente = let.corrente
         self.__escolher_validacao(let.validacoes[0])
-        self.SM.set_signals(self.vdd, self.entradas)
         self.SM.set_pulse(nodo_nome, corrente, saida_nome, pulso_in)
         self.SM.set_pulse_width_param(nodo_nome, saida_nome, self.vdd, pulso_in, pulso_out)
         print("LET configurado com sucesso")
         return pulso_out # Eu uso isso na analise monte carlo, se tirar vai dar pau
 
-    def __resetar_LETths(self):
-        for nodo in self.nodos:
-            nodo.validacao = {}
-            nodo.LETs = []
-            for saida in self.saidas:
-                nodo.validacao[saida.nome] = []
-                for entrada in self.entradas:
-                    nodo.validacao[saida.nome].append("x")
-
     @relatorio_de_tempo
     def __determinar_LETths(self):
         self.__instanciar_nodos()
-        self.__resetar_LETths()
+        for nodo in self.nodos:
+            nodo.LETs = []
         simulacoes_feitas: int = 0
         ##### BUSCA DO LETs DO CIRCUITO #####
         for nodo in self.nodos:
