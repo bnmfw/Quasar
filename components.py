@@ -49,6 +49,7 @@ class Nodo:
         self.LETth.decodec(dic["critico"])
         self.atraso = dic["atraso"]
         for dicionario_let in dic["lets"]:
+            print(dicionario_let)
             let = LET(9999, vdd, "nodo", "saida", "orientacao")
             let.decodec(dicionario_let)
             self.LETs.append(let)
@@ -97,7 +98,6 @@ class LET:
         return dic
 
     def decodec(self, dic: dict):
-        print(dic)
         if type(dic) != dict: raise TypeError("Nao recebi um dicionario")
         self.corrente = dic["corr"]
         self.orientacao = dic["orie"]
