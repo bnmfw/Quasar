@@ -65,7 +65,7 @@ class LET:
         self.aproximacao: int = 0 # 1 - Precisao satisfatoria 2 - minimo de largura 3 - ciclos maximos
 
     @property
-    def corrente(self):
+    def corrente(self) -> float:
         return self.__corrente
 
     @corrente.setter
@@ -82,7 +82,7 @@ class LET:
     def __len__(self):
         return len(self.validacoes)
 
-    def append(self, validacao:list):
+    def append(self, validacao: list):
         if type(validacao) != list: raise TypeError("Validacao nao eh uma lista")
         self.validacoes.append(validacao)
 
@@ -95,7 +95,8 @@ class LET:
         dic["val"] = self.validacoes
         return dic
 
-    def decodec(self, dic:dict):
+    def decodec(self, dic: dict):
+        print(dic)
         self.corrente = dic["corr"]
         self.orientacao = dic["orie"]
         self.nodo_nome = dic["nodo"]
@@ -109,13 +110,13 @@ if __name__ == "__main__":
     e2 = Entrada("ent2", "t")
     print(e1.codec())
     e2.decodec(e1.codec())
-    assert e1.nome == e2.nome and e1.sinal == e2.sinal and e1.atraso == e2.atraso, "Entrada FALHOU"
+    assert e1.nome == e2.nome and e1.sinal == e2.sinal, "Entrada FALHOU"
 
     # TESTE DE NODO
     n1 = Nodo("nodo1")
     n2 = Nodo("nodo2")
     n2.decodec(n1.codec(),0.7)
-    assert n1.nome == n2.nome and n1.validacao == n2.validacao and n1.atraso == n2.atraso and \
+    assert n1.nome == n2.nome and n1.atraso == n2.atraso and \
             n1.LETs == n2.LETs and\
            n1.LETth == n2.LETth, "Nodo FALHOU"
 
