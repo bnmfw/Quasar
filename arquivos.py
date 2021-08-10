@@ -325,9 +325,9 @@ class JsonManager():
 
         # Desempacotamento dos dados
         circuito.atrasoCC = circuito_codificado["atrasoCC"]
-        lista_de_nodos = circuito_codificado["nodos"]
-        lista_de_saidas = circuito_codificado["saidas"]
-        lista_de_entradas = circuito_codificado["entradas"]
+        lista_de_nodos: list = circuito_codificado["nodos"]
+        lista_de_saidas: list = circuito_codificado["saidas"]
+        lista_de_entradas: list = circuito_codificado["entradas"]
 
         # Carregamento das saidas
         for saida in lista_de_saidas:
@@ -337,6 +337,7 @@ class JsonManager():
         for entrada in lista_de_entradas:
             circuito.entradas.append(Entrada(entrada, "t"))
 
+        print(lista_de_nodos)
         # Carregamento dos nodos
         for nodo_analisado in lista_de_nodos:
             nodo = Nodo("nome")
