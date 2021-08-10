@@ -337,11 +337,11 @@ class JsonManager():
         for entrada in lista_de_entradas:
             circuito.entradas.append(Entrada(entrada, "t"))
 
-        print(lista_de_nodos)
         # Carregamento dos nodos
-        for nodo_analisado in lista_de_nodos:
+        for nodo_dict in lista_de_nodos:
             nodo = Nodo("nome")
-            nodo.decodec(nodo_analisado, circuito.vdd)
+            print(nodo_dict)
+            nodo.decodec(nodo_dict, circuito.vdd)
             circuito.nodos.append(nodo)
 
         print("Leitura do Json realizada com sucesso")
