@@ -29,7 +29,7 @@ class Nodo:
         self.atraso = {}
 
     def __repr__(self):
-        return f"\nnome: {self.nome}\tLETth: {self.LETth:.2f}\tQuantidade de LETs:{len(self.LETs)}"
+        return f"\nnome: {self.nome}\tLETth: {self.LETth.corrente:.2f}\tQuantidade de LETs:{len(self.LETs)}"
 
     def codec(self):
         dic = {}
@@ -49,7 +49,6 @@ class Nodo:
         self.LETth.decodec(dic["critico"])
         self.atraso = dic["atraso"]
         for dicionario_let in dic["lets"]:
-            print(dicionario_let)
             let = LET(9999, vdd, "nodo", "saida", "orientacao")
             let.decodec(dicionario_let)
             self.LETs.append(let)

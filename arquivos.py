@@ -340,7 +340,6 @@ class JsonManager():
         # Carregamento dos nodos
         for nodo_dict in lista_de_nodos:
             nodo = Nodo("nome")
-            print(nodo_dict)
             nodo.decodec(nodo_dict, circuito.vdd)
             circuito.nodos.append(nodo)
 
