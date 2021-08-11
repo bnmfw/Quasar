@@ -43,8 +43,8 @@ class Circuito():
         self.entradas = []
         self.saidas = []
         self.nodos = []
-        self.vdd: float = 0.0
-        self.atrasoCC: float = 9999.9
+        self.vdd: float = 0
+        self.atrasoCC: float = 0
 
         ##### RELATORIO DO CIRCUITO #####
         self.sets_validos = []
