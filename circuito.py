@@ -333,7 +333,7 @@ class Circuito():
         ##### BUSCA DO LETs DO CIRCUITO #####
         print(self.nodos)
         for nodo in self.nodos:
-            if nodo.LETth > 1000:
+            if nodo.LETth.corrente > 1000:
                 break #TEM QUE VER ISSO AQUI
             simulacoes_feitas += definir_corrente(self, nodo.LETth, nodo.LETth.validacoes[0])
             for let in nodo.LETs:
