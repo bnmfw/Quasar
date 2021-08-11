@@ -333,6 +333,7 @@ class Circuito():
         ##### BUSCA DO LETs DO CIRCUITO #####
         print(self.nodos)
         for nodo in self.nodos:
+            if type(nodo.LETth) != LET: raise TypeError("nodo.LETth nao eh um LET")
             simulacoes_feitas += definir_corrente(self, nodo.LETth, nodo.LETth.validacoes[0])
             for let in nodo.LETs:
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
