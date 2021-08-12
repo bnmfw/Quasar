@@ -192,16 +192,8 @@ class Circuito():
                     simulacoes_feitas += 1
                     atraso = self.SM.get_delay()
 
-                    # Magia Negra
-                    paridade = 0
-                    if atraso[0] > atraso[1]: paridade = 1
-                    print(atraso)
-                    maior_atraso = max(atraso[0 + paridade], atraso[2 + paridade])
-
-                    # Salvamento do Maior Atraso
-                    # print(maior_atraso, self.entradas)
-                    if maior_atraso > self.atrasoCC:
-                        self.atrasoCC = maior_atraso
+                    if atraso > self.atrasoCC:
+                        self.atrasoCC = atraso
 
                 #print(f"Atraso encontrado para {entrada_analisada.nome} em {saida.nome}")
         print("Atraso CC do arquivo: ", self.atrasoCC)
