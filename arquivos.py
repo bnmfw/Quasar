@@ -198,7 +198,7 @@ class SpiceManager():
         return analises_validas
 
     # Le o atraso do nodo a saida no arquivo "texto.txt"
-    def get_delay(self) -> list:
+    def get_delay(self) -> float:
         linhas_de_atraso = list()
         atrasos = list()  # 0 rr, 1 rf, 2 ff, 3 fr
         with open("texto.txt", "r") as text:
@@ -209,7 +209,7 @@ class SpiceManager():
                 # Retorno por erro
                 if linhas_de_atraso[i][0][0] == "*":
                     # print(linhas_de_atraso[i][0])
-                    return [0, 0, 0, 0]
+                    return 0
 
                 atrasos.append(linhas_de_atraso[i][1])  # salva os 4 atrasos
                 atrasos[i] = abs(ajustar_valor(atrasos[i]))

@@ -190,7 +190,7 @@ class Circuito():
                     os.system(
                         f"hspice {self.arquivo}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
                     simulacoes_feitas += 1
-                    atraso = self.SM.get_delay()
+                    atraso: float = self.SM.get_delay()
 
                     if atraso > self.atrasoCC:
                         self.atrasoCC = atraso
