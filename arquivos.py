@@ -1,5 +1,6 @@
 from matematica import *
 from components import Nodo, Entrada, LET
+from statistics import stdev
 import json
 
 analise_manual = False
@@ -163,7 +164,8 @@ class SpiceManager():
     def get_monte_carlo_results(circuito, num_analises: int, dir_pulso_saida: str) -> int:
         if dir_pulso_saida != "rise" and dir_pulso_saida != "fall": raise ValueError(
             "direcao pulso_saida nao esta entre rise e fall")
-        analises_validas = 0
+        analises_validas: int = 0
+        casos_validos: list = []
         with open(f"{circuito.nome}.mt0.csv", "r") as mc:
             for i in range(3): _ = mc.readline()  # Decarte das 3 linhas iniciais
             cabecalho = mc.readline().split(",")
@@ -181,10 +183,10 @@ class SpiceManager():
                       f"\tmin: {ajustar_valor(linha_lida[tensao_min].strip()):.2f}"
                       f"\tmax: {ajustar_valor(linha_lida[tensao_max].strip()):.2f}"
                       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
-                if (orientacao == 'minout' and tp < circuito.vdd / 2) or (
-                        orientacao == 'maxout' and tp > circuito.vdd / 2):
+                if (orientacao == 'minout' and tp < circuito.vdd / 2) or (orientacao == 'maxout' and tp > circuito.vdd / 2):
                     print("\tSatisfez!")
                     analises_validas += 1
+                    casos_validos.append(tp)
                 else:
                     print("")
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
@@ -194,7 +196,8 @@ class SpiceManager():
                 #     else:
                 #         if float(linha_lida[tensao_pico_indice]) > circuito.vdd / 2:
                 #             analises_validas += 1
-            print(f"Analises validas: {analises_validas} de {num_analises}")
+            print(f"Desvio padrao: {stdev(casos_validos)}")
+            print(f"Analises validas: {100*analises_validas/num_analises:.2f}%")
         return analises_validas
 
     # Le o atraso do nodo a saida no arquivo "texto.txt"

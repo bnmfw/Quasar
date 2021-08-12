@@ -165,6 +165,7 @@ class Circuito():
 
     @relatorio_de_tempo
     def __get_atrasoCC(self):
+        self.atrasoCC = 0
         simulacoes_feitas = 0
         for entrada_analisada in self.entradas:
             for saida in self.saidas:

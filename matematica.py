@@ -1,3 +1,5 @@
+from math import sqrt
+from statistics import stdev
 # Recebe um inteiro e retonra uma lista com seus digitos binarios
 def converter_binario_lista(inteiro: int, tamanho:int) -> list:
     lista = []
@@ -30,9 +32,7 @@ def ajustar_valor(tensao: str) -> float:
 def corrente_para_let(corrente: float) -> float:
     return (corrente * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / ((1.08 * 10 ** -14) * 0.000000021)
 
-
 if __name__ == "__main__":
-
     assert ajustar_valor("  24.56u ") == (24.56 * 10 ** -6), "ajuste_valor FALHOU"
     assert ajustar_valor("2.349e-02") == 0.02349, "ajuste_valor FALHOU"
     assert converter_binario_lista(14, 4) == [1,1,1,0], "converter_binario_lista FALHOU"
