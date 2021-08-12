@@ -196,6 +196,7 @@ class SpiceManager():
                 #     else:
                 #         if float(linha_lida[tensao_pico_indice]) > circuito.vdd / 2:
                 #             analises_validas += 1
+            print(f"Media: {media(casos_validos)}")
             print(f"Desvio padrao: {stdev(casos_validos)}")
             print(f"Analises validas: {100*analises_validas/num_analises:.2f}%")
         return analises_validas
