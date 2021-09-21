@@ -170,7 +170,7 @@ class SpiceManager():
         analises_validas: int = 0
         casos_validos: list = []
         with open(f"{circuito.nome}.mt0.csv", "r") as mc:
-            for i in range(3): _ = mc.readline()  # Decarte das 3 linhas iniciais
+            for i in range(4): _ = mc.readline()  # Decarte das 3 linhas iniciais
             cabecalho = mc.readline().split(",")
             print(cabecalho)
             orientacao = "mincor" if (dir_pulso_saida == "fall") else "maxcor" #TROCA DE MINOUT E MAXOUT POR CORRENTE
@@ -189,7 +189,7 @@ class SpiceManager():
                       f"\tmin: {ajustar_valor(linha_lida[corrente_min].strip()):.2f}" #TROQUEI TENSAO POR CORRENTE AQUI
                       f"\tmax: {ajustar_valor(linha_lida[corrente_max].strip()):.2f}"
                       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
-                if (orientacao == 'minout' and tp < circuito.vdd / 2) or (orientacao == 'maxout' and tp > circuito.vdd / 2):
+                if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
                     print("\tSatisfez!")
                     analises_validas += 1
                     casos_validos.append(tp)
