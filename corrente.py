@@ -60,7 +60,7 @@ def largura_pulso(circuito, corrente: float, let: LET):
     SR.set_pulse_width_param(nodo.nome, saida.nome, vdd, direcao_pulso_nodo, direcao_pulso_saida)
     SR.set_pulse(nodo.nome, corrente, saida.nome, direcao_pulso_nodo)
     os.system(f"hspice {circuito.arquivo} | grep \"atraso\|larg\" > texto.txt")
-    return SR.get_pulse_delay_validation()
+    return SR.get_pulse_delay_validation(circuito.atrasoCC)
 
 
 ##### ENCONTRA A CORRENTE MINIMA PARA UM LET #####

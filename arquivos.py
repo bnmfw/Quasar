@@ -91,6 +91,9 @@ class SpiceManager():
             # Usado apenas na verificacao de validacao:
             sets.write(f".meas tran minnod min V({nodo_nome}) from=1.0n to=4.0n\n")
             sets.write(f".meas tran maxnod max V({nodo_nome}) from=1.0n to=4.0n\n")
+            # Corrente para analise MC:
+            sets.write(f".meas tran mincor min i(Vmeas) from=1.0n to=4.0n\n")
+            sets.write(f".meas tran maxcor max i(Vmeas) from=1.0n to=4.0n\n")
 
     # Altera o arquivo "atraso.txt"
     @staticmethod
@@ -169,19 +172,21 @@ class SpiceManager():
         with open(f"{circuito.nome}.mt0.csv", "r") as mc:
             for i in range(3): _ = mc.readline()  # Decarte das 3 linhas iniciais
             cabecalho = mc.readline().split(",")
-            orientacao = "minout" if (dir_pulso_saida == "fall") else "maxout"
-            tensao_pico_indice = cabecalho.index(orientacao)
+            orientacao = "mincor" if (dir_pulso_saida == "fall") else "maxcor" #TROCA DE MINOUT E MAXOUT POR CORRENTE
+            corrente_pico_indice = cabecalho.index(orientacao) # TROCA PRA CORRENTE AQUI
             tensao_min = cabecalho.index("minout")
             tensao_max = cabecalho.index("maxout")
             largura_indice = cabecalho.index("larg")
+            corrente_min = cabecalho.index("mincor")
+            corrente_max = cabecalho.index("maxcor")
 
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
-                tp = ajustar_valor(linha_lida[tensao_pico_indice].strip())
+                tp = ajustar_valor(linha_lida[corrente_pico_indice].strip()) # TROCA PRA CORRENTE AQUI
                 print(f"{i}"
                       f"\tpico: {tp:.2f}"
-                      f"\tmin: {ajustar_valor(linha_lida[tensao_min].strip()):.2f}"
-                      f"\tmax: {ajustar_valor(linha_lida[tensao_max].strip()):.2f}"
+                      f"\tmin: {ajustar_valor(linha_lida[corrente_min].strip()):.2f}" #TROQUEI TENSAO POR CORRENTE AQUI
+                      f"\tmax: {ajustar_valor(linha_lida[corrente_max].strip()):.2f}"
                       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
                 if (orientacao == 'minout' and tp < circuito.vdd / 2) or (orientacao == 'maxout' and tp > circuito.vdd / 2):
                     print("\tSatisfez!")
@@ -222,23 +227,23 @@ class SpiceManager():
 
     # Leitura do arquivo "leitura_pulso.txt"
     @staticmethod
-    def get_pulse_delay_validation() -> float:
+    def get_pulse_delay_validation(atraso: float) -> float:
         with open("texto.txt", "r") as texto:
-            atraso = texto.readline().split()
+            _ = texto.readline().split()
             larg = texto.readline().split()
         # if analise_manual: print(atraso)
-        if atraso[0][0] == "*":
-            return -1.0  # pulso muito pequeno
-        if "-" in atraso[0]:
-            atraso = atraso[0].split("-")
-        atraso = ajustar_valor(atraso[1])
+        # if atraso[0][0] == "*":
+        #     return -1.0  # pulso muito pequeno
+        # if "-" in atraso[0]:
+        #     atraso = atraso[0].split("-")
+        # atraso = ajustar_valor(atraso[1])
 
         if larg[0][0] == "*":
-            return -1.0  # pulso muito pequeno
+            return -1  # pulso muito pequeno
         if "-" in larg[0]:
             larg = larg[0].split("-")
         larg = ajustar_valor(larg[1])
-        return larg - ajustar_valor("18.6p")
+        return larg - atraso
         # return larg - atraso
 
 
