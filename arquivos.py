@@ -172,6 +172,7 @@ class SpiceManager():
         with open(f"{circuito.nome}.mt0.csv", "r") as mc:
             for i in range(3): _ = mc.readline()  # Decarte das 3 linhas iniciais
             cabecalho = mc.readline().split(",")
+            print(cabecalho)
             orientacao = "mincor" if (dir_pulso_saida == "fall") else "maxcor" #TROCA DE MINOUT E MAXOUT POR CORRENTE
             corrente_pico_indice = cabecalho.index(orientacao) # TROCA PRA CORRENTE AQUI
             tensao_min = cabecalho.index("minout")
