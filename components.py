@@ -97,7 +97,7 @@ class LET:
         return dic
 
     def decodec(self, dic: dict):
-        if type(dic) != dict: raise TypeError("Nao recebi um dicionario")
+        if type(dic) != dict: raise TypeError(f"Nao recebi um dicionario, recebi {type(dic)}: {dic}")
         self.corrente = dic["corr"]
         self.orientacao = dic["orie"]
         self.nodo_nome = dic["nodo"]
