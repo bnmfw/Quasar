@@ -239,10 +239,11 @@ class SpiceManager():
         #     atraso = atraso[0].split("-")
         # atraso = ajustar_valor(atraso[1])
 
-        if larg[0][0] == "*":
+        if larg[0][0] == "*" or larg[1] == "failed":
             return -1  # pulso muito pequeno
         if "-" in larg[0]:
             larg = larg[0].split("-")
+
         if modo_debug: print(f"larguras: {larg}")
         larg = ajustar_valor(larg[1])
         return larg - atraso

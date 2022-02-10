@@ -1,6 +1,6 @@
 from matematica import corrente_para_let
 
-modo_debug: bool = True
+modo_debug: bool = False
 
 class Entrada:
     def __init__(self, nome: str, sinal: str):
