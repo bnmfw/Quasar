@@ -1,5 +1,5 @@
 from matematica import *
-from components import Nodo, Entrada, LET
+from components import Nodo, Entrada, LET, modo_debug
 from statistics import stdev
 import json
 
@@ -243,6 +243,7 @@ class SpiceManager():
             return -1  # pulso muito pequeno
         if "-" in larg[0]:
             larg = larg[0].split("-")
+        if modo_debug: print(f"larguras: {larg}")
         larg = ajustar_valor(larg[1])
         return larg - atraso
         # return larg - atraso

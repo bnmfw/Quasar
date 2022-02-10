@@ -1,5 +1,5 @@
 from arquivos import SpiceManager, analise_manual, alternar_combinacao
-from components import Entrada, Nodo, LET
+from components import Entrada, Nodo, LET, modo_debug
 import os
 
 SR = SpiceManager()
@@ -81,8 +81,10 @@ def encontrar_corrente_minima(circuito, let: LET) -> float:
 
     # Busca binaria para corrente minima
     while not (-precisao_largura < diferenca_largura < precisao_largura):
-        #
+
+        # Encontra a largura minima de pulso pra vencer o atraso
         diferenca_largura: float = largura_pulso(circuito, corrente, let)
+        if modo_debug: print(f"diff_larg: {diferenca_largura}")
 
         if abs(corrente_sup - corrente_inf) < 3:
             print("PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA")
