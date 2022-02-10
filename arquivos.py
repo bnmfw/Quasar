@@ -172,7 +172,7 @@ class SpiceManager():
         with open(f"{circuito.nome}.mt0.csv", "r") as mc:
             for i in range(4): _ = mc.readline()  # Decarte das 3 linhas iniciais
             cabecalho = mc.readline().split(",")
-            print(cabecalho)
+            # print(cabecalho)
             orientacao = "mincor" if (dir_pulso_saida == "fall") else "maxcor" #TROCA DE MINOUT E MAXOUT POR CORRENTE
             corrente_pico_indice = cabecalho.index(orientacao) # TROCA PRA CORRENTE AQUI
             tensao_min = cabecalho.index("minout")
@@ -183,7 +183,7 @@ class SpiceManager():
 
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
-                tp = ajustar_valor(linha_lida[corrente_pico_indice].strip()) # TROCA PRA CORRENTE AQUI
+                tp = linha_lida[corrente_pico_indice].strip() # TROCA PRA CORRENTE AQUI
                 print(f"{i}"
                       f"\tpico: {tp:.2f}"
                       f"\tmin: {ajustar_valor(linha_lida[corrente_min].strip()):.2f}" #TROQUEI TENSAO POR CORRENTE AQUI
