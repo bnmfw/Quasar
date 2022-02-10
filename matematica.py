@@ -12,6 +12,7 @@ def converter_binario_lista(inteiro: int, tamanho:int) -> list:
 
 # Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
 def ajustar_valor(tensao: str) -> float:
+    print(tensao)
     tensao = tensao.strip()
     grandeza = 0
     if tensao[-1] == "m":
