@@ -183,19 +183,20 @@ class SpiceManager():
 
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
-                print(corrente_pico_indice)
-                tp = ajustar_valor(linha_lida[corrente_pico_indice].strip()) # TROCA PRA CORRENTE AQUI
+                # tp = ajustar_valor(linha_lida[corrente_pico_indice].strip()) # TROCA PRA CORRENTE AQUI
                 print(f"{i}"
-                      f"\tpico: {tp:.2f}"
+                      # f"\tpico: {tp:.2f}"
                       f"\tmin: {ajustar_valor(linha_lida[corrente_min].strip()):.2f}" #TROQUEI TENSAO POR CORRENTE AQUI
                       f"\tmax: {ajustar_valor(linha_lida[corrente_max].strip()):.2f}"
                       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
-                if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
-                    print("\tSatisfez!")
-                    analises_validas += 1
-                    casos_validos.append(tp)
-                else:
-                    print("")
+                # if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
+                #     print("\tSatisfez!")
+                #     analises_validas += 1
+                #     casos_validos.append(tp)
+                # else:
+                #     print("")
+
+                # ISSO JA TAVA COMENTADO
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
                 #     if dir_pulso_saida == "rise":
                 #         if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
@@ -203,10 +204,12 @@ class SpiceManager():
                 #     else:
                 #         if float(linha_lida[tensao_pico_indice]) > circuito.vdd / 2:
                 #             analises_validas += 1
+
             print(f"Media: {media(casos_validos)}")
             print(f"Desvio padrao: {stdev(casos_validos)}")
             print(f"Analises validas: {100*analises_validas/num_analises:.2f}%")
-        return analises_validas
+        return 10
+        # return analises_validas
 
     # Le o atraso do nodo a saida no arquivo "texto.txt"
     def get_delay(self) -> float:
