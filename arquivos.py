@@ -183,7 +183,8 @@ class SpiceManager():
 
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
-                tp = linha_lida[corrente_pico_indice].strip() # TROCA PRA CORRENTE AQUI
+                print(corrente_pico_indice)
+                tp = ajustar_valor(linha_lida[corrente_pico_indice].strip()) # TROCA PRA CORRENTE AQUI
                 print(f"{i}"
                       f"\tpico: {tp:.2f}"
                       f"\tmin: {ajustar_valor(linha_lida[corrente_min].strip()):.2f}" #TROQUEI TENSAO POR CORRENTE AQUI
