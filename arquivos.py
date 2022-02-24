@@ -190,8 +190,8 @@ class SpiceManager():
                 print(f"{i}"
                       f"\tten pico: {tp}"
                       f"\tcorr pico: {cp}"
-                      f"\tcorr min: {ajustar_valor(linha_lida[corrente_min].strip())}"
-                      f"\tcorr max: {ajustar_valor(linha_lida[corrente_max].strip())}"
+                      # f"\tcorr min: {ajustar_valor(linha_lida[corrente_min].strip())}"
+                      # f"\tcorr max: {ajustar_valor(linha_lida[corrente_max].strip())}"
                       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
                 if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
                     print("\tSatisfez!")
