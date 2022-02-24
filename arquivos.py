@@ -183,13 +183,11 @@ class SpiceManager():
 
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
-                print(f"linha_lida: {linha_lida}")
-                print(f"min_index: {corrente_min}")
                 tp = ajustar_valor(linha_lida[corrente_pico_indice].strip()) # TROCA PRA CORRENTE AQUI
                 print(f"{i}"
-                      f"\tpico: {tp:.2f}"
-                      f"\tmin: {ajustar_valor(linha_lida[corrente_min].strip()):.2f}" #TROQUEI TENSAO POR CORRENTE AQUI
-                      f"\tmax: {ajustar_valor(linha_lida[corrente_max].strip()):.2f}"
+                      f"\tpico: {tp}"
+                      f"\tmin: {ajustar_valor(linha_lida[corrente_min].strip())}" #TROQUEI TENSAO POR CORRENTE AQUI
+                      f"\tmax: {ajustar_valor(linha_lida[corrente_max].strip())}"
                       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
                 if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
                     print("\tSatisfez!")
