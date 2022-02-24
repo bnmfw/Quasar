@@ -173,8 +173,10 @@ class SpiceManager():
             for i in range(4): _ = mc.readline()  # Decarte das 3 linhas iniciais
             cabecalho = mc.readline().split(",")
             # print(cabecalho)
-            orientacao = "mincor" if (dir_pulso_saida == "fall") else "maxcor" #TROCA DE MINOUT E MAXOUT POR CORRENTE
-            corrente_pico_indice = cabecalho.index(orientacao) # TROCA PRA CORRENTE AQUI
+            orientacao = "mincor" if (dir_pulso_saida == "fall") else "maxcor"
+            orien_ten = "minout" if (dir_pulso_saida == "fall") else "maxout"
+            corrente_pico_indice = cabecalho.index(orientacao)
+            tensao_pico_indice = cabecalho.index(orien_ten)
             tensao_min = cabecalho.index("minout")
             tensao_max = cabecalho.index("maxout")
             largura_indice = cabecalho.index("larg")
@@ -183,16 +185,18 @@ class SpiceManager():
 
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
-                tp = ajustar_valor(linha_lida[corrente_pico_indice].strip()) # TROCA PRA CORRENTE AQUI
+                cp = ajustar_valor(linha_lida[corrente_pico_indice].strip())
+                tp = ajustar_valor(linha_lida[tensao_pico_indice].strip())
                 print(f"{i}"
-                      f"\tpico: {tp}"
-                      f"\tmin: {ajustar_valor(linha_lida[corrente_min].strip())}" #TROQUEI TENSAO POR CORRENTE AQUI
-                      f"\tmax: {ajustar_valor(linha_lida[corrente_max].strip())}"
+                      f"\tten pico: {tp}"
+                      f"\tcorr pico: {cp}"
+                      f"\tcorr min: {ajustar_valor(linha_lida[corrente_min].strip())}"
+                      f"\tcorr max: {ajustar_valor(linha_lida[corrente_max].strip())}"
                       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
                 if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
                     print("\tSatisfez!")
                     analises_validas += 1
-                    casos_validos.append(tp)
+                    casos_validos.append(cp)
                 else:
                     print("")
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
