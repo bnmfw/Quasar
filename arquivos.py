@@ -153,13 +153,10 @@ class SpiceManager():
                 max_tensao = linha_de_tensao[1]
 
         # Converte as strings lidas em floats
-        print(max_tensao, min_tensao)
-        max_tensao = ajustar_valor(max_tensao)
-        min_tensao = ajustar_valor(min_tensao)
         if analise_manual: print(f"Tensao max: {max_tensao} Tensao min: {min_tensao}")
 
         # Identifica se o pico procurado e do tipo rise ou fall
-        tensao_pico = max_tensao if (dir_pulso_saida == "rise") else min_tensao
+        tensao_pico = ajustar_valor(max_tensao) if (dir_pulso_saida == "rise") else ajustar_valor(min_tensao)
 
         # retorna a tensao de pico lida
         return tensao_pico
