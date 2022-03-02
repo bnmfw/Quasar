@@ -14,16 +14,18 @@ def converter_binario_lista(inteiro: int, tamanho:int) -> list:
 def ajustar_valor(tensao: str) -> float:
     tensao = tensao.strip()
     grandeza = 0
-    if tensao[-1] == "m":
+    if tensao[-1] in ("m", "M"):
         grandeza = -3
-    elif tensao[-1] == "u":
+    elif tensao[-1] in ("u", "U"):
         grandeza = -6
-    elif tensao[-1] == "n":
+    elif tensao[-1] in ("n", "N"):
         grandeza = -9
-    elif tensao[-1] == "p":
+    elif tensao[-1] in ("p", "P"):
         grandeza = -12
-    elif tensao[-1] == "f":
+    elif tensao[-1] in ("f", "F"):
         grandeza = -15
+    elif tensao[-1] not in ("0","1","2","3","4","5","6","7","8","9"):
+        raise TypeError(f"Recebi {tensao} como entrada de ajuste")
     else:
         return float(tensao)
     return float(tensao[:-1]) * 10 ** grandeza
