@@ -1,22 +1,4 @@
- minout= -13.3404m    at=   2.1780n
- maxout= 704.2514m    at=   2.0383n
- minout= 312.3450m    at=   2.1136n
- maxout= 703.1780m    at=   2.0100n
- minout= 662.4559m    at=   2.0821n
- maxout= 702.7786m    at=   2.0100n
- minout= 661.6041m    at=   2.0997n
- maxout= 702.6643m    at=   2.0100n
- minout= -13.5854m    at=   2.2211n
- maxout= 711.1576m    at=   2.0395n
- minout= -11.7439m    at=   2.2349n
- maxout= 708.5143m    at=   2.0372n
- minout=  -9.0140m    at=   2.1710n
- maxout= 703.1318m    at=   2.0100n
- minout=   1.1975m    at=   2.1243n
- maxout= 703.2645m    at=   2.0100n
- minout= 658.5552m    at=   2.0866n
- maxout= 702.8458m    at=   2.0100n
- minout=  -3.2719m    at=   2.1328n
- maxout= 703.1964m    at=   2.0100n
-   meas_variable = minout
-   meas_variable = maxout
+ minout=-727.6690t    at=   4.0000n
+ maxout= 704.5012m    at=   1.0124n
+ minnod=  -2.8289     at=   2.0100n
+ maxnod= 158.9071t    at=   4.0000n

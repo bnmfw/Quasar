@@ -1,0 +1,65 @@
+****** Advanced Variability Analysis ******
+Copyright (c) 2018 - 2022 by Synopsys, Inc. All Rights Reserved.
+
+This software and the associated documentation are proprietary
+to Synopsys, Inc. This software may only be used in accordance
+with the terms and conditions of a written license agreement with
+Synopsys, Inc. All other use, reproduction, or distribution of
+this software is strictly prohibited.
+
+Username: bborges, PID: 33770
+Command_Line_Options: c17v0_dm.hsp.json
+
+System Activity Monitoring (format subject to change)
+================================================================
+
+Hostname: aorus
+N cores: 12
+Model name: AMD Ryzen 5 3600 6-Core Processor
+Cache size: 512 KB
+OS kernel: Linux 5.4.0-100-generic
+OS release: NAME="Ubuntu"
+VERSION="20.04.4 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 20.04.4 LTS"
+VERSION_ID="20.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=focal
+UBUNTU_CODENAME=focal
+CPU load: 1.000000, 0.890000, 0.510000
+Virtual memory: Total=31.4G, Available=30.2G, Percent=3.8, Used=792.3M, Free=27.8G, Active=2.5G, Inactive=683.9M, Buffers=100.5M, Cached=2.7G, Shared=13.7M, Slab=334.2M
+
+System resource limits (soft, hard) set by user for current process
+(0, 0): The maximum size (in bytes) of a core file that the current process can create
+(-1, -1): The maximum amount of processor time (in seconds) that a process can use
+(-1, -1): The maximum size of a file
+(-1, -1): The maximum size (in bytes) of the process’s heap
+(8388608, -1): The maximum size (in bytes) of the call stack
+(-1, -1): The maximum resident set size available
+(127881, 127881): The maximum number of processes the current process may create
+(524288, 524288): The maximum number of open file descriptors
+(65536, 65536): The maximum address space which may be locked in memory
+(-1, -1): The maximum area (in bytes) of address space which may be taken by the process
+(819200, 819200): The number of bytes that can be allocated for POSIX message queues
+(0, 0): The ceiling for the process’s nice level (calculated as 20 - rlim_cur)
+(0, 0): The ceiling of the real-time priority
+(127881, 127881): The number of signals which the process may queue
+
+/tmp file space:
+Filesystem     1G-blocks  Used Available Use% Mounted on
+/dev/sdb2            295    18       263   7% /
+
+Output directory /home/bborges/github file space:
+Filesystem     1G-blocks  Used Available Use% Mounted on
+/dev/sdb4            620   380       209  65% /home
+
+Start time: 2022-02-24 21:50:32 1645739432.9
+
+   elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
+   time       load   available   available   available   time_to    samples  %cpu   rss     vms
+     (s)        %      (GB)        (GB)        (GB)      finish     done
+         0     8.3      30.2       263.0      209.0        NA       NA       96.4   89.6M    350.4M  
