@@ -167,7 +167,7 @@ class SpiceManager():
     def get_monte_carlo_results(circuito, num_analises: int, dir_pulso_saida: str) -> int:
         if dir_pulso_saida != "rise" and dir_pulso_saida != "fall": raise ValueError(
             "direcao pulso_saida nao esta entre rise e fall")
-        analises_validas: int = 0
+        analises_flip: int = 0
         casos_validos: list = []
         with open(f"{circuito.nome}.mt0.csv", "r") as mc:
             for i in range(4): _ = mc.readline()  # Decarte das 3 linhas iniciais
@@ -195,7 +195,7 @@ class SpiceManager():
                       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
                 if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
                     print("\tSatisfez!")
-                    analises_validas += 1
+                    analises_flip += 1
                     casos_validos.append(cp)
                 else:
                     print("")
@@ -206,10 +206,10 @@ class SpiceManager():
                 #     else:
                 #         if float(linha_lida[tensao_pico_indice]) > circuito.vdd / 2:
                 #             analises_validas += 1
-            print(f"Media: {media(casos_validos)}")
-            print(f"Desvio padrao: {stdev(casos_validos)}")
-            print(f"Analises validas: {100*analises_validas/num_analises:.2f}%")
-        return analises_validas
+            print(f"\nMedia da corrente: {media(casos_validos)}")
+            print(f"Desvio padrao da corrente: {stdev(casos_validos)}")
+            print(f"Proporcao de flips: {100*analises_flip/num_analises:.2f}% do total")
+        return analises_flip
 
     # Le o atraso do nodo a saida no arquivo "texto.txt"
     def get_delay(self) -> float:
