@@ -169,7 +169,9 @@ class Circuito():
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
         with Monte_Carlo(num_analises):
             corrente = self.SM.change_pulse_value(1)
-            for frac in [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]:
+            print(corrente)
+            for frac in [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]:
+                print(f"{100*frac}% do LETth:")
                 self.SM.change_pulse_value(corrente * frac)
                 os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
                 self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
