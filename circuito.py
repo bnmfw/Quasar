@@ -112,7 +112,7 @@ class Circuito():
         elif acao == 2:
             self.analise_manual()
         elif acao == 3:
-            self.__analise_monte_carlo()
+            self.__analise_monte_carlo_progressiva()
         #elif acao == 4:
         elif acao == 5:
             exit()
@@ -161,6 +161,16 @@ class Circuito():
         with Monte_Carlo(num_analises):
             os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
             self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
+            print("Analise monte carlo realizada com sucesso")
+
+    @relatorio_de_tempo
+    def __analise_monte_carlo_progressiva(self):
+        num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
+        with Monte_Carlo(num_analises):
+            for frac in [1, 0.9, 0.8, 0.7, 0.6, 0.5]:
+                pulso_out = self.__configurar_LET(frac)
+                os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
+                self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
             print("Analise monte carlo realizada com sucesso")
 
     @relatorio_de_tempo
@@ -257,17 +267,17 @@ class Circuito():
             entrada.sinal = validacao[indice]
         self.SM.set_signals(self.vdd, self.entradas)
 
-    def __configurar_LET(self) -> str:
+    def __configurar_LET(self, fracao: float = 1) -> str:
         # Configuracao de pulso
         nodo_nome, saida_nome = input("nodo e saida do LET: ").split()
         nodo = self.encontrar_nodo(nodo_nome)
         print("Orientacoes disponiveis: ")
         for let_disponivel in nodo.LETs:
             if let_disponivel.saida_nome == saida_nome:
-                print(alternar_combinacao(let_disponivel.orientacao))
+                print(alternar_combinacao(let_disponivel.orientacao), let_disponivel.valor)
         pulso_in, pulso_out = input("pulsos na entrada e saida do LET: ").split()
         let = self.encontrar_let(nodo, self.encontrar_nodo(saida_nome), alternar_combinacao([pulso_in, pulso_out]))
-        corrente = let.corrente
+        corrente = let.corrente * fracao
         self.__escolher_validacao(let.validacoes[0])
         self.SM.set_pulse(nodo_nome, corrente, saida_nome, pulso_in)
         self.SM.set_pulse_width_param(nodo_nome, saida_nome, self.vdd, pulso_in, pulso_out)

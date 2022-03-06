@@ -185,18 +185,18 @@ class SpiceManager():
                 linha_lida = mc.readline().split(",")
                 cp = ajustar_valor(linha_lida[corrente_pico_indice].strip())
                 tp = ajustar_valor(linha_lida[tensao_pico_indice].strip())
-                print(f"{i}"
-                      f"\tten pico: {tp}"
-                      f"\tcorr pico: {cp}"
-                      # f"\tcorr min: {ajustar_valor(linha_lida[corrente_min].strip())}"
-                      # f"\tcorr max: {ajustar_valor(linha_lida[corrente_max].strip())}"
-                      f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
+                # print(f"{i}"
+                #       f"\tten pico: {tp}"
+                #       f"\tcorr pico: {cp}"
+                #       # f"\tcorr min: {ajustar_valor(linha_lida[corrente_min].strip())}"
+                #       # f"\tcorr max: {ajustar_valor(linha_lida[corrente_max].strip())}"
+                #       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
                 if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
-                    print("\tSatisfez!")
+                    # print("\tSatisfez!")
                     analises_flip += 1
                     casos_validos.append(cp)
-                else:
-                    print("")
+                # else:
+                    # print("")
                 # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
                 #     if dir_pulso_saida == "rise":
                 #         if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
