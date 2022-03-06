@@ -97,9 +97,10 @@ class Circuito():
 
         ### INICIALIZACAO DO LETth DO CIRCUITO ###
         for nodo in self.nodos:
-            menor_LET = 9999999999999
-            if nodo.LETth.corrente < menor_LET:
-                menor_LET = nodo.LETth.corrente
+            menor = 9999999999999
+            if nodo.LETth.corrente < menor:
+                menor = nodo.LETth.corrente
+                print(nodo.LETth)
                 self.LETth = nodo.LETth
 
     def __tela_principal(self):
