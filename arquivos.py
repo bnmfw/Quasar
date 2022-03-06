@@ -263,7 +263,7 @@ class SpiceManager():
             saida_nome = arquivo_set.readline().split()[4]
             saida_nome = saida_nome[:-1]
             saida_nome = saida_nome[2:]
-            corrente = ajustar_valor(linha_rise[4])
+            corrente = ajustar_valor(linha_rise[4][:-1])
             if linha_rise[0][0] == "*":
                 cod = "rise"
                 nodo_nome = linha_rise[2]
