@@ -1,0 +1,6 @@
+{
+"Simulator" : "HSPICE",
+"HSPICE_Home" : "/usr/synopsys/hspice/hspice_vS-2021.09-2/hspice",
+"adv" : "c17v0_dm.user.json",
+"o" : "c17v0"
+}

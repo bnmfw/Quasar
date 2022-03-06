@@ -7,7 +7,7 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 1461369
+Username: bborges, PID: 1516442
 Command_Line_Options: c17v0_dm.hsp.json
 
 System Activity Monitoring (format subject to change)
@@ -30,8 +30,8 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 0.720000, 0.710000, 0.920000
-Virtual memory: Total=31.4G, Available=30.1G, Percent=3.9, Used=797.0M, Free=24.5G, Active=3.6G, Inactive=2.6G, Buffers=349.9M, Cached=5.7G, Shared=13.7M, Slab=505.7M
+CPU load: 1.000000, 1.000000, 1.000000
+Virtual memory: Total=31.4G, Available=30.1G, Percent=4.0, Used=816.8M, Free=24.3G, Active=3.7G, Inactive=2.7G, Buffers=415.2M, Cached=5.8G, Shared=13.7M, Slab=513.6M
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
@@ -57,9 +57,9 @@ Output directory /home/bborges/github file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
 /dev/sdb4            620   381       208  65% /home
 
-Start time: 2022-03-06 03:40:04 1646538004.4
+Start time: 2022-03-06 14:11:29 1646575889.3
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0     6.0      30.1       262.0      208.0        NA       NA        0.0   89.4M    350.0M  
+         0     8.3      30.1       262.0      208.0        NA       NA       96.5   92.7M    357.6M  
