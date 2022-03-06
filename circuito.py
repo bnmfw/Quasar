@@ -103,14 +103,15 @@ class Circuito():
                 self.LETth = nodo.LETth
 
     def __tela_principal(self):
-        print(f"LETth do circuito: {self.LETth}")
+        print(f"\nLETth do circuito: {self.LETth}")
         acao = int(input(f"{barra_comprida}\n"
                      f"Trabalhando com o {self.nome} em {self.vdd} volts\n"
                      "O que deseja fazer?\n"
                      "0. Atualizar LETs\n"
                      "1. Gerar CSV de LETs\n"
-                     "2. Analisar LET unico\n"
+                     "2. Analisar LET Unico\n"
                      "3. Analise Monte Carlo\n"
+                     "4. Analise Monte Carlo Unica\n"
                      "5. Sair\n"
                      "Resposta: "))
         if not acao:
@@ -122,7 +123,8 @@ class Circuito():
             self.analise_manual()
         elif acao == 3:
             self.__analise_monte_carlo_progressiva()
-        #elif acao == 4:
+        elif acao == 4:
+            self.__analise_monte_carlo()
         elif acao == 5:
             exit()
         else:
@@ -174,7 +176,13 @@ class Circuito():
 
     @relatorio_de_tempo
     def __analise_monte_carlo_progressiva(self):
-        pulso_out = self.__configurar_LET()
+
+        # Configuracao do LETth
+        self.__escolher_validacao(self.LETth.validacoes[0])
+        pulso_in, pulso_out = alternar_combinacao(self.LETth.orientacao)
+        self.SM.set_pulse(self.LETth.nodo_nome, self.LETth.corrente, self.LETth.saida_nome, pulso_in)
+        self.SM.set_pulse_width_param(self.LETth.nodo_nome, self.LETth.saida_nome, self.vdd, pulso_in, pulso_out)
+
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
         with Monte_Carlo(num_analises):
             corrente = self.SM.change_pulse_value(1)
