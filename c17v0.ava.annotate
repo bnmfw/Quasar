@@ -7,8 +7,8 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Thu Feb 24 21:50:32 2022
-Hostname: aorus, Username: bborges, PID: 33770
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Sun Mar 06 03:40:04 2022
+Hostname: aorus, Username: bborges, PID: 1461369
 Working_Directory : /home/bborges/github
 Command_Line_Options : c17v0_dm.hsp.json
 
@@ -29,4 +29,4 @@ This file format and content are subject to change.
 <<minnod>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 <<minout>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 #=============
-#Selective simulation for extreme corners: Monte= list(127, 226, 2078, 2895, 2935, 3583, 5408, 5582, 7178, 7361, 9222, 9235, 9421)
+#Selective simulation for extreme corners: Monte= list(127, 158, 226, 239, 245, 314, 315, 319, 402, 440, 453)
