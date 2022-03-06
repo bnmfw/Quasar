@@ -207,9 +207,8 @@ class SpiceManager():
             if casos_validos:
                 # print(f"\nMedia da corrente: {media(casos_validos)}")
                 # print(f"Desvio padrao da corrente: {stdev(casos_validos)}")
-                print(f"Proporcao de flips: {100*analises_flip/num_analises:.2f}% do total")
-            else:
-                print("Analise nao gerou casos validos")
+                pass
+            print(f"Proporcao de flips: {100*analises_flip/num_analises:.2f}% do total")
         return analises_flip
 
     # Le o atraso do nodo a saida no arquivo "texto.txt"
