@@ -45,6 +45,7 @@ class Circuito():
         self.nodos = []
         self.vdd: float = 0
         self.atrasoCC: float = 0
+        self.LETth: LET
 
         ##### RELATORIO DO CIRCUITO #####
         self.sets_validos = []
@@ -94,7 +95,15 @@ class Circuito():
                 print(f"{barra_comprida}\nPrograma encerrado")
                 exit()
 
+        ### INICIALIZACAO DO LETth DO CIRCUITO ###
+        for nodo in self.nodos:
+            menor_LET = 9999999999999
+            if nodo.LETth.corrente < menor_LET:
+                menor_LET = nodo.LETth.corrente
+                self.LETth = nodo.LETth
+
     def __tela_principal(self):
+        print(f"LETth do circuito: {self.LETth}")
         acao = int(input(f"{barra_comprida}\n"
                      f"Trabalhando com o {self.nome} em {self.vdd} volts\n"
                      "O que deseja fazer?\n"
