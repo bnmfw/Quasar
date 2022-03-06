@@ -206,8 +206,8 @@ class SpiceManager():
                 #             analises_validas += 1
             if casos_validos:
                 print(f"\nMedia da corrente: {media(casos_validos)}")
-                print(f"Desvio padrao da corrente: {stdev(casos_validos)}")
-                print(f"Proporcao de flips: {100*analises_flip/num_analises:.2f}% do total")
+                # print(f"Desvio padrao da corrente: {stdev(casos_validos)}")
+                # print(f"Proporcao de flips: {100*analises_flip/num_analises:.2f}% do total")
             else:
                 print("Analise nao gerou casos validos")
         return analises_flip
@@ -264,7 +264,7 @@ class SpiceManager():
             saida_nome = saida_nome[:-1]
             saida_nome = saida_nome[2:]
             corrente = ajustar_valor(linha_rise[4][:-1])
-            if linha_rise[0][0] == "*":
+            if linha_fall[0][0] == "*":
                 cod = "rise"
                 nodo_nome = linha_rise[2]
             else:
