@@ -165,10 +165,12 @@ class Circuito():
 
     @relatorio_de_tempo
     def __analise_monte_carlo_progressiva(self):
+        pulso_out = self.__configurar_LET()
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
         with Monte_Carlo(num_analises):
-            for frac in [1, 0.9, 0.8, 0.7, 0.6, 0.5]:
-                pulso_out = self.__configurar_LET(frac)
+            corrente = self.SM.change_pulse_value(1)
+            for frac in [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]:
+                self.SM.change_pulse_value(corrente * frac)
                 os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
                 self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
             print("Analise monte carlo realizada com sucesso")

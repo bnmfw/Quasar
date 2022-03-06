@@ -251,6 +251,25 @@ class SpiceManager():
         return larg - atraso
         # return larg - atraso
 
+    # Substitui o valor da corrente no arquivo "SETs.txt"
+    def change_pulse_value(self, nova: float) -> float:
+        with open("SETs.txt", "r") as arquivo_set:
+            arquivo_set.readline()
+            linha_rise = arquivo_set.readline().split()
+            linha_fall = arquivo_set.readline().split()
+            saida_nome = arquivo_set.readline().split()[4]
+            saida_nome = saida_nome[:-1]
+            saida_nome = saida_nome[2:]
+            corrente = ajustar_valor(linha_rise[4])
+            if linha_rise[0][0] == "*":
+                cod = "rise"
+                nodo_nome = linha_rise[2]
+            else:
+                cod = "fall"
+                nodo_nome = linha_fall[1]
+            self.set_pulse(nodo_nome, nova, saida_nome, cod)
+            return corrente
+
 
 class CSVManager():
     def __init__(self):
