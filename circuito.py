@@ -169,7 +169,6 @@ class Circuito():
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
         with Monte_Carlo(num_analises):
             corrente = self.SM.change_pulse_value(1)
-            print(corrente)
             for frac in [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]:
                 print(f"{100*frac}% do LETth:")
                 self.SM.change_pulse_value(corrente * frac)
@@ -278,7 +277,7 @@ class Circuito():
         print("Orientacoes disponiveis: ")
         for let_disponivel in nodo.LETs:
             if let_disponivel.saida_nome == saida_nome:
-                print(alternar_combinacao(let_disponivel.orientacao), let_disponivel.valor)
+                print(alternar_combinacao(let_disponivel.orientacao), let_disponivel.corrente)
         pulso_in, pulso_out = input("pulsos na entrada e saida do LET: ").split()
         let = self.encontrar_let(nodo, self.encontrar_nodo(saida_nome), alternar_combinacao([pulso_in, pulso_out]))
         corrente = let.corrente * fracao
