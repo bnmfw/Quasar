@@ -86,14 +86,14 @@ class SpiceManager():
             sets.write(f"Iseu gnd {nodo_nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
             if direcao_pulso_nodo == "rise": sets.write("*")
             sets.write(f"Iseu {nodo_nome} gnd EXP(0 {corrente}u 2n 50p 164p 200p) //fall\n")
-            sets.write(f".meas tran minout min V({saida_nome}) from=1.0n to=4.0n\n")
-            sets.write(f".meas tran maxout max V({saida_nome}) from=1.0n to=4.0n\n")
+            sets.write(f".meas tran minout min V({saida_nome}) from=1.0n to=3.8n\n")
+            sets.write(f".meas tran maxout max V({saida_nome}) from=1.0n to=3.8n\n")
             # Usado apenas na verificacao de validacao:
-            sets.write(f".meas tran minnod min V({nodo_nome}) from=1.0n to=4.0n\n")
-            sets.write(f".meas tran maxnod max V({nodo_nome}) from=1.0n to=4.0n\n")
+            sets.write(f".meas tran minnod min V({nodo_nome}) from=1.0n to=3.8n\n")
+            sets.write(f".meas tran maxnod max V({nodo_nome}) from=1.0n to=3.8n\n")
             # Corrente para analise MC:
-            sets.write(f".meas tran mincor min i(Vmeas{saida_nome}) from=1.0n to=4.0n\n")
-            sets.write(f".meas tran maxcor max i(Vmeas{saida_nome}) from=1.0n to=4.0n\n")
+            sets.write(f".meas tran mincor min i(Vmeas{saida_nome}) from=1.0n to=3.8n\n")
+            sets.write(f".meas tran maxcor max i(Vmeas{saida_nome}) from=1.0n to=3.8n\n")
 
     # Altera o arquivo "atraso.txt"
     @staticmethod
