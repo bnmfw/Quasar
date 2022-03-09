@@ -2,7 +2,7 @@
 
 **** Dispositivos lógicos ****
 
-.include logica.txt
+.include logica.cir
 
 **** MUX 1 bit ****
 

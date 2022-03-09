@@ -2,8 +2,8 @@ Benchmark C17 V0
 
 ****** Dispositivos Lógicos ******
 
-.include dis/logica.txt
-.include dis/DFF.txt
+.include dis/logica.cir
+.include dis/DFF.cir
 
 ****** HGSPICE ******
 
@@ -12,15 +12,15 @@ Benchmark C17 V0
 
 ****** Fontes de Tensão Geral ******
 
-.include vdd.txt
+.include vdd.cir
 
 ****** Fontes de Sinal ******
 
-.include fontes.txt
+.include fontes.cir
 
 ****** SETs ******
 
-.include SETs.txt
+.include SETs.cir
 
 ****** Circuito ******
 
@@ -84,9 +84,9 @@ xinv12 vcc gnd q2 nnq2 NOT
 
 ****** Controle ******
 
-.include largura_pulso.txt
-.include atraso.txt
-.include monte_carlo.txt
+.include largura_pulso.cir
+.include atraso.cir
+.include monte_carlo.cir
 
 ************
 .end

@@ -7,8 +7,8 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 2178385
-Command_Line_Options: c17v0_dm.hsp.json
+Username: bborges, PID: 1795313
+Command_Line_Options: c17v2_dm.hsp.json
 
 System Activity Monitoring (format subject to change)
 ================================================================
@@ -30,13 +30,14 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 0.560000, 0.140000, 0.050000
-Virtual memory: Total=31.4G, Available=30.0G, Percent=4.4, Used=946.7M, Free=23.7G, Active=4.0G, Inactive=3.0G, Buffers=550.6M, Cached=6.2G, Shared=13.7M, Slab=536.9M
+CPU load: 1.000000, 1.000000, 0.890000
+Virtual memory: Total=31.4G, Available=30.1G, Percent=3.9, Used=804.9M, Free=24.3G, Active=3.7G, Inactive=2.7G, Buffers=450.2M, Cached=5.8G, Shared=13.7M, Slab=518.4M
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
 (-1, -1): The maximum amount of processor time (in seconds) that a process can use
 (-1, -1): The maximum size of a file
+(-1, -1): The maximum size (in bytes) of the process’s heap
 (8388608, -1): The maximum size (in bytes) of the call stack
 (-1, -1): The maximum resident set size available
 (127881, 127881): The maximum number of processes the current process may create
@@ -44,6 +45,7 @@ System resource limits (soft, hard) set by user for current process
 (65536, 65536): The maximum address space which may be locked in memory
 (-1, -1): The maximum area (in bytes) of address space which may be taken by the process
 (819200, 819200): The number of bytes that can be allocated for POSIX message queues
+(0, 0): The ceiling for the process’s nice level (calculated as 20 - rlim_cur)
 (0, 0): The ceiling of the real-time priority
 (127881, 127881): The number of signals which the process may queue
 
@@ -55,9 +57,9 @@ Output directory /home/bborges/github file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
 /dev/sdb4            620   381       208  65% /home
 
-Start time: 2022-03-08 21:06:33 1646773593.6
+Start time: 2022-03-07 01:39:45 1646617185.5
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0     4.7      30.0       262.0      208.0        NA       NA        0.0   89.3M    347.0M  
+         0     8.3      30.1       262.0      208.0        NA       NA       86.7   94.2M    360.5M  

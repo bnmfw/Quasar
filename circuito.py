@@ -39,7 +39,7 @@ class Circuito():
     def __init__(self):
         ##### ATRIBUTOS DO CIRCUITO #####
         self.nome = "nome"
-        self.arquivo = "nome.txt"
+        self.arquivo = "nome.cir"
         self.entradas = []
         self.saidas = []
         self.nodos = []
@@ -372,7 +372,7 @@ if __name__ == "__main__":
 
     circuito_teste = Circuito()
     circuito_teste.nome = "Teste"
-    circuito_teste.arquivo = "Teste.txt"
+    circuito_teste.arquivo = "Teste.cir"
     circuito_teste.vdd = 0.7
 
     circuito_teste.teste()

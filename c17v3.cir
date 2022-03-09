@@ -2,12 +2,12 @@ Benchmark C17 V3 (modelo com NANDs)
 
 ****** Dispositivos Logicos ******
 
-.include dis/logica.txt
-.include dis/DFF.txt
+.include dis/logica.cir
+.include dis/DFF.cir
 
 ****** SETs ******
 
-.include SETs.txt
+.include SETs.cir
 
 ****** HSPICE ******
 
@@ -16,11 +16,11 @@ Benchmark C17 V3 (modelo com NANDs)
 
 ****** Fontes de Tensão Geral ******
 
-.include vdd.txt
+.include vdd.cir
 
 ****** Fontes de Sinal ******
 
-.include fontes.txt
+.include fontes.cir
 
 ****** Circuito ******
 
@@ -76,9 +76,9 @@ xinv12 vcc gnd q2 nnq2 NOT
 
 ****** Controle ******
 
-.include largura_pulso.txt
-.include atraso.txt
-.include monte_carlo.txt
+.include largura_pulso.cir
+.include atraso.cir
+.include monte_carlo.cir
 
 ************
 .end

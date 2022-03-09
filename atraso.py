@@ -5,11 +5,11 @@ import os
 saidas = ["g1", "g2"]
 entradas = [Entrada("a",0),Entrada("b",0),Entrada("c",0),Entrada("d",0),Entrada("e",0)]
 vdd = 0.7
-circuito = "c17v0.txt"
+circuito = "c17v0.cir"
 maior_atraso = 0
 simulacoes_feitas = 0
 
-ajustar_pulso("SETs.txt",saidas[0],0.0,saidas[0],"fall")
+ajustar_pulso("SETs.cir",saidas[0],0.0,saidas[0],"fall")
 
 for entrada_analisada in entradas:
     for saida in saidas:

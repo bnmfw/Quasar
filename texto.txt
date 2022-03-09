@@ -1,7 +1,5 @@
-  **warning** (largura_pulso.txt:2) .MEASURE atraso never reached the trigger value, Measurement failed! 
-  **warning** (largura_pulso.txt:2) .MEASURE atraso never reached the target value, Measurement failed! 
-   atraso_rr= failed       targ= not found    trig=    1.0050n
-   atraso_rf= failed       targ= not found    trig=    1.0050n
-   atraso_ff= failed       targ= not found    trig=    3.0050n
-   atraso_fr= failed       targ= not found    trig=    3.0050n
-   largura= failed                          trig= not found
+ atraso_rr=   1.0826n  targ=   2.0876n   trig=   1.0050n
+ atraso_rf=   1.1023n  targ=   2.1073n   trig=   1.0050n
+ atraso_ff=-897.7254p  targ=   2.1073n   trig=   3.0050n
+ atraso_fr=-917.3571p  targ=   2.0876n   trig=   3.0050n
+ largura= -19.6317p  targ=   2.0876n   trig=   2.1073n

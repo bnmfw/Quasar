@@ -2,8 +2,8 @@
 
 **** Dispositivos logicos ****
 
-.include logica.txt
-.include multiplex.txt
+.include logica.cir
+.include multiplex.cir
 
 **** Subcircuito FLIP FLOP JK ****
 

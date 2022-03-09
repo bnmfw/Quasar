@@ -50,19 +50,19 @@ class SpiceManager():
                 split_nativo[index] = termos[0]
         return split_nativo
 
-    # Escreve vdd no arquivo "vdd.txt"
+    # Escreve vdd no arquivo "vdd.cir"
     @staticmethod
     def set_vdd(vdd: float):
-        with open("vdd.txt", "w") as arquivo_vdd:
+        with open("vdd.cir", "w") as arquivo_vdd:
             arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
             arquivo_vdd.write(f"Vvdd vdd gnd {vdd}\n")
             arquivo_vdd.write(f"Vvcc vcc gnd {vdd}\n")
             arquivo_vdd.write(f"Vclk clk gnd PULSE(0 {vdd} 1n 0.01n 0.01n 1n 2n)")
 
-    # Escreve os sinais no arquivo "fontes.txt"
+    # Escreve os sinais no arquivo "fontes.cir"
     @staticmethod
     def set_signals(vdd: float, entradas: list):
-        with open("fontes.txt", "w") as sinais:
+        with open("fontes.cir", "w") as sinais:
             sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
 
             # Escreve o sinal analogico a partir do sinal logico
@@ -77,10 +77,10 @@ class SpiceManager():
                 else:
                     print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
-    # Escreve informacoes no arquivo "SETs.txt"
+    # Escreve informacoes no arquivo "SETs.cir"
     @staticmethod
     def set_pulse(nodo_nome: str, corrente: float, saida_nome: str, direcao_pulso_nodo: str):
-        with open("SETs.txt", "w") as sets:
+        with open("SETs.cir", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
             if direcao_pulso_nodo == "fall": sets.write("*")
             sets.write(f"Iseu gnd {nodo_nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
@@ -95,10 +95,10 @@ class SpiceManager():
             sets.write(f".meas tran mincor min i(Vmeas{saida_nome}) from=1.0n to=3.8n\n")
             sets.write(f".meas tran maxcor max i(Vmeas{saida_nome}) from=1.0n to=3.8n\n")
 
-    # Altera o arquivo "atraso.txt"
+    # Altera o arquivo "atraso.cir"
     @staticmethod
     def set_delay_param(inp: str, out: str, vdd: float):
-        with open("atraso.txt", "w") as at:
+        with open("atraso.cir", "w") as at:
             at.write("*Arquivo com atraso a ser medido\n")
             tensao = str(vdd / 2)
             at.write(f".meas tran atraso_rr TRIG v({inp}) val='{tensao}' rise=1 TARG v({out}) val='{tensao}' rise=1\n")
@@ -107,10 +107,10 @@ class SpiceManager():
             at.write(f".meas tran atraso_fr TRIG v({inp}) val='{tensao}' fall=1 TARG v({out}) val='{tensao}' rise=1\n")
             at.write(f".meas tran largura TRIG v({out}) val='{tensao}' fall=1 TARG v({out}) val='{tensao}' rise=1\n")
 
-    # Altera o arquivo "largura_pulso.txt"
+    # Altera o arquivo "largura_pulso.cir"
     @staticmethod
     def set_pulse_width_param(nodo_nome: str, saida_nome: str, vdd: float, dir_nodo: str, dir_saida: str):
-        with open("largura_pulso.txt", "w") as larg:
+        with open("largura_pulso.cir", "w") as larg:
             larg.write("*Arquivo com a leitura da largura dos pulsos\n")
             tensao = str(vdd * 0.5)
             larg.write(
@@ -120,7 +120,7 @@ class SpiceManager():
     # Altera o valor de simulacoes monte carlo a serem feitas
     @staticmethod
     def set_monte_carlo(simulacoes: int):
-        with open("monte_carlo.txt", "w") as mc:
+        with open("monte_carlo.cir", "w") as mc:
             mc.write("*Arquivo Analise Monte Carlo\n")
             mc.write(".tran 0.01n 4n")
             if simulacoes: mc.write(f" sweep monte={simulacoes}")
@@ -253,9 +253,9 @@ class SpiceManager():
         return larg - atraso
         # return larg - atraso
 
-    # Substitui o valor da corrente no arquivo "SETs.txt"
+    # Substitui o valor da corrente no arquivo "SETs.cir"
     def change_pulse_value(self, nova: float) -> float:
-        with open("SETs.txt", "r") as arquivo_set:
+        with open("SETs.cir", "r") as arquivo_set:
             arquivo_set.readline()
             linha_rise = arquivo_set.readline().split()
             linha_fall = arquivo_set.readline().split()

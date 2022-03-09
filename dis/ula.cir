@@ -6,7 +6,7 @@
 
 **** Dispositivos logicos ****
 
-.include logica.txt
+.include logica.cir
 
 **** Subcircuito Half adder ****
 

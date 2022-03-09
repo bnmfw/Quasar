@@ -4,7 +4,7 @@ Arquivo para testar minhas bibliotecas
 
 ****** Finfets ******
 
-.include logica.txt
+.include logica.cir
 
 ****** Fontes de Tensão Geral ******
 
