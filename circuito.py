@@ -69,7 +69,7 @@ class Circuito():
         # Escolha de dados do circuito
         circuito = input(barra_comprida+"\nEscolha o circuito: ")
         self.nome = circuito
-        self.arquivo: str = self.nome + ".txt"
+        self.arquivo: str = self.nome + ".cir"
         try:
             tensao: float = 0.0
             with open(circuito+".json","r"):

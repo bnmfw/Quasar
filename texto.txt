@@ -1,5 +1,100 @@
- atraso_rr=   1.0826n  targ=   2.0876n   trig=   1.0050n
- atraso_rf=   1.1023n  targ=   2.1073n   trig=   1.0050n
- atraso_ff=-897.7254p  targ=   2.1073n   trig=   3.0050n
- atraso_fr=-917.3571p  targ=   2.0876n   trig=   3.0050n
- largura= -19.6317p  targ=   2.0876n   trig=   2.1073n
+ minout= 237.8328m    at=   2.0901n
+ maxout= 702.9437m    at=   1.0123n
+ minout=-230.3592m    at=   2.0906n
+ maxout= 702.9986m    at=   1.0116n
+ minout= 288.2837m    at=   2.0935n
+ maxout= 703.2441m    at=   1.0115n
+ minout= 381.4308m    at=   2.0955n
+ maxout= 702.5025m    at=   1.0133n
+ minout= 396.8419m    at=   2.1036n
+ maxout= 703.2738m    at=   1.0115n
+ minout= 473.0587m    at=   2.0756n
+ maxout= 702.5900m    at=   1.0112n
+ minout=-412.2696m    at=   2.0903n
+ maxout= 702.8991m    at=   1.0133n
+ minout= 328.7640m    at=   2.0873n
+ maxout= 703.4229m    at=   1.0114n
+ minout= 419.7058m    at=   2.0957n
+ maxout= 703.2809m    at=   1.0115n
+ minout=  85.4987m    at=   2.0941n
+ maxout= 703.0894m    at=   1.0116n
+ minout= 312.1134m    at=   2.0941n
+ maxout= 702.8160m    at=   1.0121n
+ minout= 175.8098m    at=   2.0935n
+ maxout= 702.7984m    at=   1.0122n
+ minout=-192.3849m    at=   2.0990n
+ maxout= 702.9552m    at=   1.0132n
+ minout= 357.1148m    at=   2.0888n
+ maxout= 703.4005m    at=   1.0111n
+ minout=-396.7443m    at=   2.0876n
+ maxout= 702.9759m    at=   1.0134n
+ minout= 387.6179m    at=   2.0963n
+ maxout= 703.0689m    at=   1.0115n
+ minout= 350.0486m    at=   2.0960n
+ maxout= 703.2058m    at=   1.0111n
+ minout= 294.6681m    at=   2.0953n
+ maxout= 702.9964m    at=   1.0132n
+ minout= 377.5671m    at=   2.0816n
+ maxout= 703.3533m    at=   1.0111n
+ minout=-217.2514m    at=   2.0895n
+ maxout= 702.9008m    at=   1.0114n
+ minout= 364.3259m    at=   2.0960n
+ maxout= 702.9785m    at=   1.0122n
+ minout= 163.2521m    at=   2.0936n
+ maxout= 703.2859m    at=   1.0115n
+ minout=-373.3849m    at=   2.0843n
+ maxout= 702.6970m    at=   1.0134n
+ minout= 439.7822m    at=   2.0876n
+ maxout= 702.4824m    at=   1.0122n
+ minout= 437.3866m    at=   2.0784n
+ maxout= 703.3860m    at=   1.0112n
+ minout= 324.9087m    at=   2.0959n
+ maxout= 703.4541m    at=   1.0113n
+ minout=-138.1627m    at=   2.0948n
+ maxout= 703.2975m    at=   1.0114n
+ minout= 320.3665m    at=   2.0841n
+ maxout= 703.4721m    at=   1.0112n
+ minout= 434.4939m    at=   2.1087n
+ maxout= 702.9755m    at=   1.0122n
+ minout= 366.3527m    at=   2.0853n
+ maxout= 703.4534m    at=   1.0113n
+ minout= 337.6270m    at=   2.0957n
+ maxout= 702.9692m    at=   1.0132n
+ minout= 284.7390m    at=   2.0946n
+ maxout= 703.4174m    at=   1.0114n
+ minout=-316.2682m    at=   2.0972n
+ maxout= 702.7858m    at=   1.0117n
+ minout=-268.3303m    at=   2.0979n
+ maxout= 702.8510m    at=   1.0124n
+ minout= -85.5094m    at=   2.0968n
+ maxout= 703.3211m    at=   1.0114n
+ minout= 420.7457m    at=   2.0820n
+ maxout= 703.4386m    at=   1.0112n
+ minout= 436.1099m    at=   2.0894n
+ maxout= 703.3748m    at=   1.0112n
+ minout= -74.2219m    at=   2.0981n
+ maxout= 702.8414m    at=   1.0122n
+ minout=-451.7707m    at=   2.0902n
+ maxout= 702.7525m    at=   1.0149n
+ minout= 222.8864m    at=   2.0926n
+ maxout= 703.2924m    at=   1.0115n
+ minout= 327.3276m    at=   2.0930n
+ maxout= 702.9875m    at=   1.0132n
+ minout= 339.2975m    at=   2.0886n
+ maxout= 702.8562m    at=   1.0132n
+ minout= 313.2659m    at=   2.0957n
+ maxout= 703.4470m    at=   1.0113n
+ minout= 318.0956m    at=   2.0983n
+ maxout= 703.3139m    at=   1.0115n
+ minout= 353.2630m    at=   2.0964n
+ maxout= 703.1018m    at=   1.0115n
+ minout= 426.8722m    at=   2.0805n
+ maxout= 703.4084m    at=   1.0111n
+ minout= 419.1500m    at=   2.0928n
+ maxout= 703.4110m    at=   1.0111n
+ minout=  70.6485m    at=   2.0983n
+ maxout= 702.8124m    at=   1.0132n
+ minout= 142.5263m    at=   2.0940n
+ maxout= 703.0296m    at=   1.0132n
+ minout= -88.6088m    at=   2.1009n
+ maxout= 702.8311m    at=   1.0132n
