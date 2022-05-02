@@ -1,0 +1,25 @@
+{
+"Active_Application": "Utility",
+"Utility": {
+"Method": "Post_Processing",
+"Sensitivity_Annotate": true, 
+"Sensitivity_Detailed_File": false, 
+"Sensitivity_Method": "Classic", 
+"Sensitivity_Screening_Method": "Pearson",
+"Sampling_Method": "srs",
+"Measure_Files": ["c17v4.mt0.csv"],
+"Sample_Files": ["c17v4.mc0.csv"],
+"Other_Percentile_Percentage": [ ],
+"Other_Percentile_Sigma": [ ]
+},
+"AVA_Outputs": {
+"QQ_PDF": true,
+"QQ_WV": true,
+"QQ_CSV": true,
+"Nominal": true,
+"Detailed": true,
+"Sensitivity": true,
+"Critical_Sweep_MC0": true,
+"Critical_Sweep_Waveform": false
+}
+}

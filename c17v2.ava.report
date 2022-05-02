@@ -7,16 +7,16 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Mon Mar 07 01:39:45 2022
-Hostname: aorus, Username: bborges, PID: 1795313
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Thu Apr 28 15:44:04 2022
+Hostname: aorus, Username: bborges, PID: 292304
 Working_Directory : /home/bborges/github
 Command_Line_Options : c17v2_dm.hsp.json
 
 This file format and content are subject to change.
 ================================================================
 
-Measure Files:  c17v2.mt0.csv(2000,13)
-Sample Files:  c17v2.mc0.csv(2000,2)
+Measure Files:  c17v2.mt0.csv(1000,13)
+Sample Files:  c17v2.mc0.csv(1000,2)
 
 ##Variation_Options
 #------------------
@@ -45,7 +45,7 @@ Total number of independent random variables = 2
 Number of independent global random variables = 2
 Number of independent local random variables = 0
 Number of independent aging random variables = 0
-Number of Samples = 2000
+Number of Samples = 1000
 Number of Meas failure = 0
 Number of Device out of bound = 0
 
@@ -53,54 +53,54 @@ Number of Device out of bound = 0
 ##Sample_Moments
 #---------------
             maxcor    maxnod    maxout     mincor   minnod    minout
-Nominal  1.024e-06       0.7  0.001074 -6.851e-07    0.675 -0.001626
-Mean     1.048e-06       0.7  0.001125 -7.501e-07   0.6743 -0.001593
-StdDev   1.546e-07 0.0002137 0.0001687  1.238e-07 0.003999 0.0003214
-Skewness    0.4425     -21.4     2.242     -1.659   -2.701   -0.0105
-Kurtosis     2.745     607.5     16.24      5.617    25.26     5.929
+Nominal  9.496e-07       0.7  0.001074 -6.851e-07   0.6876 -0.001544
+Mean     1.035e-06       0.7  0.001122 -7.433e-07   0.6873 -0.001577
+StdDev   1.571e-07 0.0002446 0.0001683  1.183e-07 0.001927 0.0003266
+Skewness    0.4431     -24.2     2.618     -1.745   -2.559    0.2053
+Kurtosis      2.75     668.5     22.32      6.323    19.37     7.318
 
 ##Quantiles
 #----------
-                      maxcor  maxnod    maxout     mincor  minnod    minout
-Q1e-01    (-3.090) 7.138e-07  0.6975 0.0007005 -1.203e-06  0.6491 -0.002587
-Q1.35e-01 (    -3) 7.146e-07  0.6975 0.0007269   -1.2e-06  0.6518 -0.002563
-Q1        (-2.326) 7.719e-07  0.6996 0.0008313 -1.172e-06  0.6612 -0.002404
-Q2.28     (    -2) 8.003e-07  0.6999  0.000903 -1.126e-06  0.6652 -0.002282
-Q5        (-1.645) 8.233e-07     0.7 0.0009346 -1.049e-06  0.6672  -0.00217
-Q15.9     (    -1) 8.818e-07     0.7 0.0009825 -8.446e-07   0.671 -0.001931
-Q25       (-0.674) 9.322e-07     0.7  0.001015 -7.742e-07  0.6725 -0.001786
-Q75       ( 0.674) 1.134e-06     0.7  0.001194 -6.765e-07  0.6769 -0.001365
-Q84.1     (     1) 1.211e-06     0.7  0.001265 -6.651e-07  0.6776 -0.001302
-Q95       ( 1.645) 1.341e-06     0.7  0.001412 -6.493e-07  0.6789  -0.00119
-Q97.72    (     2) 1.389e-06     0.7    0.0015   -5.9e-07  0.6793 -0.001126
-Q99       ( 2.326) 1.419e-06  0.7001  0.001715 -5.458e-07  0.6797 -0.001029
-Q99.865   (     3) 1.503e-06  0.7001  0.002311 -4.908e-07  0.6805 2.303e-05
-Q99.9     ( 3.090) 1.512e-06  0.7001  0.002524 -4.746e-07  0.6806  0.000271
+                      maxcor  maxnod    maxout     mincor  minnod     minout
+Q1e-01    (-3.090) 6.893e-07  0.6962 0.0006335 -1.238e-06  0.6719  -0.002551
+Q1.35e-01 (    -3) 7.016e-07  0.6976 0.0006585 -1.214e-06  0.6743  -0.002545
+Q1        (-2.326) 7.703e-07  0.6997  0.000824 -1.145e-06   0.681  -0.002409
+Q2.28     (    -2) 7.935e-07  0.6999  0.000893 -1.092e-06   0.683  -0.002262
+Q5        (-1.645) 8.071e-07     0.7 0.0009363 -1.031e-06  0.6839  -0.002161
+Q15.9     (    -1) 8.635e-07     0.7 0.0009839 -8.329e-07  0.6857    -0.0019
+Q25       (-0.674) 9.047e-07     0.7  0.001017 -7.583e-07  0.6866  -0.001777
+Q75       ( 0.674) 1.127e-06     0.7  0.001186 -6.753e-07  0.6886  -0.001337
+Q84.1     (     1) 1.192e-06     0.7  0.001257  -6.65e-07  0.6889   -0.00128
+Q95       ( 1.645) 1.324e-06     0.7  0.001401   -6.5e-07  0.6895  -0.001176
+Q97.72    (     2) 1.389e-06     0.7  0.001492  -5.91e-07  0.6897  -0.001121
+Q99       ( 2.326) 1.407e-06  0.7001  0.001608 -5.379e-07  0.6899 -0.0009719
+Q99.865   (     3) 1.568e-06  0.7001  0.002761 -4.525e-07  0.6904  0.0006088
+Q99.9     ( 3.090) 1.577e-06  0.7001  0.002769 -4.373e-07  0.6904  0.0006828
 
 ##Response_Correlation_Matrix
 #----------------------------
            maxcor    maxnod    maxout    mincor    minnod    minout
- maxcor  1.000000  0.032948  0.243579 -0.141008 -0.478724 -0.864992
- maxnod  0.032948  1.000000 -0.064296  0.211723  0.037190 -0.121366
- maxout  0.243579 -0.064296  1.000000 -0.502713  0.118134 -0.256210
- mincor -0.141008  0.211723 -0.502713  1.000000  0.220142  0.150835
- minnod -0.478724  0.037190  0.118134  0.220142  1.000000  0.511479
- minout -0.864992 -0.121366 -0.256210  0.150835  0.511479  1.000000
+ maxcor  1.000000  0.031088  0.213274 -0.153852 -0.498122 -0.864405
+ maxnod  0.031088  1.000000 -0.073966  0.224458  0.138971 -0.078592
+ maxout  0.213274 -0.073966  1.000000 -0.481560  0.155218 -0.203117
+ mincor -0.153852  0.224458 -0.481560  1.000000  0.196303  0.153694
+ minnod -0.498122  0.138971  0.155218  0.196303  1.000000  0.506055
+ minout -0.864405 -0.078592 -0.203117  0.153694  0.506055  1.000000
 
 ##Extremes_and_Corners
 #----------------------------
                 min         max minIndex maxIndex
- maxcor   6.621e-07   1.581e-06      420     1360
+ maxcor   6.621e-07   1.596e-06      420      926
  maxnod   6.930e-01   7.001e-01      806      461
- maxout   5.780e-04   2.788e-03      127      706
+ maxout   5.782e-04   2.788e-03      127      706
  mincor  -1.292e-06  -4.036e-07      806      127
- minnod   6.185e-01   6.807e-01      127      706
- minout  -2.670e-03   8.466e-04     1360      706
+ minnod   6.666e-01   6.904e-01      127      675
+ minout  -2.562e-03   8.466e-04      926      706
 
 ##Selective_Simulation
 #----------------------------
 #To simulate corners only:
-Use: ... Monte = list(127, 420, 461, 706, 806, 1360)
+Use: ... Monte = list(127, 420, 461, 675, 706, 806, 926)
 
 
 
@@ -112,44 +112,46 @@ Method: Pearson Correlation
 #(parameters with ParVar smaller than 0.01% will not be printed.)
 
 Response: maxcor
-Global Variation =  1.546e-07,  Local Variation =  0.000e+00
+Global Variation =  1.571e-07,  Local Variation =  0.000e+00
 Element     Model EquivVar   CumVar MatchGrp         Par    ID   Corr  ParVar
-      .  pmos_rvt   50.74%   50.74%        .                                 
-      .         .        .        .        .  phig_var_p  IGNC  -0.51  50.74%
-      .  nmos_rvt   49.26%  100.00%        .                                 
-      .         .        .        .        .  phig_var_n  IGNC   0.51  49.26%
+      .  pmos_rvt   54.95%   54.95%        .                                 
+      .         .        .        .        .  phig_var_p  IGNC  -0.53  54.95%
+      .  nmos_rvt   45.05%  100.00%        .                                 
+      .         .        .        .        .  phig_var_n  IGNC   0.48  45.05%
 
 Response: maxnod
-Global Variation =  2.137e-04,  Local Variation =  0.000e+00
+Global Variation =  2.446e-04,  Local Variation =  0.000e+00
 Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
-      .  nmos_rvt   99.84%  99.84%        .                                 
-      .         .        .       .        .  phig_var_n  IGNC   0.32  99.84%
+      .  nmos_rvt   99.34%  99.34%        .                                 
+      .         .        .       .        .  phig_var_n  IGNC   0.27  99.34%
 
 Response: maxout
-Global Variation =  1.687e-04,  Local Variation =  0.000e+00
-Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
-      .  nmos_rvt   95.35%  95.35%        .                                 
-      .         .        .       .        .  phig_var_n  IGNC   0.59  95.35%
+Global Variation =  1.683e-04,  Local Variation =  0.000e+00
+Element     Model EquivVar   CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  nmos_rvt   91.29%   91.29%        .                                 
+      .         .        .        .        .  phig_var_n  IGNC   0.57  91.29%
+      .  pmos_rvt    8.71%  100.00%        .                                 
+      .         .        .        .        .  phig_var_p  IGNC   0.18   8.71%
 
 Response: mincor
-Global Variation =  1.238e-07,  Local Variation =  1.304e-15
+Global Variation =  1.183e-07,  Local Variation =  0.000e+00
 Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
-      .  pmos_rvt   99.82%  99.82%        .                                 
-      .         .        .       .        .  phig_var_p  IGNC   0.28  99.82%
+      .  pmos_rvt   99.73%  99.73%        .                                 
+      .         .        .       .        .  phig_var_p  IGNC   0.25  99.73%
 
 Response: minnod
-Global Variation =  3.999e-03,  Local Variation =  4.214e-11
+Global Variation =  1.927e-03,  Local Variation =  0.000e+00
 Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
-      .  pmos_rvt   99.96%  99.96%        .                                 
-      .         .        .       .        .  phig_var_p  IGNC   0.91  99.96%
+      .  pmos_rvt   99.95%  99.95%        .                                 
+      .         .        .       .        .  phig_var_p  IGNC   0.91  99.95%
 
 Response: minout
-Global Variation =  3.214e-04,  Local Variation =  0.000e+00
+Global Variation =  3.266e-04,  Local Variation =  0.000e+00
 Element     Model EquivVar   CumVar MatchGrp         Par    ID   Corr  ParVar
-      .  nmos_rvt   59.47%   59.47%        .                                 
-      .         .        .        .        .  phig_var_n  IGNC  -0.70  59.47%
-      .  pmos_rvt   40.53%  100.00%        .                                 
-      .         .        .        .        .  phig_var_p  IGNC   0.58  40.53%
+      .  nmos_rvt   57.86%   57.86%        .                                 
+      .         .        .        .        .  phig_var_n  IGNC  -0.68  57.86%
+      .  pmos_rvt   42.14%  100.00%        .                                 
+      .         .        .        .        .  phig_var_p  IGNC   0.58  42.14%
 
 ##Important_Elements_or_Models
 #------------------------------

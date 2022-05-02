@@ -103,7 +103,7 @@ class Circuito():
                 self.LETth = nodo.LETth
 
     def __tela_principal(self):
-        print(f"\nLETth do circuito: {self.LETth}")
+        # print(f"\nLETth do circuito: {self.LETth}")
         acao = int(input(f"{barra_comprida}\n"
                      f"Trabalhando com o {self.nome} em {self.vdd} volts\n"
                      "O que deseja fazer?\n"
@@ -186,11 +186,22 @@ class Circuito():
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
         with Monte_Carlo(num_analises):
             corrente = self.SM.change_pulse_value(1)
-            for frac in [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]:
+            mc_dict: dict = {"analises":num_analises}
+            for frac in [1, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 
+                        0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05]:
+
                 print(f"{100*frac}% do LETth:")
+
                 self.SM.change_pulse_value(corrente * frac)
+
                 os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
-                self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
+
+                falhas: int = self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
+
+                mc_dict[frac] = falhas
+
+            self.CM.dict_to_csv(f"{self.nome}_mc.csv",mc_dict)
+
             print("Analise monte carlo realizada com sucesso")
 
     @relatorio_de_tempo

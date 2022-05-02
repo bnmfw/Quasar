@@ -1,109 +1,117 @@
-================================================================
-*** This file format is subject to change **
-read in failed for sample file: c17v0.mc0.csv, do not do importance analysis
+ ****** PrimeSim HSPICE -- S-2021.09-2 linux64 (Oct 28 2021 7326465) ******
+  Copyright (c) 1986 - 2022 by Synopsys, Inc. All Rights Reserved.
+  This software and the associated documentation are proprietary
+  to Synopsys, Inc. This software may only be used in accordance
+  with the terms and conditions of a written license agreement with
+  Synopsys, Inc. All other use, reproduction, or distribution of
+  this software is strictly prohibited.
 
-Summary statistics
-==================
-Number of Samples:  10
-Number of Failures: 3
+##================================================================
+*** This file format is subject to change **
+
+Measure File: c17v0.mt0.csv
+
+##Variation_Options
+#------------------
+option ignore_global_variation = no
+option ignore_local_variation = no
+option ignore_aging_variation = yes
+option ignore_interconnect_variation = no
+option ignore_spatial_variation = no
+option ignore_variation = no
+option normal_limit     = 20
+option replicates       = 1
+option seed             = 1
+option stream           = 1
+option sensitivity_analysis  = yes
+option output_sigma_value = 1
+option use_agauss_format = yes
+option screening_method = pearson
+option set_missing_value = yes
+option large_scale_mc = no
+option qqnorm_file = yes
+option histogram_file = yes
+option sampling_method = SRS 
+option random_generator =  MCG
+##end_of_Variation_Options
+
+##Summary_Statistics
+#-------------------
+Total number of independent random variables = 2
+Number of independent global random variables = 2
+Number of independent local random variables = 0
+Number of independent aging random variables = 0
+Number of Samples:  1
+Number of Meas Failure: 0
+Number of Job Abortion: 0
+##sampling_method = SRS|LHS, the first MC sample is nominal value and is excluded in Monte Carlo data mining.
+Responses failed for all samples:
+atraso
+atraso_ff
+atraso_fr
+atraso_rf
+atraso_rr
+larg
+largura
 Responses with very small variation dropped from further analysis:
 (variable = value)
-atraso_ff = 0.000e+00
-atraso_fr = 0.000e+00
-atraso_rf = 0.000e+00
-atraso_rr = 0.000e+00
-largura = 0.000e+00
+maxcor = 0
+maxnod = 0
+maxout = 0
+mincor = 0
+minnod = 0
+minout = 0
+##end_of_Sumary_Statistics
 
-Sample moments etc:
--------------------
-CI: 95% Bootstrap confidence intervals based on 500 re-samples
+##Sample_Moments
+#---------------
+#CI: 95% Bootstrap confidence intervals based on 500 re-samples
                  CI          mean       median     stdDev     mad        skewness   kurtosis   
-                2.5%        1.339e-11  1.217e-11  1.729e-12  0.000e+00 -8.970e-01  9.493e-01
-atraso                      1.606e-11  1.289e-11  4.456e-12  1.305e-12  9.392e-01  2.647e+00
-                97.5%       1.943e-11  2.115e-11  5.967e-12  6.857e-12  1.768e+00  4.202e+00
+##end_of_Sample_Moments
 
-                2.5%        8.792e-11  8.902e-11  2.462e-11  0.000e+00 -1.154e+00  1.014e+00
-larg                        1.316e-10  1.086e-10  5.955e-11  3.499e-11 -1.103e-01  1.706e+00
-                97.5%       1.695e-10  2.031e-10  7.510e-11  1.026e-10  1.085e+00  3.239e+00
+##Quantiles
+#----------
+#(Percentile table adds appropriate percentile points as the number of samples increases.)
+#Percentile_Value                                 Equivalent_Sigma_Value 
+#(Q15.86552539,    Q84.134473607)                 (-1, 1)
+#(Q2.275013195,    Q97.724986805)                 (-2, 2)
+#(Q0.134989803,    Q99.865010197)                 (-3, 3)
+#(Q3.167124183e-3, Q99.996832876)                 (-4, 4)
+#(Q2.866515719e-5, Q99.999971335)                 (-5, 5)
+#(Q9.865876450e-8, Q99.999999901)                 (-6, 6)
+##end_of_Quantiles
 
-                2.5%        4.308e-01  3.255e-01  2.055e-01  6.976e-02 -6.137e-01  1.069e+00
-maxnod                      6.229e-01  5.414e-01  3.352e-01  3.899e-01  3.068e-01  1.361e+00
-                97.5%       8.158e-01  9.435e-01  3.900e-01  5.512e-01  1.480e+00  3.938e+00
+##Extremes_and_Corners
+#---------------------
+                 min             max             minIndex          maxIndex        
+##end_of_Extremes_and_Corners
 
-                2.5%        7.031e-01  7.029e-01  2.390e-04  7.413e-05 -6.503e-02  1.060e+00
-maxout                      7.045e-01  7.032e-01  2.920e-03  5.930e-04  1.508e+00  3.510e+00
-                97.5%       7.064e-01  7.059e-01  3.991e-03  4.120e-03  2.500e+00  7.210e+00
+##Response_Correlation_Matrix (%)
+#--------------------------------
+##end_of_Response_Correlation_Matrix
 
-                2.5%       -3.285e-05 -3.137e-05  3.094e-06  8.547e-07 -1.769e+00  1.153e+00
-minnod                     -2.824e-05 -2.591e-05  7.512e-06  4.959e-06 -7.834e-01  2.314e+00
-                97.5%      -2.413e-05 -2.302e-05  9.536e-06  1.330e-05  3.560e-01  4.917e+00
+##Selective_Simulation:
+#----------------------
+#To simulate corners only:
+Use: ... Monte = list()
+##end_of_Selective_Simulation
 
-                2.5%        5.686e-02 -1.038e-02  1.455e-01  3.965e-03 -4.406e-01  9.004e-01
-minout                      2.245e-01 -1.037e-03  3.170e-01  1.843e-02  6.074e-01  1.392e+00
-                97.5%       4.102e-01  4.869e-01  3.530e-01  4.958e-01  2.527e+00  7.290e+00
+##Variables_Screened_by_Importance
+#---------------------------------
+Method: Pearson Correlation
+#Print threshold: 95%
+#(elements with EquivVar smaller than 0.05% will not be printed.) 
+#(parameters with ParVar smaller than 0.01% will not be printed.) 
+##end_of_Variables_Screened_by_Importance
 
+##Important_Elements_or_Models
+#------------------------------
 
-Quantiles:
-----------
-                 CI          Q01        Q05        Q25        Q75        Q95        Q99        
-                2.5%        1.201e-11  1.206e-11  1.245e-11  1.499e-11  1.708e-11  1.708e-11 
-atraso                      1.202e-11  1.206e-11  1.253e-11  1.714e-11  2.247e-11  2.428e-11 
-                97.5%       1.310e-11  1.684e-11  1.911e-11  2.473e-11  2.473e-11  2.473e-11 
+##end_of_Important_Elements_or_Models
+##end_of_Instance_Parameters
 
+##Subcircuit_Encoding
+#--------------------
+Key Subckt
 
-
-
-
-                2.5%        3.940e-11  5.429e-11  7.400e-11  1.275e-10  1.583e-10  1.464e-10 
-larg                        4.238e-11  5.429e-11  9.881e-11  1.727e-10  2.045e-10  2.064e-10 
-                97.5%       1.100e-10  1.500e-10  1.748e-10  2.069e-10  2.069e-10  2.069e-10 
-
-
-                2.5%        2.761e-01  2.782e-01  2.792e-01  5.426e-01  7.769e-01  1.030e+00 
-maxnod                      2.765e-01  2.782e-01  3.071e-01  9.001e-01  1.093e+00  1.124e+00 
-                97.5%       3.057e-01  5.353e-01  6.627e-01  1.110e+00  1.132e+00  1.132e+00 
-
-                2.5%        7.027e-01  7.027e-01  7.027e-01  7.032e-01  7.038e-01  7.081e-01 
-maxout                      7.027e-01  7.027e-01  7.029e-01  7.041e-01  7.100e-01  7.110e-01 
-                97.5%       7.028e-01  7.032e-01  7.032e-01  7.105e-01  7.112e-01  7.112e-01 
-
-                2.5%       -4.285e-05 -4.088e-05 -4.008e-05 -2.568e-05 -2.406e-05 -2.230e-05 
-minnod                     -4.246e-05 -4.088e-05 -3.103e-05 -2.367e-05 -2.042e-05 -1.928e-05 
-                97.5%      -3.142e-05 -2.604e-05 -2.443e-05 -1.979e-05 -1.900e-05 -1.900e-05 
-
-                2.5%       -1.359e-02 -1.348e-02 -1.313e-02 -1.355e-03  3.628e-01  6.306e-01 
-minout                     -1.357e-02 -1.348e-02 -1.106e-02  5.720e-01  6.621e-01  6.624e-01 
-                97.5%      -1.122e-02 -1.261e-03  7.897e-02  6.623e-01  6.625e-01  6.625e-01 
-
-
-Extremes and corners:
----------------------
-                 min        max        minIndex     maxIndex   
-atraso           1.201e-11  2.473e-11       6              2
-larg             3.940e-11  2.069e-10       2              6
-maxnod           2.761e-01  1.132e+00       4              5
-maxout           7.027e-01  7.112e-01       4              5
-minnod          -4.285e-05 -1.900e-05       9              7
-minout          -1.359e-02  6.625e-01       5              3
-
-Response Correlation matrix (%)
-===============================
-                atraso larg   
-atraso           100.0  -90.1 
-larg             -90.1  100.0 
-maxnod           -50.1   56.3 
-maxout           -47.8   59.6 
-minnod           -27.2   29.9 
-minout            22.4  -18.1 
-                maxnod maxout minnod minout 
-atraso           -50.1  -47.8  -27.2   22.4 
-larg              56.3   59.6   29.9  -18.1 
-maxnod           100.0   78.9   71.1  -81.1 
-maxout            78.9  100.0   40.6  -47.8 
-minnod            71.1   40.6  100.0  -69.4 
-minout           -81.1  -47.8  -69.4  100.0 
-
-Selective simulation
-====================
-To simulate corners only:
-Use: ... Monte = list(2, 3, 4, 5, 6, 7, 9)
+##end_of_Subcircuit_Encoding

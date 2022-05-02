@@ -230,7 +230,7 @@ class SpiceManager():
         atrasos.sort()
         return atrasos[1]
 
-    # Leitura do arquivo "leitura_pulso.txt"
+    # Leitura do arquivo "texto.txt"
     @staticmethod
     def get_pulse_delay_validation(atraso: float) -> float:
         with open("texto.txt", "r") as texto:
@@ -276,6 +276,14 @@ class SpiceManager():
 class CSVManager():
     def __init__(self):
         pass
+
+    @staticmethod
+    def dict_to_csv(filename: str, dicionario: dict):
+        with open(filename, "w") as tabela:
+            for chave, valor in dicionario.items():
+                print(chave, valor)       
+                tabela.write(f"{chave}, {valor}\n")
+        print(f"\nTabela {filename} gerada com sucesso\n")
 
     @staticmethod
     def escrever_csv_total(circuito):

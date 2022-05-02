@@ -20,8 +20,6 @@ class Entrada:
     def __repr__(self):
         return self.sinal
 
-
-
 class Nodo:
     def __init__(self, nome: str):
         self.nome = nome
@@ -54,7 +52,6 @@ class Nodo:
             let = LET(9999, vdd, "nodo", "saida", "orientacao")
             let.decodec(dicionario_let)
             self.LETs.append(let)
-
 
 class LET:
     def __init__(self, corrente:float, vdd:float, nodo_nome:str, saida_nome:str, orientacao:str):
