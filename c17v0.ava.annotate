@@ -7,8 +7,8 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Thu Apr 28 15:10:11 2022
-Hostname: aorus, Username: bborges, PID: 281808
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Tue May 03 00:53:19 2022
+Hostname: aorus, Username: bborges, PID: 3323282
 Working_Directory : /home/bborges/github
 Command_Line_Options : c17v0_dm.hsp.json
 
@@ -20,6 +20,9 @@ This file format and content are subject to change.
 
 #Annotation for local variation contributors
 #=============
+<<atraso>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+<<larg>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+<<largura>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 <<maxcor>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 <<maxnod>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 <<maxout>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
@@ -27,4 +30,4 @@ This file format and content are subject to change.
 <<minnod>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 <<minout>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 #=============
-#Selective simulation for extreme corners: Monte= list(127, 420, 552, 675, 706, 776, 806, 926)
+#Selective simulation for extreme corners: Monte= list(2, 3)

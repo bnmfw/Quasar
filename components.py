@@ -3,9 +3,9 @@ from matematica import corrente_para_let
 modo_debug: bool = False
 
 class Entrada:
-    def __init__(self, nome: str, sinal: str):
+    def __init__(self, nome: str):
         self.nome = nome
-        self.sinal = sinal
+        self.sinal = "setup"
 
     def codec(self):
         dic = {}
@@ -62,7 +62,6 @@ class LET:
         self.nodo_nome: str = nodo_nome
         self.saida_nome: str = saida_nome
         self.validacoes: list = []
-        self.aproximacao: int = 0 # 1 - Precisao satisfatoria 2 - minimo de largura 3 - ciclos maximos
 
     @property
     def corrente(self) -> float:
@@ -81,6 +80,18 @@ class LET:
 
     def __len__(self):
         return len(self.validacoes)
+
+    def __lt__(self, other):
+        return self.corrente < other.corrente
+    
+    def __le__(self, other):
+        return self.corrente <= other.corrente
+    
+    def __gt__(self, other):
+        return self.corrente > other.corrente
+
+    def __ge__(self, other):
+        return self.corrente >= other.corrente
 
     def append(self, validacao: list):
         if type(validacao) != list: raise TypeError("Validacao nao eh uma lista")

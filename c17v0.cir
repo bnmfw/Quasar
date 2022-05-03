@@ -4,6 +4,7 @@ Benchmark C17 V0
 
 .include dis/logica.cir
 .include dis/DFF.cir
+.include mc.cir
 
 ****** HGSPICE ******
 

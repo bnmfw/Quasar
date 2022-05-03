@@ -28,7 +28,7 @@ def verificar_validacao(circuito, vdd: float, let: LET) -> list:
     elif direcao_pulso_nodo == "fall" and tensao_pico_nodo < vdd * 0.1:
         return [False, 1]
 
-    SR.set_pulse(nodo_nome, 499.0, saida_nome, direcao_pulso_nodo)
+    SR.set_pulse(nodo_nome, 500.0, saida_nome, direcao_pulso_nodo)
     os.system(f"hspice {circuito.arquivo} | grep \"minout\|maxout\|minnod\|maxnod\" > texto.txt")
 
     tensao_pico_saida = SR.get_peak_tension(direcao_pulso_saida, 0)
@@ -58,7 +58,7 @@ def largura_pulso(circuito, corrente: float, let: LET):
     vdd: float = circuito.vdd
     # Determina os parametros no arquivo de leitura de largura de pulso
     SR.set_pulse_width_param(nodo.nome, saida.nome, vdd, direcao_pulso_nodo, direcao_pulso_saida)
-    SR.set_pulse(nodo.nome, corrente, saida.nome, direcao_pulso_nodo)
+    SR.set_pulse(nodo.nome, corrente, saida.nome, direcao_pulso_nodo, let)
     os.system(f"hspice {circuito.arquivo} | grep \"atraso\|larg\" > texto.txt")
     return SR.get_pulse_delay_validation(circuito.atrasoCC)
 
@@ -134,7 +134,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
     corrente_inf: float = encontrar_corrente_minima(circuito, let)
     corrente: float = corrente_inf
 
-    # Busca binaria para dar bit flip
+    # Busca binaria pela falha
     while not ((1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2):
 
         # Roda o HSPICE e salva os valores no arquivo de texto
@@ -150,11 +150,10 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
         ##### ENCERRAMENTOS NAO CONVENCIONAIS #####
         if simulacoes_feitas >= 25:
             if 1 < corrente < 499:
-                print("Encerramento por estouro de ciclos maximos - Corrente encontrada\n")
+                print("LET ENCONTRADO - CICLOS MAXIMOS\n")
                 let.corrente = corrente
-                let.aproximacao = 3  # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
             else:
-                print("Encerramento por estouro de ciclos maximos - Corrente nao encontrada\n")
+                print("LET NAO ENCONTRADO - CICLOS MAXIMOS\n")
                 let.corrente = 3333
             return simulacoes_feitas
 
@@ -162,7 +161,6 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             if 1 < corrente < 499:
                 print("Corrente encontrada - Aproximacao nao convencional\n")
                 let.corrente = corrente
-                let.aproximacao = 2  # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
             else:
                 print("Corrente nao encontrada - Aproximacao extrema\n")
                 let.corrente = 5555
@@ -177,7 +175,6 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             else:
                 print("Corrente encontrada com sucesso\n")
                 let.corrente = corrente
-                let.aproximacao = 1  # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
                 return simulacoes_feitas
         elif direcao_pulso_saida == "rise":
             if tensao_pico <= (1 - precisao) * vdd / 2:
@@ -187,7 +184,6 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             else:
                 print("Corrente encontrada com sucesso\n")
                 let.corrente = corrente
-                let.aproximacao = 1  # VE A CLASSE LET PRA ENTENDER ESSE INTEIRO
                 return simulacoes_feitas
 
         corrente: float = float((corrente_sup + corrente_inf) / 2)

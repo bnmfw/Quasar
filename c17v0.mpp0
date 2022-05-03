@@ -46,15 +46,15 @@ Number of Meas Failure: 0
 Number of Job Abortion: 0
 ##sampling_method = SRS|LHS, the first MC sample is nominal value and is excluded in Monte Carlo data mining.
 Responses failed for all samples:
-atraso
 atraso_ff
 atraso_fr
 atraso_rf
 atraso_rr
-larg
-largura
 Responses with very small variation dropped from further analysis:
 (variable = value)
+atraso = 0
+larg = 0
+largura = 0
 maxcor = 0
 maxnod = 0
 maxout = 0

@@ -1,3 +1,3 @@
 *Arquivo com a leitura da largura dos pulsos
-.meas tran atraso TRIG v(e3) val='0.35' fall=1 TARG v(g1) val='0.35' fall=1
-.meas tran larg TRIG v(e3) val='0.35' rise=1 TARG v(e3) val='0.35' fall=1
+.meas tran atraso TRIG v(g2) val='0.35' fall=1 TARG v(g2) val='0.35' fall=1
+.meas tran larg TRIG v(g2) val='0.35' rise=1 TARG v(g2) val='0.35' fall=1

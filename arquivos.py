@@ -79,7 +79,7 @@ class SpiceManager():
 
     # Escreve informacoes no arquivo "SETs.cir"
     @staticmethod
-    def set_pulse(nodo_nome: str, corrente: float, saida_nome: str, direcao_pulso_nodo: str):
+    def set_pulse(nodo_nome: str, corrente: float, saida_nome: str, direcao_pulso_nodo: str, let: LET = None):
         with open("SETs.cir", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
             if direcao_pulso_nodo == "fall": sets.write("*")
@@ -125,6 +125,21 @@ class SpiceManager():
             mc.write(".tran 0.01n 4n")
             if simulacoes: mc.write(f" sweep monte={simulacoes}")
 
+    # Altera o arquivo "mc.cir"
+    @staticmethod
+    def set_variability(pvar = None, nvar = None):
+        pmedia: float = 4.8108
+        nmedia: float = 4.372
+        with open ("mc.cir","w") as mc:
+            if pvar == None or nvar == None:
+                mc.write("* Analise MC\n"
+                ".param phig_var_p = gauss(4.8108, 0.05, 3)\n"
+                ".param phig_var_n = gauss(4.372, 0.05, 3)")
+            else:
+                mc.write("* Analise MC\n"
+                f".param phig_var_p = {pmedia+pvar}\n"
+                f".param phig_var_n = {nmedia+nvar}")
+
     ################### SEPARACAO SETS E GETS ################################
 
     # Le a resposta do pulso no arquivo "texto.txt"
@@ -140,6 +155,8 @@ class SpiceManager():
 
             linha_texto[0 + offset] = text.readline()
             linha_de_tensao = linha_texto[0 + offset].split()
+            # print(linha_de_tensao)
+            # print(f"algum erro: {linha_de_tensao[0]}")
             if len(linha_de_tensao[0]) != 7:
                 min_tensao = linha_de_tensao[0][7:]
             else:
@@ -160,7 +177,7 @@ class SpiceManager():
 
         # retorna a tensao de pico lida
         return tensao_pico
-
+    
     @staticmethod
     def get_monte_carlo_results(circuito, num_analises: int, dir_pulso_saida: str) -> int:
         if dir_pulso_saida != "rise" and dir_pulso_saida != "fall": raise ValueError(
@@ -253,6 +270,24 @@ class SpiceManager():
         return larg - atraso
         # return larg - atraso
 
+    # Leitura das instancias do arquivo "<circuito>.mc0.csv"
+    @staticmethod
+    def get_mc_instances(circuito_nome: str, simulacoes: int) -> dict:
+        instancias: dict = {}
+        with open(f"{circuito_nome}.mc0.csv","r") as mc:
+            
+            # Eliminacao de informacao inutil
+            while mc.readline()[:5] != "index":
+                pass
+
+            for i in range(1, simulacoes + 1):
+                _, nmos, pmos, _ = mc.readline().split(",")
+                nmos = float(nmos[:-1])
+                pmos = float(pmos[:-1])
+                instancias[i] = (pmos, nmos)
+        
+        return instancias 
+
     # Substitui o valor da corrente no arquivo "SETs.cir"
     def change_pulse_value(self, nova: float) -> float:
         with open("SETs.cir", "r") as arquivo_set:
@@ -278,11 +313,14 @@ class CSVManager():
         pass
 
     @staticmethod
-    def dict_to_csv(filename: str, dicionario: dict):
+    def tup_dict_to_csv(filename: str, dicionario: dict):
         with open(filename, "w") as tabela:
-            for chave, valor in dicionario.items():
-                print(chave, valor)       
-                tabela.write(f"{chave}, {valor}\n")
+            for chave, tupla in dicionario.items():
+                tabela.write(f"{chave}")
+                for valor in tupla:
+                    tabela.write(f",{valor}")
+                tabela.write("\n")
+
         print(f"\nTabela {filename} gerada com sucesso\n")
 
     @staticmethod
@@ -366,12 +404,10 @@ class JsonManager():
         lista_de_entradas: list = circuito_codificado["entradas"]
 
         # Carregamento das saidas
-        for saida in lista_de_saidas:
-            circuito.saidas.append(Nodo(saida))
+        circuito.saidas = [Nodo(saida) for saida in lista_de_saidas]
 
         # Carregamento das entradas
-        for entrada in lista_de_entradas:
-            circuito.entradas.append(Entrada(entrada, "t"))
+        circuito.entradas = [Entrada(entrada) for entrada in lista_de_entradas]
 
         # Carregamento dos nodos
         for nodo_dict in lista_de_nodos:
