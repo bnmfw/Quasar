@@ -1,6 +1,6 @@
 *Arquivo com atraso a ser medido
-.meas tran atraso_rr TRIG v(d) val='0.35' rise=1 TARG v(g2) val='0.35' rise=1
-.meas tran atraso_rf TRIG v(d) val='0.35' rise=1 TARG v(g2) val='0.35' fall=1
-.meas tran atraso_ff TRIG v(d) val='0.35' fall=1 TARG v(g2) val='0.35' fall=1
-.meas tran atraso_fr TRIG v(d) val='0.35' fall=1 TARG v(g2) val='0.35' rise=1
+.meas tran atraso_rr TRIG v(e) val='0.35' rise=1 TARG v(g2) val='0.35' rise=1
+.meas tran atraso_rf TRIG v(e) val='0.35' rise=1 TARG v(g2) val='0.35' fall=1
+.meas tran atraso_ff TRIG v(e) val='0.35' fall=1 TARG v(g2) val='0.35' fall=1
+.meas tran atraso_fr TRIG v(e) val='0.35' fall=1 TARG v(g2) val='0.35' rise=1
 .meas tran largura TRIG v(g2) val='0.35' fall=1 TARG v(g2) val='0.35' rise=1

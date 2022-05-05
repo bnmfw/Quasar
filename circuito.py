@@ -377,6 +377,7 @@ class Circuito():
                         let_analisado = LET(9999, self.vdd, nodo.nome, saida.nome, chave)
                         print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
                         simulacoes_feitas += definir_corrente(self, let_analisado, final)
+                        let_analisado.append(final)
 
                         for let in nodo.LETs:
                             if let_analisado == let: #encontrou a combinacao correta
@@ -390,6 +391,7 @@ class Circuito():
                             if let_analisado.corrente < 1111:
                                 nodo.LETs.append(let_analisado)
 
+
                         if let_analisado.corrente < nodo.LETth.corrente:
                             nodo.LETth = let_analisado
 
@@ -398,12 +400,12 @@ class Circuito():
     @relatorio_de_tempo
     def __atualizar_LETths(self):
         ##### BUSCA DO LETs DO CIRCUITO #####
-        # print(self.nodos)
+        print(self.nodos)
         self.LETth = LET(9999, self.vdd, "setup", "setup", "setup")
         for nodo in self.nodos:
             for let in nodo.LETs:
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
-                # print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
+                print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
                 simulacoes_feitas = definir_corrente(self, let, let.validacoes[0])
                 if let < self.LETth:
                     self.LETth = let

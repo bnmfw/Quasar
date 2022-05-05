@@ -54,14 +54,17 @@ class Nodo:
             self.LETs.append(let)
 
 class LET:
-    def __init__(self, corrente:float, vdd:float, nodo_nome:str, saida_nome:str, orientacao:str):
+    def __init__(self, corrente:float, vdd:float, nodo_nome:str, saida_nome:str, orientacao:str, validacoes:list = None):
         self.valor: float = 1111
         self.__corrente: float = corrente
         self.orientacao: str = orientacao
         self.vdd: float = vdd
         self.nodo_nome: str = nodo_nome
         self.saida_nome: str = saida_nome
-        self.validacoes: list = []
+        if validacoes == None:
+            self.validacoes = []
+        else:
+            self.validacoes = validacoes
 
     @property
     def corrente(self) -> float:

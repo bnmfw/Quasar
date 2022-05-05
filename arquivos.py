@@ -142,46 +142,36 @@ class SpiceManager():
 
     ################### SEPARACAO SETS E GETS ################################
 
+    # def get_measure() -> dict:
+    #     #le de forma generica o texto.txt e devolve tudo num dicionario
+    #     pass
+    
     # Le a resposta do pulso no arquivo "texto.txt"
     @staticmethod
-    def get_peak_tension(dir_pulso_saida: str, offset: int) -> float:
-        if dir_pulso_saida != "rise" and dir_pulso_saida != "fall":
+    def get_peak_tension(inclinacao: str, nodMeas: bool = False) -> float:
+        if not inclinacao in {"rise","fall"}:
             raise ValueError("direcao pulso_saida nao esta entre rise e fall")
-        linha_texto = list(range(4))
+
         with open("texto.txt", "r") as text:
-            if offset:
-                linha_texto[0] = text.readline()
-                linha_texto[1] = text.readline()
 
-            linha_texto[0 + offset] = text.readline()
-            linha_de_tensao = linha_texto[0 + offset].split()
-            # print(linha_de_tensao)
-            # print(f"algum erro: {linha_de_tensao[0]}")
-            if len(linha_de_tensao[0]) != 7:
-                min_tensao = linha_de_tensao[0][7:]
-            else:
-                min_tensao = linha_de_tensao[1]
+            minout_line = text.readline()
+            maxout_line = text.readline()
+            minnod_line = text.readline()
+            maxnod_line = text.readline()
 
-            linha_texto[1 + offset] = text.readline()
-            linha_de_tensao = linha_texto[1 + offset].split()
-            if len(linha_de_tensao[0]) != 7:
-                max_tensao = linha_de_tensao[0][7:]
-            else:
-                max_tensao = linha_de_tensao[1]
+        if not nodMeas:
+            min, max = minout_line, maxout_line
+        else:
+            min, max = minnod_line, maxnod_line
 
-        # Converte as strings lidas em floats
-        if analise_manual: print(f"Tensao max: {max_tensao} Tensao min: {min_tensao}")
-
-        # Identifica se o pico procurado e do tipo rise ou fall
-        tensao_pico = ajustar_valor(max_tensao) if (dir_pulso_saida == "rise") else ajustar_valor(min_tensao)
-
-        # retorna a tensao de pico lida
-        return tensao_pico
+        peak = min if inclinacao == "fall" else max
+        
+        return ajustar_valor(peak.split('at=')[0].split('=')[1])
     
     @staticmethod
     def get_monte_carlo_results(circuito, num_analises: int, dir_pulso_saida: str) -> int:
-        if dir_pulso_saida != "rise" and dir_pulso_saida != "fall": raise ValueError(
-            "direcao pulso_saida nao esta entre rise e fall")
+        if not dir_pulso_saida in {"rise","fall"}: 
+            raise ValueError("direcao pulso_saida nao esta entre rise e fall")
         analises_flip: int = 0
         casos_validos: list = []
         with open(f"{circuito.nome}.mt0.csv", "r") as mc:
