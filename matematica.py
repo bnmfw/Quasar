@@ -11,7 +11,7 @@ def converter_binario_lista(inteiro: int, tamanho:int) -> list:
     return lista
 
 # Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
-def ajustar_valor(tensao: str) -> float:
+def ajustar(tensao: str) -> float:
     tensao = tensao.strip()
     grandeza = 0
     if tensao[-1] in {"m", "M"}:
@@ -52,8 +52,8 @@ def desvio_padrao(lista: list, media: float) -> float:
 
 
 if __name__ == "__main__":
-    assert ajustar_valor("  24.56u ") == (24.56 * 10 ** -6), "ajuste_valor FALHOU"
-    assert ajustar_valor("2.349e-02") == 0.02349, "ajuste_valor FALHOU"
+    assert ajustar("  24.56u ") == (24.56 * 10 ** -6), "ajuste_valor FALHOU"
+    assert ajustar("2.349e-02") == 0.02349, "ajuste_valor FALHOU"
     assert converter_binario_lista(14, 4) == [1,1,1,0], "converter_binario_lista FALHOU"
     #assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
     assert corrente_para_let(100) == 50264550.26455026, "corrente_para_let FALHOU" # DEFINIDO PELA PROPRIA FUNCAO

@@ -1,10 +1,10 @@
 from matematica import *
 from components import Nodo, Entrada, LET, modo_debug
 from statistics import stdev
+from dataclasses import dataclass
 import json
 
 analise_manual = False
-
 
 def alternar_combinacao(combinacao):
     if type(combinacao) == str:
@@ -142,31 +142,78 @@ class SpiceManager():
 
     ################### SEPARACAO SETS E GETS ################################
 
-    # def get_measure() -> dict:
-    #     #le de forma generica o texto.txt e devolve tudo num dicionario
-    #     pass
+    @dataclass
+    class Meas_from:
+        label: str
+        value: float
+        time: float
+
+    @dataclass
+    class Meas_targ:
+        label: str
+        value: float
+        targ: float
+        trig: float
     
-    # Le a resposta do pulso no arquivo "texto.txt"
-    @staticmethod
-    def get_peak_tension(inclinacao: str, nodMeas: bool = False) -> float:
+    def __format_measure_from(self, linha: str) -> Meas_from:
+        label_value, time = linha.split("at=")
+        label, value = label_value.split("=")
+        return self.Meas_from(label.strip(), ajustar(value), ajustar(time))
+
+    def __format_measure_trig(self, linha: str) -> Meas_targ:
+        label_value, targ_trig = linha.split("targ=")
+        label, value = label_value.split("=")
+        targ, trig = targ_trig.split("trig=")
+        return self.Meas_targ(label.strip(), ajustar(value), ajustar(targ), ajustar(trig))
+    
+    def __format_output_line(self, linha: str, saida: dict) -> None:
+        measure = None
+        if "at=" in linha:
+            measure = self.__format_measure_from(linha)
+        elif "targ=" in linha:
+            measure = self.__format_measure_trig(linha)
+        saida[measure.label] = measure
+
+    # Le measures no arquivo output.txt e retorna um dicionario
+    def get_output(self, saida: dict) -> None:
+        with open("output.txt", "r") as output:
+            for linha in output:
+                self.__format_output_line(linha, saida) 
+    
+    # Recupera a tensao de pico
+    def get_peak_tension(self, inclinacao: str, nodMeas: bool = False) -> float:
         if not inclinacao in {"rise","fall"}:
             raise ValueError("direcao pulso_saida nao esta entre rise e fall")
-
-        with open("texto.txt", "r") as text:
-
-            minout_line = text.readline()
-            maxout_line = text.readline()
-            minnod_line = text.readline()
-            maxnod_line = text.readline()
-
-        if not nodMeas:
-            min, max = minout_line, maxout_line
-        else:
-            min, max = minnod_line, maxnod_line
-
-        peak = min if inclinacao == "fall" else max
         
-        return ajustar_valor(peak.split('at=')[0].split('=')[1])
+        output: dict = {}
+        self.get_output(output)
+
+        if nodMeas:
+            if inclinacao == "fall":
+                return output["minnod"].value
+            else:
+                return output["maxnod"].value
+        else:
+            if inclinacao == "fall":
+                return output["minout"].value
+            else:
+                return output["maxout"].value
+
+        # with open("output.txt", "r") as text:
+
+        #     minout_line = text.readline()
+        #     maxout_line = text.readline()
+        #     minnod_line = text.readline()
+        #     maxnod_line = text.readline()
+
+        # if not nodMeas:
+        #     min, max = minout_line, maxout_line
+        # else:
+        #     min, max = minnod_line, maxnod_line
+
+        # peak = min if inclinacao == "fall" else max
+        
+        # return ajustar(peak.split('at=')[0].split('=')[1])
     
     @staticmethod
     def get_monte_carlo_results(circuito, num_analises: int, dir_pulso_saida: str) -> int:
@@ -190,13 +237,13 @@ class SpiceManager():
 
             for i in range(num_analises):
                 linha_lida = mc.readline().split(",")
-                cp = ajustar_valor(linha_lida[corrente_pico_indice].strip())
-                tp = ajustar_valor(linha_lida[tensao_pico_indice].strip())
+                cp = ajustar(linha_lida[corrente_pico_indice].strip())
+                tp = ajustar(linha_lida[tensao_pico_indice].strip())
                 # print(f"{i}"
                 #       f"\tten pico: {tp}"
                 #       f"\tcorr pico: {cp}"
-                #       # f"\tcorr min: {ajustar_valor(linha_lida[corrente_min].strip())}"
-                #       # f"\tcorr max: {ajustar_valor(linha_lida[corrente_max].strip())}"
+                #       # f"\tcorr min: {ajustar(linha_lida[corrente_min].strip())}"
+                #       # f"\tcorr max: {ajustar(linha_lida[corrente_max].strip())}"
                 #       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
                 if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
                     # print("\tSatisfez!")
@@ -218,11 +265,11 @@ class SpiceManager():
             print(f"Proporcao de flips: {100*analises_flip/num_analises:.2f}% do total")
         return analises_flip
 
-    # Le o atraso do nodo a saida no arquivo "texto.txt"
+    # Le o atraso do nodo a saida no arquivo "output.txt"
     def get_delay(self) -> float:
         linhas_de_atraso = list()
         atrasos = list()  # 0 rr, 1 rf, 2 ff, 3 fr
-        with open("texto.txt", "r") as text:
+        with open("output.txt", "r") as text:
             # Leitura das 4 linhas com atraso
             for i in range(4):
                 linhas_de_atraso.append(self.split_spice(text.readline()))
@@ -233,14 +280,14 @@ class SpiceManager():
                     return 0
 
                 atrasos.append(linhas_de_atraso[i][1])  # salva os 4 atrasos
-                atrasos[i] = abs(ajustar_valor(atrasos[i]))
+                atrasos[i] = abs(ajustar(atrasos[i]))
         atrasos.sort()
         return atrasos[1]
 
-    # Leitura do arquivo "texto.txt"
+    # Leitura do arquivo "output.txt"
     @staticmethod
     def get_pulse_delay_validation(atraso: float) -> float:
-        with open("texto.txt", "r") as texto:
+        with open("output.txt", "r") as texto:
             _ = texto.readline().split()
             larg = texto.readline().split()
         # if analise_manual: print(atraso)
@@ -248,7 +295,7 @@ class SpiceManager():
         #     return -1.0  # pulso muito pequeno
         # if "-" in atraso[0]:
         #     atraso = atraso[0].split("-")
-        # atraso = ajustar_valor(atraso[1])
+        # atraso = ajustar(atraso[1])
 
         if larg[0][0] == "*" or larg[1] == "failed":
             return -1  # pulso muito pequeno
@@ -256,7 +303,7 @@ class SpiceManager():
             larg = larg[0].split("-")
 
         if modo_debug: print(f"larguras: {larg}")
-        larg = ajustar_valor(larg[1])
+        larg = ajustar(larg[1])
         return larg - atraso
         # return larg - atraso
 
@@ -287,7 +334,7 @@ class SpiceManager():
             saida_nome = arquivo_set.readline().split()[4]
             saida_nome = saida_nome[:-1]
             saida_nome = saida_nome[2:]
-            corrente = ajustar_valor(linha_rise[4][:-1])
+            corrente = ajustar(linha_rise[4][:-1])
             if linha_fall[0][0] == "*":
                 cod = "rise"
                 nodo_nome = linha_rise[2]

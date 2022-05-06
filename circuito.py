@@ -186,7 +186,7 @@ class Circuito():
         pulso_out = self.__configurar_LET()
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
         with Monte_Carlo(num_analises):
-            os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
+            os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > output.txt")
             self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
             print("Analise monte carlo realizada com sucesso")
 
@@ -210,7 +210,7 @@ class Circuito():
 
                 self.SM.change_pulse_value(corrente * frac)
 
-                os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > texto.txt")
+                os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > output.txt")
 
                 falhas: int = self.SM.get_monte_carlo_results(self, num_analises, pulso_out)
                 mc_dict[frac] = (falhas)
@@ -231,7 +231,7 @@ class Circuito():
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
         print("Gerando instancias MC")
         with Monte_Carlo(num_analises):
-            os.system(f"hspice {self.arquivo} > texto.txt")
+            os.system(f"hspice {self.arquivo} > output.txt")
 
         # Retira as instancias individuais
         var: dict = self.SM.get_mc_instances(self.nome, num_analises)
@@ -273,7 +273,7 @@ class Circuito():
                     self.SM.set_delay_param(entrada_analisada.nome, saida.nome, self.vdd)
                     self.SM.set_signals(self.vdd, self.entradas)
                     os.system(
-                        f"hspice {self.arquivo}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
+                        f"hspice {self.arquivo}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > output.txt")
                     simulacoes_feitas += 1
                     atraso: float = self.SM.get_delay()
 

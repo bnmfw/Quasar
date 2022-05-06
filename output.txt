@@ -1,5 +1,5 @@
- atraso_rr=   2.0087n  targ=   3.0137n   trig=   1.0050n
- atraso_rf=   9.1557p  targ=   1.0142n   trig=   1.0050n
- atraso_ff=  -1.9908n  targ=   1.0142n   trig=   3.0050n
- atraso_fr=   8.6576p  targ=   3.0137n   trig=   3.0050n
- largura=   1.9995n  targ=   3.0137n   trig=   1.0142n
+ atraso_rr=   1.0746n  targ=   2.0796n   trig=   1.0050n
+ atraso_rf=   1.0997n  targ=   2.1047n   trig=   1.0050n
+ atraso_ff=-900.3037p  targ=   2.1047n   trig=   3.0050n
+ atraso_fr=-925.3515p  targ=   2.0796n   trig=   3.0050n
+ largura= -25.0477p  targ=   2.0796n   trig=   2.1047n

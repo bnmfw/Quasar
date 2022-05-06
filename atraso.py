@@ -29,7 +29,7 @@ for entrada_analisada in entradas:
             entrada_analisada.sinal = "atraso"
             escrever_atraso(entrada_analisada, saida, vdd)
             definir_fontes("fontes.txt",vdd,entradas)
-            os.system(f"hspice {circuito} | grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > texto.txt")
+            os.system(f"hspice {circuito} | grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\|largura\" > output.txt")
             simulacoes_feitas += 1
             atraso = ler_atraso(vdd)
             paridade = 0
