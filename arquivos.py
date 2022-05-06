@@ -3,6 +3,7 @@ from components import Nodo, Entrada, LET, modo_debug
 from statistics import stdev
 from dataclasses import dataclass
 import json
+import os
 
 analise_manual = False
 
@@ -28,28 +29,32 @@ def alternar_combinacao(combinacao):
     else:
         raise TypeError("Entrada nao foi uma lista (ex: [\"rise\",\"fall\"]) ou uma string (ex: \"rf\"")
 
-
 class SpiceManager():
     def __init__(self):
         pass
 
-    # Maneja a leitura de linhas no arquivo spice
-    @staticmethod
-    def split_spice(linha: str) -> list:
-        split_nativo: list = linha.split()
-        # Ajuse de leitura
-        for index, palavra in enumerate(split_nativo):
-            if "=-" in palavra:
-                index_atual = len(split_nativo)
-                split_nativo.append("lixo")
-                while index_atual > index + 1:
-                    split_nativo[index_atual] = split_nativo[index_atual - 1]
-                    index_atual -= 1
-                termos = palavra.split("=-")
-                split_nativo[index + 1] = "-" + termos[1]
-                split_nativo[index] = termos[0]
-        return split_nativo
+    def __write_peak_meas(self, arquivo, label: str, peak: str, grandeza: str, node: str, start: float, finish: float):
+        if not peak in {"min", "max"}:
+            raise ValueError("pico eh min ou max")
+        if not grandeza in {"i", "V"}:
+            raise ValueError("grandeza nao esta em i ou V")
+         
+        arquivo.write(f".meas tran {label} {peak} {grandeza}({node}) from={start}n to={finish}n\n")
 
+    def __write_trig_meas(self, arquivo, label: str, trig: str, trig_value: float, trig_inclin: str,
+     targ: str, targ_value: float, targ_inclin: str):
+
+        arquivo.write(f".meas tran {label} TRIG v({trig}) val='{trig_value}' {trig_inclin}=1 TARG v({targ}) val='{targ_value}' {targ_inclin}=1\n")
+    
+    def set_pulse_measure(self, nodo: str, saida: str):
+        with open("measure.cir", "w") as arquivo:
+            arquivo.write("*Arquivo com os measures usados\n")
+
+            self.__write_peak_meas(arquivo, "minout", "min", "V", saida, 1.0, 3.8)
+            self.__write_peak_meas(arquivo, "maxout", "max", "V", saida, 1.0, 3.8)
+            self.__write_peak_meas(arquivo, "minnod", "min", "V", nodo, 1.0, 3.8)
+            self.__write_peak_meas(arquivo, "maxnod", "max", "V", nodo, 1.0, 3.8)
+    
     # Escreve vdd no arquivo "vdd.cir"
     @staticmethod
     def set_vdd(vdd: float):
@@ -78,44 +83,41 @@ class SpiceManager():
                     print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
 
     # Escreve informacoes no arquivo "SETs.cir"
-    @staticmethod
-    def set_pulse(nodo_nome: str, corrente: float, saida_nome: str, direcao_pulso_nodo: str, let: LET = None):
+    def set_pulse(self, let: LET, corrente = None):
+        if not let.orientacao[0] in {"f", "r"}:
+            raise ValueError("Nao recebi f ou r como inclincacao do pulso")
+        if corrente == None:
+            corrente = let.corrente
+
+        self.set_pulse_measure(let.nodo_nome, let.saida_nome)
+
         with open("SETs.cir", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
-            if direcao_pulso_nodo == "fall": sets.write("*")
-            sets.write(f"Iseu gnd {nodo_nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
-            if direcao_pulso_nodo == "rise": sets.write("*")
-            sets.write(f"Iseu {nodo_nome} gnd EXP(0 {corrente}u 2n 50p 164p 200p) //fall\n")
-            sets.write(f".meas tran minout min V({saida_nome}) from=1.0n to=3.8n\n")
-            sets.write(f".meas tran maxout max V({saida_nome}) from=1.0n to=3.8n\n")
-            # Usado apenas na verificacao de validacao:
-            sets.write(f".meas tran minnod min V({nodo_nome}) from=1.0n to=3.8n\n")
-            sets.write(f".meas tran maxnod max V({nodo_nome}) from=1.0n to=3.8n\n")
-            # Corrente para analise MC:
-            sets.write(f".meas tran mincor min i(Vmeas{saida_nome}) from=1.0n to=3.8n\n")
-            sets.write(f".meas tran maxcor max i(Vmeas{saida_nome}) from=1.0n to=3.8n\n")
+            if let.orientacao[0] == "f": sets.write("*")
+            sets.write(f"Iseu gnd {let.nodo_nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
+            if let.orientacao[0] == "r": sets.write("*")
+            sets.write(f"Iseu {let.nodo_nome} gnd EXP(0 {corrente}u 2n 50p 164p 200p) //fall\n")
 
-    # Altera o arquivo "atraso.cir"
-    @staticmethod
-    def set_delay_param(inp: str, out: str, vdd: float):
-        with open("atraso.cir", "w") as at:
-            at.write("*Arquivo com atraso a ser medido\n")
+    # Altera o arquivo "measure.cir"
+    def set_delay_measure(self, input: str, out: str, vdd: float):
+        with open("measure.cir", "w") as arquivo:
+            arquivo.write("*Arquivo com atraso a ser medido\n")
             tensao = str(vdd / 2)
-            at.write(f".meas tran atraso_rr TRIG v({inp}) val='{tensao}' rise=1 TARG v({out}) val='{tensao}' rise=1\n")
-            at.write(f".meas tran atraso_rf TRIG v({inp}) val='{tensao}' rise=1 TARG v({out}) val='{tensao}' fall=1\n")
-            at.write(f".meas tran atraso_ff TRIG v({inp}) val='{tensao}' fall=1 TARG v({out}) val='{tensao}' fall=1\n")
-            at.write(f".meas tran atraso_fr TRIG v({inp}) val='{tensao}' fall=1 TARG v({out}) val='{tensao}' rise=1\n")
-            at.write(f".meas tran largura TRIG v({out}) val='{tensao}' fall=1 TARG v({out}) val='{tensao}' rise=1\n")
+            self.__write_trig_meas(arquivo, "atraso_rr", input, tensao, "rise", out, tensao, "rise")
+            self.__write_trig_meas(arquivo, "atraso_rf", input, tensao, "rise", out, tensao, "fall")
+            self.__write_trig_meas(arquivo, "atraso_ff", input, tensao, "fall", out, tensao, "fall")
+            self.__write_trig_meas(arquivo, "atraso_fr", input, tensao, "fall", out, tensao, "rise")
+            # self.__write_trig_meas(arquivo, "largura", out, tensao, "fall", out, tensao, "rise")
 
-    # Altera o arquivo "largura_pulso.cir"
-    @staticmethod
-    def set_pulse_width_param(nodo_nome: str, saida_nome: str, vdd: float, dir_nodo: str, dir_saida: str):
-        with open("largura_pulso.cir", "w") as larg:
-            larg.write("*Arquivo com a leitura da largura dos pulsos\n")
-            tensao = str(vdd * 0.5)
-            larg.write(
-                f".meas tran atraso TRIG v({nodo_nome}) val='{tensao}' {dir_nodo}=1 TARG v({saida_nome}) val='{tensao}' {dir_saida}=1\n"
-                f".meas tran larg TRIG v({nodo_nome}) val='{tensao}' rise=1 TARG v({nodo_nome}) val='{tensao}' fall=1\n")
+    # Altera o arquivo "measure.cir"
+    def set_pulse_width_measure(self, let: LET):
+        # print(let.vdd)
+        dir_nodo, dir_saida = alternar_combinacao(let.orientacao)
+        with open("measure.cir", "w") as arquivo:
+            arquivo.write("*Arquivo com a leitura da largura dos pulsos\n")
+            tensao = str(let.vdd * 0.5)
+            self.__write_trig_meas(arquivo, "atraso", let.nodo_nome, tensao, dir_nodo, let.saida_nome, tensao, dir_saida)
+            self.__write_trig_meas(arquivo, "larg", let.nodo_nome, tensao, "rise", let.nodo_nome, tensao, "fall")
 
     # Altera o valor de simulacoes monte carlo a serem feitas
     @staticmethod
@@ -161,172 +163,130 @@ class SpiceManager():
         return self.Meas_from(label.strip(), ajustar(value), ajustar(time))
 
     def __format_measure_trig(self, linha: str) -> Meas_targ:
-        label_value, targ_trig = linha.split("targ=")
+        # print(linha)
+        if "not found" in linha:
+            label, *_ = linha.split("=")
+            return self.Meas_targ(label.strip(), None, None, None)
+
+        label_value_targ, trig = linha.split("trig=")  
+        label_value, targ= label_value_targ.split("targ=")
         label, value = label_value.split("=")
-        targ, trig = targ_trig.split("trig=")
         return self.Meas_targ(label.strip(), ajustar(value), ajustar(targ), ajustar(trig))
     
     def __format_output_line(self, linha: str, saida: dict) -> None:
         measure = None
         if "at=" in linha:
             measure = self.__format_measure_from(linha)
-        elif "targ=" in linha:
+        elif "trig=" in linha:
             measure = self.__format_measure_trig(linha)
+        elif "**warning**" in linha:
+            return
         saida[measure.label] = measure
 
     # Le measures no arquivo output.txt e retorna um dicionario
     def get_output(self, saida: dict) -> None:
         with open("output.txt", "r") as output:
             for linha in output:
+                # print(f"linha: {linha}")
                 self.__format_output_line(linha, saida) 
     
     # Recupera a tensao de pico
     def get_peak_tension(self, inclinacao: str, nodMeas: bool = False) -> float:
-        if not inclinacao in {"rise","fall"}:
-            raise ValueError("direcao pulso_saida nao esta entre rise e fall")
-        
+        if not inclinacao in {"f", "r"}:
+            raise ValueError(f"Inclinacao com valor nao admitido: {inclinacao}")
+
         output: dict = {}
         self.get_output(output)
 
         if nodMeas:
-            if inclinacao == "fall":
+            if inclinacao == "f":
                 return output["minnod"].value
             else:
                 return output["maxnod"].value
         else:
-            if inclinacao == "fall":
+            if inclinacao == "f":
                 return output["minout"].value
             else:
                 return output["maxout"].value
-
-        # with open("output.txt", "r") as text:
-
-        #     minout_line = text.readline()
-        #     maxout_line = text.readline()
-        #     minnod_line = text.readline()
-        #     maxnod_line = text.readline()
-
-        # if not nodMeas:
-        #     min, max = minout_line, maxout_line
-        # else:
-        #     min, max = minnod_line, maxnod_line
-
-        # peak = min if inclinacao == "fall" else max
-        
-        # return ajustar(peak.split('at=')[0].split('=')[1])
     
-    @staticmethod
-    def get_monte_carlo_results(circuito, num_analises: int, dir_pulso_saida: str) -> int:
-        if not dir_pulso_saida in {"rise","fall"}: 
-            raise ValueError("direcao pulso_saida nao esta entre rise e fall")
-        analises_flip: int = 0
-        casos_validos: list = []
-        with open(f"{circuito.nome}.mt0.csv", "r") as mc:
-            for i in range(4): _ = mc.readline()  # Decarte das 3 linhas iniciais
-            cabecalho = mc.readline().split(",")
-            # print(cabecalho)
-            orientacao = "mincor" if (dir_pulso_saida == "fall") else "maxcor"
-            orien_ten = "minout" if (dir_pulso_saida == "fall") else "maxout"
-            corrente_pico_indice = cabecalho.index(orientacao)
-            tensao_pico_indice = cabecalho.index(orien_ten)
-            tensao_min = cabecalho.index("minout")
-            tensao_max = cabecalho.index("maxout")
-            largura_indice = cabecalho.index("larg")
-            corrente_min = cabecalho.index("mincor")
-            corrente_max = cabecalho.index("maxcor")
-
-            for i in range(num_analises):
-                linha_lida = mc.readline().split(",")
-                cp = ajustar(linha_lida[corrente_pico_indice].strip())
-                tp = ajustar(linha_lida[tensao_pico_indice].strip())
-                # print(f"{i}"
-                #       f"\tten pico: {tp}"
-                #       f"\tcorr pico: {cp}"
-                #       # f"\tcorr min: {ajustar(linha_lida[corrente_min].strip())}"
-                #       # f"\tcorr max: {ajustar(linha_lida[corrente_max].strip())}"
-                #       f"\tlarg: {linha_lida[largura_indice].strip()}", end="")
-                if (orientacao == 'mincor' and tp < circuito.vdd / 2) or (orientacao == 'maxcor' and tp > circuito.vdd / 2):
-                    # print("\tSatisfez!")
-                    analises_flip += 1
-                    casos_validos.append(cp)
-                # else:
-                    # print("")
-                # if float(linha_lida[largura_indice]) == condicao_satisfatoria:
-                #     if dir_pulso_saida == "rise":
-                #         if float(linha_lida[tensao_pico_indice]) < circuito.vdd / 2:
-                #             analises_validas += 1
-                #     else:
-                #         if float(linha_lida[tensao_pico_indice]) > circuito.vdd / 2:
-                #             analises_validas += 1
-            if casos_validos:
-                # print(f"\nMedia da corrente: {media(casos_validos)}")
-                # print(f"Desvio padrao da corrente: {stdev(casos_validos)}")
+    # Le um arquivo csv como mc0.csv e mt0.csv e retorna um dicionario com as colunas
+    def __get_csv_data(self, filename: str, stop: str = None) -> dict:
+        
+        dados: dict = {}
+        
+        with open(f"{filename}", "r") as arquivo:
+            while stop != None and not stop in arquivo.readline():
                 pass
-            print(f"Proporcao de flips: {100*analises_flip/num_analises:.2f}% do total")
-        return analises_flip
+
+            # criacao do padrao do dicionario
+            cabecalho = arquivo.readline().split(",")
+            for label in cabecalho:
+                dados[label] = []
+
+            for linha in arquivo:
+                valores = linha.split(",")
+                for index, chave in enumerate(dados):
+                    valor = None if valores[index].strip() == "failed" else ajustar(valores[index])
+                    dados[chave].append(valor)
+        
+        return dados
+
+    def get_monte_carlo_results(self, circuito, num_analises: int, inclinacao_saida: str) -> int:
+        
+        falhas: int = 0
+        casos_validos: list = []
+
+        dados: dict = self.__get_csv_data(f"{circuito.nome}.mt0.csv", ".TITLE")
+
+        inclinacao_corr = "mincor" if inclinacao_saida == "fall" else "maxcor"
+        inclinacao_tens = "minout" if inclinacao_saida == "fall" else "maxout"
+
+        for i in range(num_analises):
+            corrente_pico = dados[inclinacao_corr][i]
+            tensao_pico = dados[inclinacao_tens][i]
+
+            if inclinacao_saida == "fall" and tensao_pico < circuito.vdd / 2 or\
+                inclinacao_saida == "rise" and tensao_pico > circuito.vdd / 2:
+                falhas += 1
+                casos_validos.append(corrente_pico)
+
+        print(f"Proporcao de flips: {100*falhas/num_analises:.2f}% do total")
+        return falhas
 
     # Le o atraso do nodo a saida no arquivo "output.txt"
     def get_delay(self) -> float:
-        linhas_de_atraso = list()
-        atrasos = list()  # 0 rr, 1 rf, 2 ff, 3 fr
-        with open("output.txt", "r") as text:
-            # Leitura das 4 linhas com atraso
-            for i in range(4):
-                linhas_de_atraso.append(self.split_spice(text.readline()))
 
-                # Retorno por erro
-                if linhas_de_atraso[i][0][0] == "*":
-                    # print(linhas_de_atraso[i][0])
-                    return 0
+        output: dict = {}
+        self.get_output(output)
 
-                atrasos.append(linhas_de_atraso[i][1])  # salva os 4 atrasos
-                atrasos[i] = abs(ajustar(atrasos[i]))
-        atrasos.sort()
-        return atrasos[1]
-
-    # Leitura do arquivo "output.txt"
-    @staticmethod
-    def get_pulse_delay_validation(atraso: float) -> float:
-        with open("output.txt", "r") as texto:
-            _ = texto.readline().split()
-            larg = texto.readline().split()
-        # if analise_manual: print(atraso)
-        # if atraso[0][0] == "*":
-        #     return -1.0  # pulso muito pequeno
-        # if "-" in atraso[0]:
-        #     atraso = atraso[0].split("-")
-        # atraso = ajustar(atraso[1])
-
-        if larg[0][0] == "*" or larg[1] == "failed":
-            return -1  # pulso muito pequeno
-        if "-" in larg[0]:
-            larg = larg[0].split("-")
-
-        if modo_debug: print(f"larguras: {larg}")
-        larg = ajustar(larg[1])
-        return larg - atraso
-        # return larg - atraso
-
-    # Leitura das instancias do arquivo "<circuito>.mc0.csv"
-    @staticmethod
-    def get_mc_instances(circuito_nome: str, simulacoes: int) -> dict:
-        instancias: dict = {}
-        with open(f"{circuito_nome}.mc0.csv","r") as mc:
-            
-            # Eliminacao de informacao inutil
-            while mc.readline()[:5] != "index":
-                pass
-
-            for i in range(1, simulacoes + 1):
-                _, nmos, pmos, _ = mc.readline().split(",")
-                nmos = float(nmos[:-1])
-                pmos = float(pmos[:-1])
-                instancias[i] = (pmos, nmos)
+        atrasos: list = [output["atraso_rr"].value, output["atraso_ff"].value, output["atraso_rf"].value, output["atraso_fr"].value]
+        # Erro
+        if None in atrasos:
+            return 0
         
-        return instancias 
+        # Sorting
+        for i, atraso in enumerate(atrasos):
+            atrasos[i] = abs(atraso)
+        # print(f"not sorted: {atrasos}")
+        atrasos.sort()
+        # print(f"sorted: {atrasos}")
+        return atrasos[1]
+    
+    # Leitura das instancias do arquivo "<circuito>.mc0.csv"
+    def get_mc_instances(self, circuito_nome: str, simulacoes: int) -> dict:
+        instancias: dict = {}
+
+        dados = self.__get_csv_data(f"{circuito_nome}.mc0.csv", "$ IRV")
+
+        for i in range(dados["index"]):
+            pmos = float(dados["pmos_rvt:@:phig_var_p:@:IGNC"])
+            nmos = float(dados["nmos_rvt:@:phig_var_n:@:IGNC"])
+            instancias[i] = (pmos, nmos)
+
+        return instancias
 
     # Substitui o valor da corrente no arquivo "SETs.cir"
-    def change_pulse_value(self, nova: float) -> float:
+    def change_pulse_value(self, nova_corrente: float) -> float:
         with open("SETs.cir", "r") as arquivo_set:
             arquivo_set.readline()
             linha_rise = arquivo_set.readline().split()
@@ -341,9 +301,33 @@ class SpiceManager():
             else:
                 cod = "fall"
                 nodo_nome = linha_fall[1]
-            self.set_pulse(nodo_nome, nova, saida_nome, cod)
+            
+            self.set_pulse(LET(nova_corrente, 0, nodo_nome, saida_nome, "setup"))
             return corrente
 
+SM = SpiceManager()
+
+class SpiceRunner():
+    def __init__(self) -> None:
+        pass
+
+    def run_delay(self, filename: str, entrada_nome: str, saida_nome: str, vdd: float, entradas: list) -> float:
+        SM.set_delay_measure(entrada_nome, saida_nome, vdd)
+        SM.set_signals(vdd, entradas)
+        os.system(f"hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > output.txt")
+        return SM.get_delay()
+
+    def run_SET(self, filename: str, let: LET, corrente = None):
+        # print("run SET")
+        if corrente == None:
+            corrente = let.corrente
+        SM.set_pulse(let, corrente)
+        os.system(f"hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > output.txt")
+        pico_nodo = SM.get_peak_tension(let.orientacao[0], True)
+        pico_saida = SM.get_peak_tension(let.orientacao[1])
+        return (pico_nodo, pico_saida)
+
+HSRunner = SpiceRunner()
 
 class CSVManager():
     def __init__(self):

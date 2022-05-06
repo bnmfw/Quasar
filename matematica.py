@@ -1,7 +1,7 @@
 from math import sqrt
 from statistics import stdev
 # Recebe um inteiro e retonra uma lista com seus digitos binarios
-def converter_binario_lista(inteiro: int, tamanho:int) -> list:
+def bin2list(inteiro: int, tamanho:int) -> list:
     lista = []
     binario = bin(inteiro)[2:] #Transforma o inteiro no binario em texto
     for digito in range(tamanho-len(binario)):
@@ -14,6 +14,8 @@ def converter_binario_lista(inteiro: int, tamanho:int) -> list:
 def ajustar(tensao: str) -> float:
     tensao = tensao.strip()
     grandeza = 0
+    if tensao == "failed":
+        return None
     if tensao[-1] in {"m", "M"}:
         grandeza = -3
     elif tensao[-1] in {"u", "U"}:
@@ -27,7 +29,7 @@ def ajustar(tensao: str) -> float:
     elif tensao[-1] in {"t", "T"}:
         grandeza = 12
     elif tensao[-1] not in ("0","1","2","3","4","5","6","7","8","9","."):
-        raise TypeError(f"Recebi {tensao} como entrada de ajuste")
+        raise ValueError(f"Recebi \"{tensao}\" como entrada de ajuste")
     else:
         return float(tensao)
     return float(tensao[:-1]) * 10 ** grandeza
@@ -54,7 +56,7 @@ def desvio_padrao(lista: list, media: float) -> float:
 if __name__ == "__main__":
     assert ajustar("  24.56u ") == (24.56 * 10 ** -6), "ajuste_valor FALHOU"
     assert ajustar("2.349e-02") == 0.02349, "ajuste_valor FALHOU"
-    assert converter_binario_lista(14, 4) == [1,1,1,0], "converter_binario_lista FALHOU"
+    assert bin2list(14, 4) == [1,1,1,0], "bin2list FALHOU"
     #assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
     assert corrente_para_let(100) == 50264550.26455026, "corrente_para_let FALHOU" # DEFINIDO PELA PROPRIA FUNCAO
     assert media([1.1, 2.8, 3.6, 4.1]) == 2.9, "media FALHOU"

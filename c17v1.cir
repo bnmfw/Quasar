@@ -88,8 +88,7 @@ xinv12 vcc gnd q2 nnq2 NOT
 
 ****** Controle ******
 
-.include largura_pulso.cir
-.include atraso.cir
+.include measure.cir
 .include monte_carlo.cir
 
 ************

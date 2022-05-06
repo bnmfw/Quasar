@@ -22,7 +22,7 @@ $Global Variable number:        2
 $Local Variable number:        0                                
 $Aging Variable number:        0                                
 .TITLE 'benchmark c17 v0'
-$ rng_params = ( 2, 5, 0, 4, 1, 1, 20.000000, 1, 1.000000,  [ 2, 2])
+$ rng_params = ( 2, 10, 0, 4, 1, 1, 20.000000, 1, 1.000000,  [ 2, 2])
 $ IRV index: - 1 2
 index,nmos_rvt:@:phig_var_n:@:IGNC,pmos_rvt:@:phig_var_p:@:IGNC
 1,   0.,   0.,
@@ -30,3 +30,8 @@ index,nmos_rvt:@:phig_var_n:@:IGNC,pmos_rvt:@:phig_var_p:@:IGNC
 3,  -0.2677,   0.2150,
 4,   1.6757,   0.8946,
 5,   0.2014,   1.0447,
+6,  -1.7987,   2.7742,
+7,   0.6560,  -1.2719,
+8,  -0.4937,   0.4482,
+9,   0.3209,   1.4379,
+10,  -0.5189,  -0.3780,

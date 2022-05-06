@@ -1,4 +1,4 @@
-from arquivos import SpiceManager, analise_manual, alternar_combinacao
+from arquivos import SpiceManager, HSRunner
 from components import Entrada, Nodo, LET, modo_debug
 import os
 
@@ -6,94 +6,84 @@ SR = SpiceManager()
 
 
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
-def verificar_validacao(circuito, vdd: float, let: LET) -> list:
-    inclinacao_nodo, inclinacao_saida = alternar_combinacao(let.orientacao)
-    nodo_nome = let.nodo_nome
-    saida_nome = let.saida_nome
-    SR.set_pulse(nodo_nome, 0.0, saida_nome, inclinacao_nodo)
-    os.system(f"hspice {circuito.arquivo} | grep \"minout\|maxout\|minnod\|maxnod\" > output.txt")
-    tensao_pico_saida = SR.get_peak_tension(inclinacao_saida)
-    tensao_pico_nodo = SR.get_peak_tension(inclinacao_nodo, True)
+def verificar_validacao(circuito, vdd: float, let: LET) -> tuple:
+    inclinacao_nodo, inclinacao_saida = let.orientacao
+    
+    # Checagem se os niveis de tensao estar corretos
 
-    if analise_manual:
-        print(f"Verificacao de Sinal: Vpico nodo: {tensao_pico_nodo} Vpico saida: {tensao_pico_saida}\n")
+    tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(circuito.arquivo, let, 0)
 
-    # Leitura sem pulso
-    if inclinacao_saida == "rise" and tensao_pico_saida > vdd * 0.51:
-        return [False, 1]
-    elif inclinacao_saida == "fall" and tensao_pico_saida < vdd * 0.1:
-        return [False, 1]
-    elif inclinacao_nodo == "rise" and tensao_pico_nodo > vdd * 0.51:
-        return [False, 1]
-    elif inclinacao_nodo == "fall" and tensao_pico_nodo < vdd * 0.1:
-        return [False, 1]
+    if (inclinacao_saida == "r" and tensao_pico_saida > vdd * 0.51) or\
+        (inclinacao_saida == "f" and tensao_pico_saida < vdd * 0.1) or\
+        (inclinacao_nodo == "r" and tensao_pico_nodo > vdd * 0.51) or\
+        (inclinacao_nodo == "f" and tensao_pico_nodo < vdd * 0.1):
+        print("Analise invalida - Tensoes improprias\n")
+        return (False, 1)
 
-    SR.set_pulse(nodo_nome, 500.0, saida_nome, inclinacao_nodo)
-    os.system(f"hspice {circuito.arquivo} | grep \"minout\|maxout\|minnod\|maxnod\" > output.txt")
+    # Chegagem se o pulso no nodo tem resposta na saída
+    tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(circuito.arquivo, let, 500)
 
-    tensao_pico_saida = SR.get_peak_tension(inclinacao_saida)
-    tensao_pico_nodo = SR.get_peak_tension(inclinacao_nodo, True)
+    if (inclinacao_saida == "r" and tensao_pico_saida < vdd * 0.50) or\
+        (inclinacao_saida == "f" and tensao_pico_saida > vdd * 0.50) or\
+        (inclinacao_nodo == "r" and tensao_pico_nodo < vdd * 0.50) or\
+        (inclinacao_nodo == "f" and tensao_pico_nodo > vdd * 0.50):
+        print("Analise invalida - Pulso sem efeito\n")
+        return (False, 2)
 
-    if analise_manual:
-        print(f"Verificacao de Pulso: Vpico nodo: {tensao_pico_nodo} Vpico saida: {tensao_pico_saida}\n")
-    # Leitura com pulso
-    if inclinacao_saida == "rise" and tensao_pico_saida < vdd * 0.50:
-        return [False, 2]
-    elif inclinacao_saida == "fall" and tensao_pico_saida > vdd * 0.50:
-        return [False, 2]
-    elif inclinacao_nodo == "rise" and tensao_pico_nodo < vdd * 0.50:
-        return [False, 2]
-    elif inclinacao_nodo == "fall" and tensao_pico_nodo > vdd * 0.50:
-        return [False, 2]
-
-    return [True, 2]
+    return (True, 2)
 
 
 ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
-def largura_pulso(circuito, corrente: float, let: LET):
-    inclinacao_nodo: str = alternar_combinacao(let.orientacao)[0]
-    inclinacao_saida: str = alternar_combinacao(let.orientacao)[1]
-    nodo: Nodo = circuito.encontrar_nodo(let.nodo_nome)
-    saida: Nodo = circuito.encontrar_nodo(let.saida_nome)
-    vdd: float = circuito.vdd
+def diff_larg_delay(circuito, corrente: float, let: LET):
     # Determina os parametros no arquivo de leitura de largura de pulso
-    SR.set_pulse_width_param(nodo.nome, saida.nome, vdd, inclinacao_nodo, inclinacao_saida)
-    SR.set_pulse(nodo.nome, corrente, saida.nome, inclinacao_nodo, let)
-    os.system(f"hspice {circuito.arquivo} | grep \"atraso\|larg\" > output.txt")
-    return SR.get_pulse_delay_validation(circuito.atrasoCC)
+    SR.set_pulse(let, corrente)
+    SR.set_pulse_width_measure(let)
+
+    os.system(f"hspice {circuito.arquivo} | grep \"larg\" > output.txt")
+
+    output: dict = {}
+    SR.get_output(output)
+
+    if output["larg"].value == None:
+        return None
+
+    larg: float = abs(output["larg"].value)
+
+    diferenca: float = larg - circuito.atrasoCC
+    
+    # print(f"larg: {larg} atraso: {circuito.atrasoCC} diff: {diferenca}")
+
+    return larg - circuito.atrasoCC
 
 
 ##### ENCONTRA A CORRENTE MINIMA PARA UM LET #####
 def encontrar_corrente_minima(circuito, let: LET) -> float:
-    inclinacao_nodo: str = alternar_combinacao(let.orientacao)[0]
 
     # variaveis da busca binaria da corrente
     csup: float = 500
-    corrente: float = 499
     cinf: float = 0
-
-    # Reseta os valores no arquivo de radiacao. (Se nao fizer isso o algoritmo vai achar a primeira coisa como certa)
-    SR.set_pulse(let.nodo_nome, corrente, let.saida_nome, inclinacao_nodo)
+    corrente: float = (csup + cinf)/2
 
     # Busca binaria para largura de pulso
     diferenca_largura: float = 100
-    precisao_largura: float = 0.05 * 10 ** -9
+    precisao_largura: float = 0.05e-9
 
     # Busca binaria para corrente minima
-    while not (-precisao_largura < diferenca_largura < precisao_largura):
+    while diferenca_largura == None or not -precisao_largura < diferenca_largura < precisao_largura:
 
         # Encontra a largura minima de pulso pra vencer o atraso
-        diferenca_largura: float = largura_pulso(circuito, corrente, let)
-        if modo_debug: print(f"diff_larg: {diferenca_largura}")
+        diferenca_largura: float = diff_larg_delay(circuito, corrente, let)
 
-        if abs(csup - cinf) < 3:
+        if abs(csup - cinf) < 1:
             print("PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA")
             return corrente
+        if diferenca_largura == None:
+            cinf = corrente
         elif diferenca_largura > precisao_largura:
             csup = corrente
         elif diferenca_largura < -precisao_largura:
             cinf = corrente
-        corrente = float((csup + cinf) / 2)
+        corrente = (csup + cinf) / 2
 
     print("PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA")
     return corrente
@@ -101,8 +91,6 @@ def encontrar_corrente_minima(circuito, let: LET) -> float:
 
 ##### ENCONTRA A CORRENTE DE UM LET ######
 def definir_corrente(circuito, let: LET, validacao: list) -> int:
-    inclinacao_nodo: str = alternar_combinacao(let.orientacao)[0]
-    inclinacao_saida: str = alternar_combinacao(let.orientacao)[1]
     precisao: float = 0.05
 
     # Renomeamento de variaveis
@@ -118,12 +106,6 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
     simulacoes: int = 0
     analise_valida, simulacoes = verificar_validacao(circuito, vdd, let)
     if not analise_valida:
-        if simulacoes == 1:
-            print("Analise invalida - Tensoes improprias\n")
-        elif simulacoes == 2:
-            print("Analise invalida - Pulso sem efeito\n")
-        else:
-            print("Analise invalida - WTF?\n")
         let.corrente = 1111 * simulacoes
         return simulacoes
 
@@ -132,43 +114,44 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
     # variaveis da busca binaria da corrente
     csup: float = 500
     cinf: float = encontrar_corrente_minima(circuito, let)
+    # print(f"corrente minima: {cinf}")
     corrente: float = cinf
 
     # Busca binaria pela falha
     for _ in range(25):
 
         # Roda o HSPICE e salva os valores no arquivo de texto
-        os.system(f"hspice {circuito.arquivo} | grep \"minout\|maxout\" > output.txt")
+        _, tensao_pico = HSRunner.run_SET(circuito.arquivo, let, corrente)
+
         simulacoes += 1
 
         # Le a o pico de tensao na saida do arquivo
-        tensao_pico = SR.get_peak_tension(inclinacao_saida)
-
-        if analise_manual:
-            print(f"Corrente testada: {corrente} Resposta na saida: {tensao_pico}\n")
 
         ##### ENCERRAMENTOS #####
         if (1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2:
             print("LET ENCONTRADO - PRECISAO SATISFEITA\n")
             let.corrente = corrente
+            let.append(validacao)
             return simulacoes
 
         elif csup - cinf < 1:
+            print(f"convergencia: {corrente}")
             if 1 < corrente < 499:
                 print("LET ENCONTRADO - CONVERGENCIA\n")
                 let.corrente = corrente
+                let.append(validacao)
             else:
                 print("LET NAO ENCONTRADO - DIVERGENCIA\n")
                 let.corrente = 5555
             return simulacoes
 
         ##### BUSCA BINARIA #####
-        elif inclinacao_saida == "fall":
+        elif let.orientacao[1] == "f":
             if tensao_pico <= (1 - precisao) * vdd / 2:
                 csup = corrente
             elif tensao_pico >= (1 + precisao) * vdd / 2:
                 cinf = corrente
-        elif inclinacao_saida == "rise":
+        elif let.orientacao[1] == "r":
             if tensao_pico <= (1 - precisao) * vdd / 2:
                 cinf = corrente
             elif tensao_pico >= (1 + precisao) * vdd / 2:
@@ -177,11 +160,12 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
         corrente: float = float((csup + cinf) / 2)
 
         # Escreve os parametros no arquivo dos SETs
-        SR.set_pulse(let.nodo_nome, corrente, let.saida_nome, inclinacao_nodo)
+        SR.set_pulse(let, corrente)
 
     if 1 < corrente < 499:
         print("LET ENCONTRADO - CICLOS MAXIMOS\n")
         let.corrente = corrente
+        let.append(validacao)
     else:
         print("LET NAO ENCONTRADO - CICLOS MAXIMOS\n")
         let.corrente = 3333
