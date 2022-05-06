@@ -1,3 +1,4 @@
+import pstats
 from matematica import *
 from components import Nodo, Entrada, LET, modo_debug
 from statistics import stdev
@@ -221,6 +222,8 @@ class SpiceManager():
             # criacao do padrao do dicionario
             cabecalho = arquivo.readline().split(",")
             for label in cabecalho:
+                if "\n" in label:
+                    label = label[:-1]
                 dados[label] = []
 
             for linha in arquivo:
@@ -278,31 +281,23 @@ class SpiceManager():
 
         dados = self.__get_csv_data(f"{circuito_nome}.mc0.csv", "$ IRV")
 
-        for i in range(dados["index"]):
-            pmos = float(dados["pmos_rvt:@:phig_var_p:@:IGNC"])
-            nmos = float(dados["nmos_rvt:@:phig_var_n:@:IGNC"])
-            instancias[i] = (pmos, nmos)
+        ps: str = "pmos_rvt:@:phig_var_p:@:IGNC"
+        ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
 
+        for i, pmos, nmos in zip(dados["index"], dados[ps], dados[ns]):
+            instancias[i] = (float(pmos), float(nmos))
         return instancias
 
     # Substitui o valor da corrente no arquivo "SETs.cir"
     def change_pulse_value(self, nova_corrente: float) -> float:
         with open("SETs.cir", "r") as arquivo_set:
             arquivo_set.readline()
-            linha_rise = arquivo_set.readline().split()
-            linha_fall = arquivo_set.readline().split()
-            saida_nome = arquivo_set.readline().split()[4]
-            saida_nome = saida_nome[:-1]
-            saida_nome = saida_nome[2:]
-            corrente = ajustar(linha_rise[4][:-1])
-            if linha_fall[0][0] == "*":
-                cod = "rise"
-                nodo_nome = linha_rise[2]
-            else:
-                cod = "fall"
-                nodo_nome = linha_fall[1]
+            linha_rise = arquivo_set.readline()
+            _, _, nodo_nome, _, corrente, *_ = linha_rise.split()
+            corrente = ajustar(corrente)
+            inclinacao = "ft" if "*" in linha_rise else "rt"
             
-            self.set_pulse(LET(nova_corrente, 0, nodo_nome, saida_nome, "setup"))
+            self.set_pulse(LET(nova_corrente, 0, nodo_nome, "setup", inclinacao))
             return corrente
 
 SM = SpiceManager()
