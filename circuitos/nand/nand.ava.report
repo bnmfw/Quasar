@@ -7,16 +7,16 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Sat May 07 15:24:06 2022
-Hostname: aorus, Username: bborges, PID: 1475174
-Working_Directory : /home/bborges/github
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Sat May 07 15:35:44 2022
+Hostname: aorus, Username: bborges, PID: 1487788
+Working_Directory : /home/bborges/github/circuitos/nand
 Command_Line_Options : nand_dm.hsp.json
 
 This file format and content are subject to change.
 ================================================================
 
-Measure Files:  nand.mt0.csv(10,2)
-Sample Files:  nand.mc0.csv(10,2)
+Measure Files:  nand.mt0.csv(11,2)
+Sample Files:  nand.mc0.csv(11,2)
 
 ##Variation_Options
 #------------------
@@ -45,7 +45,7 @@ Total number of independent random variables = 2
 Number of independent global random variables = 2
 Number of independent local random variables = 0
 Number of independent aging random variables = 0
-Number of Samples = 10
+Number of Samples = 11
 Number of Meas failure = 5
 Number of Device out of bound = 0
 Responses with very small variation dropped from further analysis:
@@ -54,19 +54,19 @@ atraso
 ##Sample_Moments
 #---------------
               larg
-Nominal  4.631e-11
-Mean     1.329e-10
-StdDev    5.93e-11
-Skewness    0.7804
-Kurtosis     1.998
+Nominal   4.03e-11
+Mean     1.278e-10
+StdDev   5.412e-11
+Skewness    0.9864
+Kurtosis     2.612
 
 ##Quantiles
 #----------
                     larg
-Q15.9 (    -1) 7.949e-11
-Q25   (-0.674) 8.582e-11
-Q75   ( 0.674) 1.742e-10
-Q84.1 (     1) 2.118e-10
+Q15.9 (    -1) 7.901e-11
+Q25   (-0.674)   8.6e-11
+Q75   ( 0.674) 1.502e-10
+Q84.1 (     1) 1.919e-10
 
 ##Response_Correlation_Matrix
 #----------------------------
@@ -76,7 +76,7 @@ Q84.1 (     1) 2.118e-10
 ##Extremes_and_Corners
 #----------------------------
              min        max minIndex maxIndex
- larg  7.657e-11  2.292e-10        5        4
+ larg  7.296e-11  2.280e-10        5        4
 
 ##Selective_Simulation
 #----------------------------
@@ -93,10 +93,10 @@ Method: Pearson Correlation
 #(parameters with ParVar smaller than 0.01% will not be printed.)
 
 Response: larg
-Global Variation =  5.930e-11,  Local Variation =  6.249e-19
+Global Variation =  5.412e-11,  Local Variation =  5.702e-19
 Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
-      .  nmos_rvt   98.53%  98.53%        .                                 
-      .         .        .       .        .  phig_var_n  IGNC   1.00  98.53%
+      .  nmos_rvt   98.60%  98.60%        .                                 
+      .         .        .       .        .  phig_var_n  IGNC   1.00  98.60%
 
 ##Important_Elements_or_Models
 #------------------------------

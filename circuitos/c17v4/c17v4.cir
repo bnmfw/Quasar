@@ -2,26 +2,12 @@ Benchmark C17 V4
 
 ****** Dispositivos Lógicos ******
 
-.include dis/logica.cir
-.include dis/DFF.cir
-.include mc.cir
-
-****** SETs ******
-
-.include SETs.cir
+.include ../include.cir
 
 ****** HSPICE ******
 
 .option measform = 3
 .option post = 0
-
-****** Fontes de Tensão Geral ******
-
-.include vdd.cir
-
-****** Fontes de Sinal ******
-
-.include fontes.cir
 
 ****** Circuito ******
 
@@ -86,11 +72,6 @@ xff1 clk m1 q1 nq1 vcc gnd DFF
 xff2 clk m2 q2 nq2 vcc gnd DFF
 xinv11 vcc gnd q1 nnq1 NOT
 xinv12 vcc gnd q2 nnq2 NOT  
-
-****** Controle ******
-
-.include measure.cir
-.include monte_carlo.cir
 
 ************
 .end

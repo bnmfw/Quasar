@@ -11,7 +11,7 @@ def verificar_validacao(circuito, vdd: float, let: LET) -> tuple:
     
     # Checagem se os niveis de tensao estar corretos
 
-    tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(circuito.arquivo, let, 0)
+    tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(circuito.path, circuito.arquivo, let, 0)
 
     if (inclinacao_saida == "r" and tensao_pico_saida > vdd * 0.51) or\
         (inclinacao_saida == "f" and tensao_pico_saida < vdd * 0.1) or\
@@ -21,7 +21,7 @@ def verificar_validacao(circuito, vdd: float, let: LET) -> tuple:
         return (False, 1)
 
     # Chegagem se o pulso no nodo tem resposta na saída
-    tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(circuito.arquivo, let, limite_sup)
+    tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(circuito.path, circuito.arquivo, let, limite_sup)
 
     if (inclinacao_saida == "r" and tensao_pico_saida < vdd * 0.50) or\
         (inclinacao_saida == "f" and tensao_pico_saida > vdd * 0.50) or\
@@ -39,7 +39,7 @@ def diff_larg_delay(circuito, corrente: float, let: LET):
     HSManager.set_pulse(let, corrente)
     HSManager.set_pulse_width_measure(let)
 
-    os.system(f"hspice {circuito.arquivo} | grep \"larg\" > output.txt")
+    os.system(f"cd {circuito.path} ; hspice {circuito.arquivo} | grep \"larg\" > ../../output.txt")
 
     output: dict = {}
     HSManager.get_output(output)
@@ -121,7 +121,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
     for _ in range(25):
 
         # Roda o HSPICE e salva os valores no arquivo de texto
-        _, tensao_pico = HSRunner.run_SET(circuito.arquivo, let, corrente)
+        _, tensao_pico = HSRunner.run_SET(circuito.path, circuito.arquivo, let, corrente)
 
         simulacoes += 1
 

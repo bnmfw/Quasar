@@ -46,7 +46,7 @@ class SpiceManager():
         arquivo.write(f".meas tran {label} TRIG v({trig}) val='{trig_value}' {trig_inclin}=1 TARG v({targ}) val='{targ_value}' {targ_inclin}=1\n")
     
     def set_pulse_measure(self, nodo: str, saida: str):
-        with open("measure.cir", "w") as arquivo:
+        with open("circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com os measures usados\n")
 
             self.__write_peak_meas(arquivo, "minout", "min", "V", saida, 1.0, 3.8)
@@ -57,7 +57,7 @@ class SpiceManager():
     # Escreve vdd no arquivo "vdd.cir"
     @staticmethod
     def set_vdd(vdd: float):
-        with open("vdd.cir", "w") as arquivo_vdd:
+        with open("circuitos/include/vdd.cir", "w") as arquivo_vdd:
             arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
             arquivo_vdd.write(f"Vvdd vdd gnd {vdd}\n")
             arquivo_vdd.write(f"Vvcc vcc gnd {vdd}\n")
@@ -66,7 +66,7 @@ class SpiceManager():
     # Escreve os sinais no arquivo "fontes.cir"
     @staticmethod
     def set_signals(vdd: float, entradas: list):
-        with open("fontes.cir", "w") as sinais:
+        with open("circuitos/include/fontes.cir", "w") as sinais:
             sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
 
             # Escreve o sinal analogico a partir do sinal logico
@@ -90,7 +90,7 @@ class SpiceManager():
 
         self.set_pulse_measure(let.nodo_nome, let.saida_nome)
 
-        with open("SETs.cir", "w") as sets:
+        with open("circuitos/include/SETs.cir", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
             if let.orientacao[0] == "f": sets.write("*")
             sets.write(f"Iseu gnd {let.nodo_nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
@@ -99,7 +99,7 @@ class SpiceManager():
 
     # Altera o arquivo "measure.cir"
     def set_delay_measure(self, input: str, out: str, vdd: float):
-        with open("measure.cir", "w") as arquivo:
+        with open("circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com atraso a ser medido\n")
             tensao = str(vdd / 2)
             self.__write_trig_meas(arquivo, "atraso_rr", input, tensao, "rise", out, tensao, "rise")
@@ -112,7 +112,7 @@ class SpiceManager():
     def set_pulse_width_measure(self, let: LET):
         # print(let.vdd)
         dir_nodo, dir_saida = alternar_combinacao(let.orientacao)
-        with open("measure.cir", "w") as arquivo:
+        with open("circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com a leitura da largura dos pulsos\n")
             tensao = str(let.vdd * 0.5)
             self.__write_trig_meas(arquivo, "atraso", let.nodo_nome, tensao, dir_nodo, let.saida_nome, tensao, dir_saida)
@@ -121,7 +121,7 @@ class SpiceManager():
     # Altera o valor de simulacoes monte carlo a serem feitas
     @staticmethod
     def set_monte_carlo(simulacoes: int):
-        with open("monte_carlo.cir", "w") as mc:
+        with open("circuitos/include/monte_carlo.cir", "w") as mc:
             mc.write("*Arquivo Analise Monte Carlo\n")
             mc.write(".tran 0.01n 4n")
             if simulacoes: mc.write(f" sweep monte={simulacoes}")
@@ -131,7 +131,7 @@ class SpiceManager():
     def set_variability(pvar = None, nvar = None):
         pmedia: float = 4.8108
         nmedia: float = 4.372
-        with open ("mc.cir","w") as mc:
+        with open ("circuitos/include/mc.cir","w") as mc:
             if pvar == None or nvar == None:
                 mc.write("* Analise MC\n"
                 ".param phig_var_p = gauss(4.8108, 0.05, 3)\n"
@@ -237,7 +237,7 @@ class SpiceManager():
         falhas: int = 0
         casos_validos: list = []
 
-        dados: dict = self.__get_csv_data(f"{circuito.nome}.mt0.csv", ".TITLE")
+        dados: dict = self.__get_csv_data(f"{circuito.path}{circuito.nome}.mt0.csv", ".TITLE")
 
         inclinacao_corr = "mincor" if inclinacao_saida == "fall" else "maxcor"
         inclinacao_tens = "minout" if inclinacao_saida == "fall" else "maxout"
@@ -276,10 +276,10 @@ class SpiceManager():
         return atrasos[1]
     
     # Leitura das instancias do arquivo "<circuito>.mc0.csv"
-    def get_mc_instances(self, circuito_nome: str, simulacoes: int) -> dict:
+    def get_mc_instances(self, path, filename: str, simulacoes: int) -> dict:
         instancias: dict = {}
 
-        dados = self.__get_csv_data(f"{circuito_nome}.mc0.csv", "$ IRV")
+        dados = self.__get_csv_data(f"{path}{filename}.mc0.csv", "$ IRV")
 
         ps: str = "pmos_rvt:@:phig_var_p:@:IGNC"
         ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
@@ -290,7 +290,7 @@ class SpiceManager():
 
     # Substitui o valor da corrente no arquivo "SETs.cir"
     def change_pulse_value(self, nova_corrente: float) -> float:
-        with open("SETs.cir", "r") as arquivo_set:
+        with open("circuitos/include/SETs.cir", "r") as arquivo_set:
             arquivo_set.readline()
             linha_rise = arquivo_set.readline()
             _, _, nodo_nome, _, corrente, *_ = linha_rise.split()
@@ -304,18 +304,18 @@ class SpiceRunner():
     def __init__(self) -> None:
         pass
 
-    def run_delay(self, filename: str, entrada_nome: str, saida_nome: str, vdd: float, entradas: list) -> float:
+    def run_delay(self, path: str, filename: str, entrada_nome: str, saida_nome: str, vdd: float, entradas: list) -> float:
         HSManager.set_delay_measure(entrada_nome, saida_nome, vdd)
         HSManager.set_signals(vdd, entradas)
-        os.system(f"hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > output.txt")
+        os.system(f"cd {path} ; hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > ../../output.txt")
         return HSManager.get_delay()
 
-    def run_SET(self, filename: str, let: LET, corrente = None):
+    def run_SET(self, path: str, filename: str, let: LET, corrente = None):
         # print("run SET")
         if corrente == None:
             corrente = let.corrente
         HSManager.set_pulse(let, corrente)
-        os.system(f"hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > output.txt")
+        os.system(f"cd {path} ; hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > ../../output.txt")
         pico_nodo = HSManager.get_peak_tension(let.orientacao[0], True)
         pico_saida = HSManager.get_peak_tension(let.orientacao[1])
         return (pico_nodo, pico_saida)
@@ -325,8 +325,8 @@ class CSVManager():
         pass
 
     @staticmethod
-    def tup_dict_to_csv(filename: str, dicionario: dict):
-        with open(filename, "w") as tabela:
+    def tup_dict_to_csv(path: str, filename: str, dicionario: dict):
+        with open(f"{path}{filename}", "w") as tabela:
             for chave, tupla in dicionario.items():
                 tabela.write(f"{chave}")
                 for valor in tupla:
@@ -338,8 +338,7 @@ class CSVManager():
     @staticmethod
     def escrever_csv_total(circuito):
         linha = 2
-        tabela = circuito.nome + ".csv"
-        with open(tabela, "w") as sets:
+        with open(f"circuitos/{circuito.nome}/{circuito.nome}.csv", "w") as sets:
             sets.write("Nodo,Saida,Pulso,Pulso,Corrente,LETs,Num Val,Validacoes->\n")
             for nodo in circuito.nodos:
                 for let in nodo.LETs:
@@ -350,16 +349,15 @@ class CSVManager():
                         for num in validacao: sets.write(f"{num}")
                     sets.write("\n")
                     linha += 1
-        print(f"\nTabela {tabela} gerada com sucesso\n")
+        print(f"\nTabela {circuito.nome}.csv gerada com sucesso\n")
 
     @staticmethod
     def escrever_csv_comparativo(circuito, lista_comparativa):
-        with open(f"{circuito.nome}_compara.csv", "w") as tabela:
+        with open(f"circuitos/{circuito.nome}/{circuito.nome}_compara.csv", "w") as tabela:
             for chave in lista_comparativa:
                 tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
 
         print(f"\nTabela {circuito.nome}_compara.csv" + " gerada com sucesso\n")
-
 
 class JsonManager():
     def __init__(self):
@@ -390,23 +388,23 @@ class JsonManager():
         circuito_codificado["saidas"] = lista_de_saidas
         circuito_codificado["nodos"] = lista_de_nodos
 
-        json.dump(circuito_codificado, open(f"{circuito.nome}_{circuito.vdd}.json", "w"))
+        json.dump(circuito_codificado, open(f"circuitos/{circuito.nome}/{circuito.nome}_{circuito.vdd}.json", "w"))
 
         try:
-            with open(circuito.nome + ".json", "r"):
+            with open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "r"):
                 pass
         except FileNotFoundError:
-            json.dump(circuito_codificado, open(circuito.nome + ".json", "w"))
+            json.dump(circuito_codificado, open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "w"))
 
         print("Carregamento do Json realizado com sucesso")
 
     def decodificar(self, circuito, tensao, nao_usar_template):
         circuito_codificado = []
         if nao_usar_template:
-            circuito_codificado = json.load(open(circuito.nome + "_" + str(tensao) + ".json", "r"))
+            circuito_codificado = json.load(open(f"circuitos/{circuito.nome}/{circuito.nome}_{tensao}.json", "r"))
             circuito.vdd = circuito_codificado["vdd"]
         else:
-            circuito_codificado = json.load(open(circuito.nome + ".json", "r"))
+            circuito_codificado = json.load(open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "r"))
             circuito.vdd = tensao
 
         # Desempacotamento dos dados

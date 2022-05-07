@@ -1,5 +1,4 @@
-  **warning** (measure.cir:2) .MEASURE atraso_rr never reached the target value, Measurement failed! 
-   atraso_rr= failed       targ= not found    trig=    1.0050n
-   atraso_rf= failed       targ= not found    trig=    1.0050n
-   atraso_ff= failed       targ= not found    trig=    3.0050n
-   atraso_fr= failed       targ= not found    trig=    3.0050n
+ minout=-489.5030u    at=   1.0083n
+ maxout= 368.1328m    at=   2.0899n
+ minnod=-215.7909u    at=   1.0083n
+ maxnod= 367.6720m    at=   2.0899n

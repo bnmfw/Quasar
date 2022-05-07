@@ -7,9 +7,9 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Sat May 07 15:24:06 2022
-Hostname: aorus, Username: bborges, PID: 1475174
-Working_Directory : /home/bborges/github
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Sat May 07 15:35:44 2022
+Hostname: aorus, Username: bborges, PID: 1487788
+Working_Directory : /home/bborges/github/circuitos/nand
 Command_Line_Options : nand_dm.hsp.json
 
 This file format and content are subject to change.

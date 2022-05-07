@@ -49,6 +49,7 @@ class Circuito():
     def __init__(self):
         ##### ATRIBUTOS DO CIRCUITO #####
         self.nome = "nome"
+        self.path = "circuitos/nome/"
         self.arquivo = "nome.cir"
         self.entradas = []
         self.saidas = []
@@ -73,23 +74,25 @@ class Circuito():
     def __tela_inicial(self):
         # Escolha de dados do circuito
         circuito = input(barra_comprida+"\nEscolha o circuito: ")
-        self.nome = circuito
-        self.arquivo: str = self.nome + ".cir"
-        try:
+        self.nome: str = circuito
+        self.path: str = f"circuitos/{circuito}/"
+        self.arquivo: str = f"{circuito}.cir"
+        if os.path.exists(f"{self.path}{circuito}.json"):
             tensao: float = 0.0
-            with open(circuito+".json","r"):
+            with open(f"{self.path}{circuito}.json","r"):
                 tensao = float(input(f"{barra_comprida}\nCadastro encontrado\nQual vdd deseja analisar: "))
                 self.vdd = tensao
-            try:
-                with open(f"{circuito}_{tensao}.json","r") as cadastro:
+            
+            if os.path.exists(f"{self.path}{circuito}_{tensao}.json"):
+                with open(f"{self.path}{circuito}_{tensao}.json","r") as cadastro:
                     print(f"{barra_comprida}\nCadastro com essa tensao encontrado")
                     JManager.decodificar(self, tensao, True) # LEITURA SIMPLES DO CIRCUITO
-            except FileNotFoundError:
+            else:
                 print(f"{barra_comprida}\nCadastro com essa tensao nao encontrado\nGeracao sendo feita")
                 JManager.decodificar(self, tensao, False)
                 self.__atualizar_LETths() # ATUALIZACAO DO CIRCUITO
 
-        except FileNotFoundError:
+        else:
             cadastro = "0"
             while not cadastro in ["y", "n"]:
                 cadastro = input(f"{barra_comprida}\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n) ")
@@ -180,7 +183,7 @@ class Circuito():
         pulso_out = self.__configurar_LET()
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
         with Monte_Carlo(num_analises):
-            os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > output.txt")
+            os.system(f"cd {self.path} ; hspice {self.arquivo}| grep \"minout\|maxout\" > ../../output.txt")
             HSManager.get_monte_carlo_results(self, num_analises, pulso_out)
             print("Analise monte carlo realizada com sucesso")
 
@@ -203,12 +206,12 @@ class Circuito():
 
                 HSManager.change_pulse_value(corrente * frac)
 
-                os.system(f"hspice {self.arquivo}| grep \"minout\|maxout\" > output.txt")
+                os.system(f"cd {self.path} ; hspice {self.arquivo}| grep \"minout\|maxout\" > ../../output.txt")
 
                 falhas: int = HSManager.get_monte_carlo_results(self, num_analises, pulso_out)
                 mc_dict[frac] = (falhas)
 
-            CManager.tup_dict_to_csv(f"{self.nome}_mc.csv",mc_dict)
+            CManager.tup_dict_to_csv(self.path,f"{self.nome}_mc.csv",mc_dict)
 
             print("Analise monte carlo realizada com sucesso")
 
@@ -224,10 +227,10 @@ class Circuito():
         print("Gerando instancias MC")
 
         with Monte_Carlo(num_analises):
-            os.system(f"hspice {self.arquivo} > output.txt")
+            os.system(f"cd {self.path} ; hspice {self.arquivo} > ../../output.txt")
 
         # Retira as instancias individuais
-        var: dict = HSManager.get_mc_instances(self.nome, num_analises)
+        var: dict = HSManager.get_mc_instances(self.path, self.nome, num_analises)
 
         saida: dict = {"indice": ("pmos", "nmos", "nodo", "saida", "corrente", "LETth")}
 
@@ -239,7 +242,7 @@ class Circuito():
                 self.__atualizar_LETths()
                 saida[i] = (var[i][0], var[i][1], self.LETth.nodo_nome, self.LETth.saida_nome, self.LETth.corrente, self.LETth.valor)
 
-        CManager.tup_dict_to_csv(f"{self.nome}_mc_LET.csv", saida)
+        CManager.tup_dict_to_csv(self.path,f"{self.nome}_mc_LET.csv", saida)
         print("Pontos da analise Monte Carlo gerados com sucesso")
 
     @relatorio_de_tempo
@@ -264,7 +267,7 @@ class Circuito():
                     entrada_analisada.sinal = "atraso"
 
                     # Etapa de medicao de atraso
-                    atraso: float = HSRunner.run_delay(self.arquivo, entrada_analisada.nome, saida.nome, self.vdd, self.entradas)
+                    atraso: float = HSRunner.run_delay(self.path, self.arquivo, entrada_analisada.nome, saida.nome, self.vdd, self.entradas)
 
                     simulacoes += 1
 
@@ -308,7 +311,7 @@ class Circuito():
         nodos_nomes = list()
         ignorados_true = ["t" + entrada.nome for entrada in self.entradas]
         ignorados_false = ["f" + entrada.nome for entrada in self.entradas]
-        with open(self.arquivo, "r") as circuito:
+        with open(f"{self.path}{self.arquivo}", "r") as circuito:
             for linha in circuito:
                 if "M" in linha:
                     _, coletor, base, emissor, _, _, _ = linha.split()

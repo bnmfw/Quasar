@@ -1,27 +1,13 @@
-Benchmark C17 V0
+Nor
 
 ****** Dispositivos Lógicos ******
 
-.include dis/logica.cir
-.include dis/DFF.cir
-.include mc.cir
+.include ../include.cir
 
 ****** HGSPICE ******
 
 .option measform = 3
 .option post = 0
-
-****** Fontes de Tensão Geral ******
-
-.include vdd.cir
-
-****** Fontes de Sinal ******
-
-.include fontes.cir
-
-****** SETs ******
-
-.include SETs.cir
 
 ****** Circuito ******
 
@@ -38,11 +24,6 @@ Mn52 g1 tb gnd tb NMOS_RVT nfin=3
 //Representação de um circuito pós benchmark
 xff1 clk g1 q1 nq1 vcc gnd DFF
 xinv11 vcc gnd q1 nnq1 NOT
-
-****** Controle ******
-
-.include measure.cir
-.include monte_carlo.cir
 
 ************
 .end
