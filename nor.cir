@@ -35,16 +35,13 @@ Mp52 i1 tb g1 tb PMOS_RVT nfin=3
 Mn51 g1 ta gnd ta NMOS_RVT nfin=3
 Mn52 g1 tb gnd tb NMOS_RVT nfin=3
 
-Vmeasg1 g1 m1 0
-
 //Representação de um circuito pós benchmark
-xff1 clk m1 q1 nq1 vcc gnd DFF
+xff1 clk g1 q1 nq1 vcc gnd DFF
 xinv11 vcc gnd q1 nnq1 NOT
 
 ****** Controle ******
 
-.include largura_pulso.cir
-.include atraso.cir
+.include measure.cir
 .include monte_carlo.cir
 
 ************

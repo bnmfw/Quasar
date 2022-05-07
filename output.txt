@@ -1,0 +1,5 @@
+  **warning** (measure.cir:2) .MEASURE atraso_rr never reached the target value, Measurement failed! 
+   atraso_rr= failed       targ= not found    trig=    1.0050n
+   atraso_rf= failed       targ= not found    trig=    1.0050n
+   atraso_ff= failed       targ= not found    trig=    3.0050n
+   atraso_fr= failed       targ= not found    trig=    3.0050n

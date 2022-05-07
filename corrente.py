@@ -1,8 +1,8 @@
-from arquivos import SpiceManager, HSRunner
-from components import Entrada, Nodo, LET, modo_debug
+from arquivos import HSManager, HSRunner
+from components import Entrada, Nodo, LET
 import os
 
-SR = SpiceManager()
+limite_sup: float = 800
 
 
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
@@ -21,7 +21,7 @@ def verificar_validacao(circuito, vdd: float, let: LET) -> tuple:
         return (False, 1)
 
     # Chegagem se o pulso no nodo tem resposta na saída
-    tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(circuito.arquivo, let, 500)
+    tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(circuito.arquivo, let, limite_sup)
 
     if (inclinacao_saida == "r" and tensao_pico_saida < vdd * 0.50) or\
         (inclinacao_saida == "f" and tensao_pico_saida > vdd * 0.50) or\
@@ -36,13 +36,13 @@ def verificar_validacao(circuito, vdd: float, let: LET) -> tuple:
 ##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
 def diff_larg_delay(circuito, corrente: float, let: LET):
     # Determina os parametros no arquivo de leitura de largura de pulso
-    SR.set_pulse(let, corrente)
-    SR.set_pulse_width_measure(let)
+    HSManager.set_pulse(let, corrente)
+    HSManager.set_pulse_width_measure(let)
 
     os.system(f"hspice {circuito.arquivo} | grep \"larg\" > output.txt")
 
     output: dict = {}
-    SR.get_output(output)
+    HSManager.get_output(output)
 
     if output["larg"].value == None:
         return None
@@ -60,7 +60,7 @@ def diff_larg_delay(circuito, corrente: float, let: LET):
 def encontrar_corrente_minima(circuito, let: LET) -> float:
 
     # variaveis da busca binaria da corrente
-    csup: float = 500
+    csup: float = limite_sup
     cinf: float = 0
     corrente: float = (csup + cinf)/2
 
@@ -100,7 +100,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
     # Escreve a validacao no arquivo de fontes
     for i in range(len(entradas)):
         entradas[i].sinal = validacao[i]
-    SR.set_signals(vdd, entradas)
+    HSManager.set_signals(vdd, entradas)
 
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
     simulacoes: int = 0
@@ -112,7 +112,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
     tensao_pico: float = 0
 
     # variaveis da busca binaria da corrente
-    csup: float = 500
+    csup: float = limite_sup
     cinf: float = encontrar_corrente_minima(circuito, let)
     # print(f"corrente minima: {cinf}")
     corrente: float = cinf
@@ -135,8 +135,8 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
             return simulacoes
 
         elif csup - cinf < 1:
-            print(f"convergencia: {corrente}")
-            if 1 < corrente < 499:
+            # print(f"convergencia: {corrente}")
+            if 1 < corrente < limite_sup - 1:
                 print("LET ENCONTRADO - CONVERGENCIA\n")
                 let.corrente = corrente
                 let.append(validacao)
@@ -160,9 +160,9 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
         corrente: float = float((csup + cinf) / 2)
 
         # Escreve os parametros no arquivo dos SETs
-        SR.set_pulse(let, corrente)
+        HSManager.set_pulse(let, corrente)
 
-    if 1 < corrente < 499:
+    if 1 < corrente < limite_sup - 1:
         print("LET ENCONTRADO - CICLOS MAXIMOS\n")
         let.corrente = corrente
         let.append(validacao)

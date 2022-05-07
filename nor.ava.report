@@ -7,16 +7,16 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Sat May 07 13:48:08 2022
-Hostname: aorus, Username: bborges, PID: 1433012
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Sat May 07 00:51:41 2022
+Hostname: aorus, Username: bborges, PID: 786874
 Working_Directory : /home/bborges/github
-Command_Line_Options : nand_dm.hsp.json
+Command_Line_Options : nor_dm.hsp.json
 
 This file format and content are subject to change.
 ================================================================
 
-Measure Files:  nand.mt0.csv(10,2)
-Sample Files:  nand.mc0.csv(10,2)
+Measure Files:  nor.mt0.csv(1000,2)
+Sample Files:  nor.mc0.csv(1000,2)
 
 ##Variation_Options
 #------------------
@@ -45,28 +45,38 @@ Total number of independent random variables = 2
 Number of independent global random variables = 2
 Number of independent local random variables = 0
 Number of independent aging random variables = 0
-Number of Samples = 10
-Number of Meas failure = 5
+Number of Samples = 1000
+Number of Meas failure = 495
 Number of Device out of bound = 0
 Responses with very small variation dropped from further analysis:
 atraso
 
 ##Sample_Moments
 #---------------
-              larg
-Nominal  4.631e-11
-Mean     1.329e-10
-StdDev    5.93e-11
-Skewness    0.7804
-Kurtosis     1.998
+               larg
+Nominal   -4.66e-11
+Mean     -1.511e-10
+StdDev    8.067e-11
+Skewness     -0.752
+Kurtosis      4.104
 
 ##Quantiles
 #----------
-                    larg
-Q15.9 (    -1) 7.949e-11
-Q25   (-0.674) 8.582e-11
-Q75   ( 0.674) 1.742e-10
-Q84.1 (     1) 2.118e-10
+                         larg
+Q1e-01    (-3.090) -5.602e-10
+Q1.35e-01 (    -3) -5.313e-10
+Q1        (-2.326) -3.742e-10
+Q2.28     (    -2) -3.355e-10
+Q5        (-1.645) -2.847e-10
+Q15.9     (    -1) -2.346e-10
+Q25       (-0.674) -2.052e-10
+Q75       ( 0.674)  -8.85e-11
+Q84.1     (     1) -7.068e-11
+Q95       ( 1.645) -4.031e-11
+Q97.72    (     2) -2.125e-11
+Q99       ( 2.326) -1.131e-11
+Q99.865   (     3) -2.708e-12
+Q99.9     ( 3.090) -2.223e-12
 
 ##Response_Correlation_Matrix
 #----------------------------
@@ -75,13 +85,13 @@ Q84.1 (     1) 2.118e-10
 
 ##Extremes_and_Corners
 #----------------------------
-             min        max minIndex maxIndex
- larg  7.657e-11  2.292e-10        5        4
+              min         max minIndex maxIndex
+ larg  -5.610e-10  -2.210e-12      127      799
 
 ##Selective_Simulation
 #----------------------------
 #To simulate corners only:
-Use: ... Monte = list(4, 5)
+Use: ... Monte = list(127, 799)
 
 
 
@@ -93,11 +103,11 @@ Method: Pearson Correlation
 #(parameters with ParVar smaller than 0.01% will not be printed.)
 
 Response: larg
-Global Variation =  5.930e-11,  Local Variation =  6.249e-19
+Global Variation =  8.067e-11,  Local Variation =  8.500e-19
 Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
-      .  nmos_rvt   98.53%  98.53%        .                                 
-      .         .        .       .        .  phig_var_n  IGNC   1.00  98.53%
+      .  pmos_rvt   99.96%  99.96%        .                                 
+      .         .        .       .        .  phig_var_p  IGNC   1.00  99.96%
 
 ##Important_Elements_or_Models
 #------------------------------
-nmos_rvt
+pmos_rvt

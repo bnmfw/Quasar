@@ -1,7 +1,5 @@
-import pstats
 from matematica import *
-from components import Nodo, Entrada, LET, modo_debug
-from statistics import stdev
+from components import Nodo, Entrada, LET
 from dataclasses import dataclass
 import json
 import os
@@ -264,6 +262,8 @@ class SpiceManager():
 
         atrasos: list = [output["atraso_rr"].value, output["atraso_ff"].value, output["atraso_rf"].value, output["atraso_fr"].value]
         # Erro
+
+        print(f"atrasos: {atrasos}")
         if None in atrasos:
             return 0
         
@@ -300,29 +300,25 @@ class SpiceManager():
             self.set_pulse(LET(nova_corrente, 0, nodo_nome, "setup", inclinacao))
             return corrente
 
-SM = SpiceManager()
-
 class SpiceRunner():
     def __init__(self) -> None:
         pass
 
     def run_delay(self, filename: str, entrada_nome: str, saida_nome: str, vdd: float, entradas: list) -> float:
-        SM.set_delay_measure(entrada_nome, saida_nome, vdd)
-        SM.set_signals(vdd, entradas)
+        HSManager.set_delay_measure(entrada_nome, saida_nome, vdd)
+        HSManager.set_signals(vdd, entradas)
         os.system(f"hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > output.txt")
-        return SM.get_delay()
+        return HSManager.get_delay()
 
     def run_SET(self, filename: str, let: LET, corrente = None):
         # print("run SET")
         if corrente == None:
             corrente = let.corrente
-        SM.set_pulse(let, corrente)
+        HSManager.set_pulse(let, corrente)
         os.system(f"hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > output.txt")
-        pico_nodo = SM.get_peak_tension(let.orientacao[0], True)
-        pico_saida = SM.get_peak_tension(let.orientacao[1])
+        pico_nodo = HSManager.get_peak_tension(let.orientacao[0], True)
+        pico_saida = HSManager.get_peak_tension(let.orientacao[1])
         return (pico_nodo, pico_saida)
-
-HSRunner = SpiceRunner()
 
 class CSVManager():
     def __init__(self):
@@ -434,7 +430,12 @@ class JsonManager():
         print("Leitura do Json realizada com sucesso")
 
 
-JM = JsonManager()
+# Instancias
+
+HSManager = SpiceManager()
+HSRunner = SpiceRunner()
+JManager = JsonManager()
+CManager = CSVManager()
 
 if __name__ == "__main__":
     print("Rodando Teste de Codificacao...")
@@ -474,7 +475,7 @@ if __name__ == "__main__":
 
     circuito = FakeCircuit()
 
-    JM.codificar(circuito)
-    JM.decodificar(circuito, 0.7, True)
+    JManager.codificar(circuito)
+    JManager.decodificar(circuito, 0.7, True)
 
     print("Testes realizados com sucesso!")

@@ -26,6 +26,8 @@ def ajustar(tensao: str) -> float:
         grandeza = -12
     elif tensao[-1] in {"f", "F"}:
         grandeza = -15
+    elif tensao[-1] in {"g", "G"}:
+        grandeza = 9
     elif tensao[-1] in {"t", "T"}:
         grandeza = 12
     elif tensao[-1] not in ("0","1","2","3","4","5","6","7","8","9","."):
