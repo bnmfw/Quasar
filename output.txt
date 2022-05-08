@@ -1,4 +1,4 @@
- minout=-489.5030u    at=   1.0083n
- maxout= 368.1328m    at=   2.0899n
- minnod=-215.7909u    at=   1.0083n
- maxnod= 367.6720m    at=   2.0899n
+ minout=  -2.2190m    at=   1.0100n
+ maxout= 360.2572m    at=   2.0932n
+ minnod=  -1.0979m    at=   1.0100n
+ maxnod= 361.0840m    at=   2.0932n

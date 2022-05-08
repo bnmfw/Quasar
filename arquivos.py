@@ -88,8 +88,6 @@ class SpiceManager():
         if corrente == None:
             corrente = let.corrente
 
-        self.set_pulse_measure(let.nodo_nome, let.saida_nome)
-
         with open("circuitos/include/SETs.cir", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
             if let.orientacao[0] == "f": sets.write("*")
@@ -232,26 +230,22 @@ class SpiceManager():
         
         return dados
 
-    def get_monte_carlo_results(self, circuito, num_analises: int, inclinacao_saida: str) -> int:
+    def get_mc_faults(self, path: str, circuit_name: str, num_analises: int, inclinacao_saida: str, vdd: float) -> int:
         
         falhas: int = 0
-        casos_validos: list = []
 
-        dados: dict = self.__get_csv_data(f"{circuito.path}{circuito.nome}.mt0.csv", ".TITLE")
+        dados: dict = self.__get_csv_data(f"{path}{circuit_name}.mt0.csv", ".TITLE")
 
         inclinacao_corr = "mincor" if inclinacao_saida == "fall" else "maxcor"
         inclinacao_tens = "minout" if inclinacao_saida == "fall" else "maxout"
 
         for i in range(num_analises):
-            corrente_pico = dados[inclinacao_corr][i]
+            # corrente_pico = dados[inclinacao_corr][i]
             tensao_pico = dados[inclinacao_tens][i]
 
-            if inclinacao_saida == "fall" and tensao_pico < circuito.vdd / 2 or\
-                inclinacao_saida == "rise" and tensao_pico > circuito.vdd / 2:
+            if inclinacao_saida == "fall" and tensao_pico < vdd / 2 or\
+                inclinacao_saida == "rise" and tensao_pico > vdd / 2:
                 falhas += 1
-                casos_validos.append(corrente_pico)
-
-        print(f"Proporcao de flips: {100*falhas/num_analises:.2f}% do total")
         return falhas
 
     # Le o atraso do nodo a saida no arquivo "output.txt"
@@ -287,38 +281,6 @@ class SpiceManager():
         for i, pmos, nmos in zip(dados["index"], dados[ps], dados[ns]):
             instancias[i] = (float(pmos), float(nmos))
         return instancias
-
-    # Substitui o valor da corrente no arquivo "SETs.cir"
-    def change_pulse_value(self, nova_corrente: float) -> float:
-        with open("circuitos/include/SETs.cir", "r") as arquivo_set:
-            arquivo_set.readline()
-            linha_rise = arquivo_set.readline()
-            _, _, nodo_nome, _, corrente, *_ = linha_rise.split()
-            corrente = ajustar(corrente)
-            inclinacao = "ft" if "*" in linha_rise else "rt"
-            
-            self.set_pulse(LET(nova_corrente, 0, nodo_nome, "setup", inclinacao))
-            return corrente
-
-class SpiceRunner():
-    def __init__(self) -> None:
-        pass
-
-    def run_delay(self, path: str, filename: str, entrada_nome: str, saida_nome: str, vdd: float, entradas: list) -> float:
-        HSManager.set_delay_measure(entrada_nome, saida_nome, vdd)
-        HSManager.set_signals(vdd, entradas)
-        os.system(f"cd {path} ; hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > ../../output.txt")
-        return HSManager.get_delay()
-
-    def run_SET(self, path: str, filename: str, let: LET, corrente = None):
-        # print("run SET")
-        if corrente == None:
-            corrente = let.corrente
-        HSManager.set_pulse(let, corrente)
-        os.system(f"cd {path} ; hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > ../../output.txt")
-        pico_nodo = HSManager.get_peak_tension(let.orientacao[0], True)
-        pico_saida = HSManager.get_peak_tension(let.orientacao[1])
-        return (pico_nodo, pico_saida)
 
 class CSVManager():
     def __init__(self):
@@ -427,11 +389,9 @@ class JsonManager():
 
         print("Leitura do Json realizada com sucesso")
 
-
 # Instancias
 
 HSManager = SpiceManager()
-HSRunner = SpiceRunner()
 JManager = JsonManager()
 CManager = CSVManager()
 

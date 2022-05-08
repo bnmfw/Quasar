@@ -98,7 +98,8 @@ class LET:
 
     def append(self, validacao: list):
         if type(validacao) != list: raise TypeError("Validacao nao eh uma lista")
-        self.validacoes.append(validacao)
+        if not validacao in self.validacoes:
+            self.validacoes.append(validacao)  
 
     def codec(self):
         dic = {}

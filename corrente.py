@@ -1,9 +1,9 @@
-from arquivos import HSManager, HSRunner
+from arquivos import HSManager
+from runner import HSRunner
 from components import Entrada, Nodo, LET
 import os
 
 limite_sup: float = 800
-
 
 # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
 def verificar_validacao(circuito, vdd: float, let: LET) -> tuple:
@@ -114,6 +114,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
     # variaveis da busca binaria da corrente
     csup: float = limite_sup
     cinf: float = encontrar_corrente_minima(circuito, let)
+    print(cinf)
     # print(f"corrente minima: {cinf}")
     corrente: float = cinf
 
@@ -122,6 +123,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
 
         # Roda o HSPICE e salva os valores no arquivo de texto
         _, tensao_pico = HSRunner.run_SET(circuito.path, circuito.arquivo, let, corrente)
+        print(tensao_pico)
 
         simulacoes += 1
 
@@ -158,9 +160,6 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
                 csup = corrente
 
         corrente: float = float((csup + cinf) / 2)
-
-        # Escreve os parametros no arquivo dos SETs
-        HSManager.set_pulse(let, corrente)
 
     if 1 < corrente < limite_sup - 1:
         print("LET ENCONTRADO - CICLOS MAXIMOS\n")

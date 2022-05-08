@@ -1,5 +1,4 @@
 from math import sqrt
-from statistics import stdev
 # Recebe um inteiro e retonra uma lista com seus digitos binarios
 def bin2list(inteiro: int, tamanho:int) -> list:
     lista = []

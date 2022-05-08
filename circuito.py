@@ -1,4 +1,5 @@
-from arquivos import alternar_combinacao, HSRunner, HSManager, JManager, CManager
+from arquivos import alternar_combinacao, JManager, CManager
+from runner import HSRunner
 from matematica import bin2list
 from corrente import definir_corrente
 from components import Nodo, Entrada, LET
@@ -22,28 +23,6 @@ def relatorio_de_tempo(func):
         print(f"{tempo % 60} segundos de execucao")
         return rv
     return wrapper
-
-
-class Monte_Carlo(object):
-    def __init__ (self, num_testes):
-        self.num = num_testes
-
-    def __enter__(self):
-        HSManager.set_monte_carlo(self.num)
-
-    def __exit__(self, type, value, traceback):
-        HSManager.set_monte_carlo(0)
-
-class MC_Instance(object):
-    def __init__ (self, pmos = None, nmos = None):
-        self.pmos = pmos
-        self.nmos = nmos
-
-    def __enter__(self):
-        HSManager.set_variability(self.pmos, self.nmos)
-
-    def __exit__(self, type, value, traceback):
-        HSManager.set_variability(None, None)
 
 class Circuito():
     def __init__(self):
@@ -123,7 +102,6 @@ class Circuito():
                      "6. Sair\n"
                      "Resposta: "))
         if not acao:
-            self.__get_atrasoCC()
             self.__atualizar_LETths()
         elif acao == 1:
             CManager.escrever_csv_total(self)
@@ -142,13 +120,9 @@ class Circuito():
 
     def analise_total(self):
         self.vdd = float(input("vdd: "))
-        HSManager.set_vdd(self.vdd)
-        HSManager.set_monte_carlo(0)
+        HSRunner.default(self.vdd)
         self.__instanciar_nodos()
         self.__get_atrasoCC()
-        while not self.atrasoCC < 1e-10:
-            print("Errei o atraso")
-            self.__get_atrasoCC()
         self.__determinar_LETths()
         JManager.codificar(self)
 
@@ -157,7 +131,7 @@ class Circuito():
         while minvdd <= maxvdd + 0.0001:
             LETth_critico = 9999
             self.vdd = minvdd
-            HSManager.set_vdd(minvdd)
+            HSRunner.default(minvdd)
             self.__determinar_LETths()
             for nodo in self.nodos:
                 if nodo.LETth < LETth_critico:
@@ -168,9 +142,10 @@ class Circuito():
 
     def analise_manual(self):
         self.vdd = input("vdd: ")
-        HSManager.set_vdd(float(self.vdd))
         nodo, saida = input("nodo e saida analisados: ").split()
         pulso_in, pulso_out = input("pulsos na entrada e saida: ").split()
+        
+        HSRunner.default(self.vdd)
         nodo = Nodo(nodo)
         saida = Nodo(saida)
         vetor = [int(sinal) for sinal in input("vetor analisado: ").split()]
@@ -180,12 +155,11 @@ class Circuito():
 
     @relatorio_de_tempo
     def __analise_monte_carlo(self):
-        pulso_out = self.__configurar_LET()
+        pulso_out, nodo_nome, saida_nome = self.__configurar_LET()
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
-        with Monte_Carlo(num_analises):
-            os.system(f"cd {self.path} ; hspice {self.arquivo}| grep \"minout\|maxout\" > ../../output.txt")
-            HSManager.get_monte_carlo_results(self, num_analises, pulso_out)
-            print("Analise monte carlo realizada com sucesso")
+        faults: int = HSRunner.run_simple_MC(self.path, self.nome, nodo_nome, saida_nome, num_analises, pulso_out, self.vdd)
+        print(f"Proporcao de falhas: {100 * faults/num_analises}%")
+        print("Analise monte carlo realizada com sucesso")
 
     @relatorio_de_tempo
     def __analise_monte_carlo_progressiva(self):
@@ -193,52 +167,38 @@ class Circuito():
         # Configuracao do LETth do circuito no Hspice
         self.__escolher_validacao(self.LETth.validacoes[0])
         _, pulso_out = alternar_combinacao(self.LETth.orientacao)
-        HSManager.set_pulse(self.LETth)
-        HSManager.set_pulse_width_measure(self.LETth)
 
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
-        with Monte_Carlo(num_analises):
-            corrente = HSManager.change_pulse_value(1)
-            mc_dict: dict = {"analises":num_analises}
-            for frac in [1]:#, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05]:
 
-                print(f"{100*frac}% do LETth:")
+        mc_dict: dict = {"analises": [num_analises]}
 
-                HSManager.change_pulse_value(corrente * frac)
+        step: float = 0.05
+        for frac in [round(num*step,2) for num in range(1, int(1/step)+1)]:
 
-                os.system(f"cd {self.path} ; hspice {self.arquivo}| grep \"minout\|maxout\" > ../../output.txt")
+            with HSRunner.SET(self.LETth, self.LETth.corrente * frac):
 
-                falhas: int = HSManager.get_monte_carlo_results(self, num_analises, pulso_out)
-                mc_dict[frac] = (falhas)
+                falhas: int = HSRunner.run_simple_MC(self.path, self.nome, self.LETth.nodo_nome, self.LETth.saida_nome, num_analises, pulso_out, self.vdd)
+                mc_dict[frac] = [falhas]
 
-            CManager.tup_dict_to_csv(self.path,f"{self.nome}_mc.csv",mc_dict)
+        print(mc_dict)
+        CManager.tup_dict_to_csv(self.path,f"{self.nome}_mc.csv",mc_dict)
 
-            print("Analise monte carlo realizada com sucesso")
+        print("Analise monte carlo realizada com sucesso")
 
     @relatorio_de_tempo
     def __analise_monte_carlo_total(self):
-        # Configuracao do LETth do circuito no Hspice
-        self.__escolher_validacao(self.LETth.validacoes[0])
-        HSManager.set_pulse(self.LETth)
-        HSManager.set_pulse_width_measure(self.LETth)
-        
         # Gera as instancias de nmos e pmos da analise MC
         num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
+        
         print("Gerando instancias MC")
-
-        with Monte_Carlo(num_analises):
-            os.system(f"cd {self.path} ; hspice {self.arquivo} > ../../output.txt")
-
-        # Retira as instancias individuais
-        var: dict = HSManager.get_mc_instances(self.path, self.nome, num_analises)
+        var: dict = HSRunner.run_MC_var(self.path, self.arquivo, self.nome, num_analises)
 
         saida: dict = {"indice": ("pmos", "nmos", "nodo", "saida", "corrente", "LETth")}
 
         print("Encontrando LETth para cada instancia")
         for i in var:
             print(f"index: {i} pmos: {var[i][0]} nmos: {var[i][1]}")
-            with MC_Instance(var[i][0], var[i][1]):
-                # self.__get_atrasoCC()
+            with HSRunner.MC_Instance(var[i][0], var[i][1]):
                 self.__atualizar_LETths()
                 saida[i] = (var[i][0], var[i][1], self.LETth.nodo_nome, self.LETth.saida_nome, self.LETth.corrente, self.LETth.valor)
 
@@ -249,8 +209,6 @@ class Circuito():
     def __get_atrasoCC(self):
         self.atrasoCC: float = 0
         simulacoes: int = 0
-
-        HSManager.set_pulse(LET(0, 0.7, self.entradas[0].nome, self.saidas[0].nome, "ff"))
 
         # Todas as entradas em todas as saidas com todas as combinacoes
         for entrada_analisada in self.entradas:
@@ -300,12 +258,10 @@ class Circuito():
 
     def __instanciar_nodos(self):
         ##### SAIDAS #####
-        saidas = input("saidas: ").split()
-        self.saidas = [Nodo(saida) for saida in saidas]
+        self.saidas = [Nodo(saida) for saida in input("saidas: ").split()]
 
         ##### ENTRADAS #####
-        entradas = input("entradas: ").split()
-        self.entradas = [Entrada(entrada) for entrada in entradas]
+        self.entradas = [Entrada(entrada) for entrada in input("entradas: ").split()]
 
         ##### OUTROS NODOS #####
         nodos_nomes = list()
@@ -326,7 +282,7 @@ class Circuito():
     def __escolher_validacao(self, validacao:list):
         for indice, entrada in enumerate(self.entradas):
             entrada.sinal = validacao[indice]
-        HSManager.set_signals(self.vdd, self.entradas)
+        HSRunner.configure_input(self.vdd, self.entradas)
 
     def __configurar_LET(self, fracao: float = 1) -> str:
         # Configuracao de pulso
@@ -340,11 +296,10 @@ class Circuito():
         let = self.encontrar_let(nodo, self.encontrar_nodo(saida_nome), alternar_combinacao([pulso_in, pulso_out]))
         corrente = let.corrente * fracao
         self.__escolher_validacao(let.validacoes[0])
-        fake_let = LET(corrente, self.vdd, nodo_nome, saida_nome, alternar_combinacao(pulso_in, pulso_out))
-        HSManager.set_pulse(fake_let)
-        HSManager.set_pulse_width_measure(fake_let)
+        fake_let = LET(corrente, self.vdd, nodo_nome, saida_nome, alternar_combinacao([pulso_in, pulso_out]))
+        HSRunner.configure_SET(fake_let)
         print("LET configurado com sucesso")
-        return pulso_out # Eu uso isso na analise monte carlo, se tirar vai dar pau
+        return (pulso_out, nodo_nome, saida_nome) # Eu uso isso na analise monte carlo, se tirar vai dar pau
 
     @relatorio_de_tempo
     def __determinar_LETths(self):
@@ -387,6 +342,7 @@ class Circuito():
             
     @relatorio_de_tempo
     def __atualizar_LETths(self):
+        HSRunner.default(self.vdd)
         self.__get_atrasoCC()
         simulacoes: int = 0
         ##### BUSCA DO LETs DO CIRCUITO #####
