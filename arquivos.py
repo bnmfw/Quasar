@@ -350,24 +350,14 @@ class JsonManager():
         circuito_codificado["saidas"] = lista_de_saidas
         circuito_codificado["nodos"] = lista_de_nodos
 
-        json.dump(circuito_codificado, open(f"circuitos/{circuito.nome}/{circuito.nome}_{circuito.vdd}.json", "w"))
-
-        try:
-            with open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "r"):
-                pass
-        except FileNotFoundError:
+        if not os.path.exists(f"circuitos/{circuito.nome}/{circuito.nome}.json"):
             json.dump(circuito_codificado, open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "w"))
 
         print("Carregamento do Json realizado com sucesso")
 
-    def decodificar(self, circuito, tensao, nao_usar_template):
-        circuito_codificado = []
-        if nao_usar_template:
-            circuito_codificado = json.load(open(f"circuitos/{circuito.nome}/{circuito.nome}_{tensao}.json", "r"))
-            circuito.vdd = circuito_codificado["vdd"]
-        else:
-            circuito_codificado = json.load(open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "r"))
-            circuito.vdd = tensao
+    def decodificar(self, circuito, tensao):
+        circuito_codificado: dict = json.load(open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "r"))
+        circuito.vdd = tensao
 
         # Desempacotamento dos dados
         circuito.atrasoCC = circuito_codificado["atrasoCC"]

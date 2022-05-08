@@ -33,29 +33,6 @@ def verificar_validacao(circuito, vdd: float, let: LET) -> tuple:
     return (True, 2)
 
 
-##### REALIZA A MEDICAO DE LARGURA DE PULSO #####
-def diff_larg_delay(circuito, corrente: float, let: LET):
-    # Determina os parametros no arquivo de leitura de largura de pulso
-    HSManager.set_pulse(let, corrente)
-    HSManager.set_pulse_width_measure(let)
-
-    os.system(f"cd {circuito.path} ; hspice {circuito.arquivo} | grep \"larg\" > ../../output.txt")
-
-    output: dict = {}
-    HSManager.get_output(output)
-
-    if output["larg"].value == None:
-        return None
-
-    larg: float = abs(output["larg"].value)
-
-    diferenca: float = larg - circuito.atrasoCC
-    
-    # print(f"larg: {larg} atraso: {circuito.atrasoCC} diff: {diferenca}")
-
-    return larg - circuito.atrasoCC
-
-
 ##### ENCONTRA A CORRENTE MINIMA PARA UM LET #####
 def encontrar_corrente_minima(circuito, let: LET) -> float:
 
@@ -72,7 +49,8 @@ def encontrar_corrente_minima(circuito, let: LET) -> float:
     while diferenca_largura == None or not -precisao_largura < diferenca_largura < precisao_largura:
 
         # Encontra a largura minima de pulso pra vencer o atraso
-        diferenca_largura: float = diff_larg_delay(circuito, corrente, let)
+        largura = HSRunner.run_pulse_width(circuito.path, circuito.arquivo, let, corrente)
+        diferenca_largura: float = None if largura == None else largura - circuito.atrasoCC
 
         if abs(csup - cinf) < 1:
             print("PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA")
@@ -100,7 +78,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
     # Escreve a validacao no arquivo de fontes
     for i in range(len(entradas)):
         entradas[i].sinal = validacao[i]
-    HSManager.set_signals(vdd, entradas)
+    HSRunner.configure_input(vdd, entradas)
 
     # Verifica se as saidas estao na tensao correta pra analise de pulsos
     simulacoes: int = 0
@@ -114,7 +92,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
     # variaveis da busca binaria da corrente
     csup: float = limite_sup
     cinf: float = encontrar_corrente_minima(circuito, let)
-    print(cinf)
+    # print(cinf)
     # print(f"corrente minima: {cinf}")
     corrente: float = cinf
 
@@ -123,7 +101,7 @@ def definir_corrente(circuito, let: LET, validacao: list) -> int:
 
         # Roda o HSPICE e salva os valores no arquivo de texto
         _, tensao_pico = HSRunner.run_SET(circuito.path, circuito.arquivo, let, corrente)
-        print(tensao_pico)
+        # print(tensao_pico)
 
         simulacoes += 1
 
