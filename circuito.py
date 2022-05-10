@@ -1,12 +1,11 @@
 from arquivos import alternar_combinacao, JManager, CManager
 from runner import HSRunner
 from matematica import bin2list
-from corrente import definir_corrente
+from circuitManager import CircMan
 from components import Nodo, Entrada, LET
 from time import time
+from interface import UserInterface
 import os
-
-barra_comprida = "---------------------------"
 
 def relatorio_de_tempo(func):
     def wrapper(*args, **kwargs):
@@ -35,7 +34,7 @@ class Circuito():
         self.nodos = []
         self.vdd: float = 0
         self.atrasoCC: float = 0
-        self.LETth: LET
+        self.LETth: LET = None
 
         ##### RELATORIO DO CIRCUITO #####
         self.sets_validos = []
@@ -48,29 +47,25 @@ class Circuito():
 
     def __tela_inicial(self):
         # Escolha de dados do circuito
-        circuito = input(barra_comprida+"\nEscolha o circuito: ")
+        circuito = UserInterface.requisitar_circuito()
         self.nome: str = circuito
         self.path: str = f"circuitos/{circuito}/"
         self.arquivo: str = f"{circuito}.cir"
+        self.vdd = UserInterface.requisitar_vdd()
+
         if os.path.exists(f"{self.path}{circuito}.json"):
-            tensao: float = float(input(f"{barra_comprida}\nCadastro encontrado\nQual vdd deseja analisar: "))
-            self.vdd = tensao    
-            JManager.decodificar(self, tensao)
-            self.__atualizar_LETths() # ATUALIZACAO DO CIRCUITO
+            JManager.decodificar(self)
+            self.__atualizar_LETths()
 
         else:
-            cadastro = "0"
-            while not cadastro in ["y", "n"]:
-                cadastro = input(f"{barra_comprida}\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n) ")
-            if cadastro == "y":
-                self.vdd = float(input("vdd: "))
+            cadastro = UserInterface.requisitar_cadastro()
+            if cadastro:
                 HSRunner.default(self.vdd)
                 self.__instanciar_nodos()
                 self.__get_atrasoCC()
                 self.__determinar_LETths()
                 JManager.codificar(self)
             else:
-                print(f"{barra_comprida}\nPrograma encerrado")
                 exit()
 
         ### INICIALIZACAO DO LETth DO CIRCUITO ###
@@ -82,17 +77,7 @@ class Circuito():
 
     def __tela_principal(self):
         
-        acao = int(input(f"{barra_comprida}\n"
-                     f"Trabalhando com o {self.nome} em {self.vdd} volts\n"
-                     "O que deseja fazer?\n"
-                     "0. Atualizar LETs\n"
-                     "1. Gerar CSV de LETs\n"
-                     "2. Analisar LET Unico\n"
-                     "3. Analise Monte Carlo\n"
-                     "4. Analise Monte Carlo Unica\n"
-                     "5. Analise Monte Carlo Total\n"
-                     "6. Sair\n"
-                     "Resposta: "))
+        acao = UserInterface.requisitar_menu(self.nome, self.vdd)
         if not acao:
             self.__atualizar_LETths()
         elif acao == 1:
@@ -112,9 +97,13 @@ class Circuito():
    
     @relatorio_de_tempo
     def __analise_monte_carlo(self):
-        pulso_out, nodo_nome, saida_nome = self.__configurar_LET()
-        num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
-        faults: int = HSRunner.run_simple_MC(self.path, self.nome, nodo_nome, saida_nome, num_analises, pulso_out, self.vdd)
+        let: LET = self.__configurar_LET()
+        _, pulso_out = alternar_combinacao(let.orientacao)
+
+        with HSRunner.SET(let):
+            num_analises = UserInterface.requisitar_num_analises()
+            faults = HSRunner.run_simple_MC(self.path, self.nome, let.nodo_nome, let.saida_nome, num_analises, pulso_out, self.vdd)
+        
         print(f"Proporcao de falhas: {100 * faults/num_analises}%")
         print("Analise monte carlo realizada com sucesso")
 
@@ -127,7 +116,7 @@ class Circuito():
         HSRunner.configure_input(self.vdd, self.entradas)
         _, pulso_out = alternar_combinacao(self.LETth.orientacao)
 
-        num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
+        num_analises = UserInterface.requisitar_num_analises()
 
         mc_dict: dict = {"analises": [num_analises]}
 
@@ -147,7 +136,7 @@ class Circuito():
     @relatorio_de_tempo
     def __analise_monte_carlo_total(self):
         # Gera as instancias de nmos e pmos da analise MC
-        num_analises: int = int(input(f"{barra_comprida}\nQuantidade de analises: "))
+        num_analises = UserInterface.requisitar_num_analises()
         
         print("Gerando instancias MC")
         var: dict = HSRunner.run_MC_var(self.path, self.arquivo, self.nome, num_analises)
@@ -195,30 +184,18 @@ class Circuito():
 
     def __instanciar_nodos(self):
         ##### SAIDAS #####
-        self.saidas = [Nodo(saida) for saida in input("saidas: ").split()]
+        entradas, saidas = UserInterface.requisistar_entradas_e_saidas()
+        self.saidas = [Nodo(saida) for saida in saidas]
 
         ##### ENTRADAS #####
-        self.entradas = [Entrada(entrada) for entrada in input("entradas: ").split()]
+        self.entradas = [Entrada(entrada) for entrada in entradas]
 
         ##### OUTROS NODOS #####
-        nodos_nomes = list()
-        ignorados_true = ["t" + entrada.nome for entrada in self.entradas]
-        ignorados_false = ["f" + entrada.nome for entrada in self.entradas]
-        with open(f"{self.path}{self.arquivo}", "r") as circuito:
-            for linha in circuito:
-                if "M" in linha:
-                    _, coletor, base, emissor, _, _, _ = linha.split()
-                    for nodo in [coletor, base, emissor]:
-                        if nodo not in ["vdd", "gnd", *nodos_nomes, *ignorados_true, *ignorados_false]:
-                            nodo = Nodo(nodo)
-                            nodos_nomes.append(nodo.nome)
-                            for saida in self.saidas:
-                                nodo.atraso[saida.nome] = 1111
-                            self.nodos.append(nodo)
+        self.nodos = [Nodo(nodo) for nodo in HSRunner.get_nodes(self.nome) if "f" not in nodo and nodo not in {"vdd", "gnd"}]
 
-    def __configurar_LET(self, fracao: float = 1) -> str:
+    def __configurar_LET(self) -> str:
         # Configuracao de pulso
-        nodo_nome, saida_nome = input("nodo e saida do LET: ").split()
+        nodo_nome, saida_nome = UserInterface.requisitar_nodo_e_saida()
         nodo: Nodo = next(nodo for nodo in self.nodos if nodo.nome == nodo_nome)
         saida: Nodo = next(saida for saida in self.saidas if saida.nome == saida_nome)
         
@@ -228,15 +205,13 @@ class Circuito():
             if let_disponivel.saida_nome == saida_nome:
                 print(alternar_combinacao(let_disponivel.orientacao), let_disponivel.corrente)
         
-        pulso_in, pulso_out = input("pulsos na entrada e saida do LET: ").split()
+        pulso_in, pulso_out = UserInterface.requisitar_pulsos()
         let: LET = next(let for let in nodo.LETs if let.saida_nome == saida.nome and let.orientacao == alternar_combinacao([pulso_in, pulso_out]))
         
         for indice, entrada in enumerate(self.entradas):
             entrada.sinal = let.validacoes[0][indice]
 
-        HSRunner.configure_SET(let, self.vdd, self.entradas, let.corrente * fracao)
-
-        return (pulso_out, nodo_nome, saida_nome) # Eu uso isso na analise monte carlo, se tirar vai dar pau
+        return let # Eu uso isso na analise monte carlo, se tirar vai dar pau
 
     @relatorio_de_tempo
     def __determinar_LETths(self):
@@ -257,7 +232,7 @@ class Circuito():
                         let_analisado = LET(9999, self.vdd, nodo.nome, saida.nome, combinacao)
 
                         print(nodo.nome, saida.nome, combinacao[0], combinacao[1], final)
-                        simulacoes += definir_corrente(self, let_analisado, final)
+                        simulacoes += CircMan.definir_corrente(self, let_analisado, final)
 
                         for let in nodo.LETs:
                             if let_analisado == let: #encontrou a combinacao correta
@@ -283,13 +258,14 @@ class Circuito():
         self.__get_atrasoCC()
         simulacoes: int = 0
         ##### BUSCA DO LETs DO CIRCUITO #####
-        self.LETth = LET(9999, self.vdd, "setup", "setup", "setup")
         for nodo in self.nodos:
             for let in nodo.LETs:
                 ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                 print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
-                simulacoes += definir_corrente(self, let, let.validacoes[0])
-                if let < self.LETth:
+                simulacoes += CircMan.definir_corrente(self, let, let.validacoes[0])
+                if not self.LETth:
+                    self.LETth = let
+                elif let < self.LETth: 
                     self.LETth = let
         print(f"{simulacoes} simulacoes feitas na atualizacao")
         JManager.codificar(self)

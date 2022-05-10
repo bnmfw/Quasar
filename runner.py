@@ -53,9 +53,8 @@ class SpiceRunner():
     def configure_input(self, vdd: float, entradas: list):
         HSManager.set_signals(vdd, entradas)
 
-    def configure_SET(self, let: LET, vdd: float, entradas: list, corrente: float = None):
-        self.configure_input(vdd, entradas)
-        self.configure_pulse(let, corrente)
+    def get_nodes(self, circ_name: str):
+        return HSManager.get_nodes(circ_name)
 
     def run_delay(self, path: str, filename: str, entrada_nome: str, saida_nome: str, vdd: float, entradas: list) -> float:
         HSManager.set_delay_measure(entrada_nome, saida_nome, vdd)

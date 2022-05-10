@@ -1,7 +1,5 @@
-from arquivos import HSManager
 from runner import HSRunner
 from components import Entrada, Nodo, LET
-import os
 
 limite_sup: float = 800
 

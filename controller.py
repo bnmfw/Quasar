@@ -1,5 +1,3 @@
-from genericpath import exists
-from sys import path
 from arquivos import alternar_combinacao, JManager, CManager
 from runner import HSRunner
 from matematica import bin2list
@@ -7,6 +5,7 @@ from corrente import definir_corrente
 from components import Nodo, Entrada, LET
 from circuito import Circuito
 from time import time
+from interface import UserInterface
 import os
 
 barra_comprida = "---------------------------"

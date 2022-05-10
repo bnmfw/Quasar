@@ -180,6 +180,17 @@ class SpiceManager():
             return
         saida[measure.label] = measure
 
+    # Le nodos de um circuito
+    def get_nodes(self, circuit_name: str) -> set:
+        nodos = {"vdd", "gnd"}
+        with open(f"circuitos/{circuit_name}/{circuit_name}", "r") as file:
+            for linha in file:
+                if "M" in linha:
+                    _, coletor, base, emissor, _, _, _ = linha.split()
+                    for nodo in [coletor, base, emissor]:
+                        nodos.add(nodo)
+        return nodos
+
     # Le measures no arquivo output.txt e retorna um dicionario
     def get_output(self, saida: dict) -> None:
         with open("output.txt", "r") as output:
@@ -355,9 +366,8 @@ class JsonManager():
 
         print("Carregamento do Json realizado com sucesso")
 
-    def decodificar(self, circuito, tensao):
+    def decodificar(self, circuito):
         circuito_codificado: dict = json.load(open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "r"))
-        circuito.vdd = tensao
 
         # Desempacotamento dos dados
         circuito.atrasoCC = circuito_codificado["atrasoCC"]
