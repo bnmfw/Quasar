@@ -13,7 +13,7 @@ if __name__ == '__main__':
 # print("\n")
 # for sets in self.sets_invalidos: print(sets)
 #
-# print("\n1111-SET invalidado em analise de tensao")
+# print("1111-SET invalidado em analise de tensao")
 # print("2222-SET invalidado em analise de pulso")
 # print("3333-SET Passou validacoes anteriores mas foi mal concluido")
 # print("4444-SET invalidado em validacao de largura de pulso")

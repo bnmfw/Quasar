@@ -37,6 +37,7 @@ class SpiceRunner():
 
         def __enter__(self):
             HSManager.set_pulse(self.let, self.corrente)
+            HSManager.set_pulse_measure(self.let.nodo_nome, self.let.saida_nome)
 
         def __exit__(self, type, value, traceback):
             HSManager.set_pulse(self.let, 0)
@@ -45,10 +46,6 @@ class SpiceRunner():
         HSManager.set_vdd(vdd)
         HSManager.set_pulse(LET(0, vdd, "none", "none", "fr"))
         HSManager.set_monte_carlo(0)
-
-    def configure_pulse(self, let: LET, corrente = None) -> None:
-        HSManager.set_pulse(let, corrente)
-        HSManager.set_pulse_measure(let.nodo_nome, let.saida_nome)
 
     def configure_input(self, vdd: float, entradas: list):
         HSManager.set_signals(vdd, entradas)
@@ -64,25 +61,31 @@ class SpiceRunner():
 
     def run_SET(self, path: str, filename: str, let: LET, corrente = None) -> tuple:
         with self.SET(let, corrente):
-            HSManager.set_pulse_measure(let.nodo_nome, let.saida_nome)
             os.system(f"cd {path} ; hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > ../../output.txt")
             pico_nodo = HSManager.get_peak_tension(let.orientacao[0], True)
             pico_saida = HSManager.get_peak_tension(let.orientacao[1])
         return (pico_nodo, pico_saida)
+    
+    def run_tensions(self, path: str, filename: str, nodo: str) -> float:
+        HSManager.set_tension_measure(nodo)
+        os.system(f"cd {path} ; hspice {filename} | grep \"minnod\|maxnod\" > ../../output.txt")
+        tensao = HSManager.get_tension()
+        return tensao
 
     def run_pulse_width(self, path:str, filename: str, let: LET, corrente: float):
-        HSManager.set_pulse(let, corrente)
-        HSManager.set_pulse_width_measure(let)
-
-        os.system(f"cd {path} ; hspice {filename} | grep \"larg\" > ../../output.txt")
-
         output: dict = {}
-        HSManager.get_output(output)
+        with self.SET(let, corrente):
+            HSManager.set_pulse_width_measure(let)
+            os.system(f"cd {path} ; hspice {filename} | grep \"larg\" > ../../output.txt")
+            HSManager.get_output(output)
 
-        if output["larg"].value == None:
+        try:
+            if output["larg"].value == None:
+                return None
+
+            return abs(output["larg"].value)
+        except ValueError or KeyError:
             return None
-
-        return abs(output["larg"].value)
 
     def run_simple_MC(self, path: str, circuit_name: str, nodo_nome: str, saida_nome: str, analises: int, pulso_out: str, vdd: float) -> int:
         HSManager.set_pulse_measure(nodo_nome, saida_nome)
@@ -94,6 +97,5 @@ class SpiceRunner():
         with self.Monte_Carlo(analises):
             os.system(f"cd {path} ; hspice {filename} > ../../output.txt")
         return HSManager.get_mc_instances(path, cir_nome, analises)
-
 
 HSRunner = SpiceRunner()

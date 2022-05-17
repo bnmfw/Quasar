@@ -52,15 +52,15 @@ class Circuito():
         self.path: str = f"circuitos/{circuito}/"
         self.arquivo: str = f"{circuito}.cir"
         self.vdd = UserInterface.requisitar_vdd()
+        HSRunner.default(self.vdd)
 
         if os.path.exists(f"{self.path}{circuito}.json"):
             JManager.decodificar(self)
-            self.__atualizar_LETths()
+            self.__atualizar_LETths(None, None)
 
         else:
             cadastro = UserInterface.requisitar_cadastro()
             if cadastro:
-                HSRunner.default(self.vdd)
                 self.__instanciar_nodos()
                 self.__get_atrasoCC()
                 self.__determinar_LETths()
@@ -79,7 +79,7 @@ class Circuito():
         
         acao = UserInterface.requisitar_menu(self.nome, self.vdd)
         if not acao:
-            self.__atualizar_LETths()
+            self.__atualizar_LETths(None, None)
         elif acao == 1:
             CManager.escrever_csv_total(self)
         elif acao == 2:
@@ -147,7 +147,7 @@ class Circuito():
         for i in var:
             print(f"index: {i} pmos: {var[i][0]} nmos: {var[i][1]}")
             with HSRunner.MC_Instance(var[i][0], var[i][1]):
-                self.__atualizar_LETths()
+                self.__atualizar_LETths(var[i][0], var[i][1])
                 saida[i] = (var[i][0], var[i][1], self.LETth.nodo_nome, self.LETth.saida_nome, self.LETth.corrente, self.LETth.valor)
 
         CManager.tup_dict_to_csv(self.path,f"{self.nome}_mc_LET.csv", saida)
@@ -253,20 +253,31 @@ class Circuito():
                         if let_analisado.corrente < 1111: break
             
     @relatorio_de_tempo
-    def __atualizar_LETths(self):
+    def __atualizar_LETths(self, pmos, nmos):
         HSRunner.default(self.vdd)
         self.__get_atrasoCC()
         simulacoes: int = 0
+        self.LETth = None
         ##### BUSCA DO LETs DO CIRCUITO #####
         for nodo in self.nodos:
             for let in nodo.LETs:
-                ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
-                print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
-                simulacoes += CircMan.definir_corrente(self, let, let.validacoes[0])
-                if not self.LETth:
-                    self.LETth = let
-                elif let < self.LETth: 
-                    self.LETth = let
+                try: 
+                    ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
+                    print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
+                    simulacoes += CircMan.atualizar_corrente(self, let, let.validacoes[0])
+                    print(f"corrente: {let.corrente}\n")
+                    if not self.LETth:
+                        self.LETth = let
+                    elif let < self.LETth: 
+                        self.LETth = let
+                except ValueError:
+                    with open("erros.txt", "a") as erro:
+                        erro.write(f"pmos {pmos} nmos {nmos}\n"
+                        f"{let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")
+                except KeyError:
+                    with open("erros.txt", "a") as erro:
+                        erro.write(f"pmos {pmos} nmos {nmos}\n"
+                        f"{let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")
         print(f"{simulacoes} simulacoes feitas na atualizacao")
         JManager.codificar(self)
 

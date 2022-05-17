@@ -21,7 +21,7 @@ $option screening_method = pearson
 $Global Variable number:        2                               
 $Local Variable number:        0                                
 $Aging Variable number:        0                                
-.TITLE 'benchmark c17 v0'
+.TITLE 'nor'
 $ rng_params = ( 2, 1000, 0, 4, 1, 1, 20.000000, 1, 1.000000,  [ 2, 2])
 $ IRV index: - 1 2
 index,nmos_rvt:@:phig_var_n:@:IGNC,pmos_rvt:@:phig_var_p:@:IGNC

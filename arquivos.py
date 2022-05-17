@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 from matematica import *
 from components import Nodo, Entrada, LET
 from dataclasses import dataclass
@@ -53,6 +54,12 @@ class SpiceManager():
             self.__write_peak_meas(arquivo, "maxout", "max", "V", saida, 1.0, 3.8)
             self.__write_peak_meas(arquivo, "minnod", "min", "V", nodo, 1.0, 3.8)
             self.__write_peak_meas(arquivo, "maxnod", "max", "V", nodo, 1.0, 3.8)
+
+    def set_tension_measure(self, nodo: str):
+        with open("circuitos/include/measure.cir", "w") as arquivo:
+            arquivo.write("*Arquivo com os measures usados\n")
+            self.__write_peak_meas(arquivo, "minnod", "min", "V", nodo, 1.0, 3.8)
+            self.__write_peak_meas(arquivo, "maxnod", "max", "V", nodo, 1.0, 3.8) 
     
     # Escreve vdd no arquivo "vdd.cir"
     @staticmethod
@@ -108,12 +115,11 @@ class SpiceManager():
 
     # Altera o arquivo "measure.cir"
     def set_pulse_width_measure(self, let: LET):
-        # print(let.vdd)
         dir_nodo, dir_saida = alternar_combinacao(let.orientacao)
         with open("circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com a leitura da largura dos pulsos\n")
             tensao = str(let.vdd * 0.5)
-            self.__write_trig_meas(arquivo, "atraso", let.nodo_nome, tensao, dir_nodo, let.saida_nome, tensao, dir_saida)
+            # self.__write_trig_meas(arquivo, "atraso", let.nodo_nome, tensao, dir_nodo, let.saida_nome, tensao, dir_saida)
             self.__write_trig_meas(arquivo, "larg", let.nodo_nome, tensao, "rise", let.nodo_nome, tensao, "fall")
 
     # Altera o valor de simulacoes monte carlo a serem feitas
@@ -195,8 +201,7 @@ class SpiceManager():
     def get_output(self, saida: dict) -> None:
         with open("output.txt", "r") as output:
             for linha in output:
-                # print(f"linha: {linha}")
-                self.__format_output_line(linha, saida) 
+                self.__format_output_line(linha, saida)
     
     # Recupera a tensao de pico
     def get_peak_tension(self, inclinacao: str, nodMeas: bool = False) -> float:
@@ -216,6 +221,15 @@ class SpiceManager():
                 return output["minout"].value
             else:
                 return output["maxout"].value
+
+    def get_tension(self) -> float:
+        output: dict = {}
+        self.get_output(output)
+        max: float = output[f"maxnod"].value
+        min: float = output[f"minnod"].value
+        if max - min > 0.05:
+            raise RuntimeError("Circuito sem pulsos tem muita variacao")
+        return max
     
     # Le um arquivo csv como mc0.csv e mt0.csv e retorna um dicionario com as colunas
     def __get_csv_data(self, filename: str, stop: str = None) -> dict:

@@ -1,0 +1,83 @@
+NAND
+pmos -0.1841 nmos 0.29
+i1 g1 ff [1, 0]
+pmos -0.4119 nmos -0.9557
+i1 g1 ff [1, 0]
+pmos -0.4341 nmos -0.3785
+i1 g1 ff [1, 0]
+pmos -0.565 nmos -0.1211
+i1 g1 ff [1, 0]
+pmos -1.4486 nmos 0.01272
+i1 g1 ff [1, 0]
+pmos -1.7405 nmos 0.3022
+i1 g1 ff [1, 0]
+pmos -0.5609 nmos -0.3555
+i1 g1 ff [1, 0]
+pmos -2.6699 nmos -0.7303
+i1 g1 ff [1, 0]
+pmos -1.5262 nmos -0.6709
+g1 g1 ff [0, 1]
+pmos -1.6075 nmos -0.04414
+i1 g1 ff [1, 0]
+pmos -0.4436 nmos -0.3803
+g1 g1 ff [0, 1]
+pmos -0.4436 nmos -0.3803
+i1 g1 ff [1, 0]
+pmos -0.7697 nmos -0.1389
+i1 g1 ff [1, 0]
+pmos -1.0131 nmos -2.8146
+i1 g1 rr [1, 1]
+pmos -0.8679 nmos -0.08365
+i1 g1 ff [1, 0]
+
+
+NOR
+pmos 0.5062 nmos 1.0667
+g1 g1 rr [0, 1]
+pmos 0.9979 nmos -0.5576
+i1 g1 rr [1, 0]
+pmos 1.8672 nmos 0.3235
+i1 g1 rr [1, 0]
+pmos 0.951 nmos 0.07249
+i1 g1 rr [1, 0]
+pmos 1.3523 nmos 2.0629
+g1 g1 rr [0, 1]
+pmos 0.1913 nmos 0.1378
+i1 g1 rr [1, 0]
+pmos 1.056 nmos -0.7299
+i1 g1 rr [1, 0]
+pmos 0.4365 nmos 2.217
+g1 g1 rr [0, 1]
+pmos 0.5143 nmos 0.8009
+g1 g1 rr [0, 1]
+pmos 1.228 nmos 0.6634
+g1 g1 rr [0, 1]
+pmos 0.007187 nmos 0.1652
+i1 g1 rr [1, 0]
+pmos 0.9565 nmos 1.5558
+g1 g1 rr [0, 1]
+pmos 0.4554 nmos 0.9893
+g1 g1 rr [0, 1]
+pmos 1.2758 nmos 0.414
+g1 g1 rr [0, 1]
+pmos 0.8244 nmos -0.5118
+i1 g1 rr [1, 0]
+pmos 0.5422 nmos 0.8391
+g1 g1 rr [0, 1]
+pmos 0.1473 nmos -0.03647
+i1 g1 rr [1, 0]
+pmos 1.1039 nmos 1.9825
+g1 g1 rr [0, 1]
+pmos 3.2717 nmos -1.4639
+i1 g1 rr [1, 0]
+pmos 1.0819 nmos -0.3161
+i1 g1 rr [1, 0]
+pmos 0.5387 nmos 1.6398
+g1 g1 rr [0, 1]
+pmos 1.8704 nmos -0.7896
+i1 g1 rr [1, 0]
+pmos 0.6675 nmos 0.6417
+i1 g1 rr [1, 0]
+
+FIM
+

@@ -1,20 +1,4 @@
  minout=  -2.2190m    at=   1.0100n
- maxout= 372.8885m    at=   2.0965n
- minout=  -2.3354m    at=   1.0083n
- maxout= 282.1871m    at=   2.0865n
- minout=  -2.0192m    at=   1.0083n
- maxout= 325.4485m    at=   2.0966n
- minout=  -2.6410m    at=   1.0106n
- maxout=   1.0110     at=   2.0860n
- minout=  -1.8798m    at=   1.0143n
- maxout= 454.4833m    at=   2.0985n
- minout= 223.7159u    at=   1.0083n
- maxout= 250.5177m    at=   2.0934n
- minout=  -3.4408m    at=   1.0103n
- maxout=   1.0827     at=   2.1072n
- minout=  -2.0612m    at=   1.0083n
- maxout= 303.1409m    at=   2.0891n
- minout=  -1.8438m    at=   1.0142n
- maxout= 563.6248m    at=   2.1060n
- minout=  -2.1882m    at=   1.0083n
- maxout= 300.8638m    at=   2.0887n
+ maxout= 360.2572m    at=   2.0932n
+ minnod=  -1.0979m    at=   1.0100n
+ maxnod= 361.0840m    at=   2.0932n
