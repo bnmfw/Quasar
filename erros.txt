@@ -81,3 +81,20 @@ i1 g1 rr [1, 0]
 
 FIM
 
+Erros do circuito: nand
+pmos -1.1911 nmos 0.6131 g1 g1 rr [1, 1]
+
+Erros do circuito: nand
+
+Erros do circuito: nand
+
+Erros do circuito: nand
+
+Erros do circuito: nand
+pmos -1.1049 nmos -0.708 g1 g1 ff [0, 1]
+pmos -1.5244 nmos -0.7372 g1 g1 ff [0, 1]
+
+Erros do circuito: nor
+pmos 0.6936 nmos -1.4617 i1 g1 rr [1, 0]
+pmos -1.6919 nmos -1.1331 i1 g1 ff [0, 0]
+pmos -0.3784 nmos -0.7433 i1 g1 rr [1, 0]

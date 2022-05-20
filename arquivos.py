@@ -1,4 +1,3 @@
-from multiprocessing.sharedctypes import Value
 from matematica import *
 from components import Nodo, Entrada, LET
 from dataclasses import dataclass
@@ -31,7 +30,7 @@ def alternar_combinacao(combinacao):
 
 class SpiceManager():
     def __init__(self):
-        pass
+        self.output: dict = None
 
     def __write_peak_meas(self, arquivo, label: str, peak: str, grandeza: str, node: str, start: float, finish: float):
         if not peak in {"min", "max"}:
@@ -46,7 +45,7 @@ class SpiceManager():
 
         arquivo.write(f".meas tran {label} TRIG v({trig}) val='{trig_value}' {trig_inclin}=1 TARG v({targ}) val='{targ_value}' {targ_inclin}=1\n")
     
-    def set_pulse_measure(self, nodo: str, saida: str):
+    def measure_pulse(self, nodo: str, saida: str):
         with open("circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com os measures usados\n")
 
@@ -55,7 +54,7 @@ class SpiceManager():
             self.__write_peak_meas(arquivo, "minnod", "min", "V", nodo, 1.0, 3.8)
             self.__write_peak_meas(arquivo, "maxnod", "max", "V", nodo, 1.0, 3.8)
 
-    def set_tension_measure(self, nodo: str):
+    def measure_tension(self, nodo: str):
         with open("circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com os measures usados\n")
             self.__write_peak_meas(arquivo, "minnod", "min", "V", nodo, 1.0, 3.8)
@@ -103,7 +102,7 @@ class SpiceManager():
             sets.write(f"Iseu {let.nodo_nome} gnd EXP(0 {corrente}u 2n 50p 164p 200p) //fall\n")
 
     # Altera o arquivo "measure.cir"
-    def set_delay_measure(self, input: str, out: str, vdd: float):
+    def measure_delay(self, input: str, out: str, vdd: float):
         with open("circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com atraso a ser medido\n")
             tensao = str(vdd / 2)
@@ -114,7 +113,7 @@ class SpiceManager():
             # self.__write_trig_meas(arquivo, "largura", out, tensao, "fall", out, tensao, "rise")
 
     # Altera o arquivo "measure.cir"
-    def set_pulse_width_measure(self, let: LET):
+    def measure_pulse_width(self, let: LET):
         dir_nodo, dir_saida = alternar_combinacao(let.orientacao)
         with open("circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com a leitura da largura dos pulsos\n")
@@ -166,7 +165,6 @@ class SpiceManager():
         return self.Meas_from(label.strip(), ajustar(value), ajustar(time))
 
     def __format_measure_trig(self, linha: str) -> Meas_targ:
-        # print(linha)
         if "not found" in linha:
             label, *_ = linha.split("=")
             return self.Meas_targ(label.strip(), None, None, None)
@@ -189,7 +187,7 @@ class SpiceManager():
     # Le nodos de um circuito
     def get_nodes(self, circuit_name: str) -> set:
         nodos = {"vdd", "gnd"}
-        with open(f"circuitos/{circuit_name}/{circuit_name}", "r") as file:
+        with open(f"circuitos/{circuit_name}/{circuit_name}.cir", "r") as file:
             for linha in file:
                 if "M" in linha:
                     _, coletor, base, emissor, _, _, _ = linha.split()
@@ -198,18 +196,20 @@ class SpiceManager():
         return nodos
 
     # Le measures no arquivo output.txt e retorna um dicionario
-    def get_output(self, saida: dict) -> None:
+    def get_output(self) -> dict:
+        saida: dict = {"None": None}
         with open("output.txt", "r") as output:
             for linha in output:
                 self.__format_output_line(linha, saida)
+        self.output = saida
+        return saida
     
     # Recupera a tensao de pico
     def get_peak_tension(self, inclinacao: str, nodMeas: bool = False) -> float:
         if not inclinacao in {"f", "r"}:
             raise ValueError(f"Inclinacao com valor nao admitido: {inclinacao}")
 
-        output: dict = {}
-        self.get_output(output)
+        output = self.get_output()
 
         if nodMeas:
             if inclinacao == "f":
@@ -223,13 +223,12 @@ class SpiceManager():
                 return output["maxout"].value
 
     def get_tension(self) -> float:
-        output: dict = {}
-        self.get_output(output)
-        max: float = output[f"maxnod"].value
-        min: float = output[f"minnod"].value
-        if max - min > 0.05:
-            raise RuntimeError("Circuito sem pulsos tem muita variacao")
-        return max
+        output = self.get_output()
+        max: float = output["maxnod"].value
+        min: float = output["minnod"].value
+        # if max - min > 0.05:
+        #     raise RuntimeError(f"Circuito sem pulsos tem muita variacao {max} {min}")
+        return (max, min)
     
     # Le um arquivo csv como mc0.csv e mt0.csv e retorna um dicionario com as colunas
     def __get_csv_data(self, filename: str, stop: str = None) -> dict:
@@ -276,8 +275,8 @@ class SpiceManager():
     # Le o atraso do nodo a saida no arquivo "output.txt"
     def get_delay(self) -> float:
 
-        output: dict = {}
-        self.get_output(output)
+        output = self.get_output()
+        # print(output)
 
         atrasos: list = [output["atraso_rr"].value, output["atraso_ff"].value, output["atraso_rf"].value, output["atraso_fr"].value]
         # Erro
@@ -289,9 +288,7 @@ class SpiceManager():
         # Sorting
         for i, atraso in enumerate(atrasos):
             atrasos[i] = abs(atraso)
-        # print(f"not sorted: {atrasos}")
         atrasos.sort()
-        # print(f"sorted: {atrasos}")
         return atrasos[1]
     
     # Leitura das instancias do arquivo "<circuito>.mc0.csv"

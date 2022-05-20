@@ -56,6 +56,7 @@ class Circuito():
 
         if os.path.exists(f"{self.path}{circuito}.json"):
             JManager.decodificar(self)
+            self.__get_atrasoCC()
             self.__atualizar_LETths(None, None)
 
         else:
@@ -144,17 +145,24 @@ class Circuito():
         saida: dict = {"indice": ("pmos", "nmos", "nodo", "saida", "corrente", "LETth")}
 
         print("Encontrando LETth para cada instancia")
+
+        with open("erros.txt", "a") as erro:
+            erro.write(f"\nErros do circuito: {self.nome}\n")
+                
+
         for i in var:
             print(f"index: {i} pmos: {var[i][0]} nmos: {var[i][1]}")
             with HSRunner.MC_Instance(var[i][0], var[i][1]):
                 self.__atualizar_LETths(var[i][0], var[i][1])
                 saida[i] = (var[i][0], var[i][1], self.LETth.nodo_nome, self.LETth.saida_nome, self.LETth.corrente, self.LETth.valor)
+            if i > num_analises: break
 
         CManager.tup_dict_to_csv(self.path,f"{self.nome}_mc_LET.csv", saida)
         print("Pontos da analise Monte Carlo gerados com sucesso")
 
     @relatorio_de_tempo
     def __get_atrasoCC(self):
+        self.__verificar_tensoes()
         self.atrasoCC: float = 0
         simulacoes: int = 0
 
@@ -179,12 +187,12 @@ class Circuito():
 
                     if atraso > self.atrasoCC:
                         self.atrasoCC = atraso
-
+        # if self.atrasoCC == 0: exit()
         print(f"Atraso CC do arquivo: {self.atrasoCC} simulacoes: {simulacoes}")
 
     def __instanciar_nodos(self):
         ##### SAIDAS #####
-        entradas, saidas = UserInterface.requisistar_entradas_e_saidas()
+        entradas, saidas = UserInterface.requisitar_entradas_e_saidas()
         self.saidas = [Nodo(saida) for saida in saidas]
 
         ##### ENTRADAS #####
@@ -252,10 +260,23 @@ class Circuito():
 
                         if let_analisado.corrente < 1111: break
             
+    def __verificar_tensoes(self):
+        for saida in self.saidas:
+            for i in range(2 ** len(self.entradas)):
+
+                # Atribui o Sinal das Entradas que Nao Estao em Analise
+                sinais_entrada = bin2list(i, len(self.entradas))
+                for entrada, sinal in zip(self.entradas, sinais_entrada):
+                    entrada.sinal = sinal
+
+                HSRunner.configure_input(self.vdd, self.entradas)
+                tensao = CircMan.verificar_nivel_logico(self.path, self.arquivo, self.vdd, saida)
+                print(f"{[entrada.sinal for entrada in self.entradas]} resultam em {tensao}")
+    
     @relatorio_de_tempo
     def __atualizar_LETths(self, pmos, nmos):
         HSRunner.default(self.vdd)
-        self.__get_atrasoCC()
+        # self.__get_atrasoCC()
         simulacoes: int = 0
         self.LETth = None
         ##### BUSCA DO LETs DO CIRCUITO #####
@@ -270,14 +291,11 @@ class Circuito():
                         self.LETth = let
                     elif let < self.LETth: 
                         self.LETth = let
-                except ValueError:
+                except KeyboardInterrupt:
+                    exit() 
+                except (ValueError, KeyError):
                     with open("erros.txt", "a") as erro:
-                        erro.write(f"pmos {pmos} nmos {nmos}\n"
-                        f"{let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")
-                except KeyError:
-                    with open("erros.txt", "a") as erro:
-                        erro.write(f"pmos {pmos} nmos {nmos}\n"
-                        f"{let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")
+                        erro.write(f"pmos {pmos} nmos {nmos} {let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")  
         print(f"{simulacoes} simulacoes feitas na atualizacao")
         JManager.codificar(self)
 

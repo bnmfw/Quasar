@@ -41,16 +41,16 @@ Total number of independent random variables = 0
 Number of independent global random variables = 0
 Number of independent local random variables = 0
 Number of independent aging random variables = 0
-Number of Samples:  1000
+Number of Samples:  1
 Number of Meas Failure: 0
 Number of Job Abortion: 0
 ##sampling_method = SRS|LHS, the first MC sample is nominal value and is excluded in Monte Carlo data mining.
 Responses with very small variation dropped from further analysis:
 (variable = value)
-maxnod = 9.55e-05
-maxout = 0.000214
-minnod = -9.07e-05
-minout = -0.000201
+maxnod = 0
+maxout = 0
+minnod = 0
+minout = 0
 ##end_of_Sumary_Statistics
 
 ##Sample_Moments
@@ -69,9 +69,6 @@ minout = -0.000201
 #(Q3.167124183e-3, Q99.996832876)                 (-4, 4)
 #(Q2.866515719e-5, Q99.999971335)                 (-5, 5)
 #(Q9.865876450e-8, Q99.999999901)                 (-6, 6)
-                CI              Q1.000000e-02   Q1.000000e-01   Q1.349898e-01   Q1              Q2.275013195    Q5              
-                                Q1.586553e+01   Q25             Q75             Q84.134473607   Q95             Q97.724986805   
-                                Q99             Q99.865010197   Q99.9           Q99.99          
 ##end_of_Quantiles
 
 ##Extremes_and_Corners

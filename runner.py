@@ -37,7 +37,7 @@ class SpiceRunner():
 
         def __enter__(self):
             HSManager.set_pulse(self.let, self.corrente)
-            HSManager.set_pulse_measure(self.let.nodo_nome, self.let.saida_nome)
+            HSManager.measure_pulse(self.let.nodo_nome, self.let.saida_nome)
 
         def __exit__(self, type, value, traceback):
             HSManager.set_pulse(self.let, 0)
@@ -54,10 +54,11 @@ class SpiceRunner():
         return HSManager.get_nodes(circ_name)
 
     def run_delay(self, path: str, filename: str, entrada_nome: str, saida_nome: str, vdd: float, entradas: list) -> float:
-        HSManager.set_delay_measure(entrada_nome, saida_nome, vdd)
+        HSManager.measure_delay(entrada_nome, saida_nome, vdd)
         HSManager.set_signals(vdd, entradas)
         os.system(f"cd {path} ; hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > ../../output.txt")
-        return HSManager.get_delay()
+        delay = HSManager.get_delay()
+        return delay
 
     def run_SET(self, path: str, filename: str, let: LET, corrente = None) -> tuple:
         with self.SET(let, corrente):
@@ -66,8 +67,8 @@ class SpiceRunner():
             pico_saida = HSManager.get_peak_tension(let.orientacao[1])
         return (pico_nodo, pico_saida)
     
-    def run_tensions(self, path: str, filename: str, nodo: str) -> float:
-        HSManager.set_tension_measure(nodo)
+    def run_tensions(self, path: str, filename: str, nodo_nome: str) -> float:
+        HSManager.measure_tension(nodo_nome)
         os.system(f"cd {path} ; hspice {filename} | grep \"minnod\|maxnod\" > ../../output.txt")
         tensao = HSManager.get_tension()
         return tensao
@@ -75,20 +76,20 @@ class SpiceRunner():
     def run_pulse_width(self, path:str, filename: str, let: LET, corrente: float):
         output: dict = {}
         with self.SET(let, corrente):
-            HSManager.set_pulse_width_measure(let)
+            HSManager.measure_pulse_width(let)
             os.system(f"cd {path} ; hspice {filename} | grep \"larg\" > ../../output.txt")
-            HSManager.get_output(output)
+            output = HSManager.get_output()
 
         try:
             if output["larg"].value == None:
                 return None
 
             return abs(output["larg"].value)
-        except ValueError or KeyError:
+        except KeyError:
             return None
 
     def run_simple_MC(self, path: str, circuit_name: str, nodo_nome: str, saida_nome: str, analises: int, pulso_out: str, vdd: float) -> int:
-        HSManager.set_pulse_measure(nodo_nome, saida_nome)
+        HSManager.measure_pulse(nodo_nome, saida_nome)
         with self.Monte_Carlo(analises):
             os.system(f"cd {path} ; hspice {circuit_name}.cir| grep \"minout\|maxout\" > ../../output.txt")
         return HSManager.get_mc_faults(path, circuit_name, analises, pulso_out, vdd)

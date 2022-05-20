@@ -6,12 +6,12 @@ class CircuitManager:
         self.circuito = None
         self.__limite_sup = 500
 
-    def verificar_nivel_logico(self, path: str, filename: str, vdd: float, nodo: Nodo, esperado: bool) -> bool:
-        tensao = HSRunner.run_tensions(path, filename, nodo.nome)
-        if (tensao < vdd / 2 and not esperado) or (tensao > vdd / 2 and esperado):
-            return True
-        else:
-            return False
+    def verificar_nivel_logico(self, path: str, filename: str, vdd: float, nodo: Nodo) -> bool:
+        return HSRunner.run_tensions(path, filename, nodo.nome)
+        # if (tensao < vdd / 2 and not esperado) or (tensao > vdd / 2 and esperado):
+        #     return True
+        # else:
+        #     return False
     
     # Funcao que verifica se aquela analise de radiacao eh valida (ou seja, se tem o efeito desejado na saida)
     def verificar_validacao(self, circuito, vdd: float, let: LET) -> tuple:
