@@ -7,7 +7,7 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 2920824
+Username: bborges, PID: 94323
 Command_Line_Options: nand_dm.hsp.json
 
 System Activity Monitoring (format subject to change)
@@ -17,7 +17,7 @@ Hostname: aorus
 N cores: 12
 Model name: AMD Ryzen 5 3600 6-Core Processor
 Cache size: 512 KB
-OS kernel: Linux 5.4.0-109-generic
+OS kernel: Linux 5.4.0-113-generic
 OS release: NAME="Ubuntu"
 VERSION="20.04.4 LTS (Focal Fossa)"
 ID=ubuntu
@@ -30,8 +30,8 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 1.260000, 0.730000, 0.450000
-Virtual memory: Total=31.4G, Available=29.5G, Percent=5.9, Used=1.4G, Free=12.8G, Active=4.1G, Inactive=13.6G, Buffers=278.0M, Cached=16.9G, Shared=14.0M, Slab=788.7M
+CPU load: 0.920000, 0.570000, 0.250000
+Virtual memory: Total=31.4G, Available=29.6G, Percent=5.5, Used=1.3G, Free=27.1G, Active=2.5G, Inactive=1.1G, Buffers=114.0M, Cached=2.9G, Shared=14.0M, Slab=532.0M
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
@@ -53,11 +53,11 @@ Filesystem     1G-blocks  Used Available Use% Mounted on
 
 Output directory /home/bborges/github/circuitos/nand file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
-/dev/sdb4            620   433       156  74% /home
+/dev/sdb4            620   550        38  94% /home
 
-Start time: 2022-05-17 19:36:57 1652827017.4
+Start time: 2022-06-10 19:09:31 1654898971.1
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0    10.5      29.5       261.0      156.0        NA       NA       98.5   89.5M    346.9M  
+         0     7.7      29.6       261.0       38.0        NA       NA      196.7   88.8M    346.1M  

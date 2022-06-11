@@ -41,6 +41,7 @@ class Circuito():
         self.sets_invalidos = []
 
     def run(self):
+        HSRunner.test_spice()
         self.__tela_inicial()
         while True:
             self.__tela_principal()
@@ -199,7 +200,7 @@ class Circuito():
         self.entradas = [Entrada(entrada) for entrada in entradas]
 
         ##### OUTROS NODOS #####
-        self.nodos = [Nodo(nodo) for nodo in HSRunner.get_nodes(self.nome) if "f" not in nodo and nodo not in {"vdd", "gnd"}]
+        self.nodos = [Nodo(nodo) for nodo in HSRunner.get_nodes(self.nome) if "f" not in nodo and "t" not in nodo and nodo not in {"vdd", "gnd"}]
 
     def __configurar_LET(self) -> str:
         # Configuracao de pulso
@@ -276,7 +277,7 @@ class Circuito():
     @relatorio_de_tempo
     def __atualizar_LETths(self, pmos, nmos):
         HSRunner.default(self.vdd)
-        # self.__get_atrasoCC()
+        self.__get_atrasoCC()
         simulacoes: int = 0
         self.LETth = None
         ##### BUSCA DO LETs DO CIRCUITO #####

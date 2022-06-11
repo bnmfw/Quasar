@@ -42,6 +42,13 @@ class SpiceRunner():
         def __exit__(self, type, value, traceback):
             HSManager.set_pulse(self.let, 0)
 
+    def test_spice(self) -> bool:
+        os.system(f"hspice empty.cir > output.txt")
+        with open("output.txt", "r") as file:
+            for linha in file:
+                if "Cannot connect to license server system" in linha:
+                    exit("LicenseError: Cannot connect to license server system")
+    
     def default(self, vdd: float) -> None:
         HSManager.set_vdd(vdd)
         HSManager.set_pulse(LET(0, vdd, "none", "none", "fr"))

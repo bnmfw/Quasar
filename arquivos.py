@@ -133,7 +133,9 @@ class SpiceManager():
     @staticmethod
     def set_variability(pvar = None, nvar = None):
         pmedia: float = 4.8108
+        pparam: float = (0.05*pmedia)/3
         nmedia: float = 4.372
+        nparam: float = (0.05*nmedia)/3
         with open ("circuitos/include/mc.cir","w") as mc:
             if pvar == None or nvar == None:
                 mc.write("* Analise MC\n"
@@ -141,8 +143,8 @@ class SpiceManager():
                 ".param phig_var_n = gauss(4.372, 0.05, 3)")
             else:
                 mc.write("* Analise MC\n"
-                f".param phig_var_p = {pmedia+pvar}\n"
-                f".param phig_var_n = {nmedia+nvar}")
+                f".param phig_var_p = {pmedia+pvar*pparam}\n"
+                f".param phig_var_n = {nmedia+nvar*nparam}")
 
     ################### SEPARACAO SETS E GETS ################################
 
