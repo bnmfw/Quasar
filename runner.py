@@ -1,5 +1,5 @@
 from arquivos import HSManager
-from components import LET
+from components import LET, Entrada
 import os
 
 class SpiceRunner():
@@ -55,14 +55,20 @@ class SpiceRunner():
         HSManager.set_monte_carlo(0)
 
     def configure_input(self, vdd: float, entradas: list):
-        HSManager.set_signals(vdd, entradas)
+        entradas_dicionario = {}
+        for entrada in entradas:
+            entradas_dicionario[entrada.nome] = entrada.sinal
+        HSManager.set_signals(vdd, entradas_dicionario)
 
     def get_nodes(self, circ_name: str):
         return HSManager.get_nodes(circ_name)
 
     def run_delay(self, path: str, filename: str, entrada_nome: str, saida_nome: str, vdd: float, entradas: list) -> float:
         HSManager.measure_delay(entrada_nome, saida_nome, vdd)
-        HSManager.set_signals(vdd, entradas)
+        entradas_dicionario = {}
+        for entrada in entradas:
+            entradas_dicionario[entrada.nome] = entrada.sinal
+        HSManager.set_signals(vdd, entradas_dicionario)
         os.system(f"cd {path} ; hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > ../../output.txt")
         delay = HSManager.get_delay()
         return delay

@@ -71,21 +71,21 @@ class SpiceManager():
 
     # Escreve os sinais no arquivo "fontes.cir"
     @staticmethod
-    def set_signals(vdd: float, entradas: list):
+    def set_signals(vdd: float, entradas: dict):
         with open("circuitos/include/fontes.cir", "w") as sinais:
             sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
 
             # Escreve o sinal analogico a partir do sinal logico
-            for i in range(len(entradas)):
-                sinais.write(f"V{entradas[i].nome} {entradas[i].nome} gnd ")
-                if entradas[i].sinal == 1:
+            for entrada, nivel in entradas.items():
+                sinais.write(f"V{entrada} {entrada} gnd ")
+                if nivel == 1:
                     sinais.write(f"{vdd}\n")
-                elif entradas[i].sinal == 0:
+                elif nivel == 0:
                     sinais.write("0.0\n")
-                elif entradas[i].sinal == "atraso":
+                elif nivel == "atraso":
                     sinais.write(f"PWL(0n 0 1n 0 1.01n {vdd} 3n {vdd} 3.01n 0)\n")
                 else:
-                    print("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", entradas[i].sinal)
+                    raise ValueError("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", nivel)
 
     # Escreve informacoes no arquivo "SETs.cir"
     def set_pulse(self, let: LET, corrente = None):
@@ -132,10 +132,6 @@ class SpiceManager():
     # Altera o arquivo "mc.cir"
     @staticmethod
     def set_variability(pvar = None, nvar = None):
-        pmedia: float = 4.8108
-        pparam: float = (0.05*pmedia)/3
-        nmedia: float = 4.372
-        nparam: float = (0.05*nmedia)/3
         with open ("circuitos/include/mc.cir","w") as mc:
             if pvar == None or nvar == None:
                 mc.write("* Analise MC\n"
@@ -143,8 +139,8 @@ class SpiceManager():
                 ".param phig_var_n = gauss(4.372, 0.05, 3)")
             else:
                 mc.write("* Analise MC\n"
-                f".param phig_var_p = {pmedia+pvar*pparam}\n"
-                f".param phig_var_n = {nmedia+nvar*nparam}")
+                f".param phig_var_p = {pvar}\n"
+                f".param phig_var_n = {nvar}")
 
     ################### SEPARACAO SETS E GETS ################################
 
@@ -303,7 +299,7 @@ class SpiceManager():
         ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
 
         for i, pmos, nmos in zip(dados["index"], dados[ps], dados[ns]):
-            instancias[i] = (float(pmos), float(nmos))
+            instancias[i] = [float(pmos), float(nmos)]
         return instancias
 
 class CSVManager():

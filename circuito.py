@@ -143,6 +143,10 @@ class Circuito():
         print("Gerando instancias MC")
         var: dict = HSRunner.run_MC_var(self.path, self.arquivo, self.nome, num_analises)
 
+        for i in var:
+            var[i][0] = 4.8108 + var[i][0] * (0.05 * 4.8108)/3
+            var[i][1] = 4.372 + var[i][1] * (0.05 * 4.372)/3
+
         saida: dict = {"indice": ("pmos", "nmos", "nodo", "saida", "corrente", "LETth")}
 
         print("Encontrando LETth para cada instancia")
