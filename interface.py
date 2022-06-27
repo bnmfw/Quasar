@@ -1,6 +1,9 @@
+from arquivos import CManager
+
 barra_comprida = "---------------------------"
 
-class GUI:
+
+class InterfaceComponentes:
 
     def __init__(self) -> None:
         pass
@@ -42,7 +45,28 @@ class GUI:
             cadastro: bool = input(f"{barra_comprida}\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n) ")
         return cadastro == "y"
 
+class GUI:
+    def __init__(self) -> None:
+        pass
+
+    def __tela_principal(self):
+        acao = GUIComponents.requisitar_menu(self.nome, self.vdd)
+        if not acao:
+            self.__atualizar_LETths(None, None)
+        elif acao == 1:
+            CManager.escrever_csv_total(self)
+        elif acao == 2:
+            self.analise_manual()
+        elif acao == 3:
+            self.__analise_monte_carlo_progressiva()
+        elif acao == 4:
+            self.__analise_monte_carlo()
+        elif acao == 5:
+            self.__analise_monte_carlo_total()
+        elif acao == 6:
+            exit()
+        else:
+            print("Comando invalido")
 
 
-
-UserInterface = GUI()
+GUIComponents = InterfaceComponentes()

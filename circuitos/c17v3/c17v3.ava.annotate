@@ -1,0 +1,28 @@
+****** Advanced Variability Analysis ******
+Copyright (c) 2018 - 2022 by Synopsys, Inc. All Rights Reserved.
+
+This software and the associated documentation are proprietary
+to Synopsys, Inc. This software may only be used in accordance
+with the terms and conditions of a written license agreement with
+Synopsys, Inc. All other use, reproduction, or distribution of
+this software is strictly prohibited.
+
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Mon Jun 27 01:09:45 2022
+Hostname: aorus, Username: bborges, PID: 1405605
+Working_Directory : /home/bborges/github/circuitos/c17v3
+Command_Line_Options : c17v3_dm.hsp.json
+
+This file format and content are subject to change.
+================================================================
+
+
+*** This file format and content are subject to change ***
+
+#Annotation for local variation contributors
+#=============
+<<maxnod>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+<<maxout>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+<<minnod>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+<<minout>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+#=============
+#Selective simulation for extreme corners: Monte= list(59, 128, 136, 439, 485, 806)

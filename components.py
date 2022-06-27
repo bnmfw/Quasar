@@ -54,10 +54,10 @@ class Nodo:
             self.LETs.append(let)
 
 class LET:
-    def __init__(self, corrente:float, vdd:float, nodo_nome:str, saida_nome:str, orientacao:str, validacoes:list = None):
+    def __init__(self, corrente:float, vdd:float, nodo_nome:str, saida_nome:list, orientacao:str, validacoes:list = None):
         self.valor: float = 1111
         self.__corrente: float = corrente
-        self.orientacao: str = orientacao
+        self.orientacao: list = orientacao
         self.vdd: float = vdd
         self.nodo_nome: str = nodo_nome
         self.saida_nome: str = saida_nome
@@ -120,27 +120,30 @@ class LET:
 
 if __name__ == "__main__":
 
+    objeto_codificado = vars(LET(154.3, 0.7, "nodo1", "saida1", ["fall", "rise"]))
+    print(objeto_codificado.values())
+
     #TESTES DE ENTRADA
-    e1 = Entrada("ent1", "t")
-    e2 = Entrada("ent2", "t")
-    print(e1.codec())
-    e2.decodec(e1.codec())
-    assert e1.nome == e2.nome and e1.sinal == e2.sinal, "Entrada FALHOU"
+    # e1 = Entrada("ent1", "t")
+    # e2 = Entrada("ent2", "t")
+    # print(e1.codec())
+    # e2.decodec(e1.codec())
+    # assert e1.nome == e2.nome and e1.sinal == e2.sinal, "Entrada FALHOU"
 
-    # TESTE DE NODO
-    n1 = Nodo("nodo1")
-    n2 = Nodo("nodo2")
-    n2.decodec(n1.codec(),0.7)
-    assert n1.nome == n2.nome and n1.atraso == n2.atraso and \
-            n1.LETs == n2.LETs and\
-           n1.LETth == n2.LETth, "Nodo FALHOU"
+    # # TESTE DE NODO
+    # n1 = Nodo("nodo1")
+    # n2 = Nodo("nodo2")
+    # n2.decodec(n1.codec(),0.7)
+    # assert n1.nome == n2.nome and n1.atraso == n2.atraso and \
+    #         n1.LETs == n2.LETs and\
+    #        n1.LETth == n2.LETth, "Nodo FALHOU"
 
-    # TESTE DE LET
-    let1 = LET(154.3, 0.7, "nodo1", "saida1", "fr")
-    let2 = LET(300, 0.7, "nodo1", "saida1", "rf")
-    let2.decodec(let1.codec())
-    assert let1 == let2, "LET FALHOU no teste de Overloading e Codificacao"
+    # # TESTE DE LET
+    # let1 = LET(154.3, 0.7, "nodo1", "saida1", ["fall", "rise"])
+    # let2 = LET(300, 0.7, "nodo1", "saida1", ["rise","fall"])
+    # let2.decodec(let1.codec())
+    # assert let1 == let2, "LET FALHOU no teste de Overloading e Codificacao"
 
-    entrada = [0,0,1,0,1]
-    let1.append(entrada)
-    assert entrada in let1.validacoes, "LET FALHOU no teste de Append"
+    # entrada = [0,0,1,0,1]
+    # let1.append(entrada)
+    # assert entrada in let1.validacoes, "LET FALHOU no teste de Append"

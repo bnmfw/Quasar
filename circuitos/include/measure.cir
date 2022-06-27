@@ -1,5 +1,5 @@
-*Arquivo com os measures usados
-.meas tran minout min V(g1) from=1.0n to=3.8n
-.meas tran maxout max V(g1) from=1.0n to=3.8n
-.meas tran minnod min V(i1) from=1.0n to=3.8n
-.meas tran maxnod max V(i1) from=1.0n to=3.8n
+*Arquivo com atraso a ser medido
+.meas tran atraso_rr TRIG v(a) val='0.35' rise=1 TARG v(g1) val='0.35' rise=1
+.meas tran atraso_rf TRIG v(a) val='0.35' rise=1 TARG v(g1) val='0.35' fall=1
+.meas tran atraso_ff TRIG v(a) val='0.35' fall=1 TARG v(g1) val='0.35' fall=1
+.meas tran atraso_fr TRIG v(a) val='0.35' fall=1 TARG v(g1) val='0.35' rise=1

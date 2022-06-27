@@ -8,3 +8,5 @@ Erros do circuito: nor
 Erros do circuito: nor
 
 Erros do circuito: nand
+
+Erros do circuito: c17v3

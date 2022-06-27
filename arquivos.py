@@ -6,28 +6,6 @@ import os
 
 analise_manual = False
 
-def alternar_combinacao(combinacao):
-    if type(combinacao) == str:
-        if combinacao == "rr":
-            return ["rise", "rise"]
-        elif combinacao == "rf":
-            return ["rise", "fall"]
-        elif combinacao == "fr":
-            return ["fall", "rise"]
-        else:
-            return ["fall", "fall"]
-    elif type(combinacao) == list:
-        if combinacao == ["rise", "rise"]:
-            return "rr"
-        elif combinacao == ["rise", "fall"]:
-            return "rf"
-        elif combinacao == ["fall", "rise"]:
-            return "fr"
-        else:
-            return "ff"
-    else:
-        raise TypeError("Entrada nao foi uma lista (ex: [\"rise\",\"fall\"]) ou uma string (ex: \"rf\"")
-
 class SpiceManager():
     def __init__(self):
         self.output: dict = None
@@ -89,16 +67,16 @@ class SpiceManager():
 
     # Escreve informacoes no arquivo "SETs.cir"
     def set_pulse(self, let: LET, corrente = None):
-        if not let.orientacao[0] in {"f", "r"}:
-            raise ValueError("Nao recebi f ou r como inclincacao do pulso")
+        if not let.orientacao[0] in {"fall", "rise", None}:
+            raise ValueError("Nao recebi fall ou rise como inclincacao do pulso")
         if corrente == None:
             corrente = let.corrente
 
         with open("circuitos/include/SETs.cir", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
-            if let.orientacao[0] == "f": sets.write("*")
+            if not let.orientacao[0] == "rise": sets.write("*")
             sets.write(f"Iseu gnd {let.nodo_nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
-            if let.orientacao[0] == "r": sets.write("*")
+            if not let.orientacao[0] == "fall": sets.write("*")
             sets.write(f"Iseu {let.nodo_nome} gnd EXP(0 {corrente}u 2n 50p 164p 200p) //fall\n")
 
     # Altera o arquivo "measure.cir"
@@ -114,11 +92,9 @@ class SpiceManager():
 
     # Altera o arquivo "measure.cir"
     def measure_pulse_width(self, let: LET):
-        dir_nodo, dir_saida = alternar_combinacao(let.orientacao)
         with open("circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com a leitura da largura dos pulsos\n")
             tensao = str(let.vdd * 0.5)
-            # self.__write_trig_meas(arquivo, "atraso", let.nodo_nome, tensao, dir_nodo, let.saida_nome, tensao, dir_saida)
             self.__write_trig_meas(arquivo, "larg", let.nodo_nome, tensao, "rise", let.nodo_nome, tensao, "fall")
 
     # Altera o valor de simulacoes monte carlo a serem feitas
@@ -204,18 +180,18 @@ class SpiceManager():
     
     # Recupera a tensao de pico
     def get_peak_tension(self, inclinacao: str, nodMeas: bool = False) -> float:
-        if not inclinacao in {"f", "r"}:
+        if not inclinacao in {"fall", "rise"}:
             raise ValueError(f"Inclinacao com valor nao admitido: {inclinacao}")
 
         output = self.get_output()
 
         if nodMeas:
-            if inclinacao == "f":
+            if inclinacao == "fall":
                 return output["minnod"].value
             else:
                 return output["maxnod"].value
         else:
-            if inclinacao == "f":
+            if inclinacao == "fall":
                 return output["minout"].value
             else:
                 return output["maxout"].value
@@ -278,8 +254,6 @@ class SpiceManager():
 
         atrasos: list = [output["atraso_rr"].value, output["atraso_ff"].value, output["atraso_rf"].value, output["atraso_fr"].value]
         # Erro
-
-        print(f"atrasos: {atrasos}")
         if None in atrasos:
             return 0
         
@@ -324,7 +298,7 @@ class CSVManager():
             sets.write("Nodo,Saida,Pulso,Pulso,Corrente,LETs,Num Val,Validacoes->\n")
             for nodo in circuito.nodos:
                 for let in nodo.LETs:
-                    c0, c1 = alternar_combinacao(let.orientacao)
+                    c0, c1 = let.orientacao
                     sets.write(f"{nodo.nome},{let.saida_nome},{c0},{c1},{let.corrente:.2f},{let.valor:.2e},{len(let)}")
                     for validacao in let.validacoes:
                         sets.write(",'")
@@ -403,46 +377,3 @@ class JsonManager():
 HSManager = SpiceManager()
 JManager = JsonManager()
 CManager = CSVManager()
-
-if __name__ == "__main__":
-    print("Rodando Teste de Codificacao...")
-
-    let1 = LET(154.3, 0.7, "nodo1", "saida1", "fr")
-    let2 = LET(300, 0.7, "nodo1", "saida1", "rf")
-    let3 = LET(190.8, 0.7, "nodo2", "saida1", "fr")
-    let4 = LET(156.9, 0.7, "nodo2", "saida1", "ff")
-    let5 = LET(7.4, 0.7, "saida", "saida1", "rr")
-    let6 = LET(288.1, 0.7, "saida", "saida1", "rf")
-
-    nodo1 = Nodo("nodo1")
-    nodo1.validacao = {"saida1": ["x", "x", "x", "x", "x"]}
-    nodo1.LETs = [let1, let2]
-    nodo1.LETth = 154.3
-
-    nodo2 = Nodo("nodo2")
-    nodo2.validacao = {"saida1": ["x", "x", "x", "x", "x"]}
-    nodo2.LETs = [let2, let3]
-    nodo2.LETth = 156.9
-
-    nodo3 = Nodo("saida1")
-    nodo3.validacao = {"saida1": ["x", "x", "x", "x", "x"]}
-    nodo3.LETs = [let4, let5]
-    nodo3.LETth = 7.4
-
-
-    class FakeCircuit:
-        def __init__(self):
-            self.nome = "teste_circuito"
-            self.entradas = [Entrada("a", "t"), Entrada("b", "t")]
-            self.saidas = [nodo3]
-            self.nodos = [nodo1, nodo2, nodo3]
-            self.vdd = 0.7
-            self.atrasoCC = 9999.0
-
-
-    circuito = FakeCircuit()
-
-    JManager.codificar(circuito)
-    JManager.decodificar(circuito, 0.7, True)
-
-    print("Testes realizados com sucesso!")

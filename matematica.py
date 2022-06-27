@@ -1,13 +1,18 @@
 from math import sqrt
-# Recebe um inteiro e retonra uma lista com seus digitos binarios
-def bin2list(inteiro: int, tamanho:int) -> list:
-    lista = []
-    binario = bin(inteiro)[2:] #Transforma o inteiro no binario em texto
-    for digito in range(tamanho-len(binario)):
-        lista.append(0)
-    for digito in binario:
-        lista.append(int(digito))
-    return lista
+
+# Recebe um inteiro e retorna uma lista de validacoes possiveis
+def combinacoes_possiveis(tamanho: int):
+    total: int = 2 ** tamanho
+    combinacoes: list = []
+    for i in range(total):
+        binario = bin(i)[2:]
+        combinacao: list = []
+        for _ in range(tamanho - len(binario)):
+            combinacao.append(0)
+        for digito in binario:
+            combinacao.append(int(digito))
+        combinacoes.append(combinacao)
+    return combinacoes
 
 # Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
 def ajustar(tensao: str) -> float:
@@ -57,7 +62,6 @@ def desvio_padrao(lista: list, media: float) -> float:
 if __name__ == "__main__":
     assert ajustar("  24.56u ") == (24.56 * 10 ** -6), "ajuste_valor FALHOU"
     assert ajustar("2.349e-02") == 0.02349, "ajuste_valor FALHOU"
-    assert bin2list(14, 4) == [1,1,1,0], "bin2list FALHOU"
     #assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
     assert corrente_para_let(100) == 50264550.26455026, "corrente_para_let FALHOU" # DEFINIDO PELA PROPRIA FUNCAO
     assert media([1.1, 2.8, 3.6, 4.1]) == 2.9, "media FALHOU"

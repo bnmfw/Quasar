@@ -6,7 +6,7 @@ class SpiceRunner():
     def __init__(self) -> None:
         pass
 
-    class Monte_Carlo(object):
+    class Monte_Carlo():
         def __init__ (self, num_testes):
             self.num = num_testes
 
@@ -16,7 +16,7 @@ class SpiceRunner():
         def __exit__(self, type, value, traceback):
             HSManager.set_monte_carlo(0)
 
-    class MC_Instance(object):
+    class MC_Instance():
         def __init__ (self, pmos = None, nmos = None):
             self.pmos = pmos
             self.nmos = nmos
@@ -27,7 +27,7 @@ class SpiceRunner():
         def __exit__(self, type, value, traceback):
             HSManager.set_variability(None, None)
 
-    class SET(object):
+    class SET():
         def __init__ (self, let: LET, corrente: float = None):
             self.let = let
             if corrente == None:
@@ -42,6 +42,16 @@ class SpiceRunner():
         def __exit__(self, type, value, traceback):
             HSManager.set_pulse(self.let, 0)
 
+    class Vdd():
+        def __init__ (self, vdd: float):
+            self.vdd = vdd
+
+        def __enter__(self):
+            HSManager.set_vdd(self.vdd)
+
+        def __exit__(self):
+            pass
+
     def test_spice(self) -> bool:
         os.system(f"hspice empty.cir > output.txt")
         with open("output.txt", "r") as file:
@@ -51,7 +61,7 @@ class SpiceRunner():
     
     def default(self, vdd: float) -> None:
         HSManager.set_vdd(vdd)
-        HSManager.set_pulse(LET(0, vdd, "none", "none", "fr"))
+        HSManager.set_pulse(LET(0, vdd, "none", "none", [None, None]))
         HSManager.set_monte_carlo(0)
 
     def configure_input(self, vdd: float, entradas: list):
