@@ -1,5 +1,2 @@
-*Arquivo com atraso a ser medido
-.meas tran atraso_rr TRIG v(a) val='0.35' rise=1 TARG v(g1) val='0.35' rise=1
-.meas tran atraso_rf TRIG v(a) val='0.35' rise=1 TARG v(g1) val='0.35' fall=1
-.meas tran atraso_ff TRIG v(a) val='0.35' fall=1 TARG v(g1) val='0.35' fall=1
-.meas tran atraso_fr TRIG v(a) val='0.35' fall=1 TARG v(g1) val='0.35' rise=1
+*Arquivo com a leitura da largura dos pulsos
+.meas tran larg TRIG v(e2) val='0.35' rise=1 TARG v(e2) val='0.35' fall=1

@@ -25,7 +25,7 @@ class Nodo:
         self.nome = nome
         self.LETs = []
         # Eh um dicionario de dicionarios
-        self.LETth: LET = LET(9999, 0.0, self.nome, "saida", "aa")
+        self.LETth: LET = LET(None, None, self.nome, "saida", "aa")
         self.atraso = {}
 
     def __repr__(self):
@@ -45,17 +45,17 @@ class Nodo:
     def decodec(self, dic:dict, vdd:float):
         if type(dic) != dict or type(vdd) != float: raise TypeError(f"dic (dict): {type(dic)}, vdd (float): {type(vdd)}")
         self.nome = dic["nome"]
-        self.LETth = LET(9999, vdd, "nodo", "saida", "orientacao")
+        self.LETth = LET(None, vdd, "nodo", "saida", "orientacao")
         self.LETth.decodec(dic["critico"])
         self.atraso = dic["atraso"]
         for dicionario_let in dic["lets"]:
-            let = LET(9999, vdd, "nodo", "saida", "orientacao")
+            let = LET(None, vdd, "nodo", "saida", "orientacao")
             let.decodec(dicionario_let)
             self.LETs.append(let)
 
 class LET:
     def __init__(self, corrente:float, vdd:float, nodo_nome:str, saida_nome:list, orientacao:str, validacoes:list = None):
-        self.valor: float = 1111
+        self.valor: float = None
         self.__corrente: float = corrente
         self.orientacao: list = orientacao
         self.vdd: float = vdd

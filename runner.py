@@ -4,6 +4,7 @@ import os
 
 class SpiceRunner():
     def __init__(self) -> None:
+        self.test_spice()
         pass
 
     class Monte_Carlo():
@@ -52,6 +53,19 @@ class SpiceRunner():
         def __exit__(self):
             pass
 
+    class Inputs():
+        def __init__ (self, vdd: float, entradas: list):
+            self.vdd = vdd
+            self.entradas = {}
+            for entrada in entradas:
+                self.entradas[entrada.nome] = entrada.sinal
+
+        def __enter__(self):
+            HSManager.set_signals(self.vdd, self.entradas)
+
+        def __exit__(self):
+            pass
+
     def test_spice(self) -> bool:
         os.system(f"hspice empty.cir > output.txt")
         with open("output.txt", "r") as file:
@@ -63,12 +77,6 @@ class SpiceRunner():
         HSManager.set_vdd(vdd)
         HSManager.set_pulse(LET(0, vdd, "none", "none", [None, None]))
         HSManager.set_monte_carlo(0)
-
-    def configure_input(self, vdd: float, entradas: list):
-        entradas_dicionario = {}
-        for entrada in entradas:
-            entradas_dicionario[entrada.nome] = entrada.sinal
-        HSManager.set_signals(vdd, entradas_dicionario)
 
     def get_nodes(self, circ_name: str):
         return HSManager.get_nodes(circ_name)

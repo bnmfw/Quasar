@@ -1,4 +1,7 @@
-from arquivos import CManager
+from arquivos import CManager, JManager
+from circuitManager import CircMan
+from circuito import Circuito
+from runner import HSRunner
 
 barra_comprida = "---------------------------"
 
@@ -47,12 +50,25 @@ class InterfaceComponentes:
 
 class GUI:
     def __init__(self) -> None:
-        pass
+        self.__tela_inicial
+        self.circuito = None
 
+    def __tela_inicial(self):
+        nome = GUIComponents.requisitar_circuito()
+        self.circuito = Circuito(nome)
+        self.circuito.vdd = GUIComponents.requisitar_vdd()
+        with HSRunner.Vdd(self.circuito.vdd):
+            CircMan.get_atrasoCC(self.circuito)
+            if not self.circuito.iniciado:
+                self.circuito.iniciado = True
+                CircMan.determinar_LETths(self.circuito)
+            else:
+                CircMan.atualizar_LETths(self.circuito)
+    
     def __tela_principal(self):
         acao = GUIComponents.requisitar_menu(self.nome, self.vdd)
         if not acao:
-            self.__atualizar_LETths(None, None)
+            CircMan.atualizar_LETths(self.circuito)
         elif acao == 1:
             CManager.escrever_csv_total(self)
         elif acao == 2:
@@ -67,6 +83,9 @@ class GUI:
             exit()
         else:
             print("Comando invalido")
+
+    def _get_pulse_config(self):
+        nodo_nome, saida_nome = GUIComponents.requisitar_nodo_e_saida()
 
 
 GUIComponents = InterfaceComponentes()

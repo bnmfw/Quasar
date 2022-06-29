@@ -34,41 +34,28 @@ class Circuito():
         self.vdd: float = 0
         self.atrasoCC: float = 0
         self.LETth: LET = None
+        self.__iniciado = False
 
-        ##### RELATORIO DO CIRCUITO #####
-        self.sets_validos = []
-        self.sets_invalidos = []
-
-    def run(self):
-        HSRunner.test_spice()
-        self.__start()
-        while True:
-            self.__tela_principal()
-
-    def __start(self):
-        # Escolha de dados do circuito
-        self.vdd = GUIComponents.requisitar_vdd()
-
-        # CASO O CIRCUITO JA ESTEJA ARQUIVADO NUM JSON
+        # Decodifica do Json caso exista, se nao existir tenta criar a partir do arquivo
         if os.path.exists(f"{self.path}{self.nome}.json"):
             JManager.decodificar(self)
-            with HSRunner.Vdd(self.vdd):
-                CircMan.get_atrasoCC(self)
-                CircMan.atualizar_LETths(self, None, None)
-            return
-
-        # CASO O CIRCUITO NAO ESTEJA ARQUIVADO NUM JSON
-        cadastro = GUIComponents.requisitar_cadastro()
-        if cadastro:
+            self.__iniciado = True
+        else:
             self.__instanciar_nodos()
-            with HSRunner.Vdd(self.vdd):
-                CircMan.get_atrasoCC(self)
-                CircMan.determinar_LETths(self)
+
+    @property
+    def iniciado(self):
+        return self.__iniciado
+
+    @iniciado.setter
+    def iniciado(self, iniciado):
+        if not self.__iniciado and iniciado:
             JManager.codificar(self)
-            return
-        
-        # USUARIO NAO QUIS CADASTRAR O CIRCUITO
-        exit()
+        self.__iniciado = iniciado
+
+    def run(self):
+        while True:
+            self.__tela_principal()
 
     def __tela_principal(self):
         
@@ -123,25 +110,26 @@ class Circuito():
         # Configuracao do LETth do circuito no Hspice
         for indice, entrada in enumerate(self.entradas):
             entrada.sinal = self.LETth.validacoes[0][indice]
-        HSRunner.configure_input(self.vdd, self.entradas)
-        _, pulso_out = self.LETth.orientacao
+        
+        with HSRunner.Inputs(self.vdd, self.entradas), HSRunner.Vdd(self.vdd):
+            _, pulso_out = self.LETth.orientacao
 
-        num_analises = GUIComponents.requisitar_num_analises()
+            num_analises = GUIComponents.requisitar_num_analises()
 
-        mc_dict: dict = {"analises": [num_analises]}
+            mc_dict: dict = {"analises": [num_analises]}
 
-        step: float = 0.05
-        for frac in [round(num*step,2) for num in range(1, int(1/step)+1)]:
+            step: float = 0.05
+            for frac in [round(num*step,2) for num in range(1, int(1/step)+1)]:
 
-            with HSRunner.SET(self.LETth, self.LETth.corrente * frac):
+                with HSRunner.SET(self.LETth, self.LETth.corrente * frac):
 
-                falhas: int = HSRunner.run_simple_MC(self.path, self.nome, self.LETth.nodo_nome, self.LETth.saida_nome, num_analises, pulso_out, self.vdd)
-                mc_dict[frac] = [falhas]
+                    falhas: int = HSRunner.run_simple_MC(self.path, self.nome, self.LETth.nodo_nome, self.LETth.saida_nome, num_analises, pulso_out, self.vdd)
+                    mc_dict[frac] = [falhas]
 
-        print(mc_dict)
-        CManager.tup_dict_to_csv(self.path,f"{self.nome}_mc.csv",mc_dict)
+            print(mc_dict)
+            CManager.tup_dict_to_csv(self.path,f"{self.nome}_mc.csv",mc_dict)
 
-        print("Analise monte carlo realizada com sucesso")
+            print("Analise monte carlo realizada com sucesso")
 
     @relatorio_de_tempo
     def __analise_monte_carlo_total(self):
