@@ -7,7 +7,7 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 1279644
+Username: bborges, PID: 1344502
 Command_Line_Options: nand_dm.hsp.json
 
 System Activity Monitoring (format subject to change)
@@ -30,8 +30,8 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 0.370000, 0.130000, 0.040000
-Virtual memory: Total=31.4G, Available=29.7G, Percent=5.4, Used=1.2G, Free=18.8G, Active=5.0G, Inactive=6.5G, Buffers=566.2M, Cached=10.8G, Shared=14.0M, Slab=861.8M
+CPU load: 0.400000, 0.250000, 0.320000
+Virtual memory: Total=31.4G, Available=29.4G, Percent=6.4, Used=1.6G, Free=18.5G, Active=5.3G, Inactive=6.5G, Buffers=572.0M, Cached=10.8G, Shared=14.0M, Slab=866.2M
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
@@ -55,9 +55,9 @@ Output directory /home/bborges/github/circuitos/nand file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
 /dev/sdb4            620   500        88  86% /home
 
-Start time: 2022-07-12 14:24:20 1657646660.3
+Start time: 2022-07-12 16:00:38 1657652438.8
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0     3.1      29.7       261.0       88.0        NA       NA      172.9   88.8M    346.2M  
+         0     3.3      29.4       261.0       88.0        NA       NA      196.4   89.1M    346.3M  

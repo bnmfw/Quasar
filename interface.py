@@ -52,6 +52,7 @@ class InterfaceComponentes:
 class GUI:
     def __init__(self) -> None:
         self.circuito = None
+        HSRunner.default(0.7)
         self.__tela_inicial()
         while True:
             self.__tela_principal()
@@ -83,7 +84,7 @@ class GUI:
         elif acao == 4:
             self.circuito.analise_monte_carlo()
         elif acao == 5:
-            self.circuito.analise_monte_carlo_total()
+            CircMan.analise_monte_carlo_total(self.circuito)
         elif acao == 6:
             exit()
         else:

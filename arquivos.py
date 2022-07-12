@@ -273,7 +273,7 @@ class SpiceManager():
         ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
 
         for i, pmos, nmos in zip(dados["index"], dados[ps], dados[ns]):
-            instancias[i] = [float(pmos), float(nmos)]
+            instancias[int(float(i))] = [float(pmos), float(nmos)]
         return instancias
 
 class CSVManager():

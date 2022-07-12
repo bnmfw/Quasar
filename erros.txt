@@ -18,3 +18,14 @@ Erros do circuito: nand
 Erros do circuito: nand
 
 Erros do circuito: nand
+
+Erros do circuito: nand
+
+Erros do circuito: nand
+
+Erros do circuito: nand
+pmos 4.8280387000000005 nmos 4.3524935933333335 i1 g1 ['rise', 'rise'] [1, 1]
+
+Erros do circuito: nand
+
+Erros do circuito: nand

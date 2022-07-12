@@ -1,12 +1,38 @@
 from matematica import combinacoes_possiveis
 from runner import HSRunner
 from components import *
+from arquivos import CManager
+import json
+
+barra_comprida = "---------------------------"
 
 class CircuitManager:
     def __init__(self):
         self.circuito = None
         self.__limite_sup: float = 400
-        self.__limite_sim: int = 25 
+        self.__limite_sim: int = 25
+
+        # Estado de simulacoes MC
+        self.em_analise: bool = False
+        self.__num_analises: int = None
+        self.__atual: int = None
+        self.__var: dict = None
+    
+    def __dump_MC(self, saida, circuito):
+        estado: dict = {"analise": self.em_analise, 
+                        "num": self.__num_analises, 
+                        "atual": self.__atual, 
+                        "var": self.__var,
+                        "saida": saida}
+        json.dump(estado, open(f"circuitos/{circuito.nome}/MC_context.json", "w"))
+
+    def __load_MC(self, circuito):
+        estado: dict = json.load(open(f"circuitos/{circuito.nome}/MC_context.json", "r"))
+        self.em_analise = estado["analise"]
+        self.__num_analises = estado["num"]
+        self.__atual = estado["atual"]
+        self.__var = estado["var"]
+        return estado["saida"]
     
     ##### VERIFICA SE UM LET EH VALIDO #####
     def verificar_validacao(self, circuito, vdd: float, let: LET) -> tuple:
@@ -217,20 +243,20 @@ class CircuitManager:
             ##### BUSCA DO LETs DO CIRCUITO #####
             for nodo in circuito.nodos:
                 for let in nodo.LETs:
-                    try: 
-                        ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
-                        print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
-                        simulacoes += self.definir_corrente(circuito, let, let.validacoes[0], safe=True)
-                        print(f"corrente: {let.corrente}\n")
-                        if not circuito.LETth:
-                            circuito.LETth = let
-                        elif let < circuito.LETth: 
-                            circuito.LETth = let
-                    except KeyboardInterrupt:
-                        exit() 
-                    except (ValueError, KeyError):
-                        with open("erros.txt", "a") as erro:
-                            erro.write(f"pmos {pmos} nmos {nmos} {let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")  
+                    # try: 
+                    ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
+                    print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
+                    simulacoes += self.definir_corrente(circuito, let, let.validacoes[0], safe=True)
+                    print(f"corrente: {let.corrente}\n")
+                    if not circuito.LETth:
+                        circuito.LETth = let
+                    elif let < circuito.LETth: 
+                        circuito.LETth = let
+                    # except KeyboardInterrupt:
+                    #     exit() 
+                    # except (ValueError, KeyError):
+                    #     with open("erros.txt", "a") as erro:
+                    #         erro.write(f"pmos {pmos} nmos {nmos} {let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")  
             print(f"{simulacoes} simulacoes feitas na atualizacao")
 
     ##### DETERMINA OS LETs DE UM CIRCUITO #####
@@ -273,5 +299,65 @@ class CircuitManager:
                                 break
                         else:
                             nodo.LETs.append(let_analisado)
+
+    ##### INICIA A VARIABILIDADE PARA A ANALISE MC ####
+    def __determinar_variabilidade(self, circuito):
+        num_analises = int(input(f"{barra_comprida}\nQuantidade de analises: "))
+        print("Gerando instancias MC")
+        var: dict = HSRunner.run_MC_var(circuito.path, circuito.arquivo, circuito.nome, num_analises)
+
+        for i in var:
+            var[i][0] = 4.8108 + var[i][0] * (0.05 * 4.8108)/3
+            var[i][1] = 4.372 + var[i][1] * (0.05 * 4.372)/3
+
+        # Estado do manejador
+        self.em_analise = True
+        self.__num_analises = num_analises
+        self.__var = var
+        self.__atual = 0
+        self.__dump_MC(None, circuito)
+    
+    ##### REALIZA A ANALISE MONTE CARLO TOTAL #####
+    def analise_monte_carlo_total(self, circuito):
+        
+        ## Gera o arquivo caso nao exista ##
+        try:
+            self.__load_MC(circuito)
+        except FileNotFoundError:
+            self.__dump_MC(None, circuito)
+        
+        ### Carregamento ou nao de simulacoes
+        if not self.em_analise:
+            print("Encontrando LETth para cada instancia")
+            self.__determinar_variabilidade(circuito)
+            saida: dict = {"indice": ("pmos", "nmos", "nodo", "saida", "corrente", "LETth")}
+        else:
+            print("\nSimulacao em andamento encontrada! continuando de onde parou...\n")
+            saida = self.__load_MC(circuito)
+
+        # ### Arquivo com controle de errosS
+        # with open("erros.txt", "a") as erro: erro.write(f"\nErros do circuito: {circuito.nome}\n")
+
+        for i, (pmos, nmos) in self.__var.items():
+            ### Guarda que com ctz tem como melhorar
+            if int(i) <= int(self.__atual): continue
+            if int(i) > int(self.__num_analises): break
+
+            print(f"index: {i} pmos: {pmos} nmos: {nmos}")
+            
+            self.__atual = i
+
+            with HSRunner.MC_Instance(pmos, nmos):
+                CircMan.get_atrasoCC(circuito)
+                CircMan.atualizar_LETths(circuito, pmos, nmos)
+                saida[i] = (round(pmos,4), round(nmos,4), circuito.LETth.nodo_nome, circuito.LETth.saida_nome, circuito.LETth.corrente, circuito.LETth.valor)
+                self.__dump_MC(saida, circuito)
+
+        CManager.tup_dict_to_csv(circuito.path,f"{circuito.nome}_mc_LET.csv", saida)
+        print("Pontos da analise Monte Carlo gerados com sucesso")
+
+        self.em_analise = False
+        self.__var = None
+        self.__dump_MC(None, circuito)
 
 CircMan = CircuitManager()

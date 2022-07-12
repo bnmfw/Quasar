@@ -89,37 +89,6 @@ class Circuito():
 
             print("Analise monte carlo realizada com sucesso")
 
-    def analise_monte_carlo_total(self):
-        # Gera as instancias de nmos e pmos da analise MC
-        num_analises = int(input(f"{barra_comprida}\nQuantidade de analises: "))
-        
-        print("Gerando instancias MC")
-        var: dict = HSRunner.run_MC_var(self.path, self.arquivo, self.nome, num_analises)
-
-        for i in var:
-            var[i][0] = 4.8108 + var[i][0] * (0.05 * 4.8108)/3
-            var[i][1] = 4.372 + var[i][1] * (0.05 * 4.372)/3
-
-        saida: dict = {"indice": ("pmos", "nmos", "nodo", "saida", "corrente", "LETth")}
-
-        print("Encontrando LETth para cada instancia")
-
-        with open("erros.txt", "a") as erro:
-            erro.write(f"\nErros do circuito: {self.nome}\n")
-
-        # print(var)
-
-        for i, (pmos, nmos) in var.items():
-            print(f"index: {i} pmos: {pmos} nmos: {nmos}")
-            with HSRunner.MC_Instance(pmos, nmos):
-                CircMan.get_atrasoCC(self)
-                CircMan.atualizar_LETths(self, pmos, nmos)
-                saida[i] = (round(pmos,4), round(nmos,4), self.LETth.nodo_nome, self.LETth.saida_nome, self.LETth.corrente, self.LETth.valor)
-            if i > num_analises: break
-
-        CManager.tup_dict_to_csv(self.path,f"{self.nome}_mc_LET.csv", saida)
-        print("Pontos da analise Monte Carlo gerados com sucesso")
-
     def __instanciar_nodos(self):
         entradas, saidas = (input("entradas: ").split() , input("saidas: ").split())
         ##### SAIDAS #####
