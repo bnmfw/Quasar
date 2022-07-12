@@ -2,6 +2,7 @@ from arquivos import CManager, JManager
 from circuitManager import CircMan
 from circuito import Circuito
 from runner import HSRunner
+from matematica import Time
 
 barra_comprida = "---------------------------"
 
@@ -50,8 +51,10 @@ class InterfaceComponentes:
 
 class GUI:
     def __init__(self) -> None:
-        self.__tela_inicial
         self.circuito = None
+        self.__tela_inicial()
+        while True:
+            self.__tela_principal()
 
     def __tela_inicial(self):
         nome = GUIComponents.requisitar_circuito()
@@ -66,19 +69,21 @@ class GUI:
                 CircMan.atualizar_LETths(self.circuito)
     
     def __tela_principal(self):
-        acao = GUIComponents.requisitar_menu(self.nome, self.vdd)
+        acao = GUIComponents.requisitar_menu(self.circuito.nome, self.circuito.vdd)
         if not acao:
-            CircMan.atualizar_LETths(self.circuito)
+            with Time():
+                CircMan.atualizar_LETths(self.circuito)
+            JManager.codificar(self.circuito)
         elif acao == 1:
-            CManager.escrever_csv_total(self)
+            CManager.escrever_csv_total(self.circuito)
         elif acao == 2:
-            self.analise_manual()
+            self.circuito.analise_manual()
         elif acao == 3:
-            self.__analise_monte_carlo_progressiva()
+            self.circuito.analise_monte_carlo_progressiva()
         elif acao == 4:
-            self.__analise_monte_carlo()
+            self.circuito.analise_monte_carlo()
         elif acao == 5:
-            self.__analise_monte_carlo_total()
+            self.circuito.analise_monte_carlo_total()
         elif acao == 6:
             exit()
         else:
@@ -89,3 +94,4 @@ class GUI:
 
 
 GUIComponents = InterfaceComponentes()
+# tela = GUI()

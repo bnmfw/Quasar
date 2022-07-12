@@ -9,7 +9,7 @@
 ##================================================================
 *** This file format is subject to change **
 
-Measure File: nand.mt0.csv
+Measure File: c17v3.mt0.csv
 
 ##Variation_Options
 #------------------
@@ -41,16 +41,16 @@ Total number of independent random variables = 0
 Number of independent global random variables = 0
 Number of independent local random variables = 0
 Number of independent aging random variables = 0
-Number of Samples:  10
+Number of Samples:  200
 Number of Meas Failure: 0
 Number of Job Abortion: 0
 ##sampling_method = SRS|LHS, the first MC sample is nominal value and is excluded in Monte Carlo data mining.
 Responses with very small variation dropped from further analysis:
 (variable = value)
-maxnod = 0.000539
-maxout = 0.0011
-minnod = -0.00149
-minout = -0.00305
+maxnod = 1.03
+maxout = 0.705
+minnod = 0.00178
+minout = -0.00251
 ##end_of_Sumary_Statistics
 
 ##Sample_Moments
@@ -69,7 +69,7 @@ minout = -0.00305
 #(Q3.167124183e-3, Q99.996832876)                 (-4, 4)
 #(Q2.866515719e-5, Q99.999971335)                 (-5, 5)
 #(Q9.865876450e-8, Q99.999999901)                 (-6, 6)
-                CI              Q25             Q75             
+                CI              Q1              Q5              Q25             Q75             Q95             Q99             
 ##end_of_Quantiles
 
 ##Extremes_and_Corners

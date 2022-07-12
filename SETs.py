@@ -1,10 +1,9 @@
 from circuito import Circuito
-from interface import GUIComponents
+from interface import GUIComponents, GUI
 
 def main():
-    nome = GUIComponents.requisitar_circuito()
-    circuito = Circuito(nome)
-    circuito.run()
+    GUI()
+
 
 if __name__ == '__main__':
     main()

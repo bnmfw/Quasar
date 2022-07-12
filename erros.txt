@@ -10,3 +10,11 @@ Erros do circuito: nor
 Erros do circuito: nand
 
 Erros do circuito: c17v3
+
+Erros do circuito: nand
+
+Erros do circuito: nand
+
+Erros do circuito: nand
+
+Erros do circuito: nand

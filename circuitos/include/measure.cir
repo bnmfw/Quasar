@@ -1,2 +1,5 @@
-*Arquivo com a leitura da largura dos pulsos
-.meas tran larg TRIG v(e2) val='0.35' rise=1 TARG v(e2) val='0.35' fall=1
+*Arquivo com os measures usados
+.meas tran minout min V(g1) from=1.0n to=3.8n
+.meas tran maxout max V(g1) from=1.0n to=3.8n
+.meas tran minnod min V(i1) from=1.0n to=3.8n
+.meas tran maxnod max V(i1) from=1.0n to=3.8n

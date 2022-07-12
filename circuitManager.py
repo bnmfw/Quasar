@@ -1,7 +1,6 @@
 from matematica import combinacoes_possiveis
 from runner import HSRunner
 from components import *
-from arquivos import JManager
 
 class CircuitManager:
     def __init__(self):
@@ -233,7 +232,6 @@ class CircuitManager:
                         with open("erros.txt", "a") as erro:
                             erro.write(f"pmos {pmos} nmos {nmos} {let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")  
             print(f"{simulacoes} simulacoes feitas na atualizacao")
-            JManager.codificar(circuito)
 
     ##### DETERMINA OS LETs DE UM CIRCUITO #####
     def determinar_LETths(self, circuito):

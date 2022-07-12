@@ -1,4 +1,23 @@
 from math import sqrt
+from time import perf_counter
+
+class Time():
+    def __init__(self) -> None:
+        pass
+
+    def __enter__(self) -> None:
+        self.__start = perf_counter()
+
+    def __exit__(self, a, b, c):
+        end = perf_counter()
+        tempo = int(end - self.__start)
+        dias: int = tempo // 86400
+        horas: int = (tempo % 86400) // 3600
+        minutos: int = (tempo % 3600) // 60
+        if dias: print(f"{dias} dias, ", end='')
+        if horas: print(f"{horas} horas, ", end='')
+        if minutos: print(f"{minutos} minutos e ", end='')
+        print(f"{tempo % 60} segundos de execucao")
 
 # Recebe um inteiro e retorna uma lista de validacoes possiveis
 def combinacoes_possiveis(tamanho: int):

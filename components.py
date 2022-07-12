@@ -43,7 +43,7 @@ class Nodo:
         return dic
 
     def decodec(self, dic:dict, vdd:float):
-        if type(dic) != dict or type(vdd) != float: raise TypeError(f"dic (dict): {type(dic)}, vdd (float): {type(vdd)}")
+        if not isinstance(dic, dict) or not isinstance(vdd,(int, float)): raise TypeError(f"dic (dict): {type(dic)}, vdd (float): {type(vdd)}")
         self.nome = dic["nome"]
         self.LETth = LET(None, vdd, "nodo", "saida", "orientacao")
         self.LETth.decodec(dic["critico"])

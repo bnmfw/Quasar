@@ -50,7 +50,7 @@ class SpiceRunner():
         def __enter__(self):
             HSManager.set_vdd(self.vdd)
 
-        def __exit__(self):
+        def __exit__(self, type, value, traceback):
             pass
 
     class Inputs():
@@ -63,7 +63,7 @@ class SpiceRunner():
         def __enter__(self):
             HSManager.set_signals(self.vdd, self.entradas)
 
-        def __exit__(self):
+        def __exit__(self, type, value, traceback):
             pass
 
     def test_spice(self) -> bool:
