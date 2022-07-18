@@ -224,9 +224,6 @@ class CircuitManager:
         # Todas as entradas em todas as saidas com todas as combinacoes
         for entrada_analisada in circuito.entradas:
 
-            #### ASSUMINDO QUE EH SEMPRE A ENTRADA E (PARECE O CASO)
-            if entrada_analisada.nome != "e":
-                continue
 
             for saida in circuito.saidas:
                 for validacao in combinacoes_possiveis(len(circuito.entradas)):

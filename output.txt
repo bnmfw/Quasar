@@ -1,26 +1,4 @@
-Using: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice empty.cir
- ****** PrimeSim HSPICE -- S-2021.09-2 linux64 (Oct 28 2021 7326465) ******
-  Copyright (c) 1986 - 2022 by Synopsys, Inc. All Rights Reserved.
-  This software and the associated documentation are proprietary
-  to Synopsys, Inc. This software may only be used in accordance
-  with the terms and conditions of a written license agreement with
-  Synopsys, Inc. All other use, reproduction, or distribution of
-  this software is strictly prohibited.
-  Input File: empty.cir                                                         
-  Command line options: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice empty.cir
-  Start time: Mon Jul 18 10:08:29 2022
- lic:  
- lic: FLEXlm: SDK_12.9.6 
- lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: 7f0101               PID:      978970 
- lic: Using FLEXlm license file: 
- lic: 27020@localhost 
- lic: Checkout 1 hspice 
- lic: License/Maintenance for hspice will expire on 30-jun-2024/2022.06 
- lic: 1(in_use)/50(total) FLOATING license(s) on SERVER 27020@localhost 
- lic:   
-           job total runtime         0.00 seconds
-
-
- lic: Release hspice token(s) 
- lic: total license checkout elapse time:        0.02(s)
+ minout=  -1.5415m    at=   3.0100n
+ maxout=   1.0615m    at=   2.0200n
+ minnod=-565.2258u    at=   2.0225n
+ maxnod= 627.6001u    at=   1.0115n
