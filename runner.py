@@ -106,10 +106,12 @@ class SpiceRunner():
 
     def run_pulse_width(self, path:str, filename: str, let: LET, corrente: float):
         output: dict = {}
+        # print(f"corrente: {corrente}")
         with self.SET(let, corrente):
             HSManager.measure_pulse_width(let)
             os.system(f"cd {path} ; hspice {filename} | grep \"larg\" > ../../output.txt")
             output = HSManager.get_output()
+        # print(f"output: {output}")
 
         try:
             if output["larg"].value == None:

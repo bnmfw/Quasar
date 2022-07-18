@@ -18,6 +18,7 @@ class CircuitManager:
         self.__atual: int = None
         self.__var: dict = None
     
+    ##### DESCARREGA O CONTEXTO DAS SIMULACOES DA ANALISE MC #####
     def __dump_MC(self, saida, circuito):
         estado: dict = {"analise": self.em_analise, 
                         "num": self.__num_analises, 
@@ -26,6 +27,7 @@ class CircuitManager:
                         "saida": saida}
         json.dump(estado, open(f"circuitos/{circuito.nome}/MC_context.json", "w"))
 
+    ##### CARREGA O CONTEXTO DAS SIMULACOES DA ANALISE MC #####
     def __load_MC(self, circuito):
         estado: dict = json.load(open(f"circuitos/{circuito.nome}/MC_context.json", "r"))
         self.em_analise = estado["analise"]
@@ -146,9 +148,10 @@ class CircuitManager:
             csup: float = limite_sup
             cinf: float = self.encontrar_corrente_minima(circuito, let)
             corrente: float = cinf
+            sup_flag: bool = False
 
             # Busca binaria pela falha
-            for _ in range(self.__limite_sim):
+            for i in range(self.__limite_sim):
 
                 # Roda o HSPICE e salva os valores no arquivo de texto
                 _, tensao_pico = HSRunner.run_SET(circuito.path, circuito.arquivo, let, corrente)
@@ -180,6 +183,7 @@ class CircuitManager:
                         print("LIMITE SUPERIOR AUMENTADO - DIVERGENCIA POSITIVA\n")
                         csup += 100
                         limite_sup += 100
+                        sup_flag = True
 
                 ##### BUSCA BINARIA #####
                 elif let.orientacao[1] == "fall":
@@ -194,6 +198,7 @@ class CircuitManager:
                         csup = corrente
 
                 corrente: float = float((csup + cinf) / 2)
+                # print(f"Corrente: {corrente}")
 
             #### LIMITE SIMULACOES FEITAS NA BUSCA ATINGIDO ####
 
@@ -206,16 +211,23 @@ class CircuitManager:
             ### DIVERGENCIA ###
             else:
                 print("LET NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO\n")
-                let.corrente = None
+                let.corrente = 99999 if sup_flag else 11111
             return simulacoes
 
     ##### ENCONTRA O ATRASO DE CAMINHO CRITICO PARA UM CIRCUITO #####
     def get_atrasoCC(self, circuito):
+        entrada_critica = None
+        saida_critica = None
         circuito.atrasoCC = 0
         simulacoes: int = 0
 
         # Todas as entradas em todas as saidas com todas as combinacoes
         for entrada_analisada in circuito.entradas:
+
+            #### ASSUMINDO QUE EH SEMPRE A ENTRADA E (PARECE O CASO)
+            if entrada_analisada.nome != "e":
+                continue
+
             for saida in circuito.saidas:
                 for validacao in combinacoes_possiveis(len(circuito.entradas)):
 
@@ -233,6 +245,10 @@ class CircuitManager:
 
                     if atraso > circuito.atrasoCC:
                         circuito.atrasoCC = atraso
+                        saida_critica = saida.nome
+                        entrada_critica = entrada.nome
+        with open("atrasoCC.txt", "a") as arq:
+            arq.write(f"entada: {entrada_critica}\t saida: {saida_critica}\n")
         print(f"Atraso CC do arquivo: {circuito.atrasoCC} simulacoes: {simulacoes}")
 
     ##### ATUALIZA OS LETs DE UM CIRCUITO #####
@@ -286,7 +302,7 @@ class CircuitManager:
                             continue
 
                         # Atualizacao do LETth do circuito
-                        if let_analisado < circuito.LETth:
+                        if circuito.LETth is None or let_analisado < circuito.LETth:
                             circuito.LETth = let_analisado
 
                         for let in nodo.LETs:

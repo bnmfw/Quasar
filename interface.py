@@ -62,12 +62,12 @@ class GUI:
         self.circuito = Circuito(nome)
         self.circuito.vdd = GUIComponents.requisitar_vdd()
         with HSRunner.Vdd(self.circuito.vdd):
-            CircMan.get_atrasoCC(self.circuito)
+            # CircMan.get_atrasoCC(self.circuito)
             if not self.circuito.iniciado:
-                self.circuito.iniciado = True
                 CircMan.determinar_LETths(self.circuito)
-            else:
-                CircMan.atualizar_LETths(self.circuito)
+                self.circuito.iniciado = True
+            # else:
+            #     CircMan.atualizar_LETths(self.circuito)
     
     def __tela_principal(self):
         acao = GUIComponents.requisitar_menu(self.circuito.nome, self.circuito.vdd)

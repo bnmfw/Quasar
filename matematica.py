@@ -36,31 +36,31 @@ def combinacoes_possiveis(tamanho: int):
 # Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
 def ajustar(tensao: str) -> float:
     tensao = tensao.strip()
-    grandeza = 0
+    fator_escala: dict = {"a": -18, "f": -15, "p": -12,  
+                          "n": -9, "u": -6, "m": -3,
+                          "k": 3, "mega": 6, "x": 6, "g": 9, "t": 12}
+    # Guarda failed
     if tensao == "failed":
         return None
-    if tensao[-1] in {"m", "M"}:
-        grandeza = -3
-    elif tensao[-1] in {"u", "U"}:
-        grandeza = -6
-    elif tensao[-1] in {"n", "N"}:
-        grandeza = -9
-    elif tensao[-1] in {"p", "P"}:
-        grandeza = -12
-    elif tensao[-1] in {"f", "F"}:
-        grandeza = -15
-    elif tensao[-1] in {"g", "G"}:
-        grandeza = 9
-    elif tensao[-1] in {"t", "T"}:
-        grandeza = 12
-    elif tensao[-1] not in ("0","1","2","3","4","5","6","7","8","9","."):
-        raise ValueError(f"Recebi \"{tensao}\" como entrada de ajuste")
-    else:
+    
+    # Sem grandeza
+    if tensao[-1] in {"0","1","2","3","4","5","6","7","8","9","."}:
         return float(tensao)
-    return float(tensao[:-1]) * 10 ** grandeza
+    
+    # Guarda de mega
+    if tensao[-4] == "mega":
+        return float(tensao[:-4]) * 10 ** 6
+    
+    # Outras grandezas
+    if tensao[-1] in fator_escala.keys():
+        return float(tensao[:-1]) * 10 ** fator_escala[tensao[-1]]
+
+    # Nao reconhecido
+    raise ValueError(f"Recebi \"{tensao}\" como entrada de ajuste")
 
 # Converte uma corrente para LET
 def corrente_para_let(corrente: float) -> float:
+    if corrente is None: return None
     return (corrente * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / ((1.08 * 10 ** -14) * 0.000000021)
 
 # Retorna a media dos valores numa lista
