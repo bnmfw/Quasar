@@ -67,11 +67,13 @@ class SpiceRunner():
             pass
 
     def test_spice(self) -> bool:
+        print("Python OK")
         os.system(f"hspice empty.cir > output.txt")
         with open("output.txt", "r") as file:
             for linha in file:
                 if "Cannot connect to license server system" in linha:
-                    exit("LicenseError: Cannot connect to license server system")
+                    exit("HSPICE LicenseError: Cannot connect to license server system")
+        print("HSPICE OK")
     
     def default(self, vdd: float) -> None:
         HSManager.set_vdd(vdd)

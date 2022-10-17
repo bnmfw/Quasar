@@ -7,7 +7,7 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 1410800
+Username: bborges, PID: 2365180
 Command_Line_Options: c17v3_dm.hsp.json
 
 System Activity Monitoring (format subject to change)
@@ -17,7 +17,7 @@ Hostname: aorus
 N cores: 12
 Model name: AMD Ryzen 5 3600 6-Core Processor
 Cache size: 512 KB
-OS kernel: Linux 5.4.0-121-generic
+OS kernel: Linux 5.4.0-122-generic
 OS release: NAME="Ubuntu"
 VERSION="20.04.4 LTS (Focal Fossa)"
 ID=ubuntu
@@ -30,8 +30,8 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 0.910000, 0.570000, 0.760000
-Virtual memory: Total=31.4G, Available=29.3G, Percent=6.5, Used=1.6G, Free=18.5G, Active=5.4G, Inactive=6.5G, Buffers=574.7M, Cached=10.8G, Shared=14.0M, Slab=866.6M
+CPU load: 0.560000, 0.140000, 0.050000
+Virtual memory: Total=31.4G, Available=29.7G, Percent=5.3, Used=1.2G, Free=25.6G, Active=4.0G, Inactive=1.2G, Buffers=235.5M, Cached=4.4G, Shared=13.9M, Slab=451.8M
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
@@ -53,11 +53,11 @@ Filesystem     1G-blocks  Used Available Use% Mounted on
 
 Output directory /home/bborges/github/circuitos/c17v3 file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
-/dev/sdb4            620   500        88  86% /home
+/dev/sdb4            620   537        52  92% /home
 
-Start time: 2022-07-12 16:35:26 1657654526.2
+Start time: 2022-07-20 13:35:29 1658334929.8
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0     7.6      29.3       261.0       88.0        NA       NA       95.6   89.0M    346.9M  
+         0     4.7      29.7       261.0       52.0        NA       NA       98.4   89.1M    346.2M  

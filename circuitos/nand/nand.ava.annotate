@@ -7,8 +7,8 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Tue Jul 12 16:00:38 2022
-Hostname: aorus, Username: bborges, PID: 1344502
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Tue Jul 19 20:55:54 2022
+Hostname: aorus, Username: bborges, PID: 91329
 Working_Directory : /home/bborges/github/circuitos/nand
 Command_Line_Options : nand_dm.hsp.json
 
@@ -20,9 +20,7 @@ This file format and content are subject to change.
 
 #Annotation for local variation contributors
 #=============
-<<maxnod>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 <<maxout>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
-<<minnod>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 <<minout>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
 #=============
-#Selective simulation for extreme corners: Monte= list(2, 6, 7)
+#Selective simulation for extreme corners: Monte= list(122, 439, 806)

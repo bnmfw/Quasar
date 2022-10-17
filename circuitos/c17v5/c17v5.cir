@@ -1,0 +1,101 @@
+Benchmark C17 V0
+
+****** Dispositivos Lógicos ******
+
+.include ../include.cir
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 2
+
+****** Circuito ******
+
+Xinva1 vcc gnd a fa NOT
+Xinva2 vcc gnd fa ta NOT
+Xinvb1 vcc gnd b fb NOT
+Xinvb2 vcc gnd fb tb NOT
+Xinvc1 vcc gnd c fc NOT
+Xinvc2 vcc gnd fc tc NOT
+Xinvd1 vcc gnd d fd NOT
+Xinvd2 vcc gnd fd td NOT
+Xinve1 vcc gnd e fe NOT
+Xinve2 vcc gnd fe te NOT
+
+// INV
+Mp11 vdd td ntd td PMOS_RVT nfin=3
+Mn11 ntd td gnd td NMOS_RVT nfin=3
+
+// INV
+Mp12 vdd ta nta ta PMOS_RVT nfin=3
+Mn12 nta ta gnd ta NMOS_RVT nfin=3
+
+// NAND
+Mp21 vdd nta e1 nta PMOS_RVT nfin=3
+Mp22 vdd tb e1 tb PMOS_RVT nfin=3
+Mn21 e1 nta i1 nta NMOS_RVT nfin=3
+Mn22 i1 tb gnd tb NMOS_RVT nfin=3
+
+// NOR
+Mp31 vdd e1 i2 e1 PMOS_RVT nfin=3
+Mp32 i2 ntd e2 ntd PMOS_RVT nfin=3
+Mn31 e2 e1 gnd e1 NMOS_RVT nfin=3
+Mn32 e2 ntd gnd ntd NMOS_RVT nfin=3
+
+// NOR
+Mp41 vdd tb i3 tb PMOS_RVT nfin=3
+Mp42 i3 tc e3 tc PMOS_RVT nfin=3
+Mn41 e3 tb gnd tb NMOS_RVT nfin=3
+Mn42 e3 tc gnd tc NMOS_RVT nfin=3
+
+// NOR
+Mp51 vdd ta i4 ta PMOS_RVT nfin=3
+Mp52 i4 tc e4 tc PMOS_RVT nfin=3
+Mn51 e4 ta gnd ta NMOS_RVT nfin=3
+Mn52 e4 tc gnd tc NMOS_RVT nfin=3
+
+// OR
+Mp61 vdd e4 i5 e4 PMOS_RVT nfin=3
+Mp62 i5 e3 ne5 e3 PMOS_RVT nfin=3
+Mn61 ne5 e4 gnd e4 NMOS_RVT nfin=3
+Mn62 ne5 e3 gnd e3 NMOS_RVT nfin=3
+Mp63 vdd ne5 e5 ne5 PMOS_RVT nfin=3
+Mn63 e5 ne5 gnd ne5 NMOS_RVT nfin=3
+
+// NOR
+Mp01 vdd e2 i6 e2 PMOS_RVT nfin=3
+Mp02 i6 e5 g1 e5 PMOS_RVT nfin=3
+Mn01 g1 e2 gnd e2 NMOS_RVT nfin=3
+Mn02 g1 e5 gnd e5 NMOS_RVT nfin=3
+
+
+// NOR
+Mp71 vdd te i7 te PMOS_RVT nfin=3
+Mp72 i7 tc e8 tc PMOS_RVT nfin=3
+Mn71 e8 te gnd te NMOS_RVT nfin=3
+Mn72 e8 tc gnd tc NMOS_RVT nfin=3
+
+// NAND
+Mp81 vdd td i82 td PMOS_RVT nfin=3
+Mp82 vdd tb i82 tb PMOS_RVT nfin=3
+Mn81 i82 td i81 td NMOS_RVT nfin=3
+Mn82 i81 tb gnd tb NMOS_RVT nfin=3
+
+// INV
+Mp83 vdd i82 e9 i82 PMOS_RVT nfin=3
+Mn83 e9 i82 gnd i82 NMOS_RVT nfin=3
+
+// NOR
+Mp91 vdd e8 i9 e8 PMOS_RVT nfin=3
+Mp92 i9 e9 g2 e9 PMOS_RVT nfin=3
+Mn91 g2 e8 gnd e8 NMOS_RVT nfin=3
+Mn92 g2 e9 gnd e9 NMOS_RVT nfin=3
+
+//Representação de um circuito pós benchmark
+xff1 clk g1 q1 nq1 vcc gnd DFF
+xff2 clk g2 q2 nq2 vcc gnd DFF
+xinv11 vcc gnd q1 nnq1 NOT
+xinv12 vcc gnd q2 nnq2 NOT  
+
+************
+.end

@@ -122,7 +122,7 @@ class CircuitManager:
         return None
 
     ##### ENCONTRA A CORRENTE DE UM LET ######
-    def definir_corrente(self, circuito, let: LET, validacao: list, safe: bool = False) -> int:
+    def definir_corrente(self, circuito, let: LET, validacao: list, safe: bool = False, delay: bool = False) -> int:
         limite_sup = self.__limite_sup
         precisao: float = 0.05
         simulacoes: int = 0
@@ -146,7 +146,8 @@ class CircuitManager:
 
             # Variaveis da busca binaria da corrente
             csup: float = limite_sup
-            cinf: float = self.encontrar_corrente_minima(circuito, let)
+            cinf: float  = 0
+            cinf: float = 0 if not delay else self.encontrar_corrente_minima(circuito, let)
             corrente: float = cinf
             sup_flag: bool = False
 
@@ -223,8 +224,6 @@ class CircuitManager:
 
         # Todas as entradas em todas as saidas com todas as combinacoes
         for entrada_analisada in circuito.entradas:
-
-
             for saida in circuito.saidas:
                 for validacao in combinacoes_possiveis(len(circuito.entradas)):
 
@@ -244,12 +243,12 @@ class CircuitManager:
                         circuito.atrasoCC = atraso
                         saida_critica = saida.nome
                         entrada_critica = entrada.nome
-        with open("atrasoCC.txt", "a") as arq:
-            arq.write(f"entada: {entrada_critica}\t saida: {saida_critica}\n")
+        # with open("atrasoCC.txt", "a") as arq:
+        #     arq.write(f"entada: {entrada_critica}\t saida: {saida_critica}\n")
         print(f"Atraso CC do arquivo: {circuito.atrasoCC} simulacoes: {simulacoes}")
 
     ##### ATUALIZA OS LETs DE UM CIRCUITO #####
-    def atualizar_LETths(self, circuito, pmos=None, nmos=None):
+    def atualizar_LETths(self, circuito, pmos=None, nmos=None, delay: bool = False):
         with HSRunner.Vdd(circuito.vdd):
             simulacoes: int = 0
             circuito.LETth = None
@@ -259,7 +258,7 @@ class CircuitManager:
                     # try: 
                     ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                     print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
-                    simulacoes += self.definir_corrente(circuito, let, let.validacoes[0], safe=True)
+                    simulacoes += self.definir_corrente(circuito, let, let.validacoes[0], safe=True, delay=delay)
                     print(f"corrente: {let.corrente}\n")
                     if not circuito.LETth:
                         circuito.LETth = let
@@ -273,7 +272,7 @@ class CircuitManager:
             print(f"{simulacoes} simulacoes feitas na atualizacao")
 
     ##### DETERMINA OS LETs DE UM CIRCUITO #####
-    def determinar_LETths(self, circuito):
+    def determinar_LETths(self, circuito, delay: bool = False):
         for nodo in circuito.nodos:
             nodo.LETs = []
         simulacoes: int = 0
@@ -292,7 +291,7 @@ class CircuitManager:
 
                         print(nodo.nome, saida.nome, combinacao[0], combinacao[1], validacao)
                         
-                        simulacoes += self.definir_corrente(circuito, let_analisado, validacao)
+                        simulacoes += self.definir_corrente(circuito, let_analisado, validacao, delay = delay)
 
                         # Nenhum Let encontrado
                         if let_analisado.corrente == None:
@@ -311,7 +310,8 @@ class CircuitManager:
                                     let.append(validacao)
                                 break
                         else:
-                            nodo.LETs.append(let_analisado)
+                            if let_analisado < 10000:
+                                nodo.LETs.append(let_analisado)
 
     ##### INICIA A VARIABILIDADE PARA A ANALISE MC ####
     def __determinar_variabilidade(self, circuito):
@@ -331,7 +331,7 @@ class CircuitManager:
         self.__dump_MC(None, circuito)
     
     ##### REALIZA A ANALISE MONTE CARLO TOTAL #####
-    def analise_monte_carlo_total(self, circuito):
+    def analise_monte_carlo_total(self, circuito, delay:bool = False):
         
         ## Gera o arquivo caso nao exista ##
         try:
@@ -361,8 +361,8 @@ class CircuitManager:
             self.__atual = i
 
             with HSRunner.MC_Instance(pmos, nmos):
-                CircMan.get_atrasoCC(circuito)
-                CircMan.atualizar_LETths(circuito, pmos, nmos)
+                if delay: CircMan.get_atrasoCC(circuito)
+                CircMan.atualizar_LETths(circuito, pmos, nmos, delay=delay)
                 saida[i] = (round(pmos,4), round(nmos,4), circuito.LETth.nodo_nome, circuito.LETth.saida_nome, circuito.LETth.corrente, circuito.LETth.valor)
                 self.__dump_MC(saida, circuito)
 

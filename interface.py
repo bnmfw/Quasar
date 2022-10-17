@@ -6,6 +6,7 @@ from matematica import Time
 
 barra_comprida = "---------------------------"
 
+delay = False
 
 class InterfaceComponentes:
 
@@ -62,9 +63,9 @@ class GUI:
         self.circuito = Circuito(nome)
         self.circuito.vdd = GUIComponents.requisitar_vdd()
         with HSRunner.Vdd(self.circuito.vdd):
-            # CircMan.get_atrasoCC(self.circuito)
+            if delay: CircMan.get_atrasoCC(self.circuito)
             if not self.circuito.iniciado:
-                CircMan.determinar_LETths(self.circuito)
+                CircMan.determinar_LETths(self.circuito, delay=delay)
                 self.circuito.iniciado = True
             # else:
             #     CircMan.atualizar_LETths(self.circuito)
@@ -73,7 +74,8 @@ class GUI:
         acao = GUIComponents.requisitar_menu(self.circuito.nome, self.circuito.vdd)
         if not acao:
             with Time():
-                CircMan.atualizar_LETths(self.circuito)
+                if delay: CircMan.get_atrasoCC(self.circuito)
+                CircMan.atualizar_LETths(self.circuito, delay=delay)
             JManager.codificar(self.circuito)
         elif acao == 1:
             CManager.escrever_csv_total(self.circuito)
@@ -84,7 +86,7 @@ class GUI:
         elif acao == 4:
             self.circuito.analise_monte_carlo()
         elif acao == 5:
-            CircMan.analise_monte_carlo_total(self.circuito)
+            CircMan.analise_monte_carlo_total(self.circuito, delay=delay)
         elif acao == 6:
             exit()
         else:

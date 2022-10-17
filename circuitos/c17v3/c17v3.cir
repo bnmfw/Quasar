@@ -7,7 +7,7 @@ Benchmark C17 V3 (modelo com NANDs)
 ****** HSPICE ******
 
 .option measform = 3
-.option post = 0
+.option post = 2
 
 ****** Circuito ******
 

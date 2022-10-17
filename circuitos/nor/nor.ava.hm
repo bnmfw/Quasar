@@ -7,7 +7,7 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 2475570
+Username: bborges, PID: 715094
 Command_Line_Options: nor_dm.hsp.json
 
 System Activity Monitoring (format subject to change)
@@ -17,7 +17,7 @@ Hostname: aorus
 N cores: 12
 Model name: AMD Ryzen 5 3600 6-Core Processor
 Cache size: 512 KB
-OS kernel: Linux 5.4.0-113-generic
+OS kernel: Linux 5.4.0-122-generic
 OS release: NAME="Ubuntu"
 VERSION="20.04.4 LTS (Focal Fossa)"
 ID=ubuntu
@@ -30,8 +30,8 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 1.060000, 0.310000, 0.110000
-Virtual memory: Total=31.4G, Available=29.1G, Percent=7.2, Used=1.8G, Free=26.4G, Active=3.4G, Inactive=930.1M, Buffers=202.2M, Cached=3.0G, Shared=13.9M, Slab=570.5M
+CPU load: 1.290000, 1.230000, 1.180000
+Virtual memory: Total=31.4G, Available=29.6G, Percent=5.8, Used=1.3G, Free=25.6G, Active=4.0G, Inactive=1.2G, Buffers=173.1M, Cached=4.3G, Shared=14.0M, Slab=430.6M
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
@@ -39,13 +39,13 @@ System resource limits (soft, hard) set by user for current process
 (-1, -1): The maximum size of a file
 (8388608, -1): The maximum size (in bytes) of the call stack
 (-1, -1): The maximum resident set size available
-(127862, 127862): The maximum number of processes the current process may create
+(127861, 127861): The maximum number of processes the current process may create
 (1048576, 1048576): The maximum number of open file descriptors
 (67108864, 67108864): The maximum address space which may be locked in memory
 (-1, -1): The maximum area (in bytes) of address space which may be taken by the process
 (819200, 819200): The number of bytes that can be allocated for POSIX message queues
 (0, 0): The ceiling of the real-time priority
-(127862, 127862): The number of signals which the process may queue
+(127861, 127861): The number of signals which the process may queue
 
 /tmp file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
@@ -53,11 +53,11 @@ Filesystem     1G-blocks  Used Available Use% Mounted on
 
 Output directory /home/bborges/github/circuitos/nor file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
-/dev/sdb4            620   550        38  94% /home
+/dev/sdb4            620   537        52  92% /home
 
-Start time: 2022-06-11 12:57:02 1654963022.4
+Start time: 2022-07-20 00:44:16 1658288656.8
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0     8.8      29.1       261.0       38.0        NA       NA      196.9   89.0M    346.2M  
+         0    10.8      29.6       261.0       52.0        NA       NA        0.0   89.7M    347.1M  
