@@ -7,8 +7,8 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 308846
-Command_Line_Options: c17v0_dm.hsp.json
+Username: bborges, PID: 306923
+Command_Line_Options: c17v4_dm.hsp.json
 
 System Activity Monitoring (format subject to change)
 ================================================================
@@ -30,8 +30,8 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 0.400000, 0.150000, 0.060000
-Virtual memory: Total=31.4G, Available=30.0G, Percent=4.3, Used=913.4M, Free=4.8G, Active=4.0G, Inactive=21.2G, Buffers=1.5G, Cached=24.1G, Shared=13.6M, Slab=1.3G
+CPU load: 0.160000, 0.040000, 0.020000
+Virtual memory: Total=31.4G, Available=30.0G, Percent=4.3, Used=909.3M, Free=4.9G, Active=3.7G, Inactive=21.3G, Buffers=1.5G, Cached=24.0G, Shared=13.6M, Slab=1.2G
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
@@ -51,13 +51,13 @@ System resource limits (soft, hard) set by user for current process
 Filesystem     1G-blocks  Used Available Use% Mounted on
 /dev/sdb2            295    18       262   7% /
 
-Output directory /home/bborges/github/circuitos/c17v0 file space:
+Output directory /home/bborges/github/circuitos/c17v4 file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
 /dev/sdb4            620   312       277  54% /home
 
-Start time: 2023-02-01 17:52:08 1675284728.2
+Start time: 2023-02-01 17:51:03 1675284663.4
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0     3.3      30.0       262.0      277.0        NA       NA      196.7   89.7M    347.1M  
+         0     1.3      30.0       262.0      277.0        NA       NA       96.0   88.5M    346.2M  

@@ -68,7 +68,7 @@ class SpiceManager():
     # Escreve informacoes no arquivo "SETs.cir"
     def set_pulse(self, let: LET, corrente = None):
         if not let.orientacao[0] in {"fall", "rise", None}:
-            raise ValueError("Nao recebi fall ou rise como inclincacao do pulso")
+            raise ValueError(f"Nao recebi fall ou rise como inclincacao do pulso, recebi: {let.orientacao[0]}")
         if corrente == None:
             corrente = let.corrente
 

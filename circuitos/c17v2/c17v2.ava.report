@@ -1,0 +1,140 @@
+****** Advanced Variability Analysis ******
+Copyright (c) 2018 - 2022 by Synopsys, Inc. All Rights Reserved.
+
+This software and the associated documentation are proprietary
+to Synopsys, Inc. This software may only be used in accordance
+with the terms and conditions of a written license agreement with
+Synopsys, Inc. All other use, reproduction, or distribution of
+this software is strictly prohibited.
+
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Mon Oct 17 02:04:15 2022
+Hostname: aorus, Username: bborges, PID: 3701678
+Working_Directory : /home/bborges/github/circuitos/c17v2
+Command_Line_Options : c17v2_dm.hsp.json
+
+This file format and content are subject to change.
+================================================================
+
+Measure Files:  c17v2.mt0.csv(1000,4)
+Sample Files:  c17v2.mc0.csv(1000,2)
+
+##Variation_Options
+#------------------
+option ignore_aging_variation = yes
+option ignore_global_variation = no
+option ignore_interconnect_variation = no
+option ignore_local_variation = no
+option ignore_spatial_variation = no
+option ignore_variation = no
+option measform = 3
+option normal_limit = 20.0000
+option output_sigma_value = 1
+option random_generator = mcg
+option replicates = 1
+option sampling_method = srs
+option screening_method = pearson
+option seed = 1
+option stream = 1
+option use_agauss_format = yes
+
+
+##Summary_Statistics
+#-------------------
+##sampling_method = SRS|LHS|OFAT, the index 1 MC sample is nominal value and is excluded in Monte Carlo data mining
+Total number of independent random variables = 2
+Number of independent global random variables = 2
+Number of independent local random variables = 0
+Number of independent aging random variables = 0
+Number of Samples = 1000
+Number of Meas failure = 0
+Number of Device out of bound = 0
+
+
+##Sample_Moments
+#---------------
+            maxnod    maxout     minnod    minout
+Nominal  2.233e-05     0.703 -2.315e-05     0.697
+Mean     3.315e-05     0.703 -1.848e-05    0.6971
+StdDev   8.148e-05 0.0002768  8.278e-05 0.0003489
+Skewness     16.93   -0.8826       16.7   0.08473
+Kurtosis     325.8     7.871      319.1     3.381
+
+##Quantiles
+#----------
+                      maxnod  maxout     minnod  minout
+Q1e-01    (-3.090) 1.496e-05  0.7014 -3.658e-05   0.696
+Q1.35e-01 (    -3) 1.501e-05  0.7017 -3.654e-05  0.6962
+Q1        (-2.326) 1.583e-05  0.7023 -3.559e-05  0.6964
+Q2.28     (    -2) 1.664e-05  0.7025 -3.546e-05  0.6964
+Q5        (-1.645) 1.771e-05  0.7026 -3.484e-05  0.6966
+Q15.9     (    -1) 2.005e-05  0.7028 -3.259e-05  0.6968
+Q25       (-0.674) 2.221e-05  0.7029 -3.092e-05  0.6969
+Q75       ( 0.674) 2.855e-05  0.7033 -2.318e-05  0.6974
+Q84.1     (     1)  3.14e-05  0.7034 -2.092e-05  0.6975
+Q95       ( 1.645) 4.283e-05  0.7034 -5.627e-06  0.6977
+Q97.72    (     2)  7.32e-05  0.7034  2.309e-05  0.6978
+Q99       ( 2.326)  0.000213  0.7034   0.000164   0.698
+Q99.865   (     3)  0.001593  0.7035   0.001553  0.6984
+Q99.9     ( 3.090)  0.001637  0.7035     0.0016  0.6984
+
+##Response_Correlation_Matrix
+#----------------------------
+           maxnod    maxout    minnod    minout
+ maxnod  1.000000 -0.086135  0.995672  0.052185
+ maxout -0.086135  1.000000 -0.116064  0.091448
+ minnod  0.995672 -0.116064  1.000000  0.047312
+ minout  0.052185  0.091448  0.047312  1.000000
+
+##Extremes_and_Corners
+#----------------------------
+                min        max minIndex maxIndex
+ maxnod   1.487e-05  1.735e-03      800      706
+ maxout   7.007e-01  7.035e-01      806       59
+ minnod  -3.666e-05  1.705e-03        7      706
+ minout   6.955e-01  6.984e-01      806      439
+
+##Selective_Simulation
+#----------------------------
+#To simulate corners only:
+Use: ... Monte = list(7, 59, 439, 706, 800, 806)
+
+
+
+##Variables_Screened_by_Importance
+#---------------------------------
+Method: Pearson Correlation
+#Print threshold: 95%
+#(elements with EquivVar smaller than 0.05% will not be printed.)
+#(parameters with ParVar smaller than 0.01% will not be printed.)
+
+Response: maxnod
+Global Variation =  8.148e-05,  Local Variation =  0.000e+00
+Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  pmos_rvt   99.64%  99.64%        .                                 
+      .         .        .       .        .  phig_var_p  IGNC   0.27  99.64%
+
+Response: maxout
+Global Variation =  2.768e-04,  Local Variation =  0.000e+00
+Element     Model EquivVar   CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  nmos_rvt   65.82%   65.82%        .                                 
+      .         .        .        .        .  phig_var_n  IGNC  -0.53  65.82%
+      .  pmos_rvt   34.18%  100.00%        .                                 
+      .         .        .        .        .  phig_var_p  IGNC   0.38  34.18%
+
+Response: minnod
+Global Variation =  8.278e-05,  Local Variation =  0.000e+00
+Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  pmos_rvt   99.99%  99.99%        .                                 
+      .         .        .       .        .  phig_var_p  IGNC   0.27  99.99%
+
+Response: minout
+Global Variation =  3.489e-04,  Local Variation =  0.000e+00
+Element     Model EquivVar   CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  pmos_rvt   75.73%   75.73%        .                                 
+      .         .        .        .        .  phig_var_p  IGNC   0.73  75.73%
+      .  nmos_rvt   24.27%  100.00%        .                                 
+      .         .        .        .        .  phig_var_n  IGNC   0.41  24.27%
+
+##Important_Elements_or_Models
+#------------------------------
+pmos_rvt, nmos_rvt

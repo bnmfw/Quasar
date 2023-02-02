@@ -1,0 +1,118 @@
+****** Advanced Variability Analysis ******
+Copyright (c) 2018 - 2023 by Synopsys, Inc. All Rights Reserved.
+
+This software and the associated documentation are proprietary
+to Synopsys, Inc. This software may only be used in accordance
+with the terms and conditions of a written license agreement with
+Synopsys, Inc. All other use, reproduction, or distribution of
+this software is strictly prohibited.
+
+AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Wed Feb 01 17:51:03 2023
+Hostname: aorus, Username: bborges, PID: 306923
+Working_Directory : /home/bborges/github/circuitos/c17v4
+Command_Line_Options : c17v4_dm.hsp.json
+
+This file format and content are subject to change.
+================================================================
+
+Measure Files:  c17v4.mt0.csv(25,4)
+Sample Files:  c17v4.mc0.csv(25,2)
+
+##Variation_Options
+#------------------
+option ignore_aging_variation = yes
+option ignore_global_variation = no
+option ignore_interconnect_variation = no
+option ignore_local_variation = no
+option ignore_spatial_variation = no
+option ignore_variation = no
+option measform = 3
+option normal_limit = 20.0000
+option output_sigma_value = 1
+option random_generator = mcg
+option replicates = 1
+option sampling_method = srs
+option screening_method = pearson
+option seed = 1
+option stream = 1
+option use_agauss_format = yes
+
+
+##Summary_Statistics
+#-------------------
+##sampling_method = SRS|LHS|OFAT, the index 1 MC sample is nominal value and is excluded in Monte Carlo data mining
+Total number of independent random variables = 2
+Number of independent global random variables = 2
+Number of independent local random variables = 0
+Number of independent aging random variables = 0
+Number of Samples = 25
+Number of Meas failure = 0
+Number of Device out of bound = 0
+
+
+##Sample_Moments
+#---------------
+            maxout    minout
+Nominal    0.00114 -0.001588
+Mean      0.001074 -0.001495
+StdDev   0.0001289 0.0003117
+Skewness  -0.08286    0.6114
+Kurtosis     2.575     4.606
+
+##Quantiles
+#----------
+                   maxout    minout
+Q2.28  (    -2) 0.0008378  -0.00203
+Q5     (-1.645) 0.0008439 -0.002005
+Q15.9  (    -1) 0.0009462 -0.001851
+Q25    (-0.674) 0.0009677 -0.001687
+Q75    ( 0.674)  0.001166 -0.001326
+Q84.1  (     1)  0.001199   -0.0013
+Q95    ( 1.645)  0.001259 -0.001032
+Q97.72 (     2)  0.001352 -0.000596
+
+##Response_Correlation_Matrix
+#----------------------------
+           maxout    minout
+ maxout  1.000000 -0.436046
+ minout -0.436046  1.000000
+
+##Extremes_and_Corners
+#----------------------------
+                min         max minIndex maxIndex
+ maxout   8.371e-04   1.361e-03       17        4
+ minout  -2.032e-03  -5.507e-04        4        6
+
+##Selective_Simulation
+#----------------------------
+#To simulate corners only:
+Use: ... Monte = list(4, 6, 17)
+
+
+
+##Variables_Screened_by_Importance
+#---------------------------------
+Method: Pearson Correlation
+#Print threshold: 95%
+#(elements with EquivVar smaller than 0.05% will not be printed.)
+#(parameters with ParVar smaller than 0.01% will not be printed.)
+
+Response: maxout
+Global Variation =  1.289e-04,  Local Variation =  0.000e+00
+Element     Model EquivVar   CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  nmos_rvt   82.18%   82.18%        .                                 
+      .         .        .        .        .  phig_var_n  IGNC   0.48  82.18%
+      .  pmos_rvt   17.82%  100.00%        .                                 
+      .         .        .        .        .  phig_var_p  IGNC  -0.22  17.82%
+
+Response: minout
+Global Variation =  3.117e-04,  Local Variation =  0.000e+00
+Element     Model EquivVar   CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  nmos_rvt   61.81%   61.81%        .                                 
+      .         .        .        .        .  phig_var_n  IGNC  -0.69  61.81%
+      .  pmos_rvt   38.19%  100.00%        .                                 
+      .         .        .        .        .  phig_var_p  IGNC   0.55  38.19%
+
+##Important_Elements_or_Models
+#------------------------------
+nmos_rvt, pmos_rvt

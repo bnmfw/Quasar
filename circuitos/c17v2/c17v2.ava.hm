@@ -1,5 +1,5 @@
 ****** Advanced Variability Analysis ******
-Copyright (c) 2018 - 2023 by Synopsys, Inc. All Rights Reserved.
+Copyright (c) 2018 - 2022 by Synopsys, Inc. All Rights Reserved.
 
 This software and the associated documentation are proprietary
 to Synopsys, Inc. This software may only be used in accordance
@@ -7,8 +7,8 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 308846
-Command_Line_Options: c17v0_dm.hsp.json
+Username: bborges, PID: 3701678
+Command_Line_Options: c17v2_dm.hsp.json
 
 System Activity Monitoring (format subject to change)
 ================================================================
@@ -17,7 +17,7 @@ Hostname: aorus
 N cores: 12
 Model name: AMD Ryzen 5 3600 6-Core Processor
 Cache size: 512 KB
-OS kernel: Linux 5.4.0-135-generic
+OS kernel: Linux 5.4.0-126-generic
 OS release: NAME="Ubuntu"
 VERSION="20.04.4 LTS (Focal Fossa)"
 ID=ubuntu
@@ -30,8 +30,8 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 0.400000, 0.150000, 0.060000
-Virtual memory: Total=31.4G, Available=30.0G, Percent=4.3, Used=913.4M, Free=4.8G, Active=4.0G, Inactive=21.2G, Buffers=1.5G, Cached=24.1G, Shared=13.6M, Slab=1.3G
+CPU load: 0.770000, 0.390000, 0.210000
+Virtual memory: Total=31.4G, Available=28.9G, Percent=7.9, Used=2.0G, Free=11.8G, Active=13.9G, Inactive=2.8G, Buffers=1.3G, Cached=16.2G, Shared=24.8M, Slab=2.6G
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
@@ -49,15 +49,15 @@ System resource limits (soft, hard) set by user for current process
 
 /tmp file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
-/dev/sdb2            295    18       262   7% /
+/dev/sdb2            295    19       261   7% /
 
-Output directory /home/bborges/github/circuitos/c17v0 file space:
+Output directory /home/bborges/github/circuitos/c17v2 file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
-/dev/sdb4            620   312       277  54% /home
+/dev/sdb4            620   506        82  87% /home
 
-Start time: 2023-02-01 17:52:08 1675284728.2
+Start time: 2022-10-17 02:04:15 1665983055.4
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0     3.3      30.0       262.0      277.0        NA       NA      196.7   89.7M    347.1M  
+         0     6.4      28.9       261.0       82.0        NA       NA       98.4   89.3M    346.2M  

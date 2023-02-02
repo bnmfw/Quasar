@@ -1,5 +1,5 @@
 *Arquivo com os measures usados
 .meas tran minout min V(g1) from=1.0n to=3.8n
 .meas tran maxout max V(g1) from=1.0n to=3.8n
-.meas tran minnod min V(i52) from=1.0n to=3.8n
-.meas tran maxnod max V(i52) from=1.0n to=3.8n
+.meas tran minnod min V(e1) from=1.0n to=3.8n
+.meas tran maxnod max V(e1) from=1.0n to=3.8n
