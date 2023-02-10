@@ -24,7 +24,7 @@ class SpiceManager():
         arquivo.write(f".meas tran {label} TRIG v({trig}) val='{trig_value}' {trig_inclin}=1 TARG v({targ}) val='{targ_value}' {targ_inclin}=1\n")
     
     def measure_pulse(self, nodo: str, saida: str):
-        with open("circuitos/include/measure.cir", "w") as arquivo:
+        with open(f"circuitos_{os.getpid()}/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com os measures usados\n")
 
             self.__write_peak_meas(arquivo, "minout", "min", "V", saida, 1.0, 3.8)
@@ -33,15 +33,16 @@ class SpiceManager():
             self.__write_peak_meas(arquivo, "maxnod", "max", "V", nodo, 1.0, 3.8)
 
     def measure_tension(self, nodo: str):
-        with open("circuitos/include/measure.cir", "w") as arquivo:
+        with open(f"circuitos_{os.getpid()}/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com os measures usados\n")
             self.__write_peak_meas(arquivo, "minnod", "min", "V", nodo, 1.0, 3.8)
             self.__write_peak_meas(arquivo, "maxnod", "max", "V", nodo, 1.0, 3.8) 
     
     # Escreve vdd no arquivo "vdd.cir"
     @staticmethod
-    def set_vdd(vdd: float):
-        with open("circuitos/include/vdd.cir", "w") as arquivo_vdd:
+    def set_vdd(vdd: float, main: bool = False):
+        ambiente = f"circuitos_{os.getpid()}" if main is False else "circuitos"
+        with open(f"{ambiente}/include/vdd.cir", "w") as arquivo_vdd:
             arquivo_vdd.write("*Arquivo com a tensao usada por todos os circuitos\n")
             arquivo_vdd.write(f"Vvdd vdd gnd {vdd}\n")
             arquivo_vdd.write(f"Vvcc vcc gnd {vdd}\n")
@@ -50,7 +51,7 @@ class SpiceManager():
     # Escreve os sinais no arquivo "fontes.cir"
     @staticmethod
     def set_signals(vdd: float, entradas: dict):
-        with open("circuitos/include/fontes.cir", "w") as sinais:
+        with open(f"circuitos_{os.getpid()}/include/fontes.cir", "w") as sinais:
             sinais.write("*Fontes de sinal a serem editadas pelo roteiro\n")
 
             # Escreve o sinal analogico a partir do sinal logico
@@ -66,13 +67,14 @@ class SpiceManager():
                     raise ValueError("ERRO SINAL NAO IDENTIFICADO RECEBIDO: ", nivel)
 
     # Escreve informacoes no arquivo "SETs.cir"
-    def set_pulse(self, let: LET, corrente = None):
+    def set_pulse(self, let: LET, corrente = None, main = False):
         if not let.orientacao[0] in {"fall", "rise", None}:
             raise ValueError(f"Nao recebi fall ou rise como inclincacao do pulso, recebi: {let.orientacao[0]}")
         if corrente == None:
             corrente = let.corrente
 
-        with open("circuitos/include/SETs.cir", "w") as sets:
+        ambiente = f"circuitos_{os.getpid()}" if main is False else "circuitos"
+        with open(f"{ambiente}/include/SETs.cir", "w") as sets:
             sets.write("*SETs para serem usados nos benchmarks\n")
             if not let.orientacao[0] == "rise": sets.write("*")
             sets.write(f"Iseu gnd {let.nodo_nome} EXP(0 {corrente}u 2n 50p 164p 200p) //rise\n")
@@ -81,7 +83,7 @@ class SpiceManager():
 
     # Altera o arquivo "measure.cir"
     def measure_delay(self, input: str, out: str, vdd: float):
-        with open("circuitos/include/measure.cir", "w") as arquivo:
+        with open(f"circuitos_{os.getpid()}/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com atraso a ser medido\n")
             tensao = str(vdd / 2)
             self.__write_trig_meas(arquivo, "atraso_rr", input, tensao, "rise", out, tensao, "rise")
@@ -92,15 +94,16 @@ class SpiceManager():
 
     # Altera o arquivo "measure.cir"
     def measure_pulse_width(self, let: LET):
-        with open("circuitos/include/measure.cir", "w") as arquivo:
+        with open(f"circuitos_{os.getpid()}/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com a leitura da largura dos pulsos\n")
             tensao = str(let.vdd * 0.5)
             self.__write_trig_meas(arquivo, "larg", let.nodo_nome, tensao, "rise", let.nodo_nome, tensao, "fall")
 
     # Altera o valor de simulacoes monte carlo a serem feitas
     @staticmethod
-    def set_monte_carlo(simulacoes: int):
-        with open("circuitos/include/monte_carlo.cir", "w") as mc:
+    def set_monte_carlo(simulacoes: int, main = False):
+        ambiente = f"circuitos_{os.getpid()}" if main is False else "circuitos"
+        with open(f"{ambiente}/include/monte_carlo.cir", "w") as mc:
             mc.write("*Arquivo Analise Monte Carlo\n")
             mc.write(".tran 0.01n 4n")
             if simulacoes: mc.write(f" sweep monte={simulacoes}")
@@ -108,7 +111,7 @@ class SpiceManager():
     # Altera o arquivo "mc.cir"
     @staticmethod
     def set_variability(pvar = None, nvar = None):
-        with open ("circuitos/include/mc.cir","w") as mc:
+        with open (f"circuitos_{os.getpid()}/include/mc.cir","w") as mc:
             if pvar == None or nvar == None:
                 mc.write("* Analise MC\n"
                 ".param phig_var_p = gauss(4.8108, 0.05, 3)\n"
@@ -172,7 +175,7 @@ class SpiceManager():
     # Le measures no arquivo output.txt e retorna um dicionario
     def get_output(self) -> dict:
         saida: dict = {"None": None}
-        with open("output.txt", "r") as output:
+        with open(f"circuitos_{os.getpid()}/output.txt", "r") as output:
             for linha in output:
                 self.__format_output_line(linha, saida)
         self.output = saida
@@ -232,7 +235,7 @@ class SpiceManager():
         
         falhas: int = 0
 
-        dados: dict = self.__get_csv_data(f"{path}{circuit_name}.mt0.csv", ".TITLE")
+        dados: dict = self.__get_csv_data(f"circuitos_{os.getpid()}{path}{circuit_name}.mt0.csv", ".TITLE")
 
         inclinacao_corr = "mincor" if inclinacao_saida == "fall" else "maxcor"
         inclinacao_tens = "minout" if inclinacao_saida == "fall" else "maxout"
@@ -267,7 +270,7 @@ class SpiceManager():
     def get_mc_instances(self, path, filename: str, simulacoes: int) -> dict:
         instancias: dict = {}
 
-        dados = self.__get_csv_data(f"{path}{filename}.mc0.csv", "$ IRV")
+        dados = self.__get_csv_data(f"circuitos_{os.getpid()}{path}{filename}.mc0.csv", "$ IRV")
 
         ps: str = "pmos_rvt:@:phig_var_p:@:IGNC"
         ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
@@ -282,7 +285,7 @@ class CSVManager():
 
     @staticmethod
     def tup_dict_to_csv(path: str, filename: str, dicionario: dict):
-        with open(f"{path}{filename}", "w") as tabela:
+        with open(f"circuitos{path}{filename}", "w") as tabela:
             for chave, tupla in dicionario.items():
                 tabela.write(f"{chave}")
                 for valor in tupla:

@@ -1,8 +1,10 @@
 from arquivos import CManager, JManager
 from circuitManager import CircMan
+from mcManager import MCManager
 from circuito import Circuito
 from runner import HSRunner
 from matematica import Time
+from folders import ProcessFolder
 
 barra_comprida = "---------------------------"
 
@@ -55,14 +57,15 @@ class GUI:
         self.circuito = None
         HSRunner.default(0.7)
         self.__tela_inicial()
-        while True:
-            self.__tela_principal()
+        with ProcessFolder("circuitos"):
+            while True:
+                self.__tela_principal()
 
     def __tela_inicial(self):
         nome = GUIComponents.requisitar_circuito()
         self.circuito = Circuito(nome)
         self.circuito.vdd = GUIComponents.requisitar_vdd()
-        with HSRunner.Vdd(self.circuito.vdd):
+        with HSRunner.Vdd(self.circuito.vdd, main_enviroment=True):
             if delay: CircMan.get_atrasoCC(self.circuito)
             if not self.circuito.iniciado:
                 CircMan.determinar_LETths(self.circuito, delay=delay)
@@ -86,7 +89,7 @@ class GUI:
         elif acao == 4:
             self.circuito.analise_monte_carlo()
         elif acao == 5:
-            CircMan.analise_monte_carlo_total(self.circuito, delay=delay)
+            MCManager(self.circuito).analise_monte_carlo_total(self.circuito, delay=delay)
         elif acao == 6:
             exit()
         else:

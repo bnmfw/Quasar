@@ -1,6 +1,5 @@
 from arquivos import JManager, CManager
 from runner import HSRunner
-from circuitManager import CircMan
 from components import Nodo, Entrada, LET
 import os
 
@@ -10,7 +9,7 @@ class Circuito():
     def __init__(self, nome):
         ##### ATRIBUTOS DO CIRCUITO #####
         self.nome = nome
-        self.path = f"circuitos/{nome}/"
+        self.path = f"/{nome}/"
         self.arquivo = f"{nome}.cir"
         self.entradas = []
         self.saidas = []
@@ -21,7 +20,7 @@ class Circuito():
         self.__iniciado = False
 
         # Decodifica do Json caso exista, se nao existir tenta criar a partir do arquivo
-        if os.path.exists(f"{self.path}{self.nome}.json"):
+        if os.path.exists(f"circuitos{self.path}{self.nome}.json"):
             JManager.decodificar(self)
             self.__iniciado = True
         else:
