@@ -4,7 +4,6 @@ from mcManager import MCManager
 from circuito import Circuito
 from runner import HSRunner
 from matematica import Time
-from folders import ProcessFolder
 
 barra_comprida = "---------------------------"
 
@@ -57,9 +56,8 @@ class GUI:
         self.circuito = None
         HSRunner.default(0.7)
         self.__tela_inicial()
-        with ProcessFolder("circuitos"):
-            while True:
-                self.__tela_principal()
+        while True:
+            self.__tela_principal()
 
     def __tela_inicial(self):
         nome = GUIComponents.requisitar_circuito()

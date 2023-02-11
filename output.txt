@@ -8,11 +8,11 @@ Using: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice empty.cir
   this software is strictly prohibited.
   Input File: empty.cir                                                         
   Command line options: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice empty.cir
-  Start time: Thu Feb  9 12:21:46 2023
+  Start time: Fri Feb 10 22:40:25 2023
  lic:  
  lic: FLEXlm: SDK_12.9.6 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: 7f0101               PID:      1184818 
+ lic: HOSTID: 7f0101               PID:      3950440 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 

@@ -1,7 +1,5 @@
-from circuito import Circuito
 from runner import HSRunner
 from components import *
-from folders import ProcessFolder
 
 relatorio = False
 

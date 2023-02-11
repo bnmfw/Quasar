@@ -1,12 +1,7 @@
 from matematica import combinacoes_possiveis
 from runner import HSRunner
 from components import *
-from arquivos import CManager
 from letFinder import LetManager
-from folders import ProcessFolder
-import multiprocessing as mp
-import json
-from time import time
 
 barra_comprida = "---------------------------"
 relatorio = False
@@ -16,6 +11,16 @@ class CircuitManager:
         self.circuito = None
         self.__limite_sup: float = 400
         self.__limite_sim: int = 25
+    
+    ##### DETERMINA TODAS AS COMBINACOES POSSIVEIS DE LETS #####
+    def __possible_LETs(self, nodos: list, saidas: list, n_entradas: int):
+        jobs = [{"nodo": nodo, "saida": saida, "incl1": inc1, "incl2": inc2, "val": validacao}\
+                for nodo in nodos\
+                for saida in saidas\
+                for inc1 in ["rise", "fall"]\
+                for inc2 in ["rise", "fall"]\
+                for validacao in combinacoes_possiveis(n_entradas)]
+        return jobs
     
     ##### ENCONTRA O ATRASO DE CAMINHO CRITICO PARA UM CIRCUITO #####
     def get_atrasoCC(self, circuito):
@@ -79,40 +84,34 @@ class CircuitManager:
             nodo.LETs = []
         simulacoes: int = 0
         
-        ##### BUSCA DO LETs DO CIRCUITO #####
-        for nodo in circuito.nodos:
-            for saida in circuito.saidas:
-                #### PASSA POR TODAS AS COMBINACOES DE ENTRADA ####
-                for validacao in combinacoes_possiveis(len(circuito.entradas)):  
+        ##### ITERA SOBRE TODAS AS COMBINACOES POSSIVEIS DE NODO, SAIDA, VALIDACAO E INCLINACOES #####
+        for job in self.__possible_LETs(circuito.nodos, circuito.saidas, len(circuito.entradas)):
 
-                    ##### DECOBRE OS LETs PARA TODAS AS COBINACOES DE rise E fall #####
-                    for combinacao in [[a,b] for a in ["rise", "fall"] for b in ["rise", "fall"]]:
+            ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
+            let_analisado = LET(None, circuito.vdd, job["nodo"].nome, job["saida"].nome, [job["incl1"], job["incl2"]])
 
-                        ##### ENCONTRA O LETth PARA AQUELA COMBINACAO #####
-                        let_analisado = LET(None, circuito.vdd, nodo.nome, saida.nome, combinacao)
+            print(job["nodo"].nome, job["saida"].nome, job["incl1"], job["incl2"], job["val"])
+            
+            simulacoes += LetManager.definir_corrente(circuito, let_analisado, job["val"], delay = delay)
 
-                        print(nodo.nome, saida.nome, combinacao[0], combinacao[1], validacao)
-                        
-                        simulacoes += LetManager.definir_corrente(circuito, let_analisado, validacao, delay = delay)
+            # Nenhum Let encontrado
+            if let_analisado.corrente == None:
+                continue
 
-                        # Nenhum Let encontrado
-                        if let_analisado.corrente == None:
-                            continue
+            # Atualizacao do LETth do circuito
+            if circuito.LETth is None or let_analisado < circuito.LETth:
+                circuito.LETth = let_analisado
 
-                        # Atualizacao do LETth do circuito
-                        if circuito.LETth is None or let_analisado < circuito.LETth:
-                            circuito.LETth = let_analisado
-
-                        for let in nodo.LETs:
-                            if let == let_analisado:
-                                if let_analisado < let:
-                                    nodo.LETs.remove(let)
-                                    nodo.LETs.append(let_analisado)
-                                elif let_analisado.corrente == let.corrente:
-                                    let.append(validacao)
-                                break
-                        else:
-                            if let_analisado < 10000:
-                                nodo.LETs.append(let_analisado)
+            for let in nodo.LETs:
+                if let == let_analisado:
+                    if let_analisado < let:
+                        nodo.LETs.remove(let)
+                        nodo.LETs.append(let_analisado)
+                    elif let_analisado.corrente == let.corrente:
+                        let.append(job["val"])
+                    break
+            else:
+                if let_analisado.corrente < 10000:
+                    nodo.LETs.append(let_analisado)
 
 CircMan = CircuitManager()

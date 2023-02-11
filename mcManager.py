@@ -1,9 +1,8 @@
-from matematica import combinacoes_possiveis
 from runner import HSRunner
 from components import *
+from concorrencia import ProcessWorker
 from arquivos import CManager
 from circuitManager import CircMan
-from folders import ProcessFolder
 import multiprocessing as mp
 import json
 import os
@@ -126,11 +125,27 @@ class MCManager:
             ret[key] = value
         return ret
 
+    ##### RODA UMA INSTANCIA DA ANALISE MONTE CARLO ##### 
+    def run_mc_iteration(self, index: int, point: list, circuito, delay: bool = False):
+        pmos, nmos = point
+         ### Guarda que com ctz tem como melhorar
+        with HSRunner.MC_Instance(pmos, nmos):
+            if delay: CircMan.get_atrasoCC(circuito)
+            CircMan.atualizar_LETths(circuito, pmos, nmos, delay=delay)
+            result = (round(pmos,4), round(nmos,4), circuito.LETth.nodo_nome, circuito.LETth.saida_nome, circuito.LETth.corrente, circuito.LETth.valor)
+        return result
+    
     ##### GERA OS PROCESSOS TRABALHADORES ##### 
-    def work(self, n_workers: int = mp.cpu_count()):
+    def work(self, n_workers: int = mp.cpu_count(), delay:bool = False):
+
         # Cria todos os processos que realizam as simulacoes MC
-        workers = [mp.Process(target=MCSlave(self.circuito, len(self.jobs_copy), self.delay).run, args = (self,)) for _ in range(n_workers)]
-        
+        workers = [mp.Process(target=ProcessWorker(\
+            self.run_mc_iteration,\
+            (self.circuito, delay),\
+            len(self.jobs_copy)).run,\
+            
+            args = (self,)) for _ in range(n_workers)]
+
         # Inicia os processos
         for worker in workers:
             worker.start()
@@ -163,7 +178,7 @@ class MCManager:
             self.__determinar_variabilidade(circuito)
 
         # A MAGIA ACONTECE AQUI
-        self.work()
+        self.work(delay=delay)
 
         # Retorna os valores num csv
         saida = self.return_done()
@@ -172,28 +187,3 @@ class MCManager:
 
         # Destroi os arquivos de persistencia
         self.__delete_MC()
-
-class MCSlave:
-    def __init__(self, circuito, max_jobs: int = 1000, delay: bool = False):
-        self.circuito = circuito
-        self.max_jobs = max_jobs
-        self.delay = delay
-
-    def run(self, mc: MCManager):
-        with ProcessFolder("circuitos"):
-            for _ in range(self.max_jobs):
-                job = mc.request_job()
-                if job == -1:
-                    break
-                index, (pmos, nmos) = job
-                result = self.run_mc_iteration(self.circuito, index, pmos, nmos, delay=self.delay)
-                mc.post_result((index, result), job)
-
-    ##### RODA UMA INSTANCIA DA ANALISE MONTE CARLO ##### 
-    def run_mc_iteration(self, circuito, index: int, pmos: float, nmos: float, delay: bool = False):
-         ### Guarda que com ctz tem como melhorar
-        with HSRunner.MC_Instance(pmos, nmos):
-            if delay: CircMan.get_atrasoCC(circuito)
-            CircMan.atualizar_LETths(circuito, pmos, nmos, delay=delay)
-            result = (round(pmos,4), round(nmos,4), circuito.LETth.nodo_nome, circuito.LETth.saida_nome, circuito.LETth.corrente, circuito.LETth.valor)
-        return result

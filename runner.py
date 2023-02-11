@@ -1,5 +1,5 @@
-from arquivos import HSManager
-from components import LET, Entrada
+from spiceManager import HSManager
+from components import LET
 import os
 
 class SpiceRunner():
@@ -90,20 +90,20 @@ class SpiceRunner():
         for entrada in entradas:
             entradas_dicionario[entrada.nome] = entrada.sinal
         HSManager.set_signals(vdd, entradas_dicionario)
-        os.system(f"cd circuitos_{os.getpid()}{path} ; hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > ../output.txt")
+        os.system(f"cd circuitos{path} ; hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > ../output.txt")
         delay = HSManager.get_delay()
         return delay
 
     def run_SET(self, path: str, filename: str, let: LET, corrente = None) -> tuple:
         with self.SET(let, corrente):
-            os.system(f"cd circuitos_{os.getpid()}{path} ; hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > ../output.txt")
+            os.system(f"cd circuitos{path} ; hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > ../output.txt")
             pico_nodo = HSManager.get_peak_tension(let.orientacao[0], True)
             pico_saida = HSManager.get_peak_tension(let.orientacao[1])
         return (pico_nodo, pico_saida)
     
     def run_tensions(self, path: str, filename: str, nodo_nome: str) -> float:
         HSManager.measure_tension(nodo_nome)
-        os.system(f"cd circuitos_{os.getpid()}{path} ; hspice {filename} | grep \"minnod\|maxnod\" > ../output.txt")
+        os.system(f"cd circuitos{path} ; hspice {filename} | grep \"minnod\|maxnod\" > ../output.txt")
         tensao = HSManager.get_tension()
         return tensao
 
@@ -112,7 +112,7 @@ class SpiceRunner():
         # print(f"corrente: {corrente}")
         with self.SET(let, corrente):
             HSManager.measure_pulse_width(let)
-            os.system(f"cd circuitos_{os.getpid()}{path} ; hspice {filename} | grep \"larg\" > ../output.txt")
+            os.system(f"cd circuitos{path} ; hspice {filename} | grep \"larg\" > ../output.txt")
             output = HSManager.get_output()
         # print(f"output: {output}")
 
@@ -127,12 +127,12 @@ class SpiceRunner():
     def run_simple_MC(self, path: str, circuit_name: str, nodo_nome: str, saida_nome: str, analises: int, pulso_out: str, vdd: float) -> int:
         HSManager.measure_pulse(nodo_nome, saida_nome)
         with self.Monte_Carlo(analises):
-            os.system(f"cd circuitos_{os.getpid()}{path} ; hspice {circuit_name}.cir| grep \"minout\|maxout\" > ../output.txt")
+            os.system(f"cd circuitos{path} ; hspice {circuit_name}.cir| grep \"minout\|maxout\" > ../output.txt")
         return HSManager.get_mc_faults(path, circuit_name, analises, pulso_out, vdd)
 
     def run_MC_var(self, path: str, filename: str, cir_nome: str, analises: int) -> dict:
         with self.Monte_Carlo(analises):
-            os.system(f"cd circuitos_{os.getpid()}{path} ; hspice {filename} > ../output.txt")
+            os.system(f"cd circuitos{path} ; hspice {filename} > ../output.txt")
         return HSManager.get_mc_instances(path, cir_nome, analises)
 
 HSRunner = SpiceRunner()
