@@ -1,101 +1,75 @@
-from arquivos import CManager, JManager
-from circuitManager import CircMan
-from mcManager import MCManager
-from circuito import Circuito
-from runner import HSRunner
-from matematica import Time
-
-barra_comprida = "---------------------------"
-
-delay = False
-
-class InterfaceComponentes:
-
-    def __init__(self) -> None:
-        pass
-
-    def requisitar_circuito(self) -> str:
-        return input(barra_comprida+"\nEscolha o circuito: ")
-
-    def requisitar_vdd(self) -> float:
-        return float(input(f"{barra_comprida}\nVdd da simulacao: "))
-
-    def requisitar_menu(self, circuito_nome: str, vdd: float) -> int:
-        return int(input(f"{barra_comprida}\n"
-                     f"Trabalhando com o {circuito_nome} em {vdd} volts\n"
-                     "O que deseja fazer?\n"
-                     "0. Atualizar LETs\n"
-                     "1. Gerar CSV de LETs\n"
-                     "2. Analisar LET Unico\n"
-                     "3. Analise Monte Carlo\n"
-                     "4. Analise Monte Carlo Unica\n"
-                     "5. Analise Monte Carlo Total\n"
-                     "6. Sair\n"
-                     "Resposta: "))
-
-    def requisitar_num_analises(self) -> int:
-        return int(input(f"{barra_comprida}\nQuantidade de analises: "))
-
-    def requisitar_entradas_e_saidas(self) -> tuple:
-        return (input("entradas: ").split() , input("saidas: ").split())
-
-    def requisitar_nodo_e_saida(self) -> list:
-        return input("nodo e saida do LET: ").split()
-
-    def requisitar_pulsos(self) -> list:
-        return input("pulsos na entrada e saida do LET: ").split()
-
-    def requisitar_cadastro(self) -> bool:
-        cadastro = None
-        while not cadastro in {"y","n"}:
-            cadastro: bool = input(f"{barra_comprida}\nCadastro do circuito nao encontrado\nDeseja gera-lo? (y/n) ")
-        return cadastro == "y"
+# O python acha que tem um erro nesses imports, mas nao tem, deixa quieto
+from utils.backend import Backend
+from utils.runner import HSRunner
+from utils.circuito import Circuito
+from utils.arquivos import CManager
+from psgui import PSGUI, psgui_is_working, gui_error
+from txtui import TXTUI
 
 class GUI:
     def __init__(self) -> None:
-        self.circuito = None
-        HSRunner.default(0.7)
-        self.__tela_inicial()
-        while True:
-            self.__tela_principal()
+        self.backend = Backend()
 
-    def __tela_inicial(self):
-        nome = GUIComponents.requisitar_circuito()
-        self.circuito = Circuito(nome)
-        self.circuito.vdd = GUIComponents.requisitar_vdd()
-        with HSRunner.Vdd(self.circuito.vdd, main_enviroment=True):
-            if delay: CircMan.get_atrasoCC(self.circuito)
-            if not self.circuito.iniciado:
-                CircMan.determinar_LETths(self.circuito, delay=delay)
-                self.circuito.iniciado = True
-            # else:
-            #     CircMan.atualizar_LETths(self.circuito)
-    
-    def __tela_principal(self):
-        acao = GUIComponents.requisitar_menu(self.circuito.nome, self.circuito.vdd)
-        if not acao:
-            with Time():
-                if delay: CircMan.get_atrasoCC(self.circuito)
-                CircMan.atualizar_LETths(self.circuito, delay=delay)
-            JManager.codificar(self.circuito)
-        elif acao == 1:
-            CManager.escrever_csv_total(self.circuito)
-        elif acao == 2:
-            self.circuito.analise_manual()
-        elif acao == 3:
-            self.circuito.analise_monte_carlo_progressiva()
-        elif acao == 4:
-            self.circuito.analise_monte_carlo()
-        elif acao == 5:
-            MCManager(self.circuito).analise_monte_carlo_total(self.circuito, delay=delay)
-        elif acao == 6:
-            exit()
+        # Determina a interface a ser usada
+        if psgui_is_working:
+            self.ui = PSGUI()
         else:
-            print("Comando invalido")
+            print("\nUm problema foi encontrado com o modulo psgui:\n"
+                  f"{gui_error}\n"
+                  "portanto a interface de texto sera usada em seu lugar")
+            self.ui = TXTUI()
 
-    def _get_pulse_config(self):
-        nodo_nome, saida_nome = GUIComponents.requisitar_nodo_e_saida()
+        current_screen = "start"
 
+        circ_nome: str = None
+        self.circuito: Circuito = None
+        vdd: float = None
+        cadastro: bool = None
 
-GUIComponents = InterfaceComponentes()
-# tela = GUI()
+        # Loop de execucao para um circuito
+        while True:
+
+            # TELA INICIAL
+            if current_screen == "start":
+
+                # Inputs: vdd, circ, cadastro
+                current_screen, inputs = self.ui.tela_inicial()
+                vdd = inputs["vdd"]
+                circ_nome = inputs["circ"]
+                cadastro = inputs["cadastro"]
+                if cadastro:
+                    self.circuito = Circuito(circ_nome, vdd).from_json()
+                    self.backend.set(self.circuito,vdd)
+                    with HSRunner.Vdd(vdd):
+                        self.backend.atualizar_lets()
+
+            # TELA DE CADASTRO
+            elif current_screen == "cadastro":
+                
+                current_screen, inputs = self.ui.tela_cadastro(circ_nome)
+                self.circuito = Circuito(circ_nome, vdd).from_nodes(inputs["nodos"], inputs["entradas"], inputs["saidas"])    
+                self.backend.set(self.circuito,vdd)
+                with HSRunner.Vdd(vdd):
+                    self.backend.determinar_lets()
+
+            # TELA PRINCIPAL
+            elif current_screen == "main":
+                current_screen, inputs = self.ui.tela_principal(self.circuito)
+                if inputs["acao"] == "atualizar":
+                    with HSRunner.Vdd(vdd):
+                        self.backend.atualizar_lets()
+                elif inputs["acao"] == "csv":
+                        CManager.escrever_csv_total(self.circuito)
+
+            # TELA MONTE CARLO
+            elif current_screen == "mc":
+                current_screen, inputs = self.ui.tela_mc(self.circuito)
+                with HSRunner.Vdd(vdd):
+                    self.backend.analise_mc(inputs["n_sim"], inputs["continue"], inputs["progress"])
+                if not inputs["window"] is None:
+                    inputs["window"].close()
+
+            elif current_screen is None:
+                break
+
+g = GUI()

@@ -1,0 +1,47 @@
+Full Adder do Rafael Neves
+
+****** Includes ******
+
+.include ../include.cir
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+	Mp1 vdd a1 p1_p2 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp2 p1_p2 b1 p2_n1 vdd 						pmos_rvt w=27.0n l=20n nfin=1
+	Mp3 vdd a1 p3_p4 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp4 p3_p4 cin1 p2_n1 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp5 vdd b1 p3_p4 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp6 vdd cin1 p6_p9 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp7 vdd a1 p6_p9 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp8 vdd b1 p6_p9 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp9 p6_p9 p2_n1 p9_n6 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp10 vdd a1 p10_p11 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp11 p10_p11 b1 p11_p12 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp12 p11_p12 cin1 p9_n6 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+
+	Mn1 p2_n1 b1 n1_n2 gnd 					nmos_rvt w=27.0n l=20n nfin=1 
+	Mn2 n1_n2 a1 gnd gnd 					nmos_rvt w=27.0n l=20n nfin=1 
+	Mn3 n4_n3 a1 gnd gnd 					nmos_rvt w=27.0n l=20n nfin=1 
+	Mn4 p2_n1 cin1 n4_n3 gnd 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn5 n4_n3 b1 gnd gnd 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn6 p9_n6 p2_n1 n6_n7 gnd 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn7 n6_n7 cin1 gnd gnd 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn8 n6_n7 a1 gnd gnd 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn9 n6_n7 b1 gnd gnd 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn10 p9_n6 cin1 n10_n11 gnd					nmos_rvt w=27.0n l=20n nfin=1
+	Mn11 n10_n11 b1 n11_n12 gnd 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn12 n11_n12 a1 gnd gnd 				nmos_rvt w=27.0n l=20n nfin=1
+
+	*inversores
+	Mp13 vdd p9_n6 sum vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mn13 sum p9_n6 gnd gnd 					nmos_rvt w=27.0n l=20n nfin=1
+	Mp14 vdd p2_n1 cout vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mn14 cout p2_n1 gnd gnd 				nmos_rvt w=27.0n l=20n nfin=1 
+
+************
+.end

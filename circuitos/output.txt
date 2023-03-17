@@ -1,4 +1,4 @@
-Using: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice c17v1.cir
+Using: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice nand.cir
  ****** PrimeSim HSPICE -- S-2021.09-2 linux64 (Oct 28 2021 7326465) ******
   Copyright (c) 1986 - 2023 by Synopsys, Inc. All Rights Reserved.
   This software and the associated documentation are proprietary
@@ -6,13 +6,13 @@ Using: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice c17v1.cir
   with the terms and conditions of a written license agreement with
   Synopsys, Inc. All other use, reproduction, or distribution of
   this software is strictly prohibited.
-  Input File: c17v1.cir                                                         
-  Command line options: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice c17v1.cir
-  Start time: Fri Feb 10 22:40:34 2023
+  Input File: nand.cir                                                          
+  Command line options: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice nand.cir
+  Start time: Thu Mar 16 21:31:36 2023
  lic:  
  lic: FLEXlm: SDK_12.9.6 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: 7f0101               PID:      3950517 
+ lic: HOSTID: 7f0101               PID:      703944 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
@@ -24,7 +24,7 @@ Using: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice c17v1.cir
   **warning** (../dis/DFF.cir:19) Global net name "vdd" in subckt pin list. The pin will be connected to the local net. Recommend to not use global net names in subckt pin lists.
 1****** PrimeSim HSPICE -- S-2021.09-2 linux64 (Oct 28 2021 7326465) ******
  ******  
- benchmark c17 v1
+ nand
 
  ****** circuit name directory
  circuit number to circuit name directory
@@ -34,18 +34,10 @@ Using: /usr/synopsys/hspice/hspice_vS-2021.09-2/hspice/linux64/hspice c17v1.cir
         2 xinva2.                         not                1.00 
         3 xinvb1.                         not                1.00 
         4 xinvb2.                         not                1.00 
-        5 xinvc1.                         not                1.00 
-        6 xinvc2.                         not                1.00 
-        7 xinvd1.                         not                1.00 
-        8 xinvd2.                         not                1.00 
-        9 xinve1.                         not                1.00 
-       10 xinve2.                         not                1.00 
-       11 xff1.                           dff                1.00 
-       12 xff2.                           dff                1.00 
-       13 xinv11.                         not                1.00 
-       14 xinv12.                         not                1.00 
+        5 xff1.                           dff                1.00 
+        6 xinv11.                         not                1.00 
  ******  
- benchmark c17 v1
+ nand
 
  ****** mos   model parameters tnom=  25.000 temp=  25.000 ******
  Model file: ../dis/7nm_FF.pm
@@ -1900,58 +1892,151 @@ Random number generator is MCG            , and seed =      1, stream =   1
    *** monte carlo  index =            1 ***
 
  ******
- benchmark c17 v1
+ nand
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
- minout= 695.2667m    at=   2.0243n
+ minout= 697.0610m    at=   2.0239n
              from=   1.0000n    to=   3.8000n
- maxout= 704.5158m    at=   1.0131n
+ maxout= 702.9309m    at=   1.0123n
              from=   1.0000n    to=   3.8000n
- minnod= 695.2667m    at=   2.0243n
+ minnod= 667.5157m    at=   2.0216n
              from=   1.0000n    to=   3.8000n
- maxnod= 704.5158m    at=   1.0131n
+ maxnod= 668.1753m    at=   1.0107n
              from=   1.0000n    to=   3.8000n
 
-   meas_variable = minout
-   mean  =   0.       varian =   0.     
-   sigma =   0.       avgdev =   0.     
-   max   =   0.       min    =   0.     
-    1-sigma =   0.      median =   0.     
+          ***** job concluded
 
-   meas_variable = maxout
-   mean  =   0.       varian =   0.     
-   sigma =   0.       avgdev =   0.     
-   max   =   0.       min    =   0.     
-    1-sigma =   0.      median =   0.     
+   *** monte carlo  index =            2 ***
 
-   meas_variable = minnod
-   mean  =   0.       varian =   0.     
-   sigma =   0.       avgdev =   0.     
-   max   =   0.       min    =   0.     
-    1-sigma =   0.      median =   0.     
+ minout= 696.7426m    at=   2.0238n
+             from=   1.0000n    to=   3.8000n
+ maxout= 702.9496m    at=   1.0116n
+             from=   1.0000n    to=   3.8000n
+ minnod= 672.3000m    at=   2.0227n
+             from=   1.0000n    to=   3.8000n
+ maxnod= 673.0204m    at=   1.0107n
+             from=   1.0000n    to=   3.8000n
 
-   meas_variable = maxnod
-   mean  =   0.       varian =   0.     
-   sigma =   0.       avgdev =   0.     
-   max   =   0.       min    =   0.     
-    1-sigma =   0.      median =   0.     
+          ***** job concluded
+
+   *** monte carlo  index =            3 ***
+
+ minout= 697.0245m    at=   2.0226n
+             from=   1.0000n    to=   3.8000n
+ maxout= 703.1855m    at=   1.0115n
+             from=   1.0000n    to=   3.8000n
+ minnod= 670.1101m    at=   2.0217n
+             from=   1.0000n    to=   3.8000n
+ maxnod= 670.8460m    at=   3.0106n
+             from=   1.0000n    to=   3.8000n
+
+          ***** job concluded
+
+   *** monte carlo  index =            4 ***
+
+ minout= 697.7113m    at=   2.0228n
+             from=   1.0000n    to=   3.8000n
+ maxout= 702.4883m    at=   1.0133n
+             from=   1.0000n    to=   3.8000n
+ minnod= 596.3943m    at=   2.0216n
+             from=   1.0000n    to=   3.8000n
+ maxnod= 596.9657m    at=   3.0114n
+             from=   1.0000n    to=   3.8000n
+
+          ***** job concluded
+
+   *** monte carlo  index =            5 ***
+
+ minout= 697.4866m    at=   2.0231n
+             from=   1.0000n    to=   3.8000n
+ maxout= 703.2102m    at=   1.0115n
+             from=   1.0000n    to=   3.8000n
+ minnod= 664.3756m    at=   2.0220n
+             from=   1.0000n    to=   3.8000n
+ maxnod= 664.9515m    at=   3.0114n
+             from=   1.0000n    to=   3.8000n
+
+          ***** job concluded
+
+   *** monte carlo  index =            6 ***
+
+ minout= 696.8727m    at=   2.0220n
+             from=   1.0000n    to=   3.8000n
+ maxout= 702.5731m    at=   1.0112n
+             from=   1.0000n    to=   3.8000n
+ minnod= 673.3635m    at=   2.0200n
+             from=   1.0000n    to=   3.8000n
+ maxnod= 673.8403m    at=   1.0100n
+             from=   1.0000n    to=   3.8000n
+
+          ***** job concluded
+
+   *** monte carlo  index =            7 ***
+
+ minout= 696.6443m    at=   2.0258n
+             from=   1.0000n    to=   3.8000n
+ maxout= 702.8934m    at=   1.0133n
+             from=   1.0000n    to=   3.8000n
+ minnod= 651.1000m    at=   2.0239n
+             from=   1.0000n    to=   3.8000n
+ maxnod= 651.8707m    at=   3.0114n
+             from=   1.0000n    to=   3.8000n
+
+          ***** job concluded
+
+   *** monte carlo  index =            8 ***
+
+ minout= 697.1533m    at=   2.0225n
+             from=   1.0000n    to=   3.8000n
+ maxout= 703.3621m    at=   1.0114n
+             from=   1.0000n    to=   3.8000n
+ minnod= 671.4033m    at=   2.0216n
+             from=   1.0000n    to=   3.8000n
+ maxnod= 672.0746m    at=   3.0107n
+             from=   1.0000n    to=   3.8000n
+
+          ***** job concluded
+
+   *** monte carlo  index =            9 ***
+
+ minout= 697.6375m    at=   2.0232n
+             from=   1.0000n    to=   3.8000n
+ maxout= 703.2163m    at=   1.0115n
+             from=   1.0000n    to=   3.8000n
+ minnod= 661.8108m    at=   2.0221n
+             from=   1.0000n    to=   3.8000n
+ maxnod= 662.3671m    at=   3.0114n
+             from=   1.0000n    to=   3.8000n
+
+          ***** job concluded
+
+   *** monte carlo  index =           10 ***
+
+ minout= 697.0227m    at=   2.0239n
+             from=   1.0000n    to=   3.8000n
+ maxout= 703.0363m    at=   1.0116n
+             from=   1.0000n    to=   3.8000n
+ minnod= 671.4524m    at=   2.0228n
+             from=   1.0000n    to=   3.8000n
+ maxnod= 672.1656m    at=   1.0107n
+             from=   1.0000n    to=   3.8000n
 
           ***** job concluded
  ******  
- benchmark c17 v1
+ nand
 
  ****** job statistics summary tnom=  25.000 temp=  25.000 ******
   
  ******  Machine Information  ******
  CPU:
  model name	: AMD Ryzen 5 3600 6-Core Processor
- cpu MHz	: 2141.197
+ cpu MHz	: 2254.302
  CPU(s)		: 12
   
  OS:
  Linux version 5.4.0-135-generic (buildd@lcy02-amd64-066) (gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1)) #152-Ubuntu SMP Wed Nov 23 20:19:22 UTC 2022
 
- System loadavg : 0.30 3.90 6.22 6/590 3950520
+ System loadavg : 0.36 0.23 0.14 2/629 704024
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -1962,12 +2047,12 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
   ******  Circuit Statistics  ******
-  # nodes       =      71 # elements   =     122
+  # nodes       =      29 # elements   =      48
   # resistors   =       0 # capacitors =       0 # inductors   =       0
   # mutual_inds =       0 # vccs       =       0 # vcvs        =       0
-  # cccs        =       0 # ccvs       =       0 # volt_srcs   =      10
-  # curr_srcs   =       0 # diodes     =       0 # bjts        =       0
-  # jfets       =       0 # mosfets    =     112 # U elements  =       0
+  # cccs        =       0 # ccvs       =       0 # volt_srcs   =       5
+  # curr_srcs   =       1 # diodes     =       0 # bjts        =       0
+  # jfets       =       0 # mosfets    =      42 # U elements  =       0
   # T elements  =       0 # W elements =       0 # B elements  =       0
   # S elements  =       0 # P elements =       0 # va device   =       0
   # vector_srcs =       0 # N elements =       0
@@ -1976,22 +2061,22 @@ Random number generator is MCG            , and seed =      1, stream =   1
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           0.01           1          27
-  transient          0.04         401         292         108 rev=         3
+  op point           0.01           1          82
+  transient          0.23        4010        3000        1115 rev=        34
   readin             0.00
   errchk             0.01
   setup              0.00
   output             0.00
 
 
-           peak memory used        442.36 megabytes
-           total cpu time            0.06 seconds
-           total elapsed time        0.08 seconds
-           job started at     22:40:34 02/10/2023
-           job ended   at     22:40:34 02/10/2023
+           peak memory used        441.26 megabytes
+           total cpu time            5.97 seconds
+           total elapsed time        5.98 seconds
+           job started at     21:31:36 03/16/2023
+           job ended   at     21:31:42 03/16/2023
 
 >info:         ***** hspice job concluded
-           job total runtime         0.08 seconds
+           job total runtime         5.98 seconds
 
 
  lic: Release hspice token(s) 

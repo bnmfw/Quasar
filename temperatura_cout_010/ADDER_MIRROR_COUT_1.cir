@@ -1,0 +1,124 @@
+csco*FA_VxVx.cir
+
+* rafaelnevesnmello@gmail.com 07/03/2020
+* Implementacao adder mirror e inser��o de falhas Cout output para tens�o nominal e temperatura nominal (25�C)
+
+*Modelo do transistor
+
+*---------------------------------------------------------------
+* Bibliotecas
+*---------------------------------------------------------------
+
+	.include "7nm_FF.pm"
+
+*---------------------------------------------------------------
+* Parametros e modelos
+*---------------------------------------------------------------
+
+	.global vdd gnd ground wfn wfp
+	
+        .param supply = 0.7V
+        .param ground_valor = 0
+        *.temp 0 25 50 75 100 125
+	.temp 25
+        .option post=2
+	.include LIBRARY_FinFET_traditional.cir
+
+*---------------------------------------------------------------
+*Fontes de corrente para simulacao da colisao dos ions
+*---------------------------------------------------------------
+
+    *-----current generator (LOW TO HIGH PULSE)
+		*Iset gnd p1_p2 EXP (0 65u 4ns 10ps 10ps 200ps)
+    *-----current generator  (HIGHT TO LOW PULSE)
+		*Iset cout gnd EXP (0 44u 4ns 10ps 10ps 200ps) 
+
+		.include pulso_radiacao.cir 
+
+
+*---------------------------------------------------------------
+* Fontes de sinais e alimentacao
+*---------------------------------------------------------------
+		.include fontes_COUT.cir
+		*.include ondas_COUT.cir
+		.include ondas_radiation_COUT.cir
+		.include inversores_in_out_COUT.cir
+
+*----------------------------------------------------------------
+* Descricao do circuito
+*----------------------------------------------------------------		
+       *------Instanciacao do subckt (somador mirror)
+ 		*X1 cin1 a1 b1 cout sum vccbloco vssbloco vdd ground mirror
+
+	Mp1 vccbloco a1 p1_p2 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp2 p1_p2 b1 p2_n1 vdd 						pmos_rvt w=27.0n l=20n nfin=1
+	Mp3 vccbloco a1 p3_p4 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp4 p3_p4 cin1 p2_n1 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp5 vccbloco b1 p3_p4 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp6 vccbloco cin1 p6_p9 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp7 vccbloco a1 p6_p9 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp8 vccbloco b1 p6_p9 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp9 p6_p9 p2_n1 p9_n6 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp10 vccbloco a1 p10_p11 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp11 p10_p11 b1 p11_p12 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mp12 p11_p12 cin1 p9_n6 vdd 					pmos_rvt w=27.0n l=20n nfin=1
+
+	Mn1 p2_n1 b1 n1_n2 ground 					nmos_rvt w=27.0n l=20n nfin=1 
+	Mn2 n1_n2 a1 vssbloco ground 					nmos_rvt w=27.0n l=20n nfin=1 
+	Mn3 n4_n3 a1 vssbloco ground 					nmos_rvt w=27.0n l=20n nfin=1 
+	Mn4 p2_n1 cin1 n4_n3 ground 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn5 n4_n3 b1 vssbloco ground 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn6 p9_n6 p2_n1 n6_n7 ground 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn7 n6_n7 cin1 vssbloco ground 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn8 n6_n7 a1 vssbloco ground 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn9 n6_n7 b1 vssbloco ground 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn10 p9_n6 cin1 n10_n11 ground					nmos_rvt w=27.0n l=20n nfin=1
+	Mn11 n10_n11 b1 n11_n12 ground 					nmos_rvt w=27.0n l=20n nfin=1
+	Mn12 n11_n12 a1 vssbloco ground 				nmos_rvt w=27.0n l=20n nfin=1
+
+	*inversores
+	Mp13 vccbloco p9_n6 sum vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mn13 sum p9_n6 vssbloco ground 					nmos_rvt w=27.0n l=20n nfin=1
+	Mp14 vccbloco p2_n1 cout vdd 					pmos_rvt w=27.0n l=20n nfin=1
+	Mn14 cout p2_n1 vssbloco ground 				nmos_rvt w=27.0n l=20n nfin=1
+	
+	
+*----------------------------------------------------------------
+* Tipo de simulacao
+*----------------------------------------------------------------
+		.tran 1p 8n
+	*-----estimulos para performance----*
+		*.tran 1p 72n
+		*.tran 0.01ns 8ns
+		*.tran 0.01ns 18ns
+		
+	*-----------------------------------*
+*---------------------------------------------------------------
+* measures
+*---------------------------------------------------------------
+	*------measures para radiacao
+		
+		.include measures.cir
+		
+		*------measures for signals '000' or '001' or '010' or '100'	
+		*.meas tran minout min V(ncout) from=1p to=8n
+		*.meas tran maxout max V(cout) from=1n to=8n
+		
+		*------measures for signals '011' or '101' or '110' or '111'
+		*.meas tran maxout max V(cout) from=1p to=8n
+		*.meas tran minout min V(ncout) from=1p to=8n
+		
+		
+       *------measures para performance		
+		*.include atrasos_COUT_TRADICIONAIS.cir
+		*.include atrasos_COUT.cir
+		*.include energia_COUT.cir
+		*.include potencia_COUT.cir
+
+
+*-----------------------------------------------------------------
+* Fim da descricao SPICE
+*-----------------------------------------------------------------
+.end
+
+

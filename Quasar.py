@@ -1,5 +1,5 @@
 from circuito import Circuito
-from interface import GUIComponents, GUI
+from interface_deprecated import GUIComponents, GUI
 
 def main():
     GUI()

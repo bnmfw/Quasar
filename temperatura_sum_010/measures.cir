@@ -1,0 +1,2 @@
+.meas tran minout min V(sum) from=1p to=8n
+.meas tran maxout max V(nsum) from=1p to=8n

@@ -1,0 +1,2 @@
+.meas tran minout min V(cout) from=1p to=8n
+.meas tran maxout max V(ncout) from=1p to=8n
