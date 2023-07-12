@@ -1,4 +1,4 @@
-****** Advanced Variability Analysis ******
+****** Advanced Variation Analysis ******
 Copyright (c) 2018 - 2023 by Synopsys, Inc. All Rights Reserved.
 
 This software and the associated documentation are proprietary
@@ -7,8 +7,8 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 703955
-Command_Line_Options: nand_dm.hsp.json
+Username: bborges, PID: 51814
+Command_Line_Options: nand.hsp.json
 
 System Activity Monitoring (format subject to change)
 ================================================================
@@ -17,7 +17,7 @@ Hostname: aorus
 N cores: 12
 Model name: AMD Ryzen 5 3600 6-Core Processor
 Cache size: 512 KB
-OS kernel: Linux 5.4.0-135-generic
+OS kernel: Linux 5.15.0-76-generic
 OS release: NAME="Ubuntu"
 VERSION="20.04.4 LTS (Focal Fossa)"
 ID=ubuntu
@@ -30,34 +30,36 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 0.300000, 0.220000, 0.130000
-Virtual memory: Total=31.4G, Available=29.3G, Percent=6.6, Used=1.6G, Free=6.3G, Active=6.3G, Inactive=17.2G, Buffers=2.0G, Cached=21.5G, Shared=13.8M, Slab=1.4G
+CPU load: 0.220000, 0.100000, 0.030000
+Virtual memory: Total=31.3G, Available=29.3G, Percent=6.3, Used=1.5G, Free=562.2M, Active=8.5G, Inactive=14.6G, Buffers=6.8G, Cached=22.5G, Shared=5.2M, Slab=7.5G
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
 (-1, -1): The maximum amount of processor time (in seconds) that a process can use
 (-1, -1): The maximum size of a file
+(-1, -1): The maximum size (in bytes) of the process’s heap
 (8388608, -1): The maximum size (in bytes) of the call stack
 (-1, -1): The maximum resident set size available
-(127861, 127861): The maximum number of processes the current process may create
+(127831, 127831): The maximum number of processes the current process may create
 (1048576, 1048576): The maximum number of open file descriptors
 (67108864, 67108864): The maximum address space which may be locked in memory
 (-1, -1): The maximum area (in bytes) of address space which may be taken by the process
 (819200, 819200): The number of bytes that can be allocated for POSIX message queues
+(0, 0): The ceiling for the process’s nice level (calculated as 20 - rlim_cur)
 (0, 0): The ceiling of the real-time priority
-(127861, 127861): The number of signals which the process may queue
+(127831, 127831): The number of signals which the process may queue
 
 /tmp file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
-/dev/sdb2            295    18       262   7% /
+/dev/sdb5             95    15        75  17% /
 
 Output directory /home/bborges/github/circuitos/nand file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
-/dev/sdb4            620   338       250  58% /home
+/dev/sdb4            819   614       163  80% /home
 
-Start time: 2023-03-16 21:31:38 1679013098.2
+Start time: 2023-07-11 20:57:57 1689119878.0
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0     2.5      29.3       262.0      250.0        NA       NA      156.8   88.2M    346.2M  
+         0     1.8      29.3        75.0      163.0        NA       NA      122.3   90.1M    354.4M  

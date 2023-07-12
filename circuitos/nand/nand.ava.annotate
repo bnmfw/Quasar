@@ -1,4 +1,4 @@
-****** Advanced Variability Analysis ******
+****** Advanced Variation Analysis ******
 Copyright (c) 2018 - 2023 by Synopsys, Inc. All Rights Reserved.
 
 This software and the associated documentation are proprietary
@@ -7,10 +7,10 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-AVA Version: S-2021.09-DEV, Build time: Thu Oct 28 06:52:47 2021, Application start time: Thu Mar 16 21:31:38 2023
-Hostname: aorus, Username: bborges, PID: 703955
+AVA Version: T-2022.06-SP2, Build time: Wed Nov 23 00:57:55 2022, Application start time: Tue Jul 11 20:57:57 2023
+Hostname: aorus, Username: bborges, PID: 51814
 Working_Directory : /home/bborges/github/circuitos/nand
-Command_Line_Options : nand_dm.hsp.json
+Command_Line_Options : nand.hsp.json
 
 This file format and content are subject to change.
 ================================================================

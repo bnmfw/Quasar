@@ -6,7 +6,8 @@
 "Sensitivity_Detailed_File": false, 
 "Sensitivity_Method": "Classic", 
 "Sensitivity_Screening_Method": "Pearson",
-"Sampling_Method": "srs",
+"Sampling_Method": "SRS",
+"Sensitivity_Composite_Device": "",
 "Measure_Files": ["nand.mt0.csv"],
 "Sample_Files": ["nand.mc0.csv"],
 "Other_Percentile_Percentage": [ ],
@@ -18,8 +19,6 @@
 "QQ_CSV": true,
 "Nominal": true,
 "Detailed": true,
-"Sensitivity": true,
-"Critical_Sweep_MC0": true,
-"Critical_Sweep_Waveform": false
+"Sensitivity": true
 }
 }

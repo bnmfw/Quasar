@@ -1,4 +1,4 @@
-$DATA1 SOURCE='PrimeSim HSPICE' VERSION='S-2021.09-2
+$DATA1 SOURCE='PrimeSim HSPICE' VERSION='T-2022.06-SP2
 $OPTION MEASFORM=3
 $ This file format is subject to change 
 $ The seperator is :@:                  

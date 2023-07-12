@@ -97,7 +97,7 @@ class CircuitManager:
         jobs = self.__possible_LETs(self.circuito.nodos, self.circuito.saidas, len(self.circuito.entradas))
 
         manager = ProcessMaster(self.circuito, self.run_let_job, jobs)
-        manager.work((delay,))
+        manager.work((delay,),1)
 
         lets = manager.return_done()
 

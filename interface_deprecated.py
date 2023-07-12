@@ -1,11 +1,11 @@
-from arquivos import CManager, JManager
-from circuitManager import CircuitManager
-from mcManager import MCManager
-from letFinder import LetFinder
-from circuito import Circuito
-from components import LET
-from runner import HSRunner
-from matematica import Time
+from utils.arquivos import CManager, JManager
+from utils.circuitManager import CircuitManager
+from utils.mcManager import MCManager
+from utils.letFinder import LetFinder
+from utils.circuito import Circuito
+from utils.components import LET
+from utils.runner import HSRunner
+from utils.matematica import Time
 
 barra_comprida = "---------------------------"
 

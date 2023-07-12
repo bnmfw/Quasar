@@ -1,0 +1,4 @@
+fadder
+0.7
+a b cin
+sum cout

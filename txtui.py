@@ -36,7 +36,7 @@ class TXTUI:
         print(barra_comprida)
         inputs["entradas"] = [entrada for entrada in input("Entradas de sinal: ").split()]
         inputs["saidas"] = [entrada for entrada in input("Saidas analisadas: ").split()]
-        inputs["nodos"] = [nodo for nodo in HSRunner.get_nodes(circ_nome) if nodo not in {"vdd", "gnd"} and not nodo[0] == "t"]
+        inputs["nodos"] = [nodo for nodo in HSRunner.get_nodes(circ_nome)]
         return "main", inputs
     
     def tela_principal(self, circuito):

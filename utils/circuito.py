@@ -33,7 +33,7 @@ class Circuito():
         ##### ENTRADAS #####
         self.entradas = [Entrada(entrada) for entrada in entradas]
         ##### OUTROS NODOS #####
-        self.nodos = [Nodo(nodo) for nodo in HSRunner.get_nodes(self.nome) if nodo not in {"vdd", "gnd"}]
+        self.nodos = [Nodo(nodo) for nodo in HSRunner.get_nodes(self.nome)]
         # JManager.codificar(self)
         return self
 

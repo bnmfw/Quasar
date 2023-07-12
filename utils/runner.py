@@ -95,6 +95,7 @@ class SpiceRunner():
 
     def run_SET(self, path: str, filename: str, let: LET, corrente = None) -> tuple:
         with self.SET(let, corrente):
+            os.system(f"cd circuitos{path} ; hspice {filename} > ../../../../full_report.txt")
             os.system(f"cd circuitos{path} ; hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > ../output.txt")
             pico_nodo = HSManager.get_peak_tension(let.orientacao[0], True)
             pico_saida = HSManager.get_peak_tension(let.orientacao[1])

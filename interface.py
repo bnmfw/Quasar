@@ -3,8 +3,15 @@ from utils.backend import Backend
 from utils.runner import HSRunner
 from utils.circuito import Circuito
 from utils.arquivos import CManager
-from psgui import PSGUI, psgui_is_working, gui_error
+# module_error = False
+try:
+    from psgui import PSGUI, psgui_is_working, gui_error
+except ModuleNotFoundError:
+    psgui_is_working = True
 from txtui import TXTUI
+
+psgui_is_working = False
+gui_error = "Manual Error"
 
 class GUI:
     def __init__(self) -> None:
@@ -48,6 +55,7 @@ class GUI:
                 
                 current_screen, inputs = self.ui.tela_cadastro(circ_nome)
                 self.circuito = Circuito(circ_nome, vdd).from_nodes(inputs["nodos"], inputs["entradas"], inputs["saidas"])    
+                print(self.circuito.nodos)
                 self.backend.set(self.circuito,vdd)
                 with HSRunner.Vdd(vdd):
                     self.backend.determinar_lets()

@@ -129,8 +129,11 @@ class LetFinder:
             for i in range(self.__limite_sim):
 
                 # Roda o HSPICE e salva os valores no arquivo de texto
+                # try:
+                print("Erro no SET: ", let, corrente, validacao)
                 _, tensao_pico = HSRunner.run_SET(self.circuito.path, self.circuito.arquivo, let, corrente)
-
+                # except KeyError:                    
+                #     exit()
                 simulacoes += 1
 
                 ##### ENCERRAMENTO POR PRECISAO SATISFEITA #####

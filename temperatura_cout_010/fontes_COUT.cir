@@ -2,16 +2,16 @@
            ***USADAS NOS BULKS
               Vvdd vdd gnd supply
               *Vground ground gnd ground_valor
-           ***USADAS NO 1º INVERSOR
+           ***USADAS NO 1ï¿½ INVERSOR
               Vvccin vccin gnd supply
               Vvssin vssin gnd ground_valor
-           ***USADAS NO 2º INVERSOR
+           ***USADAS NO 2ï¿½ INVERSOR
               Vvcc vcc gnd supply
               Vvss vss gnd ground_valor
            ***USADAS NO BLOCO
               Vvccbloco vccbloco gnd supply
               Vvssbloco vssbloco gnd ground_valor
            ***USADAS NO FO4
-              Vvccout vccout gnd supply
+              Vvccout  gnd supply
               Vvssout vssout gnd ground_valor 
 ******

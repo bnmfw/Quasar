@@ -8,19 +8,17 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
   this software is strictly prohibited.
   Input File: nand.cir                                                          
   Command line options: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
-  Start time: Tue Jul 11 20:57:56 2023
+  Start time: Tue Jul 11 20:59:14 2023
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      51775 
+ lic: HOSTID: d76153d              PID:      67176 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
  lic: License/Maintenance for hspice will expire on 30-jun-2024/2022.06 
  lic: 1(in_use)/50(total) FLOATING license(s) on SERVER 27020@localhost 
  lic:   
-  **info** Monte Carlo simulation is detected, increase number of measure digits to 7 for Monte Carlo post processing.
-  **info** Starting with the 2021.09 relaease, the Monte Carlo data mining functionality has been merged with AVA based-post processing.
   **warning** (../dis/DFF.cir:19) Global net name "vdd" in subckt pin list. The pin will be connected to the local net. Recommend to not use global net names in subckt pin lists.
 1****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
  ******  
@@ -104,7 +102,7 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
    DELTAWCV =      0 
    NBODY =  1e+22 
    NSD =  2e+26 
-   PHIG =  4.372 
+   PHIG =  4.334 
    EPSROX =    3.9 
    EPSRSUB =   11.9 
    EASUB =   4.05 
@@ -1018,7 +1016,7 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
    DELTAWCV =      0 
    NBODY =  1e+22 
    NSD =  2e+26 
-   PHIG =  4.811 
+   PHIG =   4.78 
    EPSROX =    3.9 
    EPSRSUB =   11.9 
    EASUB =   4.05 
@@ -1869,191 +1867,43 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
    NFINmin =      0 
    NFINmax =      1 
   **info** (../include/vdd.cir:4) DC voltage reset to initial transient source value in source 0:vclk. new dc=0.0000D+00
-*** info *** index=1 is a nominal sample in Monte Carlo.
-*** info *** The MCG Random Number Generator and .Option Use_Agauss_Format = Yes are set as defaults starting with PrimeSim HSPICE L-2016.06 to address the needs of advanced technology nodes with large samples and/or large circuits, particularly for distributed processing.
-*** Should you want backward compatibility, please use the following options:
-For traditional Gaussian style variations, use .Option Random_Generator = 3LC;
-For Variation Block style variations, use .Option Random_Generator = MOA.
   
       
-
-MONTE CARLO DEFINITIONS
-
-
-Option sampling_method was set, variation block and agauss format variation are in effect.
-
-Random number generator is MCG            , and seed =      1, stream =   1
  **info** set option symb=1 internally to help for convergence.
  *****************************************************************
  ******  option summary
  ******
  runlvl  = 3         bypass  = 2.0000    
+ ******  
+ nand
 
-   *** monte carlo  index =            1 ***
+ ****** operating point information tnom=  25.000 temp=  25.000 ******
+ ****** operating point status is voltage   simulation time is     0.     
+    node    =voltage      node    =voltage      node    =voltage
+
+ +0:a       = 700.0000m 0:b       =   0.      0:clk     =   0.     
+ +0:fa      =  82.3449n 0:fb      = 699.9992m 0:g1      = 699.9993m
+ +0:i1      = 671.7947m 0:nnq1    = 699.9992m 0:nq1     = 699.9992m
+ +0:q1      = 162.3486n 0:ta      = 699.9992m 0:tb      =  77.8707n
+ +0:vcc     = 700.0000m 0:vdd     = 700.0000m 5:ci      =  42.3698n
+ +5:cni     = 699.9992m 5:z1      = 668.3022m 5:z10     = 699.9992m
+ +5:z11     =  31.6884m 5:z12     =  86.2409n 5:z2      =  58.7709n
+ +5:z3      = 113.5323n 5:z4      = 699.9992m 5:z5      =  31.6884m
+ +5:z6      =   2.0059n 5:z7      = 699.9999m 5:z8      =  88.2438n
+ +5:z9      = 172.4780n
 
  ******
  nand
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
- minout= 697.0610m    at=   2.0239n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.9309m    at=   1.0123n
-             from=   1.0000n    to=   3.8000n
- minnod= 667.5157m    at=   2.0216n
-             from=   1.0000n    to=   3.8000n
- maxnod= 668.1753m    at=   1.0107n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            2 ***
-
- minout= 696.7426m    at=   2.0238n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.9496m    at=   1.0116n
-             from=   1.0000n    to=   3.8000n
- minnod= 672.3000m    at=   2.0227n
-             from=   1.0000n    to=   3.8000n
- maxnod= 673.0204m    at=   1.0107n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            3 ***
-
- minout= 697.0245m    at=   2.0226n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.1855m    at=   1.0115n
-             from=   1.0000n    to=   3.8000n
- minnod= 670.1101m    at=   2.0217n
-             from=   1.0000n    to=   3.8000n
- maxnod= 670.8460m    at=   3.0106n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            4 ***
-
- minout= 697.7113m    at=   2.0228n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.4883m    at=   1.0133n
-             from=   1.0000n    to=   3.8000n
- minnod= 596.3943m    at=   2.0216n
-             from=   1.0000n    to=   3.8000n
- maxnod= 596.9657m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            5 ***
-
- minout= 697.4866m    at=   2.0231n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.2102m    at=   1.0115n
-             from=   1.0000n    to=   3.8000n
- minnod= 664.3756m    at=   2.0220n
-             from=   1.0000n    to=   3.8000n
- maxnod= 664.9515m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            6 ***
-
- minout= 696.8727m    at=   2.0220n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.5731m    at=   1.0112n
-             from=   1.0000n    to=   3.8000n
- minnod= 673.3635m    at=   2.0200n
-             from=   1.0000n    to=   3.8000n
- maxnod= 673.8403m    at=   1.0100n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            7 ***
-
- minout= 696.6443m    at=   2.0258n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.8934m    at=   1.0133n
-             from=   1.0000n    to=   3.8000n
- minnod= 651.1000m    at=   2.0239n
-             from=   1.0000n    to=   3.8000n
- maxnod= 651.8707m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            8 ***
-
- minout= 697.1533m    at=   2.0225n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.3621m    at=   1.0114n
-             from=   1.0000n    to=   3.8000n
- minnod= 671.4033m    at=   2.0216n
-             from=   1.0000n    to=   3.8000n
- maxnod= 672.0746m    at=   3.0107n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            9 ***
-
- minout= 697.6375m    at=   2.0232n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.2163m    at=   1.0115n
-             from=   1.0000n    to=   3.8000n
- minnod= 661.8108m    at=   2.0221n
-             from=   1.0000n    to=   3.8000n
- maxnod= 662.3671m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           10 ***
-
- minout= 697.0227m    at=   2.0239n
+ minout= 340.7893m    at=   2.0893n
              from=   1.0000n    to=   3.8000n
  maxout= 703.0363m    at=   1.0116n
              from=   1.0000n    to=   3.8000n
- minnod= 671.4524m    at=   2.0228n
+ minnod= 102.4475m    at=   2.0893n
              from=   1.0000n    to=   3.8000n
- maxnod= 672.1656m    at=   1.0107n
+ maxnod= 672.1655m    at=   1.0107n
              from=   1.0000n    to=   3.8000n
- 
-
- ****** Monte Carlo Statistics ******
-  Available sampling count:  10
-
-
-    meas_variable = minout
-   mean  =  697.1439m  varian =  149.5316n
-   sigma =  386.6932u  avgdev =  313.9816u
-   max   =  697.7113m  min    =  696.6443m
-   1-sigma =  386.6932u  median =  697.0245m
-
-
-    meas_variable = maxout
-   mean  =  702.9905m  varian =   89.3728n
-   sigma =  298.9529u  avgdev =  235.0575u
-   max   =  703.3621m  min    =  702.4883m
-   1-sigma =  298.9529u  median =  703.0363m
-
-
-    meas_variable = minnod
-   mean  =  659.1455m  varian =  604.2539u
-   sigma =   24.5816m  avgdev =   15.7326m
-   max   =  673.3635m  min    =  596.3943m
-   1-sigma =   24.5816m  median =  670.1101m
-
-
-    meas_variable = maxnod
-   mean  =  659.7891m  varian =  605.2053u
-   sigma =   24.6009m  avgdev =   15.7204m
-   max   =  673.8403m  min    =  596.9657m
-   1-sigma =   24.6009m  median =  670.8460m
-
-
 
           ***** job concluded
  ******  
@@ -2064,13 +1914,13 @@ Random number generator is MCG            , and seed =      1, stream =   1
  ******  Machine Information  ******
  CPU:
  model name	: AMD Ryzen 5 3600 6-Core Processor
- cpu MHz	: 2200.000
+ cpu MHz	: 4186.311
  CPU(s)		: 12
   
  OS:
  Linux version 5.15.0-76-generic (buildd@lcy02-amd64-019) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #83~20.04.1-Ubuntu SMP Wed Jun 21 20:23:31 UTC 2023
 
- System loadavg : 0.22 0.10 0.03 2/636 51869
+ System loadavg : 6.52 2.12 0.75 3/654 67179
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -2095,23 +1945,23 @@ Random number generator is MCG            , and seed =      1, stream =   1
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           0.02           1          82
-  transient          0.24        4010        3000        1115 rev=        34
+  op point           0.00           1          20
+  transient          0.03         401         344         121 rev=         4
   readin             0.00
   errchk             0.01
   setup              0.00
   output             0.00
 
 
-           peak memory used        449.59 megabytes
-           total cpu time            5.45 seconds
-           total elapsed time        5.48 seconds
-           job started at     20:57:56 07/11/2023
-           job ended   at     20:58:01 07/11/2023
+           peak memory used        448.96 megabytes
+           total cpu time            0.04 seconds
+           total elapsed time        0.08 seconds
+           job started at     20:59:14 07/11/2023
+           job ended   at     20:59:14 07/11/2023
 
 >info:         ***** hspice job concluded
-           job total runtime         5.48 seconds
+           job total runtime         0.08 seconds
 
 
  lic: Release hspice token(s) 
- lic: total license checkout elapse time:        0.02(s)
+ lic: total license checkout elapse time:        0.01(s)

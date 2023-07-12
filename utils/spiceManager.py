@@ -19,6 +19,7 @@ class SpiceManager():
 
         arquivo.write(f".meas tran {label} TRIG v({trig}) val='{trig_value}' {trig_inclin}=1 TARG v({targ}) val='{targ_value}' {targ_inclin}=1\n")
     
+    # Altera o arquivo "measure.cir"
     def measure_pulse(self, nodo: str, saida: str):
         with open(f"circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com os measures usados\n")
@@ -28,6 +29,7 @@ class SpiceManager():
             self.__write_peak_meas(arquivo, "minnod", "min", "V", nodo, 1.0, 3.8)
             self.__write_peak_meas(arquivo, "maxnod", "max", "V", nodo, 1.0, 3.8)
 
+    # Altera o arquivo "measure.cir"
     def measure_tension(self, nodo: str):
         with open(f"circuitos/include/measure.cir", "w") as arquivo:
             arquivo.write("*Arquivo com os measures usados\n")
@@ -157,20 +159,35 @@ class SpiceManager():
     # Le nodos de um circuito
     def get_nodes(self, circuit_name: str) -> set:
         nodos = {"vdd", "gnd"}
+        critical_region = False
         with open(f"circuitos/{circuit_name}/{circuit_name}.cir", "r") as file:
             for linha in file:
-                if "M" in linha:
+
+                if "START QUASAR" in linha:
+                    critical_region = True
+                    continue
+                elif "END QUASAR" in linha:
+                    critical_region = False
+                    continue
+                if not critical_region:
+                    continue
+
+                if "M" in linha[0]:
                     _, coletor, base, emissor, *_ = linha.split()
                     for nodo in [coletor, base, emissor]:
                         nodos.add(nodo)
-        return nodos
+        return {nodo for nodo in nodos if nodo not in {"vcc", "vdd", "gnd"}}
 
     # Le measures no arquivo output.txt e retorna um dicionario
     def get_output(self) -> dict:
         saida: dict = {"None": None}
+        print("-- START --")
         with open(f"circuitos/output.txt", "r") as output:
             for linha in output:
+                print(linha)
                 self.__format_output_line(linha, saida)
+        
+        print("-- END --")
         self.output = saida
         return saida
     
