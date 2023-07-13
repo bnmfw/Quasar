@@ -6,6 +6,12 @@ import sys
 import json
 from time import sleep, perf_counter
 
+# This file is responsible for the concurrent execution of Quasar and is the only part of the project that
+# should know how to handle any concurrent work, form the perspective of all other files the project is serialized
+# This file itself does not know what types of jobs its paralalizing, it should be generic
+
+# This is a context manager that creates a folder for a process that is a copy of its inteded workspace
+# As the context manager is exited said folder is deletes
 class ProcessFolder:
     def __init__(self, dir: str):
         self.pid = None
@@ -22,119 +28,125 @@ class ProcessFolder:
         os.system(f"rm -r {self.pid}")
         os.chdir(f"..")
 
+# This class is responsible for executing some function multiple times with different inputs.
+# The static_args+job define the inputs and are gotten from a Queue with request_job
+# When done the output is posted in a Queue with post_results
 class ProcessWorker:
     def __init__(self, work_func: Callable, static_args: list, max_work: int):
         self.func = work_func
         self.args = static_args
         self.max_work = max_work
 
-    # Quando o processo eh terminado extermente pelo metodo .terminate ele entra aqui
+    # Handler of the termination signal
     def __termination_handler(self, signal, frame):
         sys.exit(0)
-        pass
     
+    # Usual execution of jobs
     def run(self, master: object):
-        # Essa linha tem que de vir aqui pois eh quando o processo ja iniciou, nao coloque no construtor
+        # This line has to come here in run. Do not dare to put it in the constructor. Learn more about signals.
         signal.signal(signal.SIGTERM, self.__termination_handler)
 
-        # Cria os ambientes de processo na pasta work e move os processos para elas
+        # Changes the worker execution to its own folder
         with ProcessFolder("circuitos"):
             
-            # While True limitado pelo maximo de trabalhos possiveis
+            # While True limited by the max_work load
             for _ in range(self.max_work):
 
-                # Recebe um trabalho a ser feito do mestre
+                # Gets a job from the master
                 job = master.request_job()
+                # Job bein -1 means there is no more jobs to be done
                 if job == -1:
                     break
 
-                # Realiza o trabalho
+                # Does the job and times it as well
                 start_time = perf_counter()
                 result = self.func(*job["job"], *self.args)
                 end_time = perf_counter()
 
-                total_time = end_time - start_time
-
-                # Envia o resultado para o mestre
-                master.post_result(result, job["id"], total_time)
+                # Posts a job to master
+                master.post_result(result, job["id"], end_time - start_time)
         return
 
+# This class handles the execution of workers, it is responsible for synchronization and job formatting
 class ProcessMaster:
     def __init__(self, circuito, func: Callable, jobs, progress_report: Callable = None) -> None:
-        self.func = func
-        self.circuito = circuito
+        self.func = func # Function to be executed
+        self.circuito = circuito # Used for Persisten Child for backup
         self.done_copy = []
-        self.progress_report = progress_report
+        self.progress_report = progress_report # Function that Master should report its progress to
         if jobs: self.total_jobs = len(jobs)
 
-        # Sincronizacao
+        # Sync
         self.lock_jobs = mp.Lock()
         self.lock_done = mp.Lock()
-        self.lock_inpg = mp.Lock()
+        self.lock_inpg = mp.Lock() #inpg = in progress
 
-        # Queue dos trabalhos
         self.jobs = mp.Queue()
         self.done = mp.Queue()
-        self.inpg = mp.Queue() #inpg = in progress
+        self.inpg = mp.Queue()
 
-        # Queue para regular o tempo de sleep da rotina de descanso
+        # Queue for smart sleep
         self.sleep_time = 10
         self.__starting_sleep_time = True
         self.job_time = mp.Queue()
         self.lock_time = mp.Lock()
 
-        # Preenche a Queue dos trabalhos
+        # Fills the job Queue
         if not jobs is None:
             for i, job in enumerate(jobs):
                 self.jobs.put({"id": i, "job": job})
     
     
-    ##### MATA TODOS OS PROCESSOS TRABALHADORES #####
+    # Terminate all workers
     def terminate_work(self, workers: list):
         for worker in workers:
             worker.terminate()
     
-    ##### SLEEP SO QUE MELHOR #####
+    # sleeps that varies in time depending on execution
     def smart_sleep(self):
+
+        # Actually sleeps zzzzz
         sleep(self.sleep_time*0.8)
-        # Manutencao do tempo de espera
+
+        # Maintanance of sleep_time
         with self.lock_time:
 
-            # Soma 10 segundos ao tempo de espera caso ele nao tenha sido alterado desde o inicio 
+            # If no job_time was reported no job has ended yet, so we just add 20 seconds because
             if not self.job_time.empty():
                 self.__starting_sleep_time = False
             if self.__starting_sleep_time:
                 self.sleep_time += 20
 
-            # Novo tempo de espera eh o maior tempo de execucao de um job
+            # New sleep_time is the longest job time yet
             times = [self.sleep_time]
             while not self.job_time.empty():
                 times.append(self.job_time.get())
         self.sleep_time = max(times)
 
-    ##### ROTINA DE BACKUP #####
-    def backup_routine(self):
+    # Routine of master process
+    def master_routine(self):
         while True:
 
+            # Like sleep, but better
             self.smart_sleep()
 
             with self.lock_done:
 
-                # Atualiza o progresso (ISSO EH DO MAL KKKKKKKK)
+                # Report progress if there is something to report progress to
                 if not self.progress_report is None:
                     self.progress_report(self.done.qsize()/self.total_jobs)
 
-                # Ainda ha trabalhos a serem feitos
+                # Continues working if there still are jobs to be done
                 if self.done.qsize() != self.total_jobs:
                     continue
 
-                # Nao ha trabalhos a serem feitos, esvazia a queue
+                # No dobje to be done, just gets all jobs (dont remembre why I do this)
                 while not self.done.empty():
                     self.done_copy.append(self.done.get())
                 
                 return
     
-    ##### REMOVE UM ITEM DE UMA QUEUE, DADO UM ID #####
+    # Given an id and a queue, said content with that id is removed. This is kinda evil
     def __remove_from_queue(self, queue: mp.Queue, id: int):
         for _ in range(queue.qsize()):
             content = queue.get()
@@ -142,60 +154,61 @@ class ProcessMaster:
                 return
             queue.put(content)
 
-    ##### RETORNA UM TRABALHO A SER FEITO #####
+    # Returns a job to be done, called by workers
     def request_job(self):
         with self.lock_jobs:
             
-            # Nao ha mais trabalhos retorna -1 para encerrar o processo
+            # If there are no jobs left returns -1
             if self.jobs.empty():
                 job = -1
             
-            # Adquire um job da queue e o coloca na queue dos jobs em progresso
+            # Gets a job and puts it in progress
             else:
                 job = self.jobs.get()
                 with self.lock_inpg:
                     self.inpg.put(job)
         return job
     
-    ##### RECEBE UM TRABALHO PRONTO #####
+    # Posts a job done
     def post_result(self, resultado, id: int, total_time: float):
-        # Coloca o job na queue de jobs prontos
+        # Puts the done job in its queue
         with self.lock_done:
             self.done.put(resultado)
             # print(f"Finished job: {id}/{self.total_jobs}")
-        # Remove o job da queue de jobs em progresso
+        # Removes job from in progress queue
         with self.lock_inpg:
             self.__remove_from_queue(self.inpg, id)
+        # Puts time used to run job in its queue
         with self.lock_time:
             self.job_time.put(total_time)
     
-    ##### RETORNA OS JOBS CONCLUIDOS #####
+    # Returns all done jobs, a list of all outputs not in order
     def return_done(self):
         return self.done_copy
 
-    # Cria os processos e roda eles
+    # Creates all workers, waits for them to finish and returns
     def work(self, static_args: list, n_workers: int = mp.cpu_count()):
         
-        # Cria todos os processos que realizam as simulacoes MC
+        # Creates all workers
         workers = [mp.Process(target=ProcessWorker(self.func, static_args, self.jobs.qsize()).run, args = (self,)) for _ in range(n_workers)]
 
-        # Inicia os processos
-        # print("Trabalho Concorrente Iniciado!")
+        # Starts all workers
         for worker in workers:
             worker.start()
 
-        # Executa a rotina de backup do master
-        self.backup_routine()
+        # Master rountine executed
+        self.master_routine()
 
-        # Espera os processos finalizarem
-        if self.done.qsize(): print(f"Queue done finalizou com {self.done.qsize()} itens dentro")
-        if self.jobs.qsize(): print(f"Queue jobs finalizou com {self.jobs.qsize()} itens dentro")
-        if self.inpg.qsize(): print(f"Queue inpg finalizou com {self.inpg.qsize()} itens dentro")
+        # This should never happen
+        if self.done.qsize(): print(f"ERROR: Queue done finished with {self.done.qsize()} items")
+        if self.jobs.qsize(): print(f"ERROR: Queue jobs finished with {self.jobs.qsize()} items")
+        if self.inpg.qsize(): print(f"ERROR: Queue inpg finished with {self.inpg.qsize()} items")
 
+        # Joins all workers
         for worker in workers:
             worker.join()
-            # print(f"joined: {worker.pid}")
         
+        # Should never happen
         if len(os.listdir("work")):
             raise ChildProcessError("Master Process Joined Withouth Child Finishing")
 
@@ -268,7 +281,7 @@ class PersistentProcessMaster(ProcessMaster):
         return contents
     
     ##### ROTINA DE BACKUP #####
-    def backup_routine(self):
+    def master_routine(self):
         # Periodicamente salva o progresso
         while True:
             self.smart_sleep()
@@ -292,3 +305,11 @@ class PersistentProcessMaster(ProcessMaster):
                 # Pela forma que Queues funcionam em python eh necessario limpalas antes de dar join
                 self.empty_queue(self.done)
                 break
+
+if __name__ == "__main__":
+    print("Testing Parallel execution...")
+    def function(a, x): return x*a
+
+    manager = ProcessMaster(None, function, [[1],[2],[3],[4],[5]], None)
+    manager.work((10,))
+    print(manager.return_done())
