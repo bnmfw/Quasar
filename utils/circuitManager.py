@@ -1,5 +1,5 @@
 from .matematica import combinacoes_possiveis
-from .runner import HSRunner
+from .spiceInterface import HSRunner
 from .components import *
 from .letFinder import LetFinder
 from .concorrencia import ProcessMaster

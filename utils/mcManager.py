@@ -1,4 +1,4 @@
-from .runner import HSRunner
+from .spiceInterface import HSRunner
 from .components import *
 from .concorrencia import PersistentProcessMaster
 from .arquivos import CManager

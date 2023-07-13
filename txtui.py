@@ -1,5 +1,5 @@
 from os import path
-from utils.runner import HSRunner
+from utils.spiceInterface import HSRunner
 
 barra_comprida = "---------------------------"
 

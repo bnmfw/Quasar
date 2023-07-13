@@ -56,7 +56,7 @@ class JsonManager():
     def __init__(self):
         pass
 
-    def codificar(self, circuito):
+    def codificar(self, circuito, path_to_folder="circuitos"):
         # Codificacao dos nodos
         dicionario_de_nodos = {}  # criacao do dicionario que tera o dicionario de todos os nodos
         lista_de_nodos = []
@@ -81,13 +81,13 @@ class JsonManager():
         circuito_codificado["saidas"] = lista_de_saidas
         circuito_codificado["nodos"] = lista_de_nodos
 
-        if not os.path.exists(f"circuitos/{circuito.nome}/{circuito.nome}.json"):
-            json.dump(circuito_codificado, open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "w"))
+        if not os.path.exists(f"{path_to_folder}/{circuito.nome}/{circuito.nome}.json"):
+            json.dump(circuito_codificado, open(f"{path_to_folder}/{circuito.nome}/{circuito.nome}.json", "w"))
 
         print("Carregamento do Json realizado com sucesso")
 
-    def decodificar(self, circuito):
-        circuito_codificado: dict = json.load(open(f"circuitos/{circuito.nome}/{circuito.nome}.json", "r"))
+    def decodificar(self, circuito, path_to_folder="circuitos"):
+        circuito_codificado: dict = json.load(open(f"{path_to_folder}/{circuito.nome}/{circuito.nome}.json", "r"))
 
         # Desempacotamento dos dados
         circuito.atrasoCC = circuito_codificado["atrasoCC"]

@@ -8,11 +8,11 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
   this software is strictly prohibited.
   Input File: nand.cir                                                          
   Command line options: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
-  Start time: Tue Jul 11 20:59:14 2023
+  Start time: Wed Jul 12 17:15:57 2023
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      67176 
+ lic: HOSTID: d76153d              PID:      115814 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
@@ -1914,13 +1914,13 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
  ******  Machine Information  ******
  CPU:
  model name	: AMD Ryzen 5 3600 6-Core Processor
- cpu MHz	: 4186.311
+ cpu MHz	: 2200.000
  CPU(s)		: 12
   
  OS:
  Linux version 5.15.0-76-generic (buildd@lcy02-amd64-019) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #83~20.04.1-Ubuntu SMP Wed Jun 21 20:23:31 UTC 2023
 
- System loadavg : 6.52 2.12 0.75 3/654 67179
+ System loadavg : 6.55 3.32 1.44 3/714 115817
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -1954,14 +1954,14 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
 
 
            peak memory used        448.96 megabytes
-           total cpu time            0.04 seconds
+           total cpu time            0.05 seconds
            total elapsed time        0.08 seconds
-           job started at     20:59:14 07/11/2023
-           job ended   at     20:59:14 07/11/2023
+           job started at     17:15:57 07/12/2023
+           job ended   at     17:15:57 07/12/2023
 
 >info:         ***** hspice job concluded
            job total runtime         0.08 seconds
 
 
  lic: Release hspice token(s) 
- lic: total license checkout elapse time:        0.01(s)
+ lic: total license checkout elapse time:        0.02(s)

@@ -1,0 +1,7 @@
+* Facilitador de includes
+.include fontes.cir
+.include mc.cir
+.include measure.cir
+.include monte_carlo.cir
+.include SETs.cir
+.include vdd.cir

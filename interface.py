@@ -1,6 +1,6 @@
 # O python acha que tem um erro nesses imports, mas nao tem, deixa quieto
 from utils.backend import Backend
-from utils.runner import HSRunner
+from utils.spiceInterface import HSRunner
 from utils.circuito import Circuito
 from utils.arquivos import CManager
 # module_error = False

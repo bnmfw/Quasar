@@ -1,4 +1,4 @@
-from runner import HSRunner
+from spiceInterface import HSRunner
 from components import Entrada, Nodo, LET
 
 limite_sup: float = 800

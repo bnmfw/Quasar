@@ -1,0 +1,29 @@
+Test Nand
+
+****** Dispositivos Lógicos ******
+
+.include ../include.cir
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+Xinva1 vcc gnd a fa NOT
+Xinva2 vcc gnd fa ta NOT
+Xinvb1 vcc gnd b fb NOT
+Xinvb2 vcc gnd fb tb NOT
+
+Mp11 vdd ta g1 ta PMOS_RVT nfin=3
+Mp12 vdd tb g1 tb PMOS_RVT nfin=3
+Mn11 g1 ta i1 ta NMOS_RVT nfin=3
+Mn12 i1 tb gnd tb NMOS_RVT nfin=3
+
+//Representação de um circuito pós benchmark
+xff1 clk g1 q1 nq1 vcc gnd DFF
+xinv11 vcc gnd q1 nnq1 NOT
+
+************
+.end

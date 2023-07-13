@@ -1,5 +1,5 @@
 from .arquivos import JManager
-from .runner import HSRunner
+from .spiceInterface import HSRunner
 from .components import Nodo, Entrada, LET
 import os
 
@@ -11,19 +11,19 @@ class Circuito():
         self.nome = nome
         self.path = f"/{nome}/"
         self.arquivo = f"{nome}.cir"
-        self.entradas = []
-        self.saidas = []
-        self.nodos = []
+        self.entradas: list[Entrada] = []
+        self.saidas: list[Nodo] = []
+        self.nodos: list[Nodo]= []
         self.vdd: float = vdd
         self.atrasoCC: float = 0
         self.LETth: LET = None
 
-    def ha_cadastro(self) -> bool:
-        return os.path.exists(f"circuitos{self.path}{self.nome}.json")
+    def ha_cadastro(self, path_to_folder="circuitos") -> bool:
+        return os.path.exists(f"{path_to_folder}{self.path}{self.nome}.json")
 
     # Instancia o circuito a partir de um json
-    def from_json(self):
-        JManager.decodificar(self)
+    def from_json(self, path_to_folder="circuitos"):
+        JManager.decodificar(self, path_to_folder=path_to_folder)
         return self
     
     def from_nodes(self, nodes, entradas, saidas):
@@ -38,10 +38,15 @@ class Circuito():
         return self
 
 if __name__ == "__main__":
-
-    print("Testando funcionalidades basicas do circuito...")
-
-    circuito_teste = Circuito()
-    circuito_teste.nome = "Teste"
-    circuito_teste.arquivo = "Teste.cir"
-    circuito_teste.vdd = 0.7
+    # Decodification test of the circuit
+    print("Testing decodification of circuit from json file...")
+    decodec_test = Circuito("decodec_test", 0.7).from_json(path_to_folder="debug/test_circuits")
+    assert decodec_test.nome == "decodec_test"
+    assert decodec_test.path == "/decodec_test/"
+    assert decodec_test.arquivo == "decodec_test.cir"
+    assert decodec_test.entradas[0].nome == "a" and decodec_test.entradas[0].sinal == "setup"
+    assert list(map(lambda e: e.nome, decodec_test.nodos)) == ["g1", "i1"]
+    assert list(map(lambda e: len(e.LETs), decodec_test.nodos)) == [2, 2]
+    assert list(map(lambda e: e.nome, decodec_test.saidas)) == ["g1"]
+    assert decodec_test.vdd == 0.7
+    assert decodec_test.ha_cadastro(path_to_folder="debug/test_circuits")

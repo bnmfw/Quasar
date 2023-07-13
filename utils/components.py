@@ -18,7 +18,7 @@ class Entrada:
         self.sinal = dic["sinal"]
 
     def __repr__(self):
-        return str(self.nome)
+        return f"{self.nome}:{self.sinal}"
 
 class Nodo:
     def __init__(self, nome: str):

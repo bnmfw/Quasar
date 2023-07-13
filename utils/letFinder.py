@@ -1,4 +1,4 @@
-from .runner import HSRunner
+from .spiceInterface import HSRunner
 from .components import LET
 
 # Classe Responsavel por encontrar o valor de um LET

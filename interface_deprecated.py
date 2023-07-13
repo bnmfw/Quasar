@@ -4,7 +4,7 @@ from utils.mcManager import MCManager
 from utils.letFinder import LetFinder
 from utils.circuito import Circuito
 from utils.components import LET
-from utils.runner import HSRunner
+from utils.spiceInterface import HSRunner
 from utils.matematica import Time
 
 barra_comprida = "---------------------------"
