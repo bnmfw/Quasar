@@ -1,3 +1,7 @@
+"""
+Circuit object module. The Circuit object only tracks its nodes, delay, inputs, outputs and Lets.
+The actual circuit is fully described in the .cir file and simulated by Spice.
+"""
 from .arquivos import JManager
 from .spiceInterface import HSRunner
 from .components import Nodo, Entrada, LET
@@ -6,11 +10,20 @@ import os
 barra_comprida = "---------------------------"
 
 class Circuito():
-    def __init__(self, nome: str, vdd: float = None):
+    """
+    Circuit object. Tracks its file, relevant nodes and LETs.
+    """
+    def __init__(self, name: str, vdd: float = None):
+        """
+        Constructor.
+
+            :param str name: Name of the circuit.
+            :param float vdd: Vdd of the circuit.
+        """
         ##### ATRIBUTOS DO CIRCUITO #####
-        self.nome = nome
-        self.path = f"/{nome}/"
-        self.arquivo = f"{nome}.cir"
+        self.nome = name
+        self.path = f"/{name}/"
+        self.arquivo = f"{name}.cir"
         self.entradas: list[Entrada] = []
         self.saidas: list[Nodo] = []
         self.nodos: list[Nodo]= []
@@ -18,23 +31,32 @@ class Circuito():
         self.atrasoCC: float = 0
         self.LETth: LET = None
 
-    def ha_cadastro(self, path_to_folder="circuitos") -> bool:
+    def ha_cadastro(self, path_to_folder: str = "circuitos") -> bool:
+        """
+        Checks whether or not a json file containing the circuit data exists.
+
+            :param str path_to_folder: Path to circuits directory.
+            :returns: If the json file exists or not.
+        """
         return os.path.exists(f"{path_to_folder}{self.path}{self.nome}.json")
 
-    # Instancia o circuito a partir de um json
-    def from_json(self, path_to_folder="circuitos"):
+    def from_json(self, path_to_folder: str = "circuitos"):
+        """
+        Fills the circuit object data from the json file.
+        """
         JManager.decodificar(self, path_to_folder=path_to_folder)
         return self
     
-    def from_nodes(self, nodes, entradas, saidas):
-        # entradas, saidas = (input("entradas: ").split() , input("saidas: ").split())
-        ##### SAIDAS #####
-        self.saidas = [Nodo(saida) for saida in saidas]
-        ##### ENTRADAS #####
-        self.entradas = [Entrada(entrada) for entrada in entradas]
-        ##### OUTROS NODOS #####
+    def from_nodes(self, inputs: list, outputs: list):
+        """
+        Fills the circuit object by parsing the .cir file.
+
+            :param list[str] inputs: List of node names to be interpreted as inputs.
+            :param list[str] outputs: List of node names to be interpreted as outputs.
+        """
+        self.saidas = [Nodo(output) for output in outputs]
+        self.entradas = [Entrada(input) for input in inputs]
         self.nodos = [Nodo(nodo) for nodo in HSRunner.get_nodes(self.nome)]
-        # JManager.codificar(self)
         return self
 
 if __name__ == "__main__":
