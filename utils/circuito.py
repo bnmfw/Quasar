@@ -41,12 +41,12 @@ if __name__ == "__main__":
     # Decodification test of the circuit
     print("Testing decodification of circuit from json file...")
     decodec_test = Circuito("decodec_test", 0.7).from_json(path_to_folder="debug/test_circuits")
-    assert decodec_test.nome == "decodec_test"
-    assert decodec_test.path == "/decodec_test/"
-    assert decodec_test.arquivo == "decodec_test.cir"
-    assert decodec_test.entradas[0].nome == "a" and decodec_test.entradas[0].sinal == "setup"
-    assert list(map(lambda e: e.nome, decodec_test.nodos)) == ["g1", "i1"]
-    assert list(map(lambda e: len(e.LETs), decodec_test.nodos)) == [2, 2]
-    assert list(map(lambda e: e.nome, decodec_test.saidas)) == ["g1"]
-    assert decodec_test.vdd == 0.7
-    assert decodec_test.ha_cadastro(path_to_folder="debug/test_circuits")
+    assert decodec_test.ha_cadastro(path_to_folder="debug/test_circuits"), "CIRCUIT FAILED FOR CHECKING JSON FILE"
+    assert decodec_test.nome == "decodec_test", "CIRCUIT DECODE FAILED FOR NAME"
+    assert decodec_test.path == "/decodec_test/", "CIRCUIT DECODE FAILED FOR PATH"
+    assert decodec_test.arquivo == "decodec_test.cir", "CIRCUIT DECODE FAILED FOR FILE NAME"
+    assert decodec_test.entradas[0].nome == "a" and decodec_test.entradas[0].sinal == "setup", "CIRCUIT DECODE FAILED FOR INPUT SIGNALS"
+    assert list(map(lambda e: e.nome, decodec_test.nodos)) == ["g1", "i1"], "CIRCUIT DECODE FAILED FOR NODES"
+    assert list(map(lambda e: len(e.LETs), decodec_test.nodos)) == [2, 2], "CIRCUIT DECODE FAILED FOR NUMBER OS LETS"
+    assert list(map(lambda e: e.nome, decodec_test.saidas)) == ["g1"], "CIRCUIT DECODE FAILED FOR OUTPUTS"
+    assert decodec_test.vdd == 0.7, "CIRCUIT DECODE FAILED FOR VDD"

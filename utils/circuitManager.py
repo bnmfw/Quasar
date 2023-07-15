@@ -16,15 +16,15 @@ class CircuitManager:
     
     ##### DETERMINA TODAS AS COMBINACOES POSSIVEIS DE LETS #####
     def __possible_LETs(self, nodos: list, saidas: list, n_entradas: int):
-        jobs = [[nodo, saida, inc1, inc2, validacao]\
+        lets = [[nodo, saida, inc1, inc2, validacao]\
                 for nodo in nodos\
                 for saida in saidas\
                 for inc1 in ["rise", "fall"]\
                 for inc2 in ["rise", "fall"]\
                 for validacao in combinacoes_possiveis(n_entradas)]
-        for i, job in enumerate(jobs):
-            job.insert(0, i)
-        return jobs
+        for i, let in enumerate(lets):
+            let.insert(0, i)
+        return lets
     
     ##### ENCONTRA O ATRASO DE CAMINHO CRITICO PARA UM CIRCUITO #####
     def get_atrasoCC(self):
@@ -69,7 +69,8 @@ class CircuitManager:
                     # try: 
                     ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                     if relatorio: print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
-                    simulacoes += self.let_manager.definir_corrente(let, let.validacoes[0], safe=True, delay=delay)
+                    sim, corrente = self.let_manager.definir_corrente(let, let.validacoes[0], safe=True, delay=delay)
+                    simulacoes += sim
                     if relatorio: print(f"corrente: {let.corrente}\n")
                     if not self.circuito.LETth:
                         self.circuito.LETth = let

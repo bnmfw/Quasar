@@ -79,9 +79,10 @@ def desvio_padrao(lista: list, media: float) -> float:
 
 
 if __name__ == "__main__":
-    assert ajustar("  24.56u ") == (24.56 * 10 ** -6), "ajuste_valor FALHOU"
-    assert ajustar("2.349e-02") == 0.02349, "ajuste_valor FALHOU"
+    print("Testing math module...")
+    assert ajustar("  24.56u ") == (24.56 * 10 ** -6), "convert_value FAILED"
+    assert ajustar("2.349e-02") == 0.02349, "convert_value FAILED"
     #assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
-    assert corrente_para_let(100) == 50264550.26455026, "corrente_para_let FALHOU" # DEFINIDO PELA PROPRIA FUNCAO
-    assert media([1.1, 2.8, 3.6, 4.1]) == 2.9, "media FALHOU"
-    assert desvio_padrao([4, 9, 11, 12, 17, 5, 8, 12, 14], media([4, 9, 11, 12, 17, 5, 8, 12, 14])) == 4.176654695380556, "desvio_padrao FALHOU"
+    assert corrente_para_let(100) == 50264550.26455026, "current_to_let FAILED" # DEFINIDO PELA PROPRIA FUNCAO
+    assert media([1.1, 2.8, 3.6, 4.1]) == 2.9, "average FAILED"
+    assert desvio_padrao([4, 9, 11, 12, 17, 5, 8, 12, 14], media([4, 9, 11, 12, 17, 5, 8, 12, 14])) == 4.176654695380556, "std_dev FAILED"

@@ -8,11 +8,11 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
   this software is strictly prohibited.
   Input File: nand.cir                                                          
   Command line options: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
-  Start time: Wed Jul 12 17:15:57 2023
+  Start time: Fri Jul 14 01:21:20 2023
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      115814 
+ lic: HOSTID: d76153d              PID:      156800 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
@@ -102,7 +102,7 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
    DELTAWCV =      0 
    NBODY =  1e+22 
    NSD =  2e+26 
-   PHIG =  4.334 
+   PHIG =  4.372 
    EPSROX =    3.9 
    EPSRSUB =   11.9 
    EASUB =   4.05 
@@ -1016,7 +1016,7 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
    DELTAWCV =      0 
    NBODY =  1e+22 
    NSD =  2e+26 
-   PHIG =   4.78 
+   PHIG =  4.811 
    EPSROX =    3.9 
    EPSRSUB =   11.9 
    EASUB =   4.05 
@@ -1881,28 +1881,28 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
  ****** operating point status is voltage   simulation time is     0.     
     node    =voltage      node    =voltage      node    =voltage
 
- +0:a       = 700.0000m 0:b       =   0.      0:clk     =   0.     
- +0:fa      =  82.3449n 0:fb      = 699.9992m 0:g1      = 699.9993m
- +0:i1      = 671.7947m 0:nnq1    = 699.9992m 0:nq1     = 699.9992m
- +0:q1      = 162.3486n 0:ta      = 699.9992m 0:tb      =  77.8707n
- +0:vcc     = 700.0000m 0:vdd     = 700.0000m 5:ci      =  42.3698n
- +5:cni     = 699.9992m 5:z1      = 668.3022m 5:z10     = 699.9992m
- +5:z11     =  31.6884m 5:z12     =  86.2409n 5:z2      =  58.7709n
- +5:z3      = 113.5323n 5:z4      = 699.9992m 5:z5      =  31.6884m
- +5:z6      =   2.0059n 5:z7      = 699.9999m 5:z8      =  88.2438n
- +5:z9      = 172.4780n
+ +0:a       = 700.0000m 0:b       = 700.0000m 0:clk     =   0.     
+ +0:fa      = 177.7061n 0:fb      = 177.7061n 0:g1      = 537.7613n
+ +0:i1      = 270.6823n 0:nnq1    = 699.9998m 0:nq1     = 699.9998m
+ +0:q1      = 264.7467n 0:ta      = 699.9998m 0:tb      = 699.9998m
+ +0:vcc     = 700.0000m 0:vdd     = 700.0000m 5:ci      = 135.7968n
+ +5:cni     = 699.9998m 5:z1      = 700.0000m 5:z10     = 699.9998m
+ +5:z11     =  31.5999m 5:z12     =   1.8014n 5:z2      = 667.8241m
+ +5:z3      = 699.9993m 5:z4      = 135.1404n 5:z5      = 699.9997m
+ +5:z6      =  27.7340m 5:z7      = 668.3478m 5:z8      = 172.6753n
+ +5:z9      = 341.7495n
 
  ******
  nand
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
- minout= 340.7893m    at=   2.0893n
+ minout=  -2.7557m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 703.0363m    at=   1.0116n
+ maxout=   1.8486m    at=   2.0200n
              from=   1.0000n    to=   3.8000n
- minnod= 102.4475m    at=   2.0893n
+ minnod=  -2.7557m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 672.1655m    at=   1.0107n
+ maxnod=   1.8486m    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
@@ -1914,13 +1914,13 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
  ******  Machine Information  ******
  CPU:
  model name	: AMD Ryzen 5 3600 6-Core Processor
- cpu MHz	: 2200.000
+ cpu MHz	: 4190.507
  CPU(s)		: 12
   
  OS:
  Linux version 5.15.0-76-generic (buildd@lcy02-amd64-019) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #83~20.04.1-Ubuntu SMP Wed Jun 21 20:23:31 UTC 2023
 
- System loadavg : 6.55 3.32 1.44 3/714 115817
+ System loadavg : 0.24 0.18 0.08 4/651 156803
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -1945,8 +1945,8 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           0.00           1          20
-  transient          0.03         401         344         121 rev=         4
+  op point           0.00           1          17
+  transient          0.02         401         239          94 rev=         4
   readin             0.00
   errchk             0.01
   setup              0.00
@@ -1954,13 +1954,13 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
 
 
            peak memory used        448.96 megabytes
-           total cpu time            0.05 seconds
-           total elapsed time        0.08 seconds
-           job started at     17:15:57 07/12/2023
-           job ended   at     17:15:57 07/12/2023
+           total cpu time            0.04 seconds
+           total elapsed time        0.07 seconds
+           job started at     01:21:20 07/14/2023
+           job ended   at     01:21:20 07/14/2023
 
 >info:         ***** hspice job concluded
-           job total runtime         0.08 seconds
+           job total runtime         0.07 seconds
 
 
  lic: Release hspice token(s) 

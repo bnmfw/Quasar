@@ -6,7 +6,7 @@ from .components import LET
 class LetFinder:
     def __init__(self, circuito, relatorio: bool = False):
         self.circuito = circuito
-        self.__relatorio = relatorio
+        self.__report = relatorio
         self.__limite_sup: float = 400
         self.__limite_sim: int = 25
 
@@ -21,7 +21,7 @@ class LetFinder:
             (inclinacao_saida == "fall" and tensao_pico_saida < vdd * 0.1) or\
             (inclinacao_nodo == "rise" and tensao_pico_nodo > vdd * 0.51) or\
             (inclinacao_nodo == "fall" and tensao_pico_nodo < vdd * 0.1):
-            if self.__relatorio: print("Analise invalida - Tensoes improprias\n")
+            if self.__report: print("Analise invalida - Tensoes improprias\n")
             return (False, 1)
 
         # Chegagem se o pulso no nodo tem resposta na saída
@@ -31,7 +31,7 @@ class LetFinder:
             (inclinacao_saida == "fall" and tensao_pico_saida > vdd * 0.50) or\
             (inclinacao_nodo == "rise" and tensao_pico_nodo < vdd * 0.50) or\
             (inclinacao_nodo == "fall" and tensao_pico_nodo > vdd * 0.50):
-            if self.__relatorio: print("Analise invalida - Pulso sem efeito\n")
+            if self.__report: print("Analise invalida - Pulso sem efeito\n")
             return (False, 2)
 
         return (True, 2)
@@ -48,7 +48,7 @@ class LetFinder:
             # Encontrou efeito
             if (inclinacao_saida == "rise" and tensao_pico_saida > self.circuito.vdd/2) or\
                 (inclinacao_saida == "fall" and tensao_pico_saida < self.circuito.vdd/2):
-                if self.__relatorio: print(f"PULSO MAXIMO ENCONTRADO ({self.__limite_sup})")
+                if self.__report: print(f"PULSO MAXIMO ENCONTRADO ({self.__limite_sup})")
                 return self.__limite_sup
 
             self.__limite_sup += 100
@@ -77,12 +77,12 @@ class LetFinder:
 
             # Largura minima satisfeita
             if diferenca_largura and -precisao_largura < diferenca_largura < precisao_largura:
-                if self.__relatorio: print(f"PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA ({corrente})")
+                if self.__report: print(f"PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA ({corrente})")
                 return corrente
 
 
             if abs(csup - cinf) < 1:
-                if self.__relatorio: print(f"PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA ({corrente})")
+                if self.__report: print(f"PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA ({corrente})")
                 return corrente
             if diferenca_largura == None:
                 cinf = corrente
@@ -92,7 +92,7 @@ class LetFinder:
                 cinf = corrente
             corrente = (csup + cinf) / 2
 
-        if self.__relatorio: print(f"PULSO MINIMO NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO")
+        if self.__report: print(f"PULSO MINIMO NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO")
         return None
 
     ##### ENCONTRA A CORRENTE DE UM LET ######
@@ -125,40 +125,44 @@ class LetFinder:
             corrente: float = cinf
             sup_flag: bool = False
 
+            # debugging report
+            if self.__report:
+                print("Starting a LET finding job\n"+
+                      f"node: {let.nodo_nome}\toutput: {let.nodo_nome}\n"+
+                      f"vdd: {vdd}\tsafe:{safe}\n"+
+                      f"input vector: {' '.join([str(entrada.sinal) for entrada in entradas])}")
+
             # Busca binaria pela falha
             for i in range(self.__limite_sim):
 
-                # Roda o HSPICE e salva os valores no arquivo de texto
-                # try:
-                print("Erro no SET: ", let, corrente, validacao)
                 _, tensao_pico = HSRunner.run_SET(self.circuito.path, self.circuito.arquivo, let, corrente)
-                # except KeyError:                    
-                #     exit()
+                if self.__report:
+                    print(f"{i}\tcurrent: {corrente}\tpeak_tension:{tensao_pico}")
                 simulacoes += 1
 
                 ##### ENCERRAMENTO POR PRECISAO SATISFEITA #####
                 if (1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2:
-                    if self.__relatorio: print("LET ENCONTRADO - PRECISAO SATISFEITA\n")
+                    if self.__report: print("LET ENCONTRADO - PRECISAO SATISFEITA\n")
                     let.corrente = corrente
                     let.append(validacao)
-                    return simulacoes
+                    return simulacoes, corrente
 
                 ##### CONVERGENCIA DA CORRENTE ####
                 elif csup - cinf < 1:
                     #### CONVERGENIA PARA VALOR EXATO ####
                     if 1 < corrente < limite_sup - 1:
-                        if self.__relatorio: print("LET ENCONTRADO - CONVERGENCIA\n")
+                        if self.__report: print("LET ENCONTRADO - CONVERGENCIA\n")
                         let.corrente = corrente
                         let.append(validacao)
-                        return simulacoes
+                        return simulacoes, corrente
                     #### CONVERGENCIA PARA 0 ####
                     elif corrente <= 1:
-                        if self.__relatorio: print("LET NAO ENCONTRADO - DIVERGENCIA NEGATIVA\n")
+                        if self.__report: print("LET NAO ENCONTRADO - DIVERGENCIA NEGATIVA\n")
                         let.corrente = None
-                        return simulacoes
+                        return simulacoes, corrente
                     #### CONVERGENCIA PARA LIMITE SUPERIOR ####
                     else:
-                        if self.__relatorio: print("LIMITE SUPERIOR AUMENTADO - DIVERGENCIA POSITIVA\n")
+                        if self.__report: print("LIMITE SUPERIOR AUMENTADO - DIVERGENCIA POSITIVA\n")
                         csup += 100
                         limite_sup += 100
                         sup_flag = True
@@ -176,18 +180,25 @@ class LetFinder:
                         csup = corrente
 
                 corrente: float = float((csup + cinf) / 2)
-                # print(f"Corrente: {corrente}")
 
             #### LIMITE SIMULACOES FEITAS NA BUSCA ATINGIDO ####
 
             ### CONVERGENCIA PARA VALOR EXATO ###
             if 1 < corrente <self.__limite_sup - 1:
-                if self.__relatorio: print("LET ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO\n")
+                if self.__report: print("LET ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO\n")
                 let.corrente = corrente
                 let.append(validacao)
             
             ### DIVERGENCIA ###
             else:
-                if self.__relatorio: print("LET NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO\n")
+                if self.__report: print("LET NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO\n")
                 let.corrente = 99999 if sup_flag else 11111
-            return simulacoes
+            return simulacoes, corrente
+
+if __name__ == "__main__":
+    from .circuito import Circuito
+    print("Testing LET finder...")
+    nand = Circuito("nand", 0.7).from_json("debug/test_circuits")
+    valid_input = [1,1]
+    let = LET(140.625, 0.7, "g1", "g1", ["rise", "rise"], valid_input)
+    assert LetFinder(nand, True).definir_corrente(let, valid_input, safe=True)[1] == 140.625

@@ -69,9 +69,8 @@ class ProcessWorker:
 
 # This class handles the execution of workers, it is responsible for synchronization and job formatting
 class ProcessMaster:
-    def __init__(self, circuito, func: Callable, jobs, progress_report: Callable = None) -> None:
+    def __init__(self, func: Callable, jobs, progress_report: Callable = None) -> None:
         self.func = func # Function to be executed
-        self.circuito = circuito # Used for Persisten Child for backup
         self.done_copy = []
         self.progress_report = progress_report # Function that Master should report its progress to
         if jobs: self.total_jobs = len(jobs)
@@ -213,8 +212,8 @@ class ProcessMaster:
             raise ChildProcessError("Master Process Joined Withouth Child Finishing")
 
 class PersistentProcessMaster(ProcessMaster):
-    def __init__(self, circuito, func: Callable, jobs, backup_prefix, progress_report: Callable = None) -> None:
-        super().__init__(circuito, func, jobs, progress_report)
+    def __init__(self, func: Callable, jobs, backup_prefix, progress_report: Callable = None) -> None:
+        super().__init__(func, jobs, progress_report)
 
         self.prefix = backup_prefix
         
@@ -225,7 +224,7 @@ class PersistentProcessMaster(ProcessMaster):
     
     ##### CHECK IF BACKUP EXISTS #####
     def check_backup(self):
-        return os.path.exists(f"circuitos/{self.circuito.nome}/{self.prefix}_jobs.json")
+        return os.path.exists(f"{self.prefix}_jobs.json")
     
     ##### EMPTIES A QUEUE #####
     def empty_queue(self, queue: mp.Queue):
@@ -234,18 +233,18 @@ class PersistentProcessMaster(ProcessMaster):
     
     ##### DELETA OS ARQUIVOS DE CONTEXTO #####
     def delete_backup(self):
-        os.remove(f"circuitos/{self.circuito.nome}/{self.prefix}_jobs.json")
-        os.remove(f"circuitos/{self.circuito.nome}/{self.prefix}_done.json")
+        os.remove(f"{self.prefix}_jobs.json")
+        os.remove(f"{self.prefix}_done.json")
 
     ##### DESCARREGA O CONTEXTO DAS SIMULACOES DA ANALISE MC #####
     def dump_backup(self):
-        json.dump(list(self.inpg_copy+self.jobs_copy), open(f"circuitos/{self.circuito.nome}/{self.prefix}_jobs.json", "w"))
-        json.dump(list(self.done_copy), open(f"circuitos/{self.circuito.nome}/{self.prefix}_done.json", "w"))
+        json.dump(list(self.inpg_copy+self.jobs_copy), open(f"{self.prefix}_jobs.json", "w"))
+        json.dump(list(self.done_copy), open(f"{self.prefix}_done.json", "w"))
     
     ##### CARREGA O CONTEXTO DAS SIMULACOES DA ANALISE MC #####
-    def load_backup(self, circuito):
-        self.jobs_copy = json.load(open(f"circuitos/{circuito.nome}/{self.prefix}_jobs.json", "r"))
-        self.done_copy = json.load(open(f"circuitos/{circuito.nome}/{self.prefix}_done.json", "r"))
+    def load_backup(self):
+        self.jobs_copy = json.load(open(f"{self.prefix}_jobs.json", "r"))
+        self.done_copy = json.load(open(f"{self.prefix}_done.json", "r"))
         self.total_jobs = len(self.jobs_copy) + len(self.done_copy)
         # Carregamento das Queues com os conteudos do arquivo
         for job in self.jobs_copy:
@@ -307,9 +306,21 @@ class PersistentProcessMaster(ProcessMaster):
                 break
 
 if __name__ == "__main__":
-    print("Testing Parallel execution...")
-    def function(a, x): return x*a
+    print("Testing Simple Parallel execution...")
+    def function(a, x):
+        return x * a
 
-    manager = ProcessMaster(None, function, [[1],[2],[3],[4],[5]], None)
+    test_jobs = [[i] for i in range(10)]
+
+    manager = ProcessMaster(function, test_jobs)
     manager.work((10,))
-    print(manager.return_done())
+    assert set(manager.return_done()) == {i*10 for i in range(10)}, "SIMPLE PARALLEL MANAGER FAILED"
+
+    print("Testing Backuping Parallel execution...")
+    def sleeper(a, x):
+        sleep(10)
+        return x * a
+    
+    backuper = PersistentProcessMaster(sleeper, test_jobs, "debug/backup_test/test")
+    backuper.work((10,))
+    assert set(backuper.return_done()) == {i*10  for i in range(10)}, "BACKUPING PARALLEL MANAGER FAILED"

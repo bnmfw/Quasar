@@ -44,12 +44,12 @@ class MCManager:
     ##### REALIZA A ANALISE MONTE CARLO TOTAL #####
     def analise_monte_carlo_total(self, n_analises: int, continuar:bool = False, delay:bool = False, progress_report = None):
 
-        manager = PersistentProcessMaster(self.circuito, self.run_mc_iteration, None, "MC", progress_report=progress_report)        
+        manager = PersistentProcessMaster(self.circuito, self.run_mc_iteration, None, f"circuitos/{self.circuito.nome}/MC", progress_report=progress_report)        
 
         ## Gera o arquivo caso nao exista ##
         if continuar and manager.check_backup():
             # print("\nSimulacao em andamento encontrada! continuando de onde parou...\n")
-            manager.load_backup(self.circuito)
+            manager.load_backup()
         else:
             jobs = self.__determinar_variabilidade(n_analises)
             manager.load_jobs(jobs)
