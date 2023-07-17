@@ -10,3 +10,6 @@ venv/
 *.iml
 __pycache__
 utils/__pycache__
+*work/
+circuitos/output.txt
+*.ava*
