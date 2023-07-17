@@ -105,8 +105,9 @@ def current_to_let(current: float) -> float:
     return (current * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / ((1.08 * 10 ** -14) * 0.000000021)
 
 if __name__ == "__main__":
-    print("Testing math module...")
+    print("Testing Math Module...")
     assert spice_to_float("  24.56u ") == (24.56 * 10 ** -6), "convert_value FAILED"
     assert spice_to_float("2.349e-02") == 0.02349, "convert_value FAILED"
     #assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
     assert current_to_let(100) == 50264550.26455026, "current_to_let FAILED" # DEFINIDO PELA PROPRIA FUNCAO
+    print("Math Module OK")

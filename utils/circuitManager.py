@@ -7,8 +7,6 @@ from .spiceInterface import HSRunner
 from .components import *
 from .letFinder import LetFinder
 from .concorrencia import ProcessMaster
-
-barra_comprida = "---------------------------"
 relatorio = False
 
 class CircuitManager:

@@ -6,7 +6,7 @@ import sys
 PACKAGE_NAME = "Quasar"
 
 # Run initialization code
-print("Initializing Quasar...")
+# print("Initializing Quasar...")
 
 # Import submodules
 # from . import arquivos

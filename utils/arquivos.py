@@ -10,23 +10,19 @@ class CSVManager():
 
     @staticmethod
     def tup_dict_to_csv(path: str, filename: str, dicionario: dict):
-        with open(f"circuitos{path}{filename}", "w") as tabela:
+        with open(f"{path}/{filename}", "w") as tabela:
             for chave, tupla in dicionario.items():
                 tabela.write(f"{chave}")
                 for valor in tupla:
                     tabela.write(f",{valor}")
                 tabela.write("\n")
 
-        print(f"\nTabela {filename} gerada com sucesso\n")
-
     @staticmethod
     def tup_to_csv(path: str, filename: str, lista: list):
-        with open(f"circuitos{path}{filename}", "w") as tabela:
+        with open(f"{path}/{filename}", "w") as tabela:
             for linha in lista:
                 tabela.write(f'{",".join([str(e) for e in linha])}')
                 tabela.write("\n")
-
-        print(f"\nTabela {filename} gerada com sucesso\n")
 
     @staticmethod
     def escrever_csv_total(circuito):

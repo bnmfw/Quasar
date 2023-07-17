@@ -667,7 +667,7 @@ class SpiceRunner():
 
     def run_MC_var(self, path: str, filename: str, circuit_name: str, sim_num: int) -> dict:
         """
-        Returns the number of MC simulation that faulted.
+        Returns the MC variability points.
 
             :param str path: Path from circuits file to circuit own file.
             :param str filename: Name of the file
@@ -711,4 +711,7 @@ if __name__ == "__main__":
         delay = TestRunner.run_delay(nand_test.nome, nand_test.arquivo, "b", "g1", 0.7, nand_test.entradas)
         assert abs(delay - expected_delay_value) <= 10e-14, "DELAY SIMULATION FAILED"
 
+    print("\tTesting MC points generation...")
+    assert len(TestRunner.run_MC_var(nand_test.nome, nand_test.arquivo, nand_test.nome, 10)) == 10, "MC POINTS GENERATION FAILED"
+    
     print("Spice Interface OK.")

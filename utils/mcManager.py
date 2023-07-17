@@ -1,15 +1,27 @@
-from .spiceInterface import HSRunner
+"""
+Monte Carlo Simulations Module.
+"""
+
+from .matematica import InDir, Time
+from .spiceInterface import SpiceRunner
 from .components import *
 from .concorrencia import PersistentProcessMaster
 from .arquivos import CManager
 from .circuitManager import CircuitManager
 
-barra_comprida = "---------------------------"
-
 class MCManager:
-    def __init__(self, circuito, delay: bool = False):
-        self.circuito = circuito
-        self.circ_man = CircuitManager(circuito)
+    """
+    Responsible for Monte Carlo simulations.
+    """
+    def __init__(self, circuit, delay: bool = False):
+        """
+        Constructor.
+
+            :param Circuito circuit: Circuit to be simulated.
+            :para bool delay: Whether or not delay will be taken into consideration.
+        """
+        self.circuito = circuit
+        self.circ_man = CircuitManager(circuit)
         self.delay = delay
 
         # Estado de simulacoes MC
@@ -17,50 +29,76 @@ class MCManager:
         self.total_jobs: int = None
         self.done_jobs: int = 0   
 
-    ##### GERA OS PONTOS DE VARIABILIDADE E OS SALVA EM self.__var ####
-    def __determinar_variabilidade(self, num_analises: int):
-        # num_analises = int(input(f"{barra_comprida}\nQuantidade de analises: "))
-        print("Gerando pontos MC")
-        var: dict = HSRunner.run_MC_var(self.circuito.path, self.circuito.arquivo, self.circuito.nome, num_analises)
+    def __determinar_variabilidade(self, n_analysis: int) -> list:
+        """
+        Generates variability points for MC simulation.
+
+            :param int n_analysis: Number of total simulations points.
+            :returns: A list of items on the format (id, [pmos, nmos])
+        """
+        var: dict = SpiceRunner(self.circuito.path_to_circuits).run_MC_var(self.circuito.nome, self.circuito.arquivo, self.circuito.nome, n_analysis)
 
         for i in var:
             var[i][0] = 4.8108 + var[i][0] * (0.05 * 4.8108)/3
             var[i][1] = 4.372 + var[i][1] * (0.05 * 4.372)/3
 
-        # Estado do manejador
         items = list(var.items())
         return items
 
-    ##### RODA UMA INSTANCIA DA ANALISE MONTE CARLO ##### 
     def run_mc_iteration(self, index: int, point: list, delay: bool = False):
+        """
+        Runs a single Monte Carlo simulation.
+
+            :param int index: Id of the simulation.
+            :param list point: A tuple of floats in the format (pmos, nmos)
+        """
         pmos, nmos = point
-         ### Guarda que com ctz tem como melhorar
-        with HSRunner.MC_Instance(pmos, nmos):
+        with SpiceRunner(self.circuito.path_to_circuits).MC_Instance(pmos, nmos):
             if delay: self.circ_man.get_atrasoCC()
             self.circ_man.atualizar_LETths(delay=delay)
             result = (round(pmos,4), round(nmos,4), self.circuito.LETth.nodo_nome, self.circuito.LETth.saida_nome, self.circuito.LETth.corrente, self.circuito.LETth.valor)
         return result
     
-    ##### REALIZA A ANALISE MONTE CARLO TOTAL #####
-    def analise_monte_carlo_total(self, n_analises: int, continuar:bool = False, delay:bool = False, progress_report = None):
+    def analise_monte_carlo_total(self, n_analysis: int, continue_backup: bool = False, delay: bool = False, progress_report = None):
+        """
+        Runs the full Monte Carlo simulation and puts the results in <path>/<circuit_name>_mc_LET.csv.
 
-        manager = PersistentProcessMaster(self.circuito, self.run_mc_iteration, None, f"circuitos/{self.circuito.nome}/MC", progress_report=progress_report)        
+            :param int n_analysis: Number of MC analysis.
+            :param bool continue_backup: Whether or not the simulation should continue from a backup if one exists.
+            :param bool delay: Whether or not delay should be taken into consideration.
+            :param Callable progress_report: Optional function that progress can be reported to.
+            :returns: Nothing, puts data in <path>/<circuit_name>_mc_LET.csv.
+        """
 
-        ## Gera o arquivo caso nao exista ##
-        if continuar and manager.check_backup():
-            # print("\nSimulacao em andamento encontrada! continuando de onde parou...\n")
+        manager = PersistentProcessMaster(self.run_mc_iteration, None, f"{self.circuito.path_to_my_dir}/MC", progress_report=progress_report, work_dir=self.circuito.path_to_circuits)        
+
+        # If there is a backup continues from where it stopped.
+        if continue_backup and manager.check_backup():
             manager.load_backup()
         else:
-            jobs = self.__determinar_variabilidade(n_analises)
+            jobs = self.__determinar_variabilidade(n_analysis)
             manager.load_jobs(jobs)
 
-        # A MAGIA ACONTECE AQUI
+        # Concurrent execution, where the magic happens.
         manager.work((delay,))
 
-        # Retorna os valores num csv
+        # Dumps data into a csv.
         saida = manager.return_done()
-        CManager.tup_to_csv(f"{self.circuito.path}",f"{self.circuito.nome}_mc_LET.csv", saida)
-        print("Pontos da analise Monte Carlo gerados com sucesso")
+        CManager.tup_to_csv(f"{self.circuito.path_to_my_dir}",f"{self.circuito.nome}_mc_LET.csv", saida)
 
-        # Destroi os arquivos de persistencia
+        # Deletes the backup files.
         manager.delete_backup()
+
+if __name__ == "__main__":
+    print("Testing MC Manager...")
+    from .circuito import Circuito
+
+    print("\tTesting MC simulation...")
+    with InDir("debug"):
+        nand = Circuito("nand", "test_circuits", 0.7).from_json()
+        n = 4
+        MCManager(nand).analise_monte_carlo_total(4)
+        with open("test_circuits/nand/nand_mc_LET.csv", "r") as file:
+            assert file.read().count("\n") == 4, "MC SIMULATION FAILED"
+
+    print("MC Manager OK")

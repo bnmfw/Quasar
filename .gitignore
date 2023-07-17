@@ -8,3 +8,5 @@ venv/
 *.log*
 *.xml
 *.iml
+__pycache__
+utils/__pycache__

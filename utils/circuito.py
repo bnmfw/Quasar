@@ -7,8 +7,6 @@ from .spiceInterface import SpiceRunner
 from .components import Nodo, Entrada, LET
 import os
 
-barra_comprida = "---------------------------"
-
 class Circuito():
     """
     Circuit object. Tracks its file, relevant nodes and LETs.
@@ -61,8 +59,9 @@ class Circuito():
         return self
 
 if __name__ == "__main__":
+    print("Testing Circuit Module...")
     # Decodification test of the circuit
-    print("Testing decodification of circuit from json file...")
+    print("\tTesting decodification of circuit from json file...")
     decodec_test = Circuito("decodec_test", path_to_circuits="debug/test_circuits", vdd=0.7).from_json()
     assert decodec_test.ha_cadastro(), "CIRCUIT FAILED FOR CHECKING JSON FILE"
     assert decodec_test.nome == "decodec_test", "CIRCUIT DECODE FAILED FOR NAME"
@@ -73,6 +72,8 @@ if __name__ == "__main__":
     assert list(map(lambda e: len(e.LETs), decodec_test.nodos)) == [2, 2], "CIRCUIT DECODE FAILED FOR NUMBER OS LETS"
     assert list(map(lambda e: e.nome, decodec_test.saidas)) == ["g1"], "CIRCUIT DECODE FAILED FOR OUTPUTS"
     assert decodec_test.vdd == 0.7, "CIRCUIT DECODE FAILED FOR VDD"
-    print("Testing parsing of circuit file...")
+    print("\tTesting parsing of circuit file...")
     parsing_test = Circuito("parsing_test", path_to_circuits="debug/test_circuits", vdd=0.7).from_nodes(["a","b"],["g1"])
     assert {nodo.nome for nodo in parsing_test.nodos} == {"g1", "i1"}, "CIRCUIT PARSING FAILED"
+
+    print("Circuit Module OK")
