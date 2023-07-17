@@ -1,10 +1,8 @@
-from .matematica import corrente_para_let
-
-modo_debug: bool = False
+from .matematica import current_to_let
 
 class Entrada:
-    def __init__(self, nome: str):
-        self.nome = nome
+    def __init__(self, name: str):
+        self.nome = name
         self.sinal = "setup"
 
     def codec(self):
@@ -29,6 +27,7 @@ class Nodo:
         self.atraso = {}
 
     def __repr__(self):
+        return f"{self.nome}"
         return f"\nnome: {self.nome}\tLETth: {self.LETth.corrente}\tQuantidade de LETs:{len(self.LETs)}"
 
     def codec(self):
@@ -73,12 +72,13 @@ class LET:
     @corrente.setter
     def corrente(self, corrente):
         self.__corrente = corrente
-        self.valor = corrente_para_let(corrente)
+        self.valor = current_to_let(corrente)
 
     def __eq__(self, other):
         return (self.nodo_nome == other.nodo_nome and self.saida_nome == other.saida_nome and self.orientacao == other.orientacao)
 
     def __repr__(self):
+        return ""
         return f"\ncorrente: {self.corrente}, orientacao: {self.orientacao}, vdd: {self.vdd}, nodo: {self.nodo_nome}, saida: {self.saida_nome}"
 
     def __len__(self):

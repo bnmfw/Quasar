@@ -107,7 +107,7 @@ class JsonManager():
             nodo.decodec(nodo_dict, circuito.vdd)
             circuito.nodos.append(nodo)
 
-        print("Leitura do Json realizada com sucesso")
+        # print("Leitura do Json realizada com sucesso")
 
 # Instancias
 JManager = JsonManager()

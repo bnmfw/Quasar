@@ -85,7 +85,7 @@ class GUI:
         elif acao == 1:
             CManager.escrever_csv_total(self.circuito)
         elif acao == 2:
-            LetFinder(self.circuito, True).definir_corrente(LET(None))
+            LetFinder(self.circuito, self.circuito.path_to_circuits True).definir_corrente(LET(None))
         elif acao == 3:
             self.circuito.analise_monte_carlo_progressiva()
         elif acao == 4:

@@ -22,6 +22,8 @@ Xinvd2 vcc gnd fd td NOT
 Xinve1 vcc gnd e fe NOT
 Xinve2 vcc gnd fe te NOT
 
+****** START QUASAR ******
+
 Mp11 vdd ta e1 ta PMOS_RVT nfin=3
 Mp12 vdd tb e1 tb PMOS_RVT nfin=3
 Mn11 e1 ta i1 ta NMOS_RVT nfin=3
@@ -57,6 +59,8 @@ Mn62 i61 e4 gnd e4 NMOS_RVT nfin=3
 
 Mp63 vdd i62 g2 i62 PMOS_RVT nfin=3
 Mn63 g2 i62 gnd i62 NMOS_RVT nfin=3
+
+****** END QUASAR ******
 
 Vmeasg1 g1 m1 0
 Vmeasg2 g2 m2 0

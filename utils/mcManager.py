@@ -37,7 +37,7 @@ class MCManager:
          ### Guarda que com ctz tem como melhorar
         with HSRunner.MC_Instance(pmos, nmos):
             if delay: self.circ_man.get_atrasoCC()
-            self.circ_man.atualizar_LETths(pmos, nmos, delay=delay)
+            self.circ_man.atualizar_LETths(delay=delay)
             result = (round(pmos,4), round(nmos,4), self.circuito.LETth.nodo_nome, self.circuito.LETth.saida_nome, self.circuito.LETth.corrente, self.circuito.LETth.valor)
         return result
     

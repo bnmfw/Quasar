@@ -5,10 +5,11 @@ No other file in the Project should know how to interact with Spice.
 Both classes in this file are stateless, therefore the classes are instantiated and its instances are accessed 
 """
 
-from .matematica import ajustar
+from .matematica import spice_to_float
 from .components import LET
 from dataclasses import dataclass
 import os
+from time import sleep
 
 # Defines the start and end of the measuring window, must have only 2 elements
 measure_window = (1.0, 3.8)
@@ -106,6 +107,11 @@ class SpiceFileManager():
             :param float vdd: the vdd of the simulation.
             :param dict inputs: dict with input values in the form {input_name: input_value}
         """
+        
+        # print("I will try to acces:")
+        # os.system("pwd")
+        # print(f"{self.path_to_folder}/include/fontes.cir")
+
         with open(f"{self.path_to_folder}/include/fontes.cir", "w") as file:
             file.write("*Input signals to be altered by Quasar\n")
 
@@ -229,7 +235,7 @@ class SpiceFileManager():
         """
         label_value, time = line.split("at=")
         label, value = label_value.split("=")
-        return self.Meas_from(label.strip(), ajustar(value), ajustar(time))
+        return self.Meas_from(label.strip(), spice_to_float(value), spice_to_float(time))
 
     def __format_measure_trig(self, line: str) -> Meas_targ:
         """
@@ -244,7 +250,7 @@ class SpiceFileManager():
         label_value_targ, trig = line.split("trig=")  
         label_value, targ= label_value_targ.split("targ=")
         label, value = label_value.split("=")
-        return self.Meas_targ(label.strip(), ajustar(value), ajustar(targ), ajustar(trig))
+        return self.Meas_targ(label.strip(), spice_to_float(value), spice_to_float(targ), spice_to_float(trig))
     
     def __format_output_line(self, line: str) -> None:
         """
@@ -274,14 +280,14 @@ class SpiceFileManager():
             for line in file:
 
                 # Identifies the quasar region of the circuit file
-                if "START QUASAR" in line:
-                    critical_region = True
-                    continue
-                elif "END QUASAR" in line:
-                    critical_region = False
-                    continue
-                if not critical_region:
-                    continue
+                # if "START QUASAR" in line:
+                #     critical_region = True
+                #     continue
+                # elif "END QUASAR" in line:
+                #     critical_region = False
+                #     continue
+                # if not critical_region:
+                #     continue
 
                 # A line starting with M identifies a transistor, wich means its connected to availabel nodes
                 if "M" in line[0]:
@@ -289,7 +295,7 @@ class SpiceFileManager():
                     _, source, gate, drain, *_ = line.split()
                     for node in [source, gate, drain]:
                         nodes.add(node)
-        return {node for node in nodes if node not in {"vcc", "vdd", "gnd"}}
+        return {node for node in nodes if node not in {"vcc", "vdd", "gnd"} and node[0] != "t"}
 
     def get_output(self) -> dict:
         """
@@ -362,7 +368,7 @@ class SpiceFileManager():
             for linha in file:
                 valores = linha.split(",")
                 for index, chave in enumerate(data):
-                    valor = None if valores[index].strip() == "failed" else ajustar(valores[index])
+                    valor = None if valores[index].strip() == "failed" else spice_to_float(valores[index])
                     data[chave].append(valor)
         
         return data
@@ -426,7 +432,7 @@ class SpiceFileManager():
         """
         instances: dict = {}
 
-        data = self.__get_csv_data(f"{self.path_to_folder}{path}{circ_name}.mc0.csv", "$ IRV")
+        data = self.__get_csv_data(f"{self.path_to_folder}/{path}/{circ_name}.mc0.csv", "$ IRV")
 
         ps: str = "pmos_rvt:@:phig_var_p:@:IGNC"
         ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
@@ -453,7 +459,6 @@ class SpiceRunner():
         """
         self.path_to_folder = path_to_folder
         SpiceRunner.file_manager = SpiceFileManager(path_to_folder=path_to_folder)
-        self.test_spice()
 
     class Monte_Carlo():
         """
@@ -576,7 +581,7 @@ class SpiceRunner():
         SpiceRunner.file_manager.measure_delay(input_name, output_name, vdd)
         SpiceRunner.file_manager.set_signals(vdd, {input.nome: input.sinal for input in inputs})
         # Runs the simulation in the respective folder
-        os.system(f"cd {self.path_to_folder}{path} ; hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > ../output.txt")
+        os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > ../output.txt")
         # Gets and returns the results
         delay = SpiceRunner.file_manager.get_delay()
         return delay
@@ -596,14 +601,14 @@ class SpiceRunner():
         with self.SET(let, current):
             # Runs the simulation
             try:
-                os.system(f"cd {self.path_to_folder}{path} ; hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > ../output.txt")
+                os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > ../output.txt")
                 # Gets the peak tensions in the node and output
                 peak_node = SpiceRunner.file_manager.get_peak_tension(let.orientacao[0], True)
                 peak_output = SpiceRunner.file_manager.get_peak_tension(let.orientacao[1])
             except Exception as error:
                 print(f"*** ERROR IN SET SIMULATION! FULL REPORT GENERATED AT DEBUG/CRASH_REPORT/{os.getpid()}_REPORT.TXT ***")
                 print(f"*** ERROR: {error}")
-                os.system(f"cd {self.path_to_folder}{path} ; hspice {filename} > {'/'.join(['..']*(self.path_to_folder.count('/')+path.count('/')))}/debug/crash_report/{os.getpid()}_report.txt")
+                os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} > {'/'.join(['..']*(self.path_to_folder.count('/')+path.count('/')))}/debug/crash_report/{os.getpid()}_report.txt")
                 exit()
         return (peak_node, peak_output)
     
@@ -616,7 +621,7 @@ class SpiceRunner():
             :returns: A tuple containing the max and min tensions.
         """
         SpiceRunner.file_manager.measure_tension(node_name)
-        os.system(f"cd {self.path_to_folder}{path} ; hspice {filename} | grep \"minnod\|maxnod\" > ../output.txt")
+        os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} | grep \"minnod\|maxnod\" > ../output.txt")
         return SpiceRunner.file_manager.get_tension() 
 
     def run_pulse_width(self, path: str, filename: str, let: LET, current: float = None) -> float:
@@ -631,7 +636,7 @@ class SpiceRunner():
         """
         with self.SET(let, current):
             SpiceRunner.file_manager.measure_pulse_width(let)
-            os.system(f"cd {self.path_to_folder}{path} ; hspice {filename} | grep \"larg\" > ../output.txt")
+            os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} | grep \"larg\" > ../output.txt")
             output = SpiceRunner.file_manager.get_output()
         
         try:
@@ -657,7 +662,7 @@ class SpiceRunner():
         """
         SpiceRunner.file_manager.measure_pulse(name_name, output_name)
         with self.Monte_Carlo(sim_num):
-            os.system(f"cd {self.path_to_folder}{path} ; hspice {circuit_name}.cir| grep \"minout\|maxout\" > ../output.txt")
+            os.system(f"cd {self.path_to_folder}/{path} ; hspice {circuit_name}.cir| grep \"minout\|maxout\" > ../output.txt")
         return SpiceRunner.file_manager.get_mc_faults(path, circuit_name, sim_num, output_incl, vdd)
 
     def run_MC_var(self, path: str, filename: str, circuit_name: str, sim_num: int) -> dict:
@@ -671,22 +676,39 @@ class SpiceRunner():
             :return: MC variability instances.
         """
         with self.Monte_Carlo(sim_num):
-            os.system(f"cd {self.path_to_folder}{path} ; hspice {filename} > ../output.txt")
+            os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} > ../output.txt")
         return SpiceRunner.file_manager.get_mc_instances(path, circuit_name)
 
 HSRunner = SpiceRunner()
 
 # Runs a bunch of routine checks to see if the Spice Interface is running accordingly
 if __name__ == "__main__":
-    print("Testing SET simulation with known SET value ...")
+    print("Testing Spice Interface...")
     ptf = "debug/test_circuits"
     from .circuito import Circuito
     TestRunner = SpiceRunner(path_to_folder=ptf)
-    nand_teste = Circuito("nand", 0.7).from_json(path_to_folder=ptf)
+    TestManager = SpiceFileManager(path_to_folder=ptf)
+
+    print("\tTesting circuit parsing...")
+    nor_test = Circuito("nor", ptf, 0.7).from_nodes(["a","b"],["g1"])
+    assert {nodo.nome for nodo in nor_test.nodos} == {"g1", "i1"}, "CIRCUIT PARSING FAILED"
+
+    print("\tTesting SET simulation with known SET value...")
+    nand_test = Circuito("nand", ptf, 0.7).from_json()
     valid_input = [0, 1] 
     valid_let = LET(156.25, 0.7, "g1", "g1", ["fall", "fall"], valid_input)
     expected_let_value = 0.36585829999999997
-    for vi, entrada in zip(valid_input, nand_teste.entradas): entrada.sinal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(0.7, nand_teste.entradas), TestRunner.MC_Instance(4.7443, 4.3136):
-        peak_node, peak_output = TestRunner.run_SET(nand_teste.path, nand_teste.arquivo, valid_let, path_to_root="debug/..")
+    for vi, entrada in zip(valid_input, nand_test.entradas): entrada.sinal = vi
+    with TestRunner.Vdd(0.7), TestRunner.Inputs(0.7, nand_test.entradas), TestRunner.MC_Instance(4.7443, 4.3136):
+        peak_node, peak_output = TestRunner.run_SET(nand_test.nome, nand_test.arquivo, valid_let, path_to_root="debug/..")
         assert abs(peak_node-expected_let_value) <= 10e-6, "SET SIMULATION FAILED"
+
+    print("\tTesting delay simulation with known delay value...")
+    delay_input = [1, "atraso"]
+    expected_delay_value = 9.1557e-12
+    for vi, entrada in zip(delay_input, nand_test.entradas): entrada.sinal = vi
+    with TestRunner.Vdd(0.7), TestRunner.Inputs(0.7, nand_test.entradas):
+        delay = TestRunner.run_delay(nand_test.nome, nand_test.arquivo, "b", "g1", 0.7, nand_test.entradas)
+        assert abs(delay - expected_delay_value) <= 10e-14, "DELAY SIMULATION FAILED"
+
+    print("Spice Interface OK.")

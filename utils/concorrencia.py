@@ -19,15 +19,18 @@ class ProcessFolder:
     def __init__(self, dir: str):
         self.pid = None
         self.dir = dir
+        self.first_dir = self.dir.split('/')[0]
+        self.depth = self.dir.count("/")+1
 
     def __enter__(self):
         self.pid = os.getpid()
         os.mkdir(f"work/{self.pid}")
-        os.system(f"cp -R {self.dir} work/{self.pid}/{self.dir}")
-        os.chdir(f"work/{self.pid}")
+        os.system(f"cp -R {self.first_dir} work/{self.pid}/{self.first_dir}")
+        os.chdir(f"work/{self.pid}/{self.dir}/..")
 
     def __exit__(self, type, value, traceback):
-        os.chdir(f"..")
+        for _ in range(self.depth):
+            os.chdir(f"..")
         os.system(f"rm -r {self.pid}")
         os.chdir(f"..")
 
@@ -35,17 +38,19 @@ class ProcessWorker:
     """
     Executes some function multiple times with different inputs. The static_args+job define the inputs.
     """
-    def __init__(self, work_func: Callable, static_args: list, max_work: int) -> None:
+    def __init__(self, work_func: Callable, static_args: list, max_work: int, work_dir: str = "circuitos") -> None:
         """
         Constructor.
 
             :param Callable work_func: Function to be executed multiple times.
             :param list static_args: Arguments in function input that do not change over different jobs. Static args must be the last part of the input.
             :param int max_work: Maximum number of functions a worker can run (used to not loop indefinatly in very edge cases).
+            :param str workdir: Main circuits directory.
         """
         self.func = work_func
         self.args = static_args
         self.max_work = max_work
+        self.work_dir = work_dir
 
     def __termination_handler(self, signal, frame):
         """
@@ -63,7 +68,7 @@ class ProcessWorker:
         signal.signal(signal.SIGTERM, self.__termination_handler)
 
         # Changes the worker execution to its own folder
-        with ProcessFolder("circuitos"):
+        with ProcessFolder(self.work_dir):
             
             # While True limited by the max_work load
             for _ in range(self.max_work):
@@ -87,15 +92,17 @@ class ProcessMaster:
     """
     Handles the multiple workers, jobs and sync.
     """
-    def __init__(self, func: Callable, jobs: list or None, progress_report: Callable = None) -> None:
+    def __init__(self, func: Callable, jobs: list or None, work_dir: str = "circuitos", progress_report: Callable = None) -> None:
         """
         Constructor.
 
             :param Callable func: Function to be executed multiple times.
             :param list or None jobs: List of jobs to be done.
+            :param str work_dir: Main circuits directory.
             :param Callable progress_report: Function that the progress is to be reported to.
         """
         self.func = func # Function to be executed
+        self.work_dir =  work_dir
         self.done_copy = []
         self.progress_report = progress_report # Function that Master should report its progress to
         if jobs: self.total_jobs = len(jobs)
@@ -242,7 +249,7 @@ class ProcessMaster:
             :param int n_workers: Number of workers to be created, will take the cpu count as standard. 
         """
         # Creates all workers
-        workers = [mp.Process(target=ProcessWorker(self.func, static_args, self.jobs.qsize()).run, args = (self,)) for _ in range(n_workers)]
+        workers = [mp.Process(target=ProcessWorker(self.func, static_args, self.jobs.qsize(), work_dir=self.work_dir).run, args = (self,)) for _ in range(n_workers)]
 
         # Starts all workers
         for worker in workers:
@@ -262,22 +269,23 @@ class ProcessMaster:
         
         # Should never happen
         if len(os.listdir("work")):
-            raise ChildProcessError("Master Process Joined Withouth Child Finishing")
+            raise ChildProcessError("Master Process Joined Without Child Finishing")
 
 class PersistentProcessMaster(ProcessMaster):
     """
     Specialization of ProcessMaster that also backups jobs in its routine.
     """
-    def __init__(self, func: Callable, jobs: list or None, backup_prefix: str, progress_report: Callable = None) -> None:
+    def __init__(self, func: Callable, jobs: list or None, backup_prefix: str, work_dir: str = "circuitos", progress_report: Callable = None) -> None:
         """
         Constructor.
 
             :param Callable func: Function to be executed.
             :param list or None jobs: List of jobe to be run.
+            :param str work_dir: Main circuits directory.
             :param str backup_prefix: Path and prefix from root to backup, in the format path/.../filename excluding extensions.
             :param Callable progress_report: Function that the progress is to be reported to. 
         """
-        super().__init__(func, jobs, progress_report)
+        super().__init__(func, jobs, work_dir=work_dir, progress_report=progress_report)
 
         self.prefix = backup_prefix
         
@@ -395,7 +403,16 @@ class PersistentProcessMaster(ProcessMaster):
                 break
 
 if __name__ == "__main__":
-    print("Testing Simple Parallel execution...")
+    print("Testing Concurrent Module...")
+
+    print("\tTesting Process Folder...")
+    os.chdir("debug")
+    with ProcessFolder("folder_depth_test/deeper"):
+        with open("deeper/deepest.txt", "r") as file:
+            assert file.read() == "test text.", "PROCESS FOLDER FAILED"
+    os.chdir("..")
+
+    print("\tTesting Simple Parallel execution...")
     def function(a, x):
         return x * a
 
@@ -405,7 +422,7 @@ if __name__ == "__main__":
     manager.work((10,))
     assert set(manager.return_done()) == {i*10 for i in range(10)}, "SIMPLE PARALLEL MANAGER FAILED"
 
-    print("Testing Backuping Parallel execution...")
+    print("\tTesting Backuping Parallel execution...")
     def sleeper(a, x):
         sleep(10)
         return x * a
@@ -413,3 +430,5 @@ if __name__ == "__main__":
     backuper = PersistentProcessMaster(sleeper, test_jobs, "debug/backup_test/test")
     backuper.work((10,))
     assert set(backuper.return_done()) == {i*10  for i in range(10)}, "BACKUPING PARALLEL MANAGER FAILED"
+
+    print("Concurrent Module OK.")

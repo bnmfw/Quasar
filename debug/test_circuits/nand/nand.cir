@@ -1,4 +1,4 @@
-Test Nand
+Nand Parsing Test
 
 ****** Dispositivos Lógicos ******
 
@@ -16,10 +16,14 @@ Xinva2 vcc gnd fa ta NOT
 Xinvb1 vcc gnd b fb NOT
 Xinvb2 vcc gnd fb tb NOT
 
+****** START QUASAR ******
+
 Mp11 vdd ta g1 ta PMOS_RVT nfin=3
 Mp12 vdd tb g1 tb PMOS_RVT nfin=3
 Mn11 g1 ta i1 ta NMOS_RVT nfin=3
 Mn12 i1 tb gnd tb NMOS_RVT nfin=3
+
+****** END QUASAR ******
 
 //Representação de um circuito pós benchmark
 xff1 clk g1 q1 nq1 vcc gnd DFF

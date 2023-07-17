@@ -1,7 +1,13 @@
-from math import sqrt
+"""
+Miscellanious auxilarry functions. 
+"""
 from time import perf_counter
+import os
 
 class Time():
+    """
+    Context manager that prints time in context.
+    """
     def __init__(self) -> None:
         pass
 
@@ -14,75 +20,93 @@ class Time():
         dias: int = tempo // 86400
         horas: int = (tempo % 86400) // 3600
         minutos: int = (tempo % 3600) // 60
-        if dias: print(f"{dias} dias, ", end='')
-        if horas: print(f"{horas} horas, ", end='')
-        if minutos: print(f"{minutos} minutos e ", end='')
-        print(f"{tempo % 60} segundos de execucao")
+        if dias: print(f"{dias} days, ", end='')
+        if horas: print(f"{horas} hours, ", end='')
+        if minutos: print(f"{minutos} minutes and ", end='')
+        print(f"{tempo % 60} seconds of execution")
 
-# Recebe um inteiro e retorna uma lista de validacoes possiveis
-def combinacoes_possiveis(tamanho: int):
-    total: int = 2 ** tamanho
-    combinacoes: list = []
+class InDir():
+    """
+    Context Manager that changes executions to a directory.
+    """
+    def __init__(self, dir: str):
+        """
+        Constructor.
+
+            :param str dir: Directory to be changed to.
+        """
+        self.dir = dir
+        self.depth = dir.count("/")+1
+
+    def __enter__(self):
+        os.chdir(self.dir)
+    
+    def __exit__(self, a, b, c):
+        os.chdir("/".join([".."] * self.depth))
+
+def combinacoes_possiveis(bits: int) -> int:
+    """
+    Returns of all values from 0 to 2 ^ size in the format of a list of its binary digits.
+    
+        :param int bits: Number of bits
+        :returns: A list of lists of digits.
+    """
+    total: int = 2 ** bits
+    combinations: list = []
     for i in range(total):
-        binario = bin(i)[2:]
-        combinacao: list = []
-        for _ in range(tamanho - len(binario)):
-            combinacao.append(0)
-        for digito in binario:
-            combinacao.append(int(digito))
-        combinacoes.append(combinacao)
-    return combinacoes
+        binary = bin(i)[2:]
+        combination: list = []
+        for _ in range(bits - len(binary)):
+            combination.append(0)
+        for digit in binary:
+            combination.append(int(digit))
+        combinations.append(combination)
+    return combinations
 
-# Esta funcao recebe uma sting do tipo numeroEscala como 10.0p ou 24.56m e retorna um float ajustando as casas decimais
-def ajustar(tensao: str) -> float:
-    tensao = tensao.strip()
-    fator_escala: dict = {"a": -18, "f": -15, "p": -12,  
+def spice_to_float(value: str) -> float:
+    """
+    Recieves a spice value string and returns the value converted to a float.
+
+        :param str value: Value to be converted.
+        :returns: Converted value.
+    """
+
+    value = value.strip()
+    scale_factor: dict = {"a": -18, "f": -15, "p": -12,  
                           "n": -9, "u": -6, "m": -3,
                           "k": 3, "mega": 6, "x": 6, "g": 9, "t": 12}
     # Guarda failed
-    if tensao == "failed":
+    if value == "failed":
         return None
     
     # Sem grandeza
-    if tensao[-1] in {"0","1","2","3","4","5","6","7","8","9","."}:
-        return float(tensao)
+    if value[-1] in {"0","1","2","3","4","5","6","7","8","9","."}:
+        return float(value)
     
     # Guarda de mega
-    if tensao[-4] == "mega":
-        return float(tensao[:-4]) * 10 ** 6
+    if value[-4] == "mega":
+        return float(value[:-4]) * 10 ** 6
     
     # Outras grandezas
-    if tensao[-1] in fator_escala.keys():
-        return float(tensao[:-1]) * 10 ** fator_escala[tensao[-1]]
+    if value[-1] in scale_factor.keys():
+        return float(value[:-1]) * 10 ** scale_factor[value[-1]]
 
     # Nao reconhecido
-    raise ValueError(f"Recebi \"{tensao}\" como entrada de ajuste")
+    raise ValueError(f"Recebi \"{value}\" como entrada de ajuste")
 
-# Converte uma corrente para LET
-def corrente_para_let(corrente: float) -> float:
-    if corrente is None: return None
-    return (corrente * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / ((1.08 * 10 ** -14) * 0.000000021)
+def current_to_let(current: float) -> float:
+    """
+    Converts a current value to a let value in its weird unit.
 
-# Retorna a media dos valores numa lista
-def media(lista: list) -> float:
-    acumulador: float = 0
-    for num in lista:
-        acumulador += num
-    return acumulador/len(lista)
-
-def desvio_padrao(lista: list, media: float) -> float:
-    acumulador: float = 0
-    for num in lista:
-        acumulador += (media-num) ** 2
-    acumulador = acumulador/(len(lista)-1)
-    return sqrt(acumulador)
-
+        :param float current: Current to be converted.
+        :returns: The Let value.
+    """
+    if current is None: return None
+    return (current * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / ((1.08 * 10 ** -14) * 0.000000021)
 
 if __name__ == "__main__":
     print("Testing math module...")
-    assert ajustar("  24.56u ") == (24.56 * 10 ** -6), "convert_value FAILED"
-    assert ajustar("2.349e-02") == 0.02349, "convert_value FAILED"
+    assert spice_to_float("  24.56u ") == (24.56 * 10 ** -6), "convert_value FAILED"
+    assert spice_to_float("2.349e-02") == 0.02349, "convert_value FAILED"
     #assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
-    assert corrente_para_let(100) == 50264550.26455026, "current_to_let FAILED" # DEFINIDO PELA PROPRIA FUNCAO
-    assert media([1.1, 2.8, 3.6, 4.1]) == 2.9, "average FAILED"
-    assert desvio_padrao([4, 9, 11, 12, 17, 5, 8, 12, 14], media([4, 9, 11, 12, 17, 5, 8, 12, 14])) == 4.176654695380556, "std_dev FAILED"
+    assert current_to_let(100) == 50264550.26455026, "current_to_let FAILED" # DEFINIDO PELA PROPRIA FUNCAO

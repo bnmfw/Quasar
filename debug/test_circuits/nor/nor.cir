@@ -1,4 +1,4 @@
-Test Nand
+Nor
 
 ****** Dispositivos Lógicos ******
 
@@ -18,10 +18,10 @@ Xinvb2 vcc gnd fb tb NOT
 
 ****** START QUASAR ******
 
-Mp11 vdd ta g1 ta PMOS_RVT nfin=3
-Mp12 vdd tb g1 tb PMOS_RVT nfin=3
-Mn11 g1 ta i1 ta NMOS_RVT nfin=3
-Mn12 i1 tb gnd tb NMOS_RVT nfin=3
+Mp51 vdd ta i1 ta PMOS_RVT nfin=3
+Mp52 i1 tb g1 tb PMOS_RVT nfin=3
+Mn51 g1 ta gnd ta NMOS_RVT nfin=3
+Mn52 g1 tb gnd tb NMOS_RVT nfin=3
 
 ****** END QUASAR ******
 

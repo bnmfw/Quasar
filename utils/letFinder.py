@@ -1,204 +1,262 @@
-from .spiceInterface import HSRunner
+"""
+Module with LetFinder a Level 1 simulation responsible for calculating the minimal Let for a fault given some parameters.
+"""
+from .spiceInterface import SpiceRunner
 from .components import LET
 
-# Classe Responsavel por encontrar o valor de um LET
-# O Trabalho realizado por esta classe pode ser considerado atomico para os propositos de concorrencia
 class LetFinder:
-    def __init__(self, circuito, relatorio: bool = False):
-        self.circuito = circuito
-        self.__report = relatorio
-        self.__limite_sup: float = 400
+    """
+    Responsible for finding the minimal LET value from a faulted node to an output.
+    """
+    def __init__(self, circuit, path_to_folder: str = "circuitos", report: bool = False):
+        """
+        Constructor.
+
+            :param Circuit circuit: A Circuit object to have its let found.
+            :param str path_to_folder: relative path into the folder that contain spice files.
+            :param bool report: Whether or not the run will report to terminal with prints
+        """
+        self.circuito = circuit
+        self.runner = SpiceRunner(path_to_folder=path_to_folder)
+        self.__report = report
+        self.__upper_bound: float = 400
         self.__limite_sim: int = 25
 
-    ##### VERIFICA SE UM LET EH VALIDO #####
-    def __verificar_validacao(self, vdd: float, let: LET) -> tuple:
-        inclinacao_nodo, inclinacao_saida = let.orientacao
-        
-        # Checagem se os niveis de tensao estar corretos
-        tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(self.circuito.path, self.circuito.arquivo, let, 0)
+    def __verify_let_validity(self, vdd: float, let: LET) -> tuple:
+        """
+        Verifies the validity of the Let, if in this configuration a fault in the node will have an effect on the output.
 
-        if (inclinacao_saida == "rise" and tensao_pico_saida > vdd * 0.51) or\
-            (inclinacao_saida == "fall" and tensao_pico_saida < vdd * 0.1) or\
-            (inclinacao_nodo == "rise" and tensao_pico_nodo > vdd * 0.51) or\
-            (inclinacao_nodo == "fall" and tensao_pico_nodo < vdd * 0.1):
-            if self.__report: print("Analise invalida - Tensoes improprias\n")
+            :param float vdd: Vdd of the simulation.
+            :param LET let: Let being validated.
+            :returns: A tuple with a boolean informing the validity of the let and the number of Spice runs.
+        """
+        node_inclination, output_inclination = let.orientacao
+        
+        # Checks if voltage levels are correct
+        lower_tolerance: float = 0.1
+        upper_tolerance: float = 0.51
+
+        node_peak, output_peak = self.runner.run_SET(self.circuito.nome, self.circuito.arquivo, let, 0)
+
+        if self.__report:
+            print(f"tension\tnode: {node_peak:.3f}\t output: {output_peak:.3f}")
+        if (output_inclination == "rise" and output_peak > vdd * upper_tolerance) or\
+            (output_inclination == "fall" and output_peak < vdd * lower_tolerance) or\
+            (node_inclination == "rise" and node_peak > vdd * upper_tolerance) or\
+            (node_inclination == "fall" and node_peak < vdd * lower_tolerance):
+            if self.__report: print("Invalid Let - Improper Voltages\n")
             return (False, 1)
 
-        # Chegagem se o pulso no nodo tem resposta na saída
-        tensao_pico_nodo, tensao_pico_saida = HSRunner.run_SET(self.circuito.path, self.circuito.arquivo, let,self.__limite_sup)
+        # Checks if the fault is logically masked
+        lower_tolerance: float = 0.2
+        upper_tolerance: float = 0.8
 
-        if (inclinacao_saida == "rise" and tensao_pico_saida < vdd * 0.50) or\
-            (inclinacao_saida == "fall" and tensao_pico_saida > vdd * 0.50) or\
-            (inclinacao_nodo == "rise" and tensao_pico_nodo < vdd * 0.50) or\
-            (inclinacao_nodo == "fall" and tensao_pico_nodo > vdd * 0.50):
-            if self.__report: print("Analise invalida - Pulso sem efeito\n")
+        node_peak, output_peak = self.runner.run_SET(self.circuito.nome, self.circuito.arquivo, let,self.__upper_bound)
+
+        if self.__report:
+            print(f"masking\tnode: {node_peak:.3f}\t output: {output_peak:.3f}")
+        if (output_inclination == "rise" and output_peak < vdd * lower_tolerance) or\
+            (output_inclination == "fall" and output_peak > vdd * upper_tolerance) or\
+            (node_inclination == "rise" and node_peak < vdd * lower_tolerance) or\
+            (node_inclination == "fall" and node_peak > vdd * upper_tolerance):
+            if self.__report: print("Invalid Let - Masked Fault\n")
             return (False, 2)
 
         return (True, 2)
 
-    ##### ENCONTRA A CORRENTE MAXIMA PARA UM LET #####
-    def __encontrar_corrente_maxima(self, let:LET) -> float:
-        self.__limite_sup = 400
+    def __find_maximal_current(self, let: LET) -> float:
+        """
+        Finds the upper limit for the current of the Let.
 
-        inclinacao_saida = let.orientacao[1]
+            :param LET let: Let to have the upper limit found.
+            :returns: The maximal current for the Let.
+        """
+        self.__upper_bound = 400
+
+        output_inclination = let.orientacao[1]
 
         for _ in range(10):
-            _, tensao_pico_saida = HSRunner.run_SET(self.circuito.path, self.circuito.arquivo, let, self.__limite_sup)
+            _, output_peak = self.runner.run_SET(self.circuito.nome, self.circuito.arquivo, let, self.__upper_bound)
 
-            # Encontrou efeito
-            if (inclinacao_saida == "rise" and tensao_pico_saida > self.circuito.vdd/2) or\
-                (inclinacao_saida == "fall" and tensao_pico_saida < self.circuito.vdd/2):
-                if self.__report: print(f"PULSO MAXIMO ENCONTRADO ({self.__limite_sup})")
-                return self.__limite_sup
+            # Fault effect on the output was found
+            if (output_inclination == "rise" and output_peak > self.circuito.vdd/2) or\
+                (output_inclination == "fall" and output_peak < self.circuito.vdd/2):
+                if self.__report: print(f"Upper current bound: ({self.__upper_bound})")
+                return self.__upper_bound
 
-            self.__limite_sup += 100
+            self.__upper_bound += 100
         
-        print("Corrente maxima imensa")
+        print("Upper current too big")
         return 800
 
-    ##### ENCONTRA A CORRENTE MINIMA PARA UM LET ######
-    def __encontrar_corrente_minima(self, let: LET) -> float:
+    def __find_minimal_current(self, let: LET) -> float:
+        """
+        Finds the lower limit for the current of the Let.
 
-        # variaveis da busca binaria da corrente
-        limite_sup: float = self.__limite_sup
-        csup: float = self.__limite_sup
+            :param LET let: Let to have the upper limit found.
+            :returns: The minimal current for the Let.
+        """
+
+        # Variables for the minary search of the current
+        limite_sup: float = self.__upper_bound
+        csup: float = self.__upper_bound
         cinf: float = 0
-        corrente: float = (csup + cinf)/2
+        current: float = (csup + cinf)/2
 
         # Busca binaria para largura de pulso
         diferenca_largura: float = 100
         precisao_largura: float = 0.05e-9
 
-        # Busca binaria para corrente minima
+        # Binary search for minimal current
         for _ in range(self.__limite_sim):
             # Encontra a largura minima de pulso pra vencer o atraso
-            largura = HSRunner.run_pulse_width(self.circuito.path, self.circuito.arquivo, let, corrente)
-            diferenca_largura: float = None if largura == None else largura - self.circuito.atrasoCC
+            largura = self.runner.run_pulse_width(self.circuito.nome, self.circuito.arquivo, let, current)
+            diferenca_largura: float = None if largura is None else largura - self.circuito.atrasoCC
 
-            # Largura minima satisfeita
+            # checks if minimal width is satisfied
             if diferenca_largura and -precisao_largura < diferenca_largura < precisao_largura:
-                if self.__report: print(f"PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA ({corrente})")
-                return corrente
+                if self.__report: print(f"PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA ({current})")
+                return current
 
 
             if abs(csup - cinf) < 1:
-                if self.__report: print(f"PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA ({corrente})")
-                return corrente
+                if self.__report: print(f"PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA ({current})")
+                return current
             if diferenca_largura == None:
-                cinf = corrente
+                cinf = current
             elif diferenca_largura > precisao_largura:
-                csup = corrente
+                csup = current
             elif diferenca_largura < -precisao_largura:
-                cinf = corrente
-            corrente = (csup + cinf) / 2
+                cinf = current
+            current = (csup + cinf) / 2
 
         if self.__report: print(f"PULSO MINIMO NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO")
         return None
 
-    ##### ENCONTRA A CORRENTE DE UM LET ######
-    def definir_corrente(self, let: LET, validacao: list, safe: bool = False, delay: bool = False) -> int:
-        limite_sup = self.__limite_sup
-        precisao: float = 0.05
-        simulacoes: int = 0
+    def definir_corrente(self, let: LET, input_signals: list, safe: bool = False, delay: bool = False) -> tuple:
+        """
+        Returns the minimal current of a modeled Set to propagate a fault from the node to the output.
 
-        # Renomeamento de variaveis
+            :param LET let: Let modeled including node and output.
+            :param list input_signals: Logical value of each input.
+            :param bool False: Whether the Let is already known to be valid.
+            :param bool delay: Whether the delay of the circuit will be taken into consideration.
+            :returns: A tuple containing the simulation number and the current found, if any.
+        """
+        limite_sup = self.__upper_bound
+        precision: float = 0.01
+        sim_num: int = 0
         vdd: float = self.circuito.vdd
-        entradas: list = self.circuito.entradas
+        inputs: list = self.circuito.entradas
 
-        # Escreve a validacao no arquivo de fontes
-        for i in range(len(entradas)):
-            entradas[i].sinal = validacao[i]
+        # Sets the input signals
+        for i in range(len(inputs)):
+            inputs[i].sinal = input_signals[i]
         
-        with HSRunner.Inputs(vdd, entradas):
+        with self.runner.Inputs(vdd, inputs):
             
-            # Verifica se as saidas estao na tensao correta pra analise de pulsos
-            if not safe:
-                analise_valida, simulacoes = self.__verificar_validacao(vdd, let)
-                if not analise_valida:
-                    let.corrente = None
-                    return simulacoes
-
-            # Variaveis da busca binaria da corrente
-            csup: float = limite_sup
-            cinf: float  = 0
-            cinf: float = 0 if not delay else self.__encontrar_corrente_minima(let)
-            corrente: float = cinf
-            sup_flag: bool = False
-
             # debugging report
             if self.__report:
                 print("Starting a LET finding job\n"+
-                      f"node: {let.nodo_nome}\toutput: {let.nodo_nome}\n"+
-                      f"vdd: {vdd}\tsafe:{safe}\n"+
-                      f"input vector: {' '.join([str(entrada.sinal) for entrada in entradas])}")
+                      f"node: {let.nodo_nome}\toutput: {let.saida_nome}\n"+
+                      f"vdd: {vdd}\tsafe: {safe}\n"+
+                      f"inc1: {let.orientacao[0]}\tinc2: {let.orientacao[1]}\n"+
+                      f"input vector: {' '.join([str(input.sinal) for input in inputs])}")
 
-            # Busca binaria pela falha
+            # Checks if the Let configuration is valid
+            if not safe:
+                valid_let, sim_num = self.__verify_let_validity(vdd, let)
+                if not valid_let:
+                    let.corrente = None
+                    return sim_num, None
+
+            # Binary search variables
+            csup: float = limite_sup
+            cinf: float  = 0
+            cinf: float = 0 if not delay else self.__find_minimal_current(let)
+            current: float = cinf
+            sup_flag: bool = False
+
+            # Binary Search
             for i in range(self.__limite_sim):
 
-                _, tensao_pico = HSRunner.run_SET(self.circuito.path, self.circuito.arquivo, let, corrente)
+                _, peak_tension = self.runner.run_SET(self.circuito.nome, self.circuito.arquivo, let, current)
                 if self.__report:
-                    print(f"{i}\tcurrent: {corrente}\tpeak_tension:{tensao_pico}")
-                simulacoes += 1
+                    print(f"{i}\tcurrent: {current:.1f}\tpeak_tension:{peak_tension:.3f}")
+                sim_num += 1
 
-                ##### ENCERRAMENTO POR PRECISAO SATISFEITA #####
-                if (1 - precisao) * vdd / 2 < tensao_pico < (1 + precisao) * vdd / 2:
-                    if self.__report: print("LET ENCONTRADO - PRECISAO SATISFEITA\n")
-                    let.corrente = corrente
-                    let.append(validacao)
-                    return simulacoes, corrente
+                ##### Precision Satisfied #####
+                if (1 - precision) * vdd / 2 < peak_tension < (1 + precision) * vdd / 2:
+                    if self.__report: print("Minimal Let Found - Precision Satisfied\n")
+                    let.corrente = current
+                    let.append(input_signals)
+                    return sim_num, current
 
-                ##### CONVERGENCIA DA CORRENTE ####
-                elif csup - cinf < 1:
-                    #### CONVERGENIA PARA VALOR EXATO ####
-                    if 1 < corrente < limite_sup - 1:
-                        if self.__report: print("LET ENCONTRADO - CONVERGENCIA\n")
-                        let.corrente = corrente
-                        let.append(validacao)
-                        return simulacoes, corrente
-                    #### CONVERGENCIA PARA 0 ####
-                    elif corrente <= 1:
-                        if self.__report: print("LET NAO ENCONTRADO - DIVERGENCIA NEGATIVA\n")
+                ##### Convergence ####
+                elif csup - cinf < 0.5:
+                    # To an exact value #
+                    if 1 < current < limite_sup - 1:
+                        if self.__report: print("Minimal Let Found - Convergence\n")
+                        let.corrente = current
+                        let.append(input_signals)
+                        return sim_num, current
+                    # To 0 #
+                    elif current <= 1:
+                        if self.__report: print("Minimal Let NOT Found - Lower Divergence\n")
                         let.corrente = None
-                        return simulacoes, corrente
-                    #### CONVERGENCIA PARA LIMITE SUPERIOR ####
+                        return sim_num, current
+                    # To the upper bound #
                     else:
-                        if self.__report: print("LIMITE SUPERIOR AUMENTADO - DIVERGENCIA POSITIVA\n")
+                        if self.__report: print("Upper Divergence - Upper Bound Increased\n")
                         csup += 100
                         limite_sup += 100
                         sup_flag = True
 
-                ##### BUSCA BINARIA #####
+                # Next current calculation #
                 elif let.orientacao[1] == "fall":
-                    if tensao_pico <= (1 - precisao) * vdd / 2:
-                        csup = corrente
-                    elif tensao_pico >= (1 + precisao) * vdd / 2:
-                        cinf = corrente
+                    if peak_tension <= (1 - precision) * vdd / 2:
+                        csup = current
+                    elif peak_tension >= (1 + precision) * vdd / 2:
+                        cinf = current
                 else:
-                    if tensao_pico <= (1 - precisao) * vdd / 2:
-                        cinf = corrente
-                    elif tensao_pico >= (1 + precisao) * vdd / 2:
-                        csup = corrente
+                    if peak_tension <= (1 - precision) * vdd / 2:
+                        cinf = current
+                    elif peak_tension >= (1 + precision) * vdd / 2:
+                        csup = current
 
-                corrente: float = float((csup + cinf) / 2)
+                current: float = float((csup + cinf) / 2)
 
-            #### LIMITE SIMULACOES FEITAS NA BUSCA ATINGIDO ####
+            # simulation number limit reached (Very rare) #
 
-            ### CONVERGENCIA PARA VALOR EXATO ###
-            if 1 < corrente <self.__limite_sup - 1:
-                if self.__report: print("LET ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO\n")
-                let.corrente = corrente
-                let.append(validacao)
+            # By chance converges to an exact value #
+            if 1 < current < self.__upper_bound - 1:
+                if self.__report: print("Minimal Let Found - Maximum Simulation Number Reached\n")
+                let.corrente = current
+                let.append(input_signals)
             
-            ### DIVERGENCIA ###
+            # Did not converge #
             else:
-                if self.__report: print("LET NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO\n")
+                if self.__report: print("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
                 let.corrente = 99999 if sup_flag else 11111
-            return simulacoes, corrente
+            return sim_num, current
 
 if __name__ == "__main__":
-    from .circuito import Circuito
     print("Testing LET finder...")
-    nand = Circuito("nand", 0.7).from_json("debug/test_circuits")
+    from .circuito import Circuito
+    nand = Circuito("nand", "debug/test_circuits", 0.7).from_json()
+    
+    print("\tTesting Finding Current of safe Let...")
     valid_input = [1,1]
     let = LET(140.625, 0.7, "g1", "g1", ["rise", "rise"], valid_input)
-    assert LetFinder(nand, True).definir_corrente(let, valid_input, safe=True)[1] == 140.625
+    assert LetFinder(nand, "debug/test_circuits", False).definir_corrente(let, valid_input, safe=True)[1] == 140.625
+
+    print("\tTesting Finding Current of invalid unsafe Let...")
+    invalid_let = LET(314.152, 0.7, "g1", "g1", ["fall", "fall"], valid_input)
+    assert LetFinder(nand, "debug/test_circuits", False).definir_corrente(invalid_let, valid_input, safe=False) == (1, None)
+
+    print("\tTesting Finding Current of valid unsafe Let...")
+    valid_input = [1,1]
+    unsafe_valid_let = LET(140.625, 0.7, "i1", "g1", ["rise", "rise"], valid_input)
+    assert LetFinder(nand, "debug/test_circuits", False).definir_corrente(unsafe_valid_let, valid_input, safe=False)[1] == 248.4375
+    
+    print("LET Finder OK")

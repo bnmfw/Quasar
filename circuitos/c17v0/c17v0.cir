@@ -22,6 +22,8 @@ Xinvd2 vcc gnd fd td NOT
 Xinve1 vcc gnd e fe NOT
 Xinve2 vcc gnd fe te NOT
 
+****** START QUASAR ******
+
 Mp11 vdd ta e1 ta PMOS_RVT nfin=3
 Mp12 vdd tb e1 tb PMOS_RVT nfin=3
 Mn11 e1 ta i1 ta NMOS_RVT nfin=3
@@ -59,6 +61,8 @@ Mp71 vdd e4 i7 e4 PMOS_RVT nfin=3
 Mp72 i7 e5 g2 e5 PMOS_RVT nfin=3
 Mn71 g2 e4 gnd e4 NMOS_RVT nfin=3
 Mn72 g2 e5 gnd e5 NMOS_RVT nfin=3
+
+****** END QUASAR ******
 
 //Representação de um circuito pós benchmark
 xff1 clk g1 q1 nq1 vcc gnd DFF
