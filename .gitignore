@@ -12,4 +12,6 @@ __pycache__
 utils/__pycache__
 *work/
 circuitos/output.txt
-*.ava*
+*.ava
+invisible/
+*scrap.txt

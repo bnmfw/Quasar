@@ -19,8 +19,23 @@ class LetFinder:
         self.circuito = circuit
         self.runner = SpiceRunner(path_to_folder=path_to_folder)
         self.__report = report
-        self.__upper_bound: float = 400
+        self.__upper_bound: float = 300
         self.__limite_sim: int = 25
+
+    def __fault_inclination(self, node_name: str, vdd: float, let: LET) -> str:
+        """
+        Returns the fault inclination on the given node.
+
+            :param str node_name: Relevant node.
+            :param float vdd: Vdd of the simulation.
+            :param LET let: Let of the simulation.
+            :returns: A string representing the inclination, either 'rise' or 'fall'
+        """
+        with self.runner.SET(let, 0):
+            min_ten, max_ten = self.runner.run_nodes_value(self.circuito.arquivo, [node_name])[node_name]
+        if (max_ten - min_ten) > 0.1 * vdd:
+            raise RuntimeError(f"Max and Min vdd have too much variation max: {max_ten} min: {min_ten}")
+        return "rise" if max_ten < 0.5 * vdd else "fall"
 
     def __verify_let_validity(self, vdd: float, let: LET) -> tuple:
         """
@@ -32,37 +47,27 @@ class LetFinder:
         """
         node_inclination, output_inclination = let.orientacao
         
-        # Checks if voltage levels are correct
-        lower_tolerance: float = 0.1
-        upper_tolerance: float = 0.51
-
-        node_peak, output_peak = self.runner.run_SET(self.circuito.nome, self.circuito.arquivo, let, 0)
-
-        if self.__report:
-            print(f"tension\tnode: {node_peak:.3f}\t output: {output_peak:.3f}")
-        if (output_inclination == "rise" and output_peak > vdd * upper_tolerance) or\
-            (output_inclination == "fall" and output_peak < vdd * lower_tolerance) or\
-            (node_inclination == "rise" and node_peak > vdd * upper_tolerance) or\
-            (node_inclination == "fall" and node_peak < vdd * lower_tolerance):
-            if self.__report: print("Invalid Let - Improper Voltages\n")
-            return (False, 1)
-
         # Checks if the fault is logically masked
         lower_tolerance: float = 0.2
         upper_tolerance: float = 0.8
 
-        node_peak, output_peak = self.runner.run_SET(self.circuito.nome, self.circuito.arquivo, let,self.__upper_bound)
+        node_peak, output_peak = self.runner.run_SET(self.circuito.arquivo, let,self.__upper_bound)
 
         if self.__report:
-            print(f"masking\tnode: {node_peak:.3f}\t output: {output_peak:.3f}")
+            print(f"masking\tnode: {node_peak:.3f} ({int(100*node_peak/vdd)}%)\t output: {output_peak:.3f}")
         if (output_inclination == "rise" and output_peak < vdd * lower_tolerance) or\
             (output_inclination == "fall" and output_peak > vdd * upper_tolerance) or\
             (node_inclination == "rise" and node_peak < vdd * lower_tolerance) or\
             (node_inclination == "fall" and node_peak > vdd * upper_tolerance):
             if self.__report: print("Invalid Let - Masked Fault\n")
-            return (False, 2)
+            return (False, 1)
+        
+        # Greater then 2* vdd, weird stuff
+        if abs(node_peak/vdd) > 5:
+            print("Weird Masking, DIE!\n")
+            return (False, 1)
 
-        return (True, 2)
+        return (True, 1)
 
     def __find_maximal_current(self, let: LET) -> float:
         """
@@ -76,7 +81,7 @@ class LetFinder:
         output_inclination = let.orientacao[1]
 
         for _ in range(10):
-            _, output_peak = self.runner.run_SET(self.circuito.nome, self.circuito.arquivo, let, self.__upper_bound)
+            _, output_peak = self.runner.run_SET(self.circuito.arquivo, let, self.__upper_bound)
 
             # Fault effect on the output was found
             if (output_inclination == "rise" and output_peak > self.circuito.vdd/2) or\
@@ -110,7 +115,7 @@ class LetFinder:
         # Binary search for minimal current
         for _ in range(self.__limite_sim):
             # Encontra a largura minima de pulso pra vencer o atraso
-            largura = self.runner.run_pulse_width(self.circuito.nome, self.circuito.arquivo, let, current)
+            largura = self.runner.run_pulse_width(self.circuito.arquivo, let, current)
             diferenca_largura: float = None if largura is None else largura - self.circuito.atrasoCC
 
             # checks if minimal width is satisfied
@@ -145,8 +150,10 @@ class LetFinder:
         """
         limite_sup = self.__upper_bound
         precision: float = 0.01
-        sim_num: int = 0
         vdd: float = self.circuito.vdd
+        lower_tolerance: float = (1 - precision) * vdd / 2
+        upper_tolerance: float = (1 + precision) * vdd / 2
+        sim_num: int = 0
         inputs: list = self.circuito.entradas
 
         # Sets the input signals
@@ -155,13 +162,21 @@ class LetFinder:
         
         with self.runner.Inputs(vdd, inputs):
             
-            # debugging report
+            # Figures the inclination of the simulation
+            if let.orientacao[0] is None or not safe:
+                let.orientacao[0] = self.__fault_inclination(let.nodo_nome, vdd, let)
+                sim_num += 1
+            if let.orientacao[1] is None or not safe:
+                let.orientacao[1] = self.__fault_inclination(let.saida_nome, vdd, let)
+                sim_num += 1
+              # debugging report
+
             if self.__report:
                 print("Starting a LET finding job\n"+
                       f"node: {let.nodo_nome}\toutput: {let.saida_nome}\n"+
                       f"vdd: {vdd}\tsafe: {safe}\n"+
                       f"inc1: {let.orientacao[0]}\tinc2: {let.orientacao[1]}\n"+
-                      f"input vector: {' '.join([str(input.sinal) for input in inputs])}")
+                      f"input vector: {' '.join([inp.nome+':'+str(inp.sinal) for inp in inputs])}")
 
             # Checks if the Let configuration is valid
             if not safe:
@@ -172,21 +187,23 @@ class LetFinder:
 
             # Binary search variables
             csup: float = limite_sup
-            cinf: float  = 0
             cinf: float = 0 if not delay else self.__find_minimal_current(let)
             current: float = cinf
             sup_flag: bool = False
+            peak_tension: float = None
+            peak_tension_lower: float = None
+            peak_tension_upper: float = None
 
             # Binary Search
             for i in range(self.__limite_sim):
 
-                _, peak_tension = self.runner.run_SET(self.circuito.nome, self.circuito.arquivo, let, current)
+                _, peak_tension = self.runner.run_SET(self.circuito.arquivo, let, current)
                 if self.__report:
                     print(f"{i}\tcurrent: {current:.1f}\tpeak_tension:{peak_tension:.3f}")
                 sim_num += 1
 
                 ##### Precision Satisfied #####
-                if (1 - precision) * vdd / 2 < peak_tension < (1 + precision) * vdd / 2:
+                if lower_tolerance < peak_tension < upper_tolerance:
                     if self.__report: print("Minimal Let Found - Precision Satisfied\n")
                     let.corrente = current
                     let.append(input_signals)
@@ -195,7 +212,7 @@ class LetFinder:
                 ##### Convergence ####
                 elif csup - cinf < 0.5:
                     # To an exact value #
-                    if 1 < current < limite_sup - 1:
+                    if 1 < current < limite_sup-1 and peak_tension_upper - peak_tension_lower < 3 * (upper_tolerance - lower_tolerance):
                         if self.__report: print("Minimal Let Found - Convergence\n")
                         let.corrente = current
                         let.append(input_signals)
@@ -214,15 +231,21 @@ class LetFinder:
 
                 # Next current calculation #
                 elif let.orientacao[1] == "fall":
-                    if peak_tension <= (1 - precision) * vdd / 2:
+                    # More intense current = lower peak tension
+                    if peak_tension <= lower_tolerance:
                         csup = current
-                    elif peak_tension >= (1 + precision) * vdd / 2:
+                        peak_tension_lower = peak_tension
+                    elif peak_tension >= upper_tolerance:
                         cinf = current
+                        peak_tension_upper = peak_tension
                 else:
-                    if peak_tension <= (1 - precision) * vdd / 2:
+                    # More intense current = higher peak tension
+                    if peak_tension <= lower_tolerance:
                         cinf = current
-                    elif peak_tension >= (1 + precision) * vdd / 2:
+                        peak_tension_lower = peak_tension
+                    elif peak_tension >= upper_tolerance:
                         csup = current
+                        peak_tension_upper = peak_tension
 
                 current: float = float((csup + cinf) / 2)
 
@@ -241,22 +264,34 @@ class LetFinder:
             return sim_num, current
 
 if __name__ == "__main__":
+
+    # from .circuito import Circuito
+    # fadder = Circuito("fadder", "debug/test_circuits", 0.7).from_nodes(["a","b","cin"],["cout","sum"])
+    # let = LET(0, 0.7, "i10", "cout", ["fall", "fall"], [0,0,0])
+    # LetFinder(fadder, fadder.path_to_circuits, True).definir_corrente(let, [0,0,0])
+    # exit()
+   
+    # from .circuito import Circuito
+    # nand_test = Circuito("nand", "debug/test_circuits", 0.7).from_json()
+    # SpiceRunner(nand_test.path_to_circuits).default(0.7)
+    # exit()
+
     print("Testing LET finder...")
     from .circuito import Circuito
     nand = Circuito("nand", "debug/test_circuits", 0.7).from_json()
     
     print("\tTesting Finding Current of safe Let...")
     valid_input = [1,1]
-    let = LET(140.625, 0.7, "g1", "g1", ["rise", "rise"], valid_input)
+    let = LET(140.625, 0.7, "g1", "g1", [None, None], valid_input)
     assert LetFinder(nand, "debug/test_circuits", False).definir_corrente(let, valid_input, safe=True)[1] == 140.625
 
-    print("\tTesting Finding Current of invalid unsafe Let...")
-    invalid_let = LET(314.152, 0.7, "g1", "g1", ["fall", "fall"], valid_input)
-    assert LetFinder(nand, "debug/test_circuits", False).definir_corrente(invalid_let, valid_input, safe=False) == (1, None)
+    # print("\tTesting Finding Current of invalid unsafe Let...")
+    # invalid_let = LET(314.152, 0.7, "g1", "g1", [None, None], valid_input)
+    # print(LetFinder(nand, "debug/test_circuits", False).definir_corrente(invalid_let, valid_input, safe=False))
 
     print("\tTesting Finding Current of valid unsafe Let...")
     valid_input = [1,1]
-    unsafe_valid_let = LET(140.625, 0.7, "i1", "g1", ["rise", "rise"], valid_input)
+    unsafe_valid_let = LET(140.625, 0.7, "i1", "g1", [None, None], valid_input)
     assert LetFinder(nand, "debug/test_circuits", False).definir_corrente(unsafe_valid_let, valid_input, safe=False)[1] == 248.4375
     
     print("LET Finder OK")

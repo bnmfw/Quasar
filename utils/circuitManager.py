@@ -34,12 +34,11 @@ class CircuitManager:
             :param int input_num: Number of inputs in circuit.
             :returns: A list of all possible lets.
         """
-        lets = [[node, output, inc1, inc2, signals]\
+        lets = [[node, output, signals]\
                 for node in nodes\
                 for output in outputs\
-                for inc1 in ["rise", "fall"]\
-                for inc2 in ["rise", "fall"]\
                 for signals in combinacoes_possiveis(input_num)]
+        lets = list(filter(lambda e: e[0].nome not in {"a", "b", "cin"}, lets))
         for i, let in enumerate(lets):
             let.insert(0, i)
         return lets
@@ -67,7 +66,7 @@ class CircuitManager:
                     entrada_analisada.sinal = "atraso"
 
                     # Etapa de medicao de atraso
-                    delay: float = HSRunner.run_delay(self.circuito.path, self.circuito.arquivo, entrada_analisada.nome, output.nome, self.circuito.vdd, self.circuito.entradas)
+                    delay: float = HSRunner.run_delay(self.circuito.arquivo, entrada_analisada.nome, output.nome, self.circuito.vdd, self.circuito.entradas)
 
                     sim_num += 1
 
@@ -108,7 +107,7 @@ class CircuitManager:
                     #         erro.write(f"pmos {pmos} nmos {nmos} {let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")  
             # print(f"{sim_num} simulacoes feitas na atualizacao")
 
-    def run_let_job(self, _, node, output, inc1: str, inc2: str, input_signals: list, delay: bool) -> tuple:
+    def run_let_job(self, _, node, output, input_signals: list, delay: bool) -> tuple:
         """
         Runs a single let job a returns the same let with its minimal current. 
         Method meant to be run cuncurrently 
@@ -116,13 +115,11 @@ class CircuitManager:
             :param _: Important for cuncurrency, dont you dare take it out.
             :param Nodo node: Node object where fault originates.
             :param Node output: Output where fault propagates to.
-            :param str inc1: Inclination of fault in node.
-            :param str inc2: Inclination of fault in output.
             :param list input_signals: Signal values of inputs.
             :param bool delay: Whether or not delay will be taken into consideration.
             :returns: A tuple with the minimal let and the input signals run.
         """
-        let_analisado = LET(None, self.circuito.vdd, node.nome, output.nome, [inc1, inc2])
+        let_analisado = LET(None, self.circuito.vdd, node.nome, output.nome, [None, None])
         self.let_manager.definir_corrente(let_analisado, input_signals, delay = delay)
         return (let_analisado, input_signals)
     
@@ -138,7 +135,7 @@ class CircuitManager:
         jobs = self.__possible_LETs(self.circuito.nodos, self.circuito.saidas, len(self.circuito.entradas))
 
         manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuito.path_to_circuits)
-        manager.work((delay,))
+        manager.work((delay,),1)
 
         lets = manager.return_done()
 

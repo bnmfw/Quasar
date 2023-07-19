@@ -2,6 +2,7 @@ from .circuito import Circuito
 from .circuitManager import CircuitManager
 from .mcManager import MCManager
 from .arquivos import JManager, CManager
+from .matematica import InDir
 
 class Backend:
 
@@ -12,6 +13,7 @@ class Backend:
     def set(self, circuito: Circuito, vdd: float):
         self.circuito = circuito
         self.vdd = vdd
+        return self
 
     # def __exit__(self, type, value, traceback):
     #     self.circuito = None
@@ -23,13 +25,13 @@ class Backend:
 
     def determinar_lets(self, delay: bool = False):
         self.check_circuit()
-        CircuitManager(self.circuito).determinar_LETths(delay=delay)
-        JManager.codificar(self.circuito)
+        CircuitManager(self.circuito, True).determinar_LETths(delay=delay)
+        JManager.codificar(self.circuito, self.circuito.path_to_circuits)
     
     def atualizar_lets(self, delay: bool = False):
         self.check_circuit()
         CircuitManager(self.circuito).atualizar_LETths(delay=delay)
-        JManager.codificar(self.circuito)
+        JManager.codificar(self.circuito, self.circuito.path_to_circuits)
 
     def criar_let_csv(self):
         self.check_circuit()
@@ -38,3 +40,11 @@ class Backend:
     def analise_mc(self, n_simu: int, continuar:bool = False, delay:bool = False, progress_report = None):
         self.check_circuit()
         MCManager(self.circuito).analise_monte_carlo_total(n_simu, continuar=continuar, delay=delay, progress_report=progress_report)
+
+if __name__ == "__main__":
+    with InDir("debug"):
+        fadder = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"])
+        fadder.nodos = list(filter(lambda e: e.nome not in {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"}, fadder.nodos))
+        fadder.nodos.sort(key=lambda e: e.nome)
+        backend = Backend().set(fadder, 0.7)
+        backend.determinar_lets()

@@ -79,15 +79,27 @@ class SpiceFileManager():
 
     def measure_tension(self, node: str) -> None:
         """
-        Alters the measure.cir file to track min and max tension on given node
+        Alters the measure.cir file to track min and max tension on given node.
 
-            :param str node: Node with to have min and max tensions measured
+            :param str node: Node with to have min and max tensions measured.
         """
         with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
-            file.write("*File with measures of lowest and highets values in node\n")
+            file.write("*File with measures of lowest and highest values in node\n")
             self.__write_peak_meas(file, "minnod", "min", "V", node, *measure_window)
             self.__write_peak_meas(file, "maxnod", "max", "V", node, *measure_window) 
     
+    def measure_nodes(self, nodes: list) -> None:
+        """
+        Alters the measure.cir file to track the min and max value of given nodes.
+
+            :param list[str] nodes: List of node names to be measured.
+        """
+        with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
+            file.write("*File with measured of lowest and highest values in list of nodes\n")
+            for node in nodes:
+                self.__write_peak_meas(file, f"min{node}", "min", "V", node, *measure_window)
+                self.__write_peak_meas(file, f"max{node}", "max", "V", node, *measure_window)
+
     def set_vdd(self, vdd: float) -> None:
         """
         Alters the vdd.cir file to set the vdd of the simulations
@@ -334,9 +346,19 @@ class SpiceFileManager():
             else:
                 return output["maxout"].value
 
+    def get_nodes_tension(self, nodes: list) -> dict:
+        """
+        Reads the max and min tension of given nodes
+
+            :param list[str] nodes: List of node names to be retrieved.
+            :returns: a dict in the form {node: (min_tension, max_tension)}
+        """
+        output = self.get_output()
+        return {node: (output[f"min{node}"].value, output[f"max{node}"].value) for node in nodes}
+    
     def get_tension(self) -> tuple:
         """
-        Reads the max and minimun tension of a node
+        Reads the max and min tension of a node
 
             :returns: A tuple containing the max and min tensions.
         """
@@ -373,11 +395,10 @@ class SpiceFileManager():
         
         return data
 
-    def get_mc_faults(self, path: str, circuit_name: str, sim_num: int, inclination: str, vdd: float) -> int:
+    def get_mc_faults(self, circuit_name: str, sim_num: int, inclination: str, vdd: float) -> int:
         """
         Returns the number of simulations that resulted in a fault in a MC simulation.
 
-            :param str path: Path from the circuits folder to the own circuit folder.
             :param str circuit_name: Name of the circuit.
             :param int sim_num: Number of Monte Carlo simulations done.
             :param str inclination: Inclination of fault on the output. Must be 'rise' or 'fall'.
@@ -387,7 +408,7 @@ class SpiceFileManager():
 
         faults: int = 0
 
-        data: dict = self.__get_csv_data(f"{self.path_to_folder}{path}{circuit_name}.mt0.csv", ".TITLE")
+        data: dict = self.__get_csv_data(f"{self.path_to_folder}/{circuit_name}/{circuit_name}.mt0.csv", ".TITLE")
 
         inclination_corr = "mincor" if inclination == "fall" else "maxcor"
         inclination_tens = "minout" if inclination == "fall" else "maxout"
@@ -422,17 +443,16 @@ class SpiceFileManager():
 
         return delays[1]
     
-    def get_mc_instances(self, path: str, circ_name: str) -> dict:
+    def get_mc_instances(self, circ_name: str) -> dict:
         """
         Reads the instances in <circuit>.mc0.csv.
 
-            :param str path: Path from the circuits folder to the own circuit folder.
             :param str circ_name: Name of the circuit.
             :returns: Dict containing the instances of variability.
         """
         instances: dict = {}
 
-        data = self.__get_csv_data(f"{self.path_to_folder}/{path}/{circ_name}.mc0.csv", "$ IRV")
+        data = self.__get_csv_data(f"{self.path_to_folder}/{circ_name}/{circ_name}.mc0.csv", "$ IRV")
 
         ps: str = "pmos_rvt:@:phig_var_p:@:IGNC"
         ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
@@ -535,6 +555,16 @@ class SpiceRunner():
         def __exit__(self, type, value, traceback):
             pass
 
+    def __run_spice(self, filename: str, labels: list) -> None:
+        """
+        Runs spice and dumps labels into output.txt.
+
+            :param str filename: Name of the file.
+            :param list[str] labels: labels to be dumped
+        """
+        f = "\|"
+        os.system(f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} | grep \"{f.join(labels)}\" > ../output.txt")
+    
     def test_spice(self) -> None:
         """
         Testes if spice is working. If not will exit as nothing can be done without spice.
@@ -564,11 +594,10 @@ class SpiceRunner():
         """
         return SpiceRunner.file_manager.get_nodes(circ_name)
 
-    def run_delay(self, path: str, filename: str, input_name: str, output_name: str, vdd: float, inputs: list) -> float:
+    def run_delay(self, filename: str, input_name: str, output_name: str, vdd: float, inputs: list) -> float:
         """
         Returns the delay of shortest path from a input to and output.
 
-            :param str path: Path from circuits file to circuit own file.
             :param str filename: Name of the file.
             :param str input_name: Name of the input node from where the delay is propagated.
             :param str output_name: Name of the output node where the delay propagates to.
@@ -581,16 +610,15 @@ class SpiceRunner():
         SpiceRunner.file_manager.measure_delay(input_name, output_name, vdd)
         SpiceRunner.file_manager.set_signals(vdd, {input.nome: input.sinal for input in inputs})
         # Runs the simulation in the respective folder
-        os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename}| grep \"atraso_rr\|atraso_rf\|atraso_fr\|atraso_ff\" > ../output.txt")
+        self.__run_spice(filename, ["atraso_rr", "atraso_rf", "atraso_fr", "atraso_ff"])
         # Gets and returns the results
         delay = SpiceRunner.file_manager.get_delay()
         return delay
 
-    def run_SET(self, path: str, filename: str, let: LET, current: float = None, path_to_root = "../../../..") -> tuple:
+    def run_SET(self, filename: str, let: LET, current: float = None, path_to_root = "../../../..") -> tuple:
         """
         Returns the peak voltage output for a given let.
 
-            :param str path: Path from circuits file to circuit own file.
             :param str filename: Name of the file.
             :param LET let: let simulated.
             :param float current: current of the fault. If left as None let.current will be used.
@@ -601,34 +629,21 @@ class SpiceRunner():
         with self.SET(let, current):
             # Runs the simulation
             try:
-                os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} | grep \"minout\|maxout\|minnod\|maxnod\" > ../output.txt")
+                self.__run_spice(filename, ["minout", "maxout", "minnod", "maxnod"])
                 # Gets the peak tensions in the node and output
                 peak_node = SpiceRunner.file_manager.get_peak_tension(let.orientacao[0], True)
                 peak_output = SpiceRunner.file_manager.get_peak_tension(let.orientacao[1])
             except Exception as error:
                 print(f"*** ERROR IN SET SIMULATION! FULL REPORT GENERATED AT DEBUG/CRASH_REPORT/{os.getpid()}_REPORT.TXT ***")
                 print(f"*** ERROR: {error}")
-                os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} > {'/'.join(['..']*(self.path_to_folder.count('/')+path.count('/')))}/debug/crash_report/{os.getpid()}_report.txt")
+                os.system(f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} > ~/github/debug/crash_report/{os.getpid()}_report.txt")
                 exit()
         return (peak_node, peak_output)
     
-    def run_tensions(self, path: str, filename: str, node_name: str) -> float:
-        """
-            Returns the max and min tensions of a node.
-            :param str path: Path from circuits file to circuit own file.
-            :param str filename: Name of the file.
-            :param str node_name: Name of the node from which voltage will be measures
-            :returns: A tuple containing the max and min tensions.
-        """
-        SpiceRunner.file_manager.measure_tension(node_name)
-        os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} | grep \"minnod\|maxnod\" > ../output.txt")
-        return SpiceRunner.file_manager.get_tension() 
-
-    def run_pulse_width(self, path: str, filename: str, let: LET, current: float = None) -> float:
+    def run_pulse_width(self, filename: str, let: LET, current: float = None) -> float:
         """
         Returns the pulse width of the propagated fault.
 
-            :param str path: Path from circuits file to circuit own file.
             :param str filename: Name of the file.
             :param LET let: Let to be simulated.
             :param float current: current to be simulated. If None then let.current will be used.
@@ -636,7 +651,7 @@ class SpiceRunner():
         """
         with self.SET(let, current):
             SpiceRunner.file_manager.measure_pulse_width(let)
-            os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} | grep \"larg\" > ../output.txt")
+            self.__run_spice(filename, ["larg"])
             output = SpiceRunner.file_manager.get_output()
         
         try:
@@ -647,11 +662,23 @@ class SpiceRunner():
         except KeyError:
             return None
 
-    def run_simple_MC(self, path: str, circuit_name: str, name_name: str, output_name: str, sim_num: int, output_incl: str, vdd: float) -> int:
+    def run_nodes_value(self, filename: str, nodes: list) -> dict:
+        """
+        Runs the standard circuit and retrieves all the nodes min and max tensions
+
+            :param str filename: Name of the file.
+            :param float vdd: Vdd of the simulation.
+            :param list[str] nodes: A list of node names to be measured.
+        """
+        measure_labels = [f"max{node}" for node in nodes] + [f"min{node}" for node in nodes]
+        self.file_manager.measure_nodes(nodes)
+        self.__run_spice(filename, measure_labels)
+        return self.file_manager.get_nodes_tension(nodes)
+
+    def run_simple_MC(self, circuit_name: str, name_name: str, output_name: str, sim_num: int, output_incl: str, vdd: float) -> int:
         """
         Returns the number of MC simulation that faulted.
 
-            :param str path: Path from circuits file to circuit own file.
             :param str circuit_name: Name of the circuit.
             :param str name_name: Name of the node.
             :param str output_name: Name of the output.
@@ -662,32 +689,38 @@ class SpiceRunner():
         """
         SpiceRunner.file_manager.measure_pulse(name_name, output_name)
         with self.Monte_Carlo(sim_num):
-            os.system(f"cd {self.path_to_folder}/{path} ; hspice {circuit_name}.cir| grep \"minout\|maxout\" > ../output.txt")
-        return SpiceRunner.file_manager.get_mc_faults(path, circuit_name, sim_num, output_incl, vdd)
+            self.__run_spice(f"{self.path_to_folder}/{circuit_name}", f"{circuit_name}.cir", ["minout", "maxout"])
+        return SpiceRunner.file_manager.get_mc_faults(circuit_name, sim_num, output_incl, vdd)
 
-    def run_MC_var(self, path: str, filename: str, circuit_name: str, sim_num: int) -> dict:
+    def run_MC_var(self, filename: str, circuit_name: str, sim_num: int) -> dict:
         """
         Returns the MC variability points.
 
-            :param str path: Path from circuits file to circuit own file.
             :param str filename: Name of the file
             :param str circuit_name: Name of the circuit.
             :param int sim_num: Number of simulations.
             :return: MC variability instances.
         """
         with self.Monte_Carlo(sim_num):
-            os.system(f"cd {self.path_to_folder}/{path} ; hspice {filename} > ../output.txt")
-        return SpiceRunner.file_manager.get_mc_instances(path, circuit_name)
+            os.system(f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} > ../output.txt")
+        return SpiceRunner.file_manager.get_mc_instances(circuit_name)
 
 HSRunner = SpiceRunner()
 
 # Runs a bunch of routine checks to see if the Spice Interface is running accordingly
 if __name__ == "__main__":
+
     print("Testing Spice Interface...")
     ptf = "debug/test_circuits"
     from .circuito import Circuito
     TestRunner = SpiceRunner(path_to_folder=ptf)
     TestManager = SpiceFileManager(path_to_folder=ptf)
+
+    print("\tTesting node tensions...")
+    nand_test = Circuito("nand", ptf, 0.7).from_json()
+    for vi, entrada in zip([0,0], nand_test.entradas): entrada.sinal = vi
+    with TestRunner.Vdd(0.7), TestRunner.Inputs(0.7, nand_test.entradas):
+        assert TestRunner.run_nodes_value(nand_test.arquivo, ["i1", "g1"])["i1"][0] - 0.0275015 < 10e-3, "TENSIONS RUN FAILED"
 
     print("\tTesting circuit parsing...")
     nor_test = Circuito("nor", ptf, 0.7).from_nodes(["a","b"],["g1"])
@@ -700,7 +733,7 @@ if __name__ == "__main__":
     expected_let_value = 0.36585829999999997
     for vi, entrada in zip(valid_input, nand_test.entradas): entrada.sinal = vi
     with TestRunner.Vdd(0.7), TestRunner.Inputs(0.7, nand_test.entradas), TestRunner.MC_Instance(4.7443, 4.3136):
-        peak_node, peak_output = TestRunner.run_SET(nand_test.nome, nand_test.arquivo, valid_let, path_to_root="debug/..")
+        peak_node, peak_output = TestRunner.run_SET(nand_test.arquivo, valid_let, path_to_root="debug/..")
         assert abs(peak_node-expected_let_value) <= 10e-6, "SET SIMULATION FAILED"
 
     print("\tTesting delay simulation with known delay value...")
@@ -708,10 +741,10 @@ if __name__ == "__main__":
     expected_delay_value = 9.1557e-12
     for vi, entrada in zip(delay_input, nand_test.entradas): entrada.sinal = vi
     with TestRunner.Vdd(0.7), TestRunner.Inputs(0.7, nand_test.entradas):
-        delay = TestRunner.run_delay(nand_test.nome, nand_test.arquivo, "b", "g1", 0.7, nand_test.entradas)
+        delay = TestRunner.run_delay(nand_test.arquivo, "b", "g1", 0.7, nand_test.entradas)
         assert abs(delay - expected_delay_value) <= 10e-14, "DELAY SIMULATION FAILED"
 
     print("\tTesting MC points generation...")
-    assert len(TestRunner.run_MC_var(nand_test.nome, nand_test.arquivo, nand_test.nome, 10)) == 10, "MC POINTS GENERATION FAILED"
+    assert len(TestRunner.run_MC_var(nand_test.arquivo, nand_test.nome, 10)) == 10, "MC POINTS GENERATION FAILED"
     
     print("Spice Interface OK.")

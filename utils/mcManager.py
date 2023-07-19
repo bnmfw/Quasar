@@ -36,7 +36,7 @@ class MCManager:
             :param int n_analysis: Number of total simulations points.
             :returns: A list of items on the format (id, [pmos, nmos])
         """
-        var: dict = SpiceRunner(self.circuito.path_to_circuits).run_MC_var(self.circuito.nome, self.circuito.arquivo, self.circuito.nome, n_analysis)
+        var: dict = SpiceRunner(self.circuito.path_to_circuits).run_MC_var(self.circuito.arquivo, self.circuito.nome, n_analysis)
 
         for i in var:
             var[i][0] = 4.8108 + var[i][0] * (0.05 * 4.8108)/3

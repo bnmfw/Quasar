@@ -1,6 +1,1951 @@
-Initializing Quasar...
-Testing Circuit Manager...
-	Testing determining minimal LETs...
-*** ERROR IN SET SIMULATION! FULL REPORT GENERATED AT DEBUG/CRASH_REPORT/272833_REPORT.TXT ***
-*** ERROR: 'maxnod'
-3 seconds of execution
+Starting a LET finding job
+node: cout	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -2.277 (-325%)	 output: -2.277
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.231
+2	current: 75.0	peak_tension:0.074
+3	current: 37.5	peak_tension:0.208
+4	current: 18.8	peak_tension:0.285
+5	current: 9.4	peak_tension:0.341
+6	current: 4.7	peak_tension:0.381
+7	current: 7.0	peak_tension:0.355
+8	current: 8.2	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: cout	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.262 (-323%)	 output: -2.262
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.231
+2	current: 75.0	peak_tension:0.074
+3	current: 37.5	peak_tension:0.208
+4	current: 18.8	peak_tension:0.285
+5	current: 9.4	peak_tension:0.341
+6	current: 4.7	peak_tension:0.381
+7	current: 7.0	peak_tension:0.355
+8	current: 8.2	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: cout	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.262 (-323%)	 output: -2.262
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.231
+2	current: 75.0	peak_tension:0.074
+3	current: 37.5	peak_tension:0.208
+4	current: 18.8	peak_tension:0.285
+5	current: 9.4	peak_tension:0.341
+6	current: 4.7	peak_tension:0.381
+7	current: 7.0	peak_tension:0.355
+8	current: 8.2	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: cout	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.260 (-322%)	 output: -2.260
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.452
+2	current: 75.0	peak_tension:-0.115
+3	current: 37.5	peak_tension:0.064
+4	current: 18.8	peak_tension:0.175
+5	current: 9.4	peak_tension:0.247
+6	current: 4.7	peak_tension:0.318
+7	current: 2.3	peak_tension:0.375
+8	current: 3.5	peak_tension:0.342
+9	current: 2.9	peak_tension:0.353
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: cout	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.262 (-323%)	 output: -2.262
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.232
+2	current: 75.0	peak_tension:0.074
+3	current: 37.5	peak_tension:0.208
+4	current: 18.8	peak_tension:0.285
+5	current: 9.4	peak_tension:0.341
+6	current: 4.7	peak_tension:0.381
+7	current: 7.0	peak_tension:0.355
+8	current: 8.2	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: cout	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.264 (-323%)	 output: -2.264
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.434
+2	current: 75.0	peak_tension:-0.054
+3	current: 37.5	peak_tension:0.117
+4	current: 18.8	peak_tension:0.215
+5	current: 9.4	peak_tension:0.280
+6	current: 4.7	peak_tension:0.341
+7	current: 2.3	peak_tension:0.393
+8	current: 3.5	peak_tension:0.355
+9	current: 4.1	peak_tension:0.346
+10	current: 3.8	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: cout	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.257 (-322%)	 output: -2.257
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.423
+2	current: 75.0	peak_tension:-0.039
+3	current: 37.5	peak_tension:0.129
+4	current: 18.8	peak_tension:0.223
+5	current: 9.4	peak_tension:0.290
+6	current: 4.7	peak_tension:0.345
+7	current: 2.3	peak_tension:0.400
+8	current: 3.5	peak_tension:0.361
+9	current: 4.1	peak_tension:0.351
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: cout	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.263 (-323%)	 output: -2.263
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.445
+2	current: 75.0	peak_tension:-0.112
+3	current: 37.5	peak_tension:0.072
+4	current: 18.8	peak_tension:0.185
+5	current: 9.4	peak_tension:0.257
+6	current: 4.7	peak_tension:0.330
+7	current: 2.3	peak_tension:0.384
+8	current: 3.5	peak_tension:0.347
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: cout	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -2.277 (-325%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: cout	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.262 (-323%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: cout	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.262 (-323%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: cout	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.260 (-322%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: cout	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.262 (-323%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: cout	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.264 (-323%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: cout	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.257 (-322%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: cout	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.263 (-323%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: 4.734 (676%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -1920800000000000000.000 (-274400000000000032768%)	 output: -5612300000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i10	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: 4.741 (677%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.794 (-541%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 4.734 (676%)	 output: 0.686
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -1593200000000000.000 (-227600000000000000%)	 output: -995159200000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i10	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -145540000000000000000.000 (-20791428571428573675520%)	 output: -57192000000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i10	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -15.199 (-2171%)	 output: -30396000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: 4.734 (676%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -1920800000000000000.000 (-274400000000000032768%)	 output: -432760000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: 4.741 (677%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.794 (-541%)	 output: 0.676
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 4.734 (676%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -1593200000000000.000 (-227600000000000000%)	 output: -6611400000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -145540000000000000000.000 (-20791428571428573675520%)	 output: -30443000000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -15.199 (-2171%)	 output: -6.045
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i11	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: 4.622 (660%)	 output: 0.691
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 4.623 (660%)	 output: 0.690
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: 4.611 (658%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -7.071 (-1010%)	 output: 0.632
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -86850000000000000.000 (-12407142857142857728%)	 output: -106620000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -13.233 (-1890%)	 output: -5.530
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -84498000000000000.000 (-12071142857142857728%)	 output: -1003200000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -48152900000000.000 (-6878985714285715%)	 output: 0.008
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: 4.622 (660%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 4.623 (660%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: 4.611 (658%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -7.071 (-1010%)	 output: -15297999999999999475712.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -86850000000000000.000 (-12407142857142857728%)	 output: -166390000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -13.233 (-1890%)	 output: -9.800
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -84498000000000000.000 (-12071142857142857728%)	 output: -27272000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -48152900000000.000 (-6878985714285715%)	 output: -171065200000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: 4.621 (660%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 4.622 (660%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.997 (-428%)	 output: 0.672
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.811 (-544%)	 output: 0.678
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -3.834 (-547%)	 output: 0.679
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -3.832 (-547%)	 output: 0.683
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -3.872 (-553%)	 output: 0.681
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -3.860 (-551%)	 output: 0.682
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: 4.621 (660%)	 output: 0.691
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 4.622 (660%)	 output: 0.691
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.997 (-428%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.811 (-544%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -3.834 (-547%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -3.832 (-547%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -3.872 (-553%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -3.860 (-551%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: 4.323 (617%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -0.723 (-103%)	 output: 0.676
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.613 (-87%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -0.668 (-95%)	 output: 0.681
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -0.612 (-87%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -0.635 (-90%)	 output: 0.680
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -0.240 (-34%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -0.108 (-15%)	 output: 0.683
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: 4.323 (617%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -0.723 (-103%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.613 (-87%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -0.668 (-95%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -0.612 (-87%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -0.635 (-90%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -0.240 (-34%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -0.108 (-15%)	 output: 0.690
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -0.633 (-90%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -0.543 (-77%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.540 (-77%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -0.237 (-33%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -0.537 (-76%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -0.232 (-33%)	 output: 0.690
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -0.238 (-34%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.016 (2%)	 output: 0.690
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -0.633 (-90%)	 output: 0.672
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -0.543 (-77%)	 output: 0.681
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.540 (-77%)	 output: 0.679
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -0.237 (-33%)	 output: 0.685
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -0.537 (-76%)	 output: 0.680
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -0.232 (-33%)	 output: 0.683
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -0.238 (-34%)	 output: 0.683
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.016 (2%)	 output: 0.686
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -3.128 (-446%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -3.129 (-446%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -3.057 (-436%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.058 (-436%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -3.084 (-440%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -6.246 (-892%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -3.835 (-547%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.979 (-425%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -3.128 (-446%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -3.129 (-446%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -3.057 (-436%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.058 (-436%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -3.084 (-440%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -6.246 (-892%)	 output: 0.690
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -3.835 (-547%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.979 (-425%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -3.356 (-479%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -3.384 (-483%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -3.391 (-484%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.755 (-536%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -4.000 (-571%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -316200000000000000000.000 (-45171428571428574724096%)	 output: -411640000000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: p11_p12	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -3.468 (-495%)	 output: 0.691
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -3.671 (-524%)	 output: 0.690
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -3.356 (-479%)	 output: 0.685
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -3.384 (-483%)	 output: 0.686
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -3.391 (-484%)	 output: 0.684
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.755 (-536%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -4.000 (-571%)	 output: 0.684
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -316200000000000000000.000 (-45171428571428574724096%)	 output: -30886000000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -3.468 (-495%)	 output: 0.683
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -3.671 (-524%)	 output: 0.685
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -3.067 (-438%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -3.127 (-446%)	 output: 0.686
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.974 (-424%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.056 (-436%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -3.014 (-430%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -3.083 (-440%)	 output: 0.684
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.916 (-416%)	 output: 0.690
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -3.677 (-525%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -3.067 (-438%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -3.127 (-446%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.974 (-424%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -3.056 (-436%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -3.014 (-430%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -3.083 (-440%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.916 (-416%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -3.677 (-525%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -0.858 (-122%)	 output: 0.678
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.208 (-315%)	 output: 0.676
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.973 (-139%)	 output: 0.675
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.340 (-334%)	 output: 0.640
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -0.836 (-119%)	 output: 0.672
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.337 (-333%)	 output: 0.642
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -7.404 (-1057%)	 output: -4.840
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -43459600000000.000 (-6208514285714286%)	 output: -38137300000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -0.858 (-122%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.208 (-315%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.973 (-139%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.340 (-334%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -0.836 (-119%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.337 (-333%)	 output: 0.691
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -7.404 (-1057%)	 output: -434170000000000000.000
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -43459600000000.000 (-6208514285714286%)	 output: -11.388
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -2.075 (-296%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.334 (-333%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.797 (-399%)	 output: 0.686
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.659 (-379%)	 output: 0.691
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.788 (-398%)	 output: 0.686
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.655 (-379%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.817 (-402%)	 output: 0.684
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.871 (-410%)	 output: 0.690
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -2.075 (-296%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.334 (-333%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.797 (-399%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.659 (-379%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.788 (-398%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.655 (-379%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.817 (-402%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.871 (-410%)	 output: 0.691
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -0.475 (-67%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.281 (-325%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.281 (-325%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.622 (-374%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.281 (-325%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.623 (-374%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.622 (-374%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.694 (-384%)	 output: 0.686
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -0.475 (-67%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.281 (-325%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.281 (-325%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.622 (-374%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.281 (-325%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.623 (-374%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.622 (-374%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.694 (-384%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -2.334 (-333%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.354 (-336%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.350 (-335%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.404 (-343%)	 output: 0.687
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.357 (-336%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.354 (-336%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.345 (-335%)	 output: 0.688
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.353 (-336%)	 output: 0.685
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -2.334 (-333%)	 output: 0.643
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.354 (-336%)	 output: 0.634
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.350 (-335%)	 output: 0.635
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.404 (-343%)	 output: 0.635
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.357 (-336%)	 output: 0.634
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.354 (-336%)	 output: 0.635
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.345 (-335%)	 output: 0.638
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.353 (-336%)	 output: 0.633
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: sum	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -2.263 (-323%)	 output: 0.695
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: sum	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.260 (-322%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: sum	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.258 (-322%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: sum	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.251 (-321%)	 output: 0.691
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: sum	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.263 (-323%)	 output: 0.694
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: sum	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.255 (-322%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: sum	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.255 (-322%)	 output: 0.693
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: sum	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.258 (-322%)	 output: 0.692
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: sum	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:0
+masking	node: -2.263 (-323%)	 output: -2.263
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.232
+2	current: 75.0	peak_tension:0.073
+3	current: 37.5	peak_tension:0.208
+4	current: 18.8	peak_tension:0.284
+5	current: 9.4	peak_tension:0.341
+6	current: 4.7	peak_tension:0.381
+7	current: 7.0	peak_tension:0.354
+8	current: 8.2	peak_tension:0.347
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: sum	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -2.260 (-322%)	 output: -2.260
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.465
+2	current: 75.0	peak_tension:-0.139
+3	current: 37.5	peak_tension:0.013
+4	current: 18.8	peak_tension:0.129
+5	current: 9.4	peak_tension:0.204
+6	current: 4.7	peak_tension:0.278
+7	current: 2.3	peak_tension:0.356
+8	current: 3.5	peak_tension:0.322
+9	current: 2.9	peak_tension:0.340
+10	current: 2.6	peak_tension:0.346
+11	current: 2.5	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: sum	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -2.258 (-322%)	 output: -2.258
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.452
+2	current: 75.0	peak_tension:-0.087
+3	current: 37.5	peak_tension:0.092
+4	current: 18.8	peak_tension:0.195
+5	current: 9.4	peak_tension:0.264
+6	current: 4.7	peak_tension:0.331
+7	current: 2.3	peak_tension:0.383
+8	current: 3.5	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: sum	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -2.251 (-321%)	 output: -2.251
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.488
+2	current: 75.0	peak_tension:-0.155
+3	current: 37.5	peak_tension:0.004
+4	current: 18.8	peak_tension:0.124
+5	current: 9.4	peak_tension:0.204
+6	current: 4.7	peak_tension:0.279
+7	current: 2.3	peak_tension:0.357
+8	current: 3.5	peak_tension:0.323
+9	current: 2.9	peak_tension:0.341
+10	current: 2.6	peak_tension:0.347
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: sum	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.263 (-323%)	 output: -2.263
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.415
+2	current: 75.0	peak_tension:-7.252
+3	current: 37.5	peak_tension:0.126
+4	current: 18.8	peak_tension:0.220
+5	current: 9.4	peak_tension:0.285
+6	current: 4.7	peak_tension:0.342
+7	current: 2.3	peak_tension:0.394
+8	current: 3.5	peak_tension:0.357
+9	current: 4.1	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: sum	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -2.255 (-322%)	 output: -2.255
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.489
+2	current: 75.0	peak_tension:-0.152
+3	current: 37.5	peak_tension:0.008
+4	current: 18.8	peak_tension:0.128
+5	current: 9.4	peak_tension:0.206
+6	current: 4.7	peak_tension:0.281
+7	current: 2.3	peak_tension:0.358
+8	current: 3.5	peak_tension:0.324
+9	current: 2.9	peak_tension:0.341
+10	current: 2.6	peak_tension:0.347
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: sum	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.255 (-322%)	 output: -2.255
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.469
+2	current: 75.0	peak_tension:-0.084
+3	current: 37.5	peak_tension:0.096
+4	current: 18.8	peak_tension:0.200
+5	current: 9.4	peak_tension:0.268
+6	current: 4.7	peak_tension:0.335
+7	current: 2.3	peak_tension:0.387
+8	current: 3.5	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: sum	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.258 (-322%)	 output: -2.258
+0	current: 0.0	peak_tension:0.695
+1	current: 150.0	peak_tension:-0.470
+2	current: 75.0	peak_tension:-0.152
+3	current: 37.5	peak_tension:0.011
+4	current: 18.8	peak_tension:0.134
+5	current: 9.4	peak_tension:0.213
+6	current: 4.7	peak_tension:0.292
+7	current: 2.3	peak_tension:0.363
+8	current: 3.5	peak_tension:0.332
+9	current: 2.9	peak_tension:0.344
+10	current: 2.6	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Carregamento do Json realizado com sucesso
