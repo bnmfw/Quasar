@@ -143,7 +143,7 @@ class PSGUI:
             self.progresso.update(current_count=int(progress*self.progress_max))
 
         # Carrega os nodos disponiveis
-        nodos = [nodo for nodo in HSRunner.get_nodes(circuito_nome)]
+        nodos = [nodo for nodo in HSRunner.get_nodes(circuito_nome)[0]]
         nodos.sort()
         inputs["nodos"] = nodos
         nodo_dict = {index: nodo for index, nodo in enumerate([None]+nodos)}

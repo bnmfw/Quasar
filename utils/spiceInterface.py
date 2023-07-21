@@ -7,6 +7,7 @@ Both classes in this file are stateless, therefore the classes are instantiated 
 
 from .matematica import spice_to_float
 from .components import LET
+from .graph import Graph
 from dataclasses import dataclass
 import os
 from time import sleep
@@ -107,12 +108,22 @@ class SpiceFileManager():
             :param float vdd: defines the vdd of the simulation
         """
         with open(f"{self.path_to_folder}/include/vdd.cir", "w") as file:
-            file.write("*Arquivo com a tensao usada por todos os circuitos\n")
+            file.write("*File with the vdd tension used by all circuits\n")
             file.write(f"Vvdd vdd gnd {vdd}\n")
             file.write(f"Vvcc vcc gnd {vdd}\n")
             file.write(f"Vclk clk gnd PULSE(0 {vdd} 1n 0.01n 0.01n 1n 2n)")
 
-    def set_signals(self, vdd: float, inputs: dict) -> None:
+    def set_vss(self, vss: float) -> None:
+        """
+        Alters the vss.cir file to set the vss of the simulations
+
+            :param float vss: defines the vss of the simulation
+        """
+        with open(f"{self.path_to_folder}/include/vss.cir", "w") as file:
+            file.write("*File with the vss tension used by all circuits\n")
+            file.write(f"Vvss vss gnd {vss}\n")
+
+    def set_signals(self, inputs: dict, vdd: float, vss: float = 0) -> None:
         """
         Alters the fontes.cir file defining the input values of the simulation.
         
@@ -133,9 +144,15 @@ class SpiceFileManager():
                 if level == 1:
                     file.write(f"{vdd}\n")
                 elif level == 0:
-                    file.write("0.0\n")
+                    if vss:
+                        file.write(f"{vss}\n")
+                    else:
+                        file.write(f"0.0\n")
                 elif level == "atraso":
-                    file.write(f"PWL(0n 0 1n 0 1.01n {vdd} 3n {vdd} 3.01n 0)\n")
+                    if vss:
+                        file.write(f"PWL(0n {vss} 1n {vss} 1.01n {vdd} 3n {vdd} 3.01n {vss})\n")
+                    else:
+                        file.write(f"PWL(0n 0 1n 0 1.01n {vdd} 3n {vdd} 3.01n 0)\n")
                 else:
                     raise ValueError("Invalid signal type recieved: ", level)
 
@@ -279,16 +296,19 @@ class SpiceFileManager():
             return []
         return {measure.label: measure}
 
-    def get_nodes(self, circuit_name: str) -> set:
+    def get_nodes(self, circuit_name: str, ignore: list) -> set:
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
             :param str curcuit_name: name of the circuit to be parsed.
-            :returns: a set containing the label of all nodes.
+            :returns: a set containing the label of all nodes and a Graph object.
+            :param list[str] ignore: Nodes that should be ignored.
         """
         nodes = {"vdd", "gnd"}
+        ignore = {"vcc", "vdd", "gnd", "vss"} | set(ignore)
         critical_region = False
         with open(f"{self.path_to_folder}/{circuit_name}/{circuit_name}.cir", "r") as file:
+            transistor_list: list = []
             for line in file:
 
                 # Identifies the quasar region of the circuit file
@@ -305,9 +325,10 @@ class SpiceFileManager():
                 if "M" in line[0]:
                     # Im not sure if those are actually source and drain, but doesent matter to identifing them
                     _, source, gate, drain, *_ = line.split()
+                    transistor_list.append([source, gate, drain])
                     for node in [source, gate, drain]:
                         nodes.add(node)
-        return {node for node in nodes if node not in {"vcc", "vdd", "gnd"} and node[0] != "t"}
+        return {node for node in nodes if node not in ignore and node[0] != "t"}, Graph(transistor_list, ignore)
 
     def get_output(self) -> dict:
         """
@@ -526,9 +547,22 @@ class SpiceRunner():
         def __exit__(self, type, value, traceback):
             SpiceRunner.file_manager.set_pulse(self.let, 0)
 
+    class Vss():
+        """
+        Context Manager that sets the vss of the simulation.
+        """
+        def __init__ (self, vss: float):
+            self.vss = vss
+
+        def __enter__(self):
+            SpiceRunner.file_manager.set_vss(self.vss)
+
+        def __exit__(self, type, value, traceback):
+            pass
+    
     class Vdd():
         """
-        Context Mangers that sets the vdd of the simulation.
+        Context Manager that sets the vdd of the simulation.
         """
         def __init__ (self, vdd: float):
             self.vdd = vdd
@@ -543,14 +577,15 @@ class SpiceRunner():
         """
         Context Mangers that sets the input signals of the simulation.
         """
-        def __init__ (self, vdd: float, entradas: list):
+        def __init__ (self, entradas: list, vdd: float, vss: float = 0):
             self.vdd = vdd
+            self.vss = vss
             self.entradas = {}
             for entrada in entradas:
                 self.entradas[entrada.nome] = entrada.sinal
 
         def __enter__(self):
-            SpiceRunner.file_manager.set_signals(self.vdd, self.entradas)
+            SpiceRunner.file_manager.set_signals(self.entradas, self.vdd, self.vss)
 
         def __exit__(self, type, value, traceback):
             pass
@@ -581,18 +616,20 @@ class SpiceRunner():
 
             :param float vdd: Standard vdd of the simulation.
         """
-        SpiceRunner.file_manager.set_vdd(vdd)
-        SpiceRunner.file_manager.set_pulse(LET(0, vdd, "none", "none", [None, None]))
-        SpiceRunner.file_manager.set_monte_carlo(0)
+        self.file_manager.set_vdd(vdd)
+        self.file_manager.set_vss(0)
+        self.file_manager.set_pulse(LET(0, vdd, "none", "none", [None, None]))
+        self.file_manager.set_monte_carlo(0)
 
-    def get_nodes(self, circ_name: str) -> set:
+    def get_nodes(self, circ_name: str, ignore: list) -> set:
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
             :param str curcuit_name: name of the circuit to be parsed.
             :returns: a set containing the label of all nodes.
+            :param list[str] ignore: Nodes that should be ignored.
         """
-        return SpiceRunner.file_manager.get_nodes(circ_name)
+        return SpiceRunner.file_manager.get_nodes(circ_name, ignore)
 
     def run_delay(self, filename: str, input_name: str, output_name: str, vdd: float, inputs: list) -> float:
         """
@@ -669,6 +706,7 @@ class SpiceRunner():
             :param str filename: Name of the file.
             :param float vdd: Vdd of the simulation.
             :param list[str] nodes: A list of node names to be measured.
+            :returns: a dict in the form {node: (min_tension, max_tension)}
         """
         measure_labels = [f"max{node}" for node in nodes] + [f"min{node}" for node in nodes]
         self.file_manager.measure_nodes(nodes)
@@ -719,7 +757,7 @@ if __name__ == "__main__":
     print("\tTesting node tensions...")
     nand_test = Circuito("nand", ptf, 0.7).from_json()
     for vi, entrada in zip([0,0], nand_test.entradas): entrada.sinal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(0.7, nand_test.entradas):
+    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.entradas, 0.7):
         assert TestRunner.run_nodes_value(nand_test.arquivo, ["i1", "g1"])["i1"][0] - 0.0275015 < 10e-3, "TENSIONS RUN FAILED"
 
     print("\tTesting circuit parsing...")
@@ -732,7 +770,7 @@ if __name__ == "__main__":
     valid_let = LET(156.25, 0.7, "g1", "g1", ["fall", "fall"], valid_input)
     expected_let_value = 0.36585829999999997
     for vi, entrada in zip(valid_input, nand_test.entradas): entrada.sinal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(0.7, nand_test.entradas), TestRunner.MC_Instance(4.7443, 4.3136):
+    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.entradas, 0.7), TestRunner.MC_Instance(4.7443, 4.3136):
         peak_node, peak_output = TestRunner.run_SET(nand_test.arquivo, valid_let, path_to_root="debug/..")
         assert abs(peak_node-expected_let_value) <= 10e-6, "SET SIMULATION FAILED"
 
@@ -740,7 +778,7 @@ if __name__ == "__main__":
     delay_input = [1, "atraso"]
     expected_delay_value = 9.1557e-12
     for vi, entrada in zip(delay_input, nand_test.entradas): entrada.sinal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(0.7, nand_test.entradas):
+    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.entradas, 0.7):
         delay = TestRunner.run_delay(nand_test.arquivo, "b", "g1", 0.7, nand_test.entradas)
         assert abs(delay - expected_delay_value) <= 10e-14, "DELAY SIMULATION FAILED"
 

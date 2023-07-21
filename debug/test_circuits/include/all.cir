@@ -5,3 +5,4 @@
 .include monte_carlo.cir
 .include SETs.cir
 .include vdd.cir
+.include vss.cir

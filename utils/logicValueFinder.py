@@ -15,17 +15,43 @@ class logicValueFinder:
             :param str path_to_folder: relative path into the folder that contain spice files.
             :param bool report: Whether or not the run will report to terminal with prints.
         """
-        self.circuito = circuit
+        self.circuit = circuit
         self.runner = SpiceRunner(path_to_folder=path_to_folder)
         self.__report = report
     
-    def determine_logic_values(self, vdd: float, nodes: list):
+    def determine_logic_values(self, vdd: float, nodes: list, input_signals: list):
         """
         Determines the logical values of all given nodes.
 
             :param float vdd: Vdd of the simulation.
             :param list[str] nodes: List of node names.
+            :param list[int] input_signals: Logical value of inputs.
         """
+
+        tolerance = 0.05 * vdd
+        sim_num = 0
+        logical_value_dict = {node: None for node in nodes}
+        
+        # Sets the inputs
+        for inputi, signal in zip(self.circuit.entradas, input_signals):
+            inputi.signal = signal
+
+        # Runs the tensions of node
+        with self.runner.Inputs(self.circuit.entradas, vdd):
+            tension_value_dict = self.runner.run_nodes_value(self.circuit.arquivo, nodes)
+            sim_num += 1 
+
+        # Determines the nodes in high logical value
+        for node, (min_ten, max_ten) in tension_value_dict.items():
+            if abs(vdd-min_ten) < tolerance and abs(vdd-max_ten) < tolerance:
+                if self.__report:
+                    print(f"{node} in 1 (high) logical value")
+                logical_value_dict[node] = 1
+        
+        # All nodes in high logical value
+        if None not in logical_value_dict.values():
+            return logical_value_dict
+
 
         """
         Ideia:

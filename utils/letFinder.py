@@ -160,7 +160,7 @@ class LetFinder:
         for i in range(len(inputs)):
             inputs[i].sinal = input_signals[i]
         
-        with self.runner.Inputs(vdd, inputs):
+        with self.runner.Inputs(inputs, vdd):
             
             # Figures the inclination of the simulation
             if let.orientacao[0] is None or not safe:
@@ -223,14 +223,14 @@ class LetFinder:
                         let.corrente = None
                         return sim_num, current
                     # To the upper bound #
-                    else:
+                    elif current >= limite_sup:
                         if self.__report: print("Upper Divergence - Upper Bound Increased\n")
                         csup += 100
                         limite_sup += 100
                         sup_flag = True
 
                 # Next current calculation #
-                elif let.orientacao[1] == "fall":
+                if let.orientacao[1] == "fall":
                     # More intense current = lower peak tension
                     if peak_tension <= lower_tolerance:
                         csup = current

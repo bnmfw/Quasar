@@ -1,3 +1,3 @@
 *SET faults
-Iseu gnd i1 EXP(0 0u 2n 50p 164p 200p) //rise
+Iseu gnd p9_n6 EXP(0 35.1u 2n 50p 164p 200p) //rise
 *Iseu i1 gnd EXP(0 0u 2n 50p 164p 200p) //fall

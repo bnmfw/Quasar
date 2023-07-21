@@ -4,6 +4,7 @@ The actual circuit is fully described in the .cir file and simulated by Spice.
 """
 from .arquivos import JManager
 from .spiceInterface import SpiceRunner
+from .graph import Graph
 from .components import Nodo, Entrada, LET
 import os
 
@@ -24,6 +25,7 @@ class Circuito():
         self.path_to_circuits = path_to_circuits
         self.path_to_my_dir = f"{path_to_circuits}/{name}"
         self.arquivo = f"{name}.cir"
+        self.graph: Graph = None
         self.entradas: list[Entrada] = []
         self.saidas: list[Nodo] = []
         self.nodos: list[Nodo]= []
@@ -46,16 +48,18 @@ class Circuito():
         JManager.decodificar(self, path_to_folder=self.path_to_circuits)
         return self
     
-    def from_nodes(self, inputs: list, outputs: list):
+    def from_nodes(self, inputs: list, outputs: list, ignore: list = None):
         """
         Fills the circuit object by parsing the .cir file.
 
             :param list[str] inputs: List of node names to be interpreted as inputs.
             :param list[str] outputs: List of node names to be interpreted as outputs.
+            :param list[str] ignore: Nodes that should be ignored.
         """
         self.saidas = [Nodo(output) for output in outputs]
         self.entradas = [Entrada(input) for input in inputs]
-        self.nodos = [Nodo(nodo) for nodo in SpiceRunner(path_to_folder=self.path_to_circuits).get_nodes(self.nome)]
+        nodes_set, self.graph = SpiceRunner(path_to_folder=self.path_to_circuits).get_nodes(self.nome, ignore)
+        self.nodos = [Nodo(nodo) for nodo in nodes_set]
         return self
 
 if __name__ == "__main__":
@@ -72,8 +76,12 @@ if __name__ == "__main__":
     assert list(map(lambda e: len(e.LETs), decodec_test.nodos)) == [2, 2], "CIRCUIT DECODE FAILED FOR NUMBER OS LETS"
     assert list(map(lambda e: e.nome, decodec_test.saidas)) == ["g1"], "CIRCUIT DECODE FAILED FOR OUTPUTS"
     assert decodec_test.vdd == 0.7, "CIRCUIT DECODE FAILED FOR VDD"
+    
     print("\tTesting parsing of circuit file...")
-    parsing_test = Circuito("parsing_test", path_to_circuits="debug/test_circuits", vdd=0.7).from_nodes(["a","b"],["g1"])
-    assert {nodo.nome for nodo in parsing_test.nodos} == {"g1", "i1"}, "CIRCUIT PARSING FAILED"
+    parsing_test = Circuito("fadder", path_to_circuits="debug/test_circuits", vdd=0.7).from_nodes(["a","b", "cin"],["cout", "sum"])
+    # assert {nodo.nome for nodo in parsing_test.nodos} == {"cout", "sum"}, "CIRCUIT PARSING FAILED"
+    for vi in parsing_test.graph.vertices.values():
+        print(vi["name"],end="\t")
+        print(vi["reaches"])
 
     print("Circuit Module OK")

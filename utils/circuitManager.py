@@ -34,10 +34,16 @@ class CircuitManager:
             :param int input_num: Number of inputs in circuit.
             :returns: A list of all possible lets.
         """
-        lets = [[node, output, signals]\
-                for node in nodes\
-                for output in outputs\
-                for signals in combinacoes_possiveis(input_num)]
+        if self.circuito.graph is None:
+            lets = [[node, output, signals]\
+                    for node in nodes\
+                    for output in outputs\
+                    for signals in combinacoes_possiveis(input_num)]
+        else:
+            lets = [[node, output, signals]\
+                    for node in nodes\
+                    for output in outputs\
+                    for signals in combinacoes_possiveis(input_num) if self.circuito.graph.sees(node.nome, output.nome)]
         lets = list(filter(lambda e: e[0].nome not in {"a", "b", "cin"}, lets))
         for i, let in enumerate(lets):
             let.insert(0, i)
@@ -133,6 +139,10 @@ class CircuitManager:
             node.LETs = []
     
         jobs = self.__possible_LETs(self.circuito.nodos, self.circuito.saidas, len(self.circuito.entradas))
+        
+        for j in jobs:
+            print(j)
+        print()
 
         manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuito.path_to_circuits)
         manager.work((delay,),1)

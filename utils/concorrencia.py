@@ -176,7 +176,7 @@ class ProcessMaster:
                 if self.done.qsize() != self.total_jobs:
                     continue
 
-                # No dobje to be done, just gets all jobs (dont remembre why I do this)
+                # No job to be done, just gets all jobs (dont remembre why I do this)
                 while not self.done.empty():
                     self.done_copy.append(self.done.get())
                 
