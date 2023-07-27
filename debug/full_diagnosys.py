@@ -2,6 +2,7 @@ import os
 
 print("Testing Quasar...")
 os.system("python -m utils.matematica")
+os.system("python -m utils.graph")
 os.system("python -m utils.concorrencia")
 os.system("python -m utils.spiceInterface")
 os.system("python -m utils.circuito")

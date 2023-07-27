@@ -9,7 +9,8 @@ venv/
 *.xml
 *.iml
 __pycache__
-utils/__pycache__
+utils/__pycache__/
+debug/crash_report/
 *work/
 circuitos/output.txt
 *.ava

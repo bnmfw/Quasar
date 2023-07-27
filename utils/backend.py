@@ -39,11 +39,12 @@ class Backend:
     
     def analise_mc(self, n_simu: int, continuar:bool = False, delay:bool = False, progress_report = None):
         self.check_circuit()
-        MCManager(self.circuito).analise_monte_carlo_total(n_simu, continuar=continuar, delay=delay, progress_report=progress_report)
+        MCManager(self.circuito).analise_monte_carlo_total(n_simu, continue_backup=continuar, delay=delay, progress_report=progress_report)
 
 if __name__ == "__main__":
     with InDir("debug"):
-        fadder = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"], {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"})
+        # fadder = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"], {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"})
+        fadder = Circuito("fadder", "test_circuits", 0.7).from_json()
         fadder.nodos.sort(key=lambda e: e.nome)
         backend = Backend().set(fadder, 0.7)
-        backend.determinar_lets()
+        backend.analise_mc(1000)

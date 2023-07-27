@@ -139,10 +139,6 @@ class CircuitManager:
             node.LETs = []
     
         jobs = self.__possible_LETs(self.circuito.nodos, self.circuito.saidas, len(self.circuito.entradas))
-        
-        for j in jobs:
-            print(j)
-        print()
 
         manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuito.path_to_circuits)
         manager.work((delay,),1)

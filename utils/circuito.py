@@ -80,8 +80,8 @@ if __name__ == "__main__":
     print("\tTesting parsing of circuit file...")
     parsing_test = Circuito("fadder", path_to_circuits="debug/test_circuits", vdd=0.7).from_nodes(["a","b", "cin"],["cout", "sum"])
     # assert {nodo.nome for nodo in parsing_test.nodos} == {"cout", "sum"}, "CIRCUIT PARSING FAILED"
-    for vi in parsing_test.graph.vertices.values():
-        print(vi["name"],end="\t")
-        print(vi["reaches"])
+    # for vi in parsing_test.graph.vertices.values():
+    #     print(vi["name"],end="\t")
+    #     print(vi["reaches"])
 
     print("Circuit Module OK")

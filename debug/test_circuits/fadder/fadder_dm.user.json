@@ -1,0 +1,24 @@
+{
+"Active_Application": "Utility",
+"Utility": {
+"Method": "Post_Processing",
+"Sensitivity_Annotate": true, 
+"Sensitivity_Detailed_File": false, 
+"Sensitivity_Method": "Classic", 
+"Sensitivity_Screening_Method": "Pearson",
+"Sampling_Method": "SRS",
+"Sensitivity_Composite_Device": "",
+"Measure_Files": ["fadder.mt0.csv"],
+"Sample_Files": ["fadder.mc0.csv"],
+"Other_Percentile_Percentage": [ ],
+"Other_Percentile_Sigma": [ ]
+},
+"AVA_Outputs": {
+"QQ_PDF": true,
+"QQ_WV": true,
+"QQ_CSV": true,
+"Nominal": true,
+"Detailed": true,
+"Sensitivity": true
+}
+}

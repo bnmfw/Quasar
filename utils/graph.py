@@ -107,6 +107,8 @@ class Graph:
 
 if __name__ == "__main__":
 
+    print("Testing Graph module...")
+
     transistors = [
         "vdd a1 p1_p2".split(),
         "p1_p2 b1 p2_n1".split(),
@@ -143,5 +145,9 @@ if __name__ == "__main__":
         "ncout cout gnd".split()
     ]
 
+    print("\tTesting sees method...")
     g = Graph(transistors, ["vdd", "gnd"])
-    print(g.sees("p1_p2","cout"))
+    assert g.sees("p1_p2","cout"), "SEES FUNCTION FAILED"
+    assert not g.sees("cout","p1_p2"), "SEES FUNCTION FAILED"
+    print("\tTesting my_reach method...")
+    assert g.my_reach("p1_p2") == {'p9_n6', 'p3_p4', 'i11', 'i10', 'n1_n2', 'p2_n1', 'p1_p2', 'n4_n3', 'p6_p9', 'p11_p12', 'n6_n7', 'sum', 'nsum', 'p10_p11', 'ncout', 'cout'}

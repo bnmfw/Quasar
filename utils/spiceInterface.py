@@ -103,9 +103,9 @@ class SpiceFileManager():
 
     def set_vdd(self, vdd: float) -> None:
         """
-        Alters the vdd.cir file to set the vdd of the simulations
+        Alters the vdd.cir file to set the vdd of the simulations.
 
-            :param float vdd: defines the vdd of the simulation
+            :param float vdd: Defines the vdd of the simulation.
         """
         with open(f"{self.path_to_folder}/include/vdd.cir", "w") as file:
             file.write("*File with the vdd tension used by all circuits\n")
@@ -305,7 +305,9 @@ class SpiceFileManager():
             :param list[str] ignore: Nodes that should be ignored.
         """
         nodes = {"vdd", "gnd"}
-        ignore = {"vcc", "vdd", "gnd", "vss"} | set(ignore)
+        if not ignore:
+            ignore = set()
+        ignore |= {"vcc", "vdd", "gnd", "vss"}
         critical_region = False
         with open(f"{self.path_to_folder}/{circuit_name}/{circuit_name}.cir", "r") as file:
             transistor_list: list = []
@@ -645,7 +647,7 @@ class SpiceRunner():
         
         # Set the signals to be simualted
         SpiceRunner.file_manager.measure_delay(input_name, output_name, vdd)
-        SpiceRunner.file_manager.set_signals(vdd, {input.nome: input.sinal for input in inputs})
+        SpiceRunner.file_manager.set_signals({input.nome: input.sinal for input in inputs}, vdd)
         # Runs the simulation in the respective folder
         self.__run_spice(filename, ["atraso_rr", "atraso_rf", "atraso_fr", "atraso_ff"])
         # Gets and returns the results

@@ -19,7 +19,9 @@ class LetFinder:
         self.circuito = circuit
         self.runner = SpiceRunner(path_to_folder=path_to_folder)
         self.__report = report
-        self.__upper_bound: float = 300
+        self.__upper_bound: float = 300 # Valor maximo considerado da falha
+        # 200 é um numero bem razoavel de quanto é uma falha real
+        # Pede pro rafael o tga ou tfa ?
         self.__limite_sim: int = 25
 
     def __fault_inclination(self, node_name: str, vdd: float, let: LET) -> str:
@@ -63,7 +65,7 @@ class LetFinder:
             return (False, 1)
         
         # Greater then 2* vdd, weird stuff
-        if abs(node_peak/vdd) > 5:
+        if abs(node_peak/vdd) > 10:
             print("Weird Masking, DIE!\n")
             return (False, 1)
 

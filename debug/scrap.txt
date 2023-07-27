@@ -1,170 +1,15 @@
-[0, cout, cout, [0, 0, 0]]
-[1, cout, cout, [0, 0, 1]]
-[2, cout, cout, [0, 1, 0]]
-[3, cout, cout, [0, 1, 1]]
-[4, cout, cout, [1, 0, 0]]
-[5, cout, cout, [1, 0, 1]]
-[6, cout, cout, [1, 1, 0]]
-[7, cout, cout, [1, 1, 1]]
-[8, i10, sum, [0, 0, 0]]
-[9, i10, sum, [0, 0, 1]]
-[10, i10, sum, [0, 1, 0]]
-[11, i10, sum, [0, 1, 1]]
-[12, i10, sum, [1, 0, 0]]
-[13, i10, sum, [1, 0, 1]]
-[14, i10, sum, [1, 1, 0]]
-[15, i10, sum, [1, 1, 1]]
-[16, i11, sum, [0, 0, 0]]
-[17, i11, sum, [0, 0, 1]]
-[18, i11, sum, [0, 1, 0]]
-[19, i11, sum, [0, 1, 1]]
-[20, i11, sum, [1, 0, 0]]
-[21, i11, sum, [1, 0, 1]]
-[22, i11, sum, [1, 1, 0]]
-[23, i11, sum, [1, 1, 1]]
-[24, n1_n2, cout, [0, 0, 0]]
-[25, n1_n2, cout, [0, 0, 1]]
-[26, n1_n2, cout, [0, 1, 0]]
-[27, n1_n2, cout, [0, 1, 1]]
-[28, n1_n2, cout, [1, 0, 0]]
-[29, n1_n2, cout, [1, 0, 1]]
-[30, n1_n2, cout, [1, 1, 0]]
-[31, n1_n2, cout, [1, 1, 1]]
-[32, n1_n2, sum, [0, 0, 0]]
-[33, n1_n2, sum, [0, 0, 1]]
-[34, n1_n2, sum, [0, 1, 0]]
-[35, n1_n2, sum, [0, 1, 1]]
-[36, n1_n2, sum, [1, 0, 0]]
-[37, n1_n2, sum, [1, 0, 1]]
-[38, n1_n2, sum, [1, 1, 0]]
-[39, n1_n2, sum, [1, 1, 1]]
-[40, n4_n3, cout, [0, 0, 0]]
-[41, n4_n3, cout, [0, 0, 1]]
-[42, n4_n3, cout, [0, 1, 0]]
-[43, n4_n3, cout, [0, 1, 1]]
-[44, n4_n3, cout, [1, 0, 0]]
-[45, n4_n3, cout, [1, 0, 1]]
-[46, n4_n3, cout, [1, 1, 0]]
-[47, n4_n3, cout, [1, 1, 1]]
-[48, n4_n3, sum, [0, 0, 0]]
-[49, n4_n3, sum, [0, 0, 1]]
-[50, n4_n3, sum, [0, 1, 0]]
-[51, n4_n3, sum, [0, 1, 1]]
-[52, n4_n3, sum, [1, 0, 0]]
-[53, n4_n3, sum, [1, 0, 1]]
-[54, n4_n3, sum, [1, 1, 0]]
-[55, n4_n3, sum, [1, 1, 1]]
-[56, n6_n7, sum, [0, 0, 0]]
-[57, n6_n7, sum, [0, 0, 1]]
-[58, n6_n7, sum, [0, 1, 0]]
-[59, n6_n7, sum, [0, 1, 1]]
-[60, n6_n7, sum, [1, 0, 0]]
-[61, n6_n7, sum, [1, 0, 1]]
-[62, n6_n7, sum, [1, 1, 0]]
-[63, n6_n7, sum, [1, 1, 1]]
-[64, p10_p11, sum, [0, 0, 0]]
-[65, p10_p11, sum, [0, 0, 1]]
-[66, p10_p11, sum, [0, 1, 0]]
-[67, p10_p11, sum, [0, 1, 1]]
-[68, p10_p11, sum, [1, 0, 0]]
-[69, p10_p11, sum, [1, 0, 1]]
-[70, p10_p11, sum, [1, 1, 0]]
-[71, p10_p11, sum, [1, 1, 1]]
-[72, p11_p12, sum, [0, 0, 0]]
-[73, p11_p12, sum, [0, 0, 1]]
-[74, p11_p12, sum, [0, 1, 0]]
-[75, p11_p12, sum, [0, 1, 1]]
-[76, p11_p12, sum, [1, 0, 0]]
-[77, p11_p12, sum, [1, 0, 1]]
-[78, p11_p12, sum, [1, 1, 0]]
-[79, p11_p12, sum, [1, 1, 1]]
-[80, p1_p2, cout, [0, 0, 0]]
-[81, p1_p2, cout, [0, 0, 1]]
-[82, p1_p2, cout, [0, 1, 0]]
-[83, p1_p2, cout, [0, 1, 1]]
-[84, p1_p2, cout, [1, 0, 0]]
-[85, p1_p2, cout, [1, 0, 1]]
-[86, p1_p2, cout, [1, 1, 0]]
-[87, p1_p2, cout, [1, 1, 1]]
-[88, p1_p2, sum, [0, 0, 0]]
-[89, p1_p2, sum, [0, 0, 1]]
-[90, p1_p2, sum, [0, 1, 0]]
-[91, p1_p2, sum, [0, 1, 1]]
-[92, p1_p2, sum, [1, 0, 0]]
-[93, p1_p2, sum, [1, 0, 1]]
-[94, p1_p2, sum, [1, 1, 0]]
-[95, p1_p2, sum, [1, 1, 1]]
-[96, p2_n1, cout, [0, 0, 0]]
-[97, p2_n1, cout, [0, 0, 1]]
-[98, p2_n1, cout, [0, 1, 0]]
-[99, p2_n1, cout, [0, 1, 1]]
-[100, p2_n1, cout, [1, 0, 0]]
-[101, p2_n1, cout, [1, 0, 1]]
-[102, p2_n1, cout, [1, 1, 0]]
-[103, p2_n1, cout, [1, 1, 1]]
-[104, p2_n1, sum, [0, 0, 0]]
-[105, p2_n1, sum, [0, 0, 1]]
-[106, p2_n1, sum, [0, 1, 0]]
-[107, p2_n1, sum, [0, 1, 1]]
-[108, p2_n1, sum, [1, 0, 0]]
-[109, p2_n1, sum, [1, 0, 1]]
-[110, p2_n1, sum, [1, 1, 0]]
-[111, p2_n1, sum, [1, 1, 1]]
-[112, p3_p4, cout, [0, 0, 0]]
-[113, p3_p4, cout, [0, 0, 1]]
-[114, p3_p4, cout, [0, 1, 0]]
-[115, p3_p4, cout, [0, 1, 1]]
-[116, p3_p4, cout, [1, 0, 0]]
-[117, p3_p4, cout, [1, 0, 1]]
-[118, p3_p4, cout, [1, 1, 0]]
-[119, p3_p4, cout, [1, 1, 1]]
-[120, p3_p4, sum, [0, 0, 0]]
-[121, p3_p4, sum, [0, 0, 1]]
-[122, p3_p4, sum, [0, 1, 0]]
-[123, p3_p4, sum, [0, 1, 1]]
-[124, p3_p4, sum, [1, 0, 0]]
-[125, p3_p4, sum, [1, 0, 1]]
-[126, p3_p4, sum, [1, 1, 0]]
-[127, p3_p4, sum, [1, 1, 1]]
-[128, p6_p9, sum, [0, 0, 0]]
-[129, p6_p9, sum, [0, 0, 1]]
-[130, p6_p9, sum, [0, 1, 0]]
-[131, p6_p9, sum, [0, 1, 1]]
-[132, p6_p9, sum, [1, 0, 0]]
-[133, p6_p9, sum, [1, 0, 1]]
-[134, p6_p9, sum, [1, 1, 0]]
-[135, p6_p9, sum, [1, 1, 1]]
-[136, p9_n6, sum, [0, 0, 0]]
-[137, p9_n6, sum, [0, 0, 1]]
-[138, p9_n6, sum, [0, 1, 0]]
-[139, p9_n6, sum, [0, 1, 1]]
-[140, p9_n6, sum, [1, 0, 0]]
-[141, p9_n6, sum, [1, 0, 1]]
-[142, p9_n6, sum, [1, 1, 0]]
-[143, p9_n6, sum, [1, 1, 1]]
-[144, sum, sum, [0, 0, 0]]
-[145, sum, sum, [0, 0, 1]]
-[146, sum, sum, [0, 1, 0]]
-[147, sum, sum, [0, 1, 1]]
-[148, sum, sum, [1, 0, 0]]
-[149, sum, sum, [1, 0, 1]]
-[150, sum, sum, [1, 1, 0]]
-[151, sum, sum, [1, 1, 1]]
-
 Starting a LET finding job
 node: cout	output: cout
 vdd: 0.7	safe: False
 inc1: rise	inc2: rise
 input vector: a:0 b:0 cin:0
-masking	node: 1.964 (280%)	 output: 1.964
+masking	node: 0.729 (104%)	 output: 0.729
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:1.261
-2	current: 75.0	peak_tension:0.263
-3	current: 112.5	peak_tension:0.910
-4	current: 93.8	peak_tension:0.473
-5	current: 84.4	peak_tension:0.335
-6	current: 89.1	peak_tension:0.381
-7	current: 86.7	peak_tension:0.347
+1	current: 150.0	peak_tension:0.141
+2	current: 225.0	peak_tension:0.268
+3	current: 262.5	peak_tension:0.404
+4	current: 243.8	peak_tension:0.321
+5	current: 253.1	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -172,15 +17,13 @@ node: cout	output: cout
 vdd: 0.7	safe: False
 inc1: rise	inc2: rise
 input vector: a:0 b:0 cin:1
-masking	node: 1.953 (279%)	 output: 1.953
+masking	node: 0.734 (104%)	 output: 0.734
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:1.258
-2	current: 75.0	peak_tension:0.263
-3	current: 112.5	peak_tension:0.906
-4	current: 93.8	peak_tension:0.468
-5	current: 84.4	peak_tension:0.335
-6	current: 89.1	peak_tension:0.380
-7	current: 86.7	peak_tension:0.347
+1	current: 150.0	peak_tension:0.141
+2	current: 225.0	peak_tension:0.268
+3	current: 262.5	peak_tension:0.402
+4	current: 243.8	peak_tension:0.321
+5	current: 253.1	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -188,15 +31,13 @@ node: cout	output: cout
 vdd: 0.7	safe: False
 inc1: rise	inc2: rise
 input vector: a:0 b:1 cin:0
-masking	node: 1.953 (279%)	 output: 1.953
+masking	node: 0.734 (104%)	 output: 0.734
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:1.259
-2	current: 75.0	peak_tension:0.263
-3	current: 112.5	peak_tension:0.899
-4	current: 93.8	peak_tension:0.468
-5	current: 84.4	peak_tension:0.335
-6	current: 89.1	peak_tension:0.380
-7	current: 86.7	peak_tension:0.347
+1	current: 150.0	peak_tension:0.141
+2	current: 225.0	peak_tension:0.268
+3	current: 262.5	peak_tension:0.402
+4	current: 243.8	peak_tension:0.321
+5	current: 253.1	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -204,15 +45,15 @@ node: cout	output: cout
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:0 b:1 cin:1
-masking	node: -1.275 (-182%)	 output: -1.275
+masking	node: -0.313 (-44%)	 output: -0.313
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.530
-2	current: 75.0	peak_tension:0.272
-3	current: 37.5	peak_tension:0.560
-4	current: 56.2	peak_tension:0.447
-5	current: 65.6	peak_tension:0.368
-6	current: 70.3	peak_tension:0.336
-7	current: 68.0	peak_tension:0.350
+1	current: 150.0	peak_tension:0.489
+2	current: 225.0	peak_tension:0.236
+3	current: 187.5	peak_tension:0.389
+4	current: 206.2	peak_tension:0.334
+5	current: 196.9	peak_tension:0.359
+6	current: 201.6	peak_tension:0.344
+7	current: 199.2	peak_tension:0.351
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -220,15 +61,13 @@ node: cout	output: cout
 vdd: 0.7	safe: False
 inc1: rise	inc2: rise
 input vector: a:1 b:0 cin:0
-masking	node: 1.953 (278%)	 output: 1.953
+masking	node: 0.720 (102%)	 output: 0.720
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:1.259
-2	current: 75.0	peak_tension:0.263
-3	current: 112.5	peak_tension:0.899
-4	current: 93.8	peak_tension:0.469
-5	current: 84.4	peak_tension:0.335
-6	current: 89.1	peak_tension:0.380
-7	current: 86.7	peak_tension:0.347
+1	current: 150.0	peak_tension:0.141
+2	current: 225.0	peak_tension:0.268
+3	current: 262.5	peak_tension:0.402
+4	current: 243.8	peak_tension:0.320
+5	current: 253.1	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -236,15 +75,15 @@ node: cout	output: cout
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:1 b:0 cin:1
-masking	node: -1.276 (-182%)	 output: -1.276
+masking	node: -0.313 (-44%)	 output: -0.313
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-4.867
-2	current: 75.0	peak_tension:0.272
-3	current: 37.5	peak_tension:0.560
-4	current: 56.2	peak_tension:0.447
-5	current: 65.6	peak_tension:0.368
-6	current: 70.3	peak_tension:0.336
-7	current: 68.0	peak_tension:0.350
+1	current: 150.0	peak_tension:0.489
+2	current: 225.0	peak_tension:0.236
+3	current: 187.5	peak_tension:0.389
+4	current: 206.2	peak_tension:0.334
+5	current: 196.9	peak_tension:0.359
+6	current: 201.6	peak_tension:0.344
+7	current: 199.2	peak_tension:0.351
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -252,15 +91,15 @@ node: cout	output: cout
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:1 b:1 cin:0
-masking	node: -1.276 (-182%)	 output: -1.276
+masking	node: -0.313 (-44%)	 output: -0.313
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.530
-2	current: 75.0	peak_tension:0.272
-3	current: 37.5	peak_tension:0.560
-4	current: 56.2	peak_tension:0.447
-5	current: 65.6	peak_tension:0.368
-6	current: 70.3	peak_tension:0.336
-7	current: 68.0	peak_tension:0.350
+1	current: 150.0	peak_tension:0.489
+2	current: 225.0	peak_tension:0.236
+3	current: 187.5	peak_tension:0.389
+4	current: 206.2	peak_tension:0.334
+5	current: 196.9	peak_tension:0.359
+6	current: 201.6	peak_tension:0.344
+7	current: 199.2	peak_tension:0.351
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -268,15 +107,15 @@ node: cout	output: cout
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:1 b:1 cin:1
-masking	node: -1.307 (-186%)	 output: -1.307
+masking	node: -0.315 (-45%)	 output: -0.315
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.530
-2	current: 75.0	peak_tension:0.271
-3	current: 37.5	peak_tension:0.560
-4	current: 56.2	peak_tension:0.447
-5	current: 65.6	peak_tension:0.368
-6	current: 70.3	peak_tension:0.337
-7	current: 68.0	peak_tension:0.350
+1	current: 150.0	peak_tension:0.489
+2	current: 225.0	peak_tension:0.235
+3	current: 187.5	peak_tension:0.389
+4	current: 206.2	peak_tension:0.334
+5	current: 196.9	peak_tension:0.359
+6	current: 201.6	peak_tension:0.344
+7	current: 199.2	peak_tension:0.351
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -284,7 +123,7 @@ node: i10	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: rise
 input vector: a:0 b:0 cin:0
-masking	node: 4.686 (669%)	 output: 0.042
+masking	node: 3.512 (501%)	 output: 0.000
 Invalid Let - Masked Fault
 
 Starting a LET finding job
@@ -292,611 +131,773 @@ node: i10	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: fall
 input vector: a:0 b:0 cin:1
-masking	node: 4.681 (668%)	 output: -0.000
-Weird Masking, DIE!
+masking	node: 3.561 (508%)	 output: 0.696
+Invalid Let - Masked Fault
 
 Starting a LET finding job
 node: i10	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: fall
 input vector: a:0 b:1 cin:0
-masking	node: 4.681 (668%)	 output: -0.004
-Weird Masking, DIE!
+masking	node: 3.923 (560%)	 output: -0.009
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:0.700
+3	current: 262.5	peak_tension:0.700
+4	current: 281.2	peak_tension:0.700
+5	current: 290.6	peak_tension:-0.003
+6	current: 285.9	peak_tension:0.700
+7	current: 288.3	peak_tension:-0.010
+8	current: 287.1	peak_tension:-0.009
+9	current: 286.5	peak_tension:0.698
+10	current: 286.8	peak_tension:0.001
+11	current: 286.7	peak_tension:0.688
+12	current: 286.7	peak_tension:0.133
+13	current: 286.7	peak_tension:0.598
+14	current: 286.7	peak_tension:0.381
+15	current: 286.7	peak_tension:0.303
+16	current: 286.7	peak_tension:0.341
+17	current: 286.7	peak_tension:0.360
+18	current: 286.7	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
 node: i10	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: rise
 input vector: a:0 b:1 cin:1
-masking	node: -3.992 (-570%)	 output: 384980000000000000000.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: i10	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: 4.555 (650%)	 output: -324620000000000000000.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: i10	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: -8302099999999.999 (-1186014285714285%)	 output: 1598300000000.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: i10	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: 4.484 (640%)	 output: 0.001
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: i10	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 4.672 (667%)	 output: -22270000000000000524288.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: i11	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: 4.081 (582%)	 output: 0.371
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: i11	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: 4.078 (582%)	 output: -0.005
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: i11	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:1 cin:0
-masking	node: 4.230 (604%)	 output: -1.449
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: i11	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: -9767600000000000.000 (-1395371428571428608%)	 output: 120740000000000000.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: i11	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: 4.192 (598%)	 output: -0.005
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: i11	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: 4.191 (598%)	 output: 0.001
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: i11	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: 4.291 (613%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: i11	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 4.290 (612%)	 output: 0.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: 4.081 (583%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n1_n2	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:0 cin:1
-masking	node: 3.989 (569%)	 output: 0.702
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:0
-masking	node: -3.885 (-555%)	 output: 0.734
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:1 cin:1
-masking	node: 4.108 (586%)	 output: 0.682
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n1_n2	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:0 cin:0
-masking	node: 4.192 (598%)	 output: 0.001
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n1_n2	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:1
-masking	node: 4.056 (579%)	 output: 0.699
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n1_n2	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:0
-masking	node: 4.289 (612%)	 output: -0.002
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 4.176 (596%)	 output: 0.656
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n1_n2	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: 4.081 (583%)	 output: 0.701
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: 3.989 (569%)	 output: -0.003
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:1 cin:0
-masking	node: -3.885 (-555%)	 output: -0.005
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: 4.108 (586%)	 output: 0.700
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: 4.192 (598%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n1_n2	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: 4.056 (579%)	 output: 0.701
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: 4.289 (612%)	 output: 0.700
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n1_n2	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 4.176 (596%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n4_n3	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: 3.791 (541%)	 output: 0.002
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n4_n3	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:1
-masking	node: -0.756 (-107%)	 output: 0.702
+masking	node: -0.562 (-80%)	 output: 0.700
 0	current: 0.0	peak_tension:0.000
 1	current: 150.0	peak_tension:0.704
-2	current: 75.0	peak_tension:0.703
-3	current: 37.5	peak_tension:0.277
-4	current: 56.2	peak_tension:0.703
-5	current: 46.9	peak_tension:0.704
-6	current: 42.2	peak_tension:0.700
-7	current: 39.8	peak_tension:0.629
-8	current: 38.7	peak_tension:0.499
-9	current: 38.1	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: n4_n3	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:1 cin:0
-masking	node: 3.739 (534%)	 output: 0.001
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n4_n3	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:1 cin:1
-masking	node: 3.881 (554%)	 output: -0.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n4_n3	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:0 cin:0
-masking	node: 3.740 (534%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n4_n3	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:1
-masking	node: 3.848 (549%)	 output: -316597400000000.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n4_n3	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:0
-masking	node: 3.551 (507%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n4_n3	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 3.802 (543%)	 output: 0.695
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n4_n3	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: 3.791 (541%)	 output: 0.702
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n4_n3	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: -0.756 (-107%)	 output: -0.003
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:0.000
-2	current: 75.0	peak_tension:-0.000
-3	current: 37.5	peak_tension:0.001
-4	current: 18.8	peak_tension:0.700
-5	current: 28.1	peak_tension:0.700
-6	current: 32.8	peak_tension:0.700
-7	current: 35.2	peak_tension:0.700
-8	current: 36.3	peak_tension:0.696
-9	current: 36.9	peak_tension:0.397
-10	current: 37.2	peak_tension:0.046
-11	current: 37.1	peak_tension:0.145
-12	current: 37.0	peak_tension:0.163
-13	current: 37.0	peak_tension:0.340
-14	current: 36.9	peak_tension:0.360
-15	current: 36.9	peak_tension:0.348
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: n4_n3	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:1 cin:0
-masking	node: 3.739 (534%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n4_n3	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: 3.881 (554%)	 output: 0.705
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n4_n3	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: 3.740 (534%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n4_n3	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: 3.848 (549%)	 output: 0.657
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n4_n3	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: 3.551 (507%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n4_n3	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 3.802 (543%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n6_n7	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -0.658 (-93%)	 output: 0.702
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
-2	current: 75.0	peak_tension:0.704
-3	current: 37.5	peak_tension:0.704
-4	current: 18.8	peak_tension:0.001
-5	current: 28.1	peak_tension:0.701
-6	current: 23.4	peak_tension:0.023
-7	current: 25.8	peak_tension:0.400
-8	current: 24.6	peak_tension:0.118
-9	current: 25.2	peak_tension:0.237
-10	current: 25.5	peak_tension:0.323
-11	current: 25.6	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: n6_n7	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: 3.714 (530%)	 output: -0.001
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n6_n7	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:1 cin:0
-masking	node: 3.714 (530%)	 output: -0.001
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n6_n7	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: 3.433 (490%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n6_n7	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: 3.714 (530%)	 output: -0.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: n6_n7	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: 3.433 (490%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n6_n7	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: 3.433 (490%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: n6_n7	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 0.936 (133%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p10_p11	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -3.258 (-465%)	 output: 0.700
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.699
-2	current: 75.0	peak_tension:0.343
-3	current: 112.5	peak_tension:0.696
-4	current: 93.8	peak_tension:0.677
-5	current: 84.4	peak_tension:0.589
-6	current: 79.7	peak_tension:0.553
-7	current: 77.3	peak_tension:0.451
-8	current: 76.2	peak_tension:0.385
-9	current: 75.6	peak_tension:0.357
-10	current: 75.3	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p10_p11	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: -3.129 (-446%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p10_p11	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:1 cin:0
-masking	node: -3.058 (-436%)	 output: 0.699
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p10_p11	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: -3.058 (-436%)	 output: 0.707
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.000
-2	current: 225.0	peak_tension:0.702
-3	current: 187.5	peak_tension:0.000
-4	current: 206.2	peak_tension:0.000
-5	current: 215.6	peak_tension:0.000
-6	current: 220.3	peak_tension:0.016
-7	current: 222.7	peak_tension:0.674
-8	current: 221.5	peak_tension:0.662
-9	current: 220.9	peak_tension:0.365
-10	current: 220.6	peak_tension:0.215
-11	current: 220.8	peak_tension:0.194
-12	current: 220.8	peak_tension:0.348
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p10_p11	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: 1.922 (274%)	 output: -0.002
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.001
-2	current: 75.0	peak_tension:-0.001
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.002
-5	current: 46.9	peak_tension:0.656
-6	current: 51.6	peak_tension:0.068
-7	current: 49.2	peak_tension:0.462
-8	current: 50.4	peak_tension:0.277
-9	current: 49.8	peak_tension:0.369
-10	current: 50.1	peak_tension:0.334
-11	current: 50.0	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p10_p11	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: -3.084 (-440%)	 output: 0.706
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
 2	current: 75.0	peak_tension:0.000
-3	current: 112.5	peak_tension:0.706
-4	current: 93.8	peak_tension:0.000
-5	current: 103.1	peak_tension:0.703
-6	current: 98.4	peak_tension:0.104
-7	current: 100.8	peak_tension:0.705
-8	current: 99.6	peak_tension:0.675
-9	current: 99.0	peak_tension:0.646
-10	current: 98.7	peak_tension:0.361
-11	current: 98.6	peak_tension:0.229
-12	current: 98.7	peak_tension:0.312
-13	current: 98.7	peak_tension:0.345
-14	current: 98.7	peak_tension:0.354
+3	current: 112.5	peak_tension:0.623
+4	current: 93.8	peak_tension:0.004
+5	current: 103.1	peak_tension:0.026
+6	current: 107.8	peak_tension:0.188
+7	current: 110.2	peak_tension:0.374
+8	current: 109.0	peak_tension:0.285
+9	current: 109.6	peak_tension:0.335
+10	current: 109.9	peak_tension:0.361
+11	current: 109.7	peak_tension:0.342
+12	current: 109.8	peak_tension:0.345
+Minimal Let Found - Convergence
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 3.512 (501%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: -0.516 (-73%)	 output: 0.702
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.704
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.619
+4	current: 93.8	peak_tension:0.006
+5	current: 103.1	peak_tension:0.035
+6	current: 107.8	peak_tension:0.169
+7	current: 110.2	peak_tension:0.377
+8	current: 109.0	peak_tension:0.270
+9	current: 109.6	peak_tension:0.337
+10	current: 109.9	peak_tension:0.352
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: 3.452 (493%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i10	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 4.016 (573%)	 output: -0.001
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.131
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.690
+5	current: 140.6	peak_tension:0.643
+6	current: 145.3	peak_tension:0.494
+7	current: 147.7	peak_tension:0.340
+8	current: 146.5	peak_tension:0.425
+9	current: 147.1	peak_tension:0.381
+10	current: 147.4	peak_tension:0.360
+11	current: 147.5	peak_tension:0.349
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 3.512 (501%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 3.512 (501%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: 3.759 (537%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: -0.544 (-77%)	 output: 0.703
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.704
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.603
+4	current: 93.8	peak_tension:0.005
+5	current: 103.1	peak_tension:0.031
+6	current: 107.8	peak_tension:0.191
+7	current: 110.2	peak_tension:0.389
+8	current: 109.0	peak_tension:0.290
+9	current: 109.6	peak_tension:0.336
+10	current: 109.9	peak_tension:0.354
+11	current: 109.7	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 0.944 (134%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: 0.944 (134%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: 0.961 (137%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: i11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.890 (127%)	 output: 0.004
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:0.695
+3	current: 262.5	peak_tension:0.199
+4	current: 243.8	peak_tension:0.668
+5	current: 253.1	peak_tension:0.561
+6	current: 257.8	peak_tension:0.393
+7	current: 260.2	peak_tension:0.330
+8	current: 259.0	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 3.512 (501%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:0 cin:1
+masking	node: 3.512 (501%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:1 cin:0
+masking	node: -0.514 (-73%)	 output: 0.700
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.703
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.577
+4	current: 93.8	peak_tension:0.005
+5	current: 103.1	peak_tension:0.029
+6	current: 107.8	peak_tension:0.120
+7	current: 110.2	peak_tension:0.318
+8	current: 111.3	peak_tension:0.419
+9	current: 110.7	peak_tension:0.351
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: 3.558 (508%)	 output: 0.696
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:0 cin:0
+masking	node: 0.944 (134%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: 0.944 (134%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: 0.857 (122%)	 output: 0.002
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:0.694
+3	current: 262.5	peak_tension:0.223
+4	current: 243.8	peak_tension:0.662
+5	current: 253.1	peak_tension:0.550
+6	current: 257.8	peak_tension:0.408
+7	current: 260.2	peak_tension:0.334
+8	current: 259.0	peak_tension:0.358
+9	current: 259.6	peak_tension:0.342
+10	current: 259.3	peak_tension:0.349
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n1_n2	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.227 (32%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 3.512 (501%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 3.512 (501%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.514 (-73%)	 output: -0.006
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:-0.004
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:-0.003
+4	current: 93.8	peak_tension:0.700
+5	current: 103.1	peak_tension:0.700
+6	current: 107.8	peak_tension:0.697
+7	current: 110.2	peak_tension:0.351
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: 3.558 (508%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 0.944 (134%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: 0.944 (134%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: 0.857 (122%)	 output: 0.707
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.000
+2	current: 225.0	peak_tension:0.000
+3	current: 262.5	peak_tension:0.703
+4	current: 243.8	peak_tension:0.000
+5	current: 253.1	peak_tension:0.002
+6	current: 257.8	peak_tension:0.070
+7	current: 260.2	peak_tension:0.647
+8	current: 259.0	peak_tension:0.280
+9	current: 259.6	peak_tension:0.494
+10	current: 259.3	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n1_n2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.227 (32%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 3.424 (489%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:1
+masking	node: -0.451 (-64%)	 output: 0.701
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.705
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.523
+4	current: 93.8	peak_tension:0.005
+5	current: 103.1	peak_tension:0.029
+6	current: 107.8	peak_tension:0.129
+7	current: 110.2	peak_tension:0.293
+8	current: 111.3	peak_tension:0.380
+9	current: 110.7	peak_tension:0.341
+10	current: 111.0	peak_tension:0.351
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:1 cin:0
+masking	node: 0.932 (133%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: 0.953 (136%)	 output: 0.002
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:0.694
+3	current: 262.5	peak_tension:0.136
+4	current: 243.8	peak_tension:0.663
+5	current: 253.1	peak_tension:0.556
+6	current: 257.8	peak_tension:0.370
+7	current: 260.2	peak_tension:0.290
+8	current: 259.0	peak_tension:0.335
+9	current: 258.4	peak_tension:0.347
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:0 cin:0
+masking	node: 0.932 (133%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: 0.850 (121%)	 output: 0.002
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:0.694
+3	current: 262.5	peak_tension:0.206
+4	current: 243.8	peak_tension:0.660
+5	current: 253.1	peak_tension:0.546
+6	current: 257.8	peak_tension:0.389
+7	current: 260.2	peak_tension:0.328
+8	current: 259.0	peak_tension:0.347
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: 0.138 (19%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.109 (15%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 3.424 (489%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -0.451 (-64%)	 output: -0.004
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:-0.002
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:-0.002
+4	current: 93.8	peak_tension:0.700
+5	current: 103.1	peak_tension:0.700
+6	current: 107.8	peak_tension:0.698
+7	current: 110.2	peak_tension:0.655
+8	current: 111.3	peak_tension:0.018
+9	current: 110.7	peak_tension:0.198
+10	current: 110.4	peak_tension:0.506
+11	current: 110.6	peak_tension:0.397
+12	current: 110.7	peak_tension:0.342
+13	current: 110.6	peak_tension:0.366
+14	current: 110.7	peak_tension:0.352
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: 0.932 (133%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: 0.953 (136%)	 output: 0.706
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.000
+2	current: 225.0	peak_tension:0.000
+3	current: 262.5	peak_tension:0.703
+4	current: 243.8	peak_tension:0.000
+5	current: 253.1	peak_tension:0.003
+6	current: 257.8	peak_tension:0.179
+7	current: 260.2	peak_tension:0.662
+8	current: 259.0	peak_tension:0.493
+9	current: 258.4	peak_tension:0.340
+10	current: 258.7	peak_tension:0.384
+11	current: 258.5	peak_tension:0.358
+12	current: 258.5	peak_tension:0.349
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 0.932 (133%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: 0.850 (121%)	 output: 0.706
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.000
+2	current: 225.0	peak_tension:0.000
+3	current: 262.5	peak_tension:0.703
+4	current: 243.8	peak_tension:0.000
+5	current: 253.1	peak_tension:0.002
+6	current: 257.8	peak_tension:0.266
+7	current: 260.2	peak_tension:0.681
+8	current: 259.0	peak_tension:0.604
+9	current: 258.4	peak_tension:0.380
+10	current: 258.1	peak_tension:0.333
+11	current: 258.3	peak_tension:0.356
+12	current: 258.2	peak_tension:0.347
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: 0.138 (19%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n4_n3	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.109 (15%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: -25731000000000000.000 (-3675857142857143296%)	 output: 1.655
+Weird Masking, DIE!
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 0.897 (128%)	 output: 0.001
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:0.695
+3	current: 262.5	peak_tension:0.116
+4	current: 243.8	peak_tension:0.668
+5	current: 253.1	peak_tension:0.510
+6	current: 257.8	peak_tension:0.313
+7	current: 255.5	peak_tension:0.421
+8	current: 256.6	peak_tension:0.381
+9	current: 257.2	peak_tension:0.342
+10	current: 256.9	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: 0.896 (128%)	 output: 0.001
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:0.695
+3	current: 262.5	peak_tension:0.100
+4	current: 243.8	peak_tension:0.653
+5	current: 253.1	peak_tension:0.498
+6	current: 257.8	peak_tension:0.323
+7	current: 255.5	peak_tension:0.391
+8	current: 256.6	peak_tension:0.346
+9	current: 256.1	peak_tension:0.366
+10	current: 256.3	peak_tension:0.355
+11	current: 256.5	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: 0.136 (19%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 0.880 (125%)	 output: 0.002
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:0.694
+3	current: 262.5	peak_tension:0.109
+4	current: 243.8	peak_tension:0.663
+5	current: 253.1	peak_tension:0.536
+6	current: 257.8	peak_tension:0.349
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: 0.136 (19%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: 0.136 (19%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: n6_n7	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.087 (12%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: -0.445 (-63%)	 output: 0.697
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.001
+2	current: 225.0	peak_tension:0.590
+3	current: 187.5	peak_tension:0.011
+4	current: 206.2	peak_tension:0.088
+5	current: 215.6	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -0.478 (-68%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.476 (-68%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: -0.476 (-68%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 1.258 (179%)	 output: -0.001
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.063
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.689
+5	current: 140.6	peak_tension:0.634
+6	current: 145.3	peak_tension:0.425
+7	current: 147.7	peak_tension:0.284
+8	current: 146.5	peak_tension:0.345
+9	current: 145.9	peak_tension:0.376
+10	current: 146.2	peak_tension:0.367
+11	current: 146.3	peak_tension:0.356
+12	current: 146.4	peak_tension:0.343
 Minimal Let Found - Convergence
 
 Starting a LET finding job
 node: p10_p11	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: -2.704 (-386%)	 output: 0.707
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.000
+2	current: 225.0	peak_tension:0.000
+3	current: 262.5	peak_tension:0.000
+4	current: 281.2	peak_tension:0.000
+5	current: 290.6	peak_tension:0.000
+6	current: 295.3	peak_tension:0.090
+7	current: 297.7	peak_tension:18.131
+8	current: 296.5	peak_tension:0.660
+9	current: 295.9	peak_tension:0.355
+10	current: 295.6	peak_tension:0.219
+11	current: 295.8	peak_tension:0.299
+12	current: 295.8	peak_tension:0.334
+13	current: 295.9	peak_tension:0.346
+14	current: 295.9	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p10_p11	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
 input vector: a:1 b:1 cin:0
-masking	node: -3.890 (-555%)	 output: 0.704
-Weird Masking, DIE!
+masking	node: -2.498 (-356%)	 output: 0.000
+Invalid Let - Masked Fault
 
 Starting a LET finding job
 node: p10_p11	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:1 b:1 cin:1
-masking	node: -4.112 (-587%)	 output: 0.231
-Weird Masking, DIE!
+masking	node: -2.502 (-357%)	 output: 0.700
+Invalid Let - Masked Fault
 
 Starting a LET finding job
 node: p11_p12	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: rise
 input vector: a:0 b:0 cin:0
-masking	node: -3.356 (-479%)	 output: 0.703
+masking	node: -3.006 (-429%)	 output: 0.703
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.703
-2	current: 75.0	peak_tension:0.701
-3	current: 37.5	peak_tension:0.246
-4	current: 56.2	peak_tension:0.700
-5	current: 46.9	peak_tension:0.697
-6	current: 42.2	peak_tension:0.648
-7	current: 39.8	peak_tension:0.571
-8	current: 38.7	peak_tension:0.380
-9	current: 38.1	peak_tension:0.327
-10	current: 38.4	peak_tension:0.347
+1	current: 150.0	peak_tension:0.701
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.427
+4	current: 93.8	peak_tension:0.004
+5	current: 103.1	peak_tension:0.026
+6	current: 107.8	peak_tension:0.107
+7	current: 110.2	peak_tension:0.247
+8	current: 111.3	peak_tension:0.337
+9	current: 111.9	peak_tension:0.359
+10	current: 111.6	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -904,7 +905,7 @@ node: p11_p12	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:0 b:0 cin:1
-masking	node: -3.381 (-482%)	 output: 0.698
+masking	node: -2.491 (-355%)	 output: 0.700
 Invalid Let - Masked Fault
 
 Starting a LET finding job
@@ -912,20 +913,19 @@ node: p11_p12	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: fall
 input vector: a:0 b:1 cin:0
-masking	node: 1.910 (272%)	 output: -0.001
+masking	node: 1.238 (176%)	 output: -0.000
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.001
-2	current: 75.0	peak_tension:-0.001
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.002
-5	current: 46.9	peak_tension:0.659
-6	current: 51.6	peak_tension:0.064
-7	current: 49.2	peak_tension:0.457
-8	current: 50.4	peak_tension:0.264
-9	current: 49.8	peak_tension:0.359
-10	current: 50.1	peak_tension:0.335
-11	current: 50.0	peak_tension:0.345
-12	current: 49.9	peak_tension:0.348
+1	current: 150.0	peak_tension:0.058
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.687
+5	current: 140.6	peak_tension:0.632
+6	current: 145.3	peak_tension:0.404
+7	current: 147.7	peak_tension:0.207
+8	current: 146.5	peak_tension:0.330
+9	current: 145.9	peak_tension:0.359
+10	current: 146.2	peak_tension:0.344
+11	current: 146.0	peak_tension:0.350
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -933,1005 +933,940 @@ node: p11_p12	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: rise
 input vector: a:0 b:1 cin:1
-masking	node: -3.424 (-489%)	 output: 0.705
+masking	node: -2.498 (-356%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 1.281 (183%)	 output: -0.001
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.058
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.689
+5	current: 140.6	peak_tension:0.631
+6	current: 145.3	peak_tension:0.442
+7	current: 147.7	peak_tension:0.257
+8	current: 146.5	peak_tension:0.336
+9	current: 145.9	peak_tension:0.381
+10	current: 146.2	peak_tension:0.353
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: -2.983 (-426%)	 output: 0.708
 0	current: 0.0	peak_tension:0.000
 1	current: 150.0	peak_tension:0.000
-2	current: 225.0	peak_tension:0.705
-3	current: 187.5	peak_tension:0.707
-4	current: 168.8	peak_tension:8.233
-5	current: 159.4	peak_tension:0.704
-6	current: 154.7	peak_tension:0.700
-7	current: 152.3	peak_tension:0.697
-8	current: 151.2	peak_tension:0.001
-9	current: 151.8	peak_tension:0.300
-10	current: 152.1	peak_tension:0.693
-11	current: 151.9	peak_tension:6.317
-12	current: 151.8	peak_tension:0.645
-13	current: 151.8	peak_tension:0.653
-14	current: 151.8	peak_tension:0.357
-15	current: 151.8	peak_tension:0.333
-16	current: 151.8	peak_tension:0.344
-17	current: 151.8	peak_tension:0.351
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p11_p12	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: 1.992 (284%)	 output: -0.000
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.002
-2	current: 75.0	peak_tension:-0.002
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.002
-5	current: 46.9	peak_tension:0.662
-6	current: 51.6	peak_tension:0.066
-7	current: 49.2	peak_tension:0.463
-8	current: 50.4	peak_tension:0.291
-9	current: 49.8	peak_tension:0.368
-10	current: 50.1	peak_tension:0.338
-11	current: 50.0	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p11_p12	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: -10.256 (-1465%)	 output: 107370000000000000000.000
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: p11_p12	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: -3.534 (-504%)	 output: 0.707
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: p11_p12	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: -3.542 (-505%)	 output: 0.682
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p1_p2	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -3.066 (-438%)	 output: 0.048
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p1_p2	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:1
-masking	node: -3.128 (-446%)	 output: 0.700
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
-2	current: 75.0	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p1_p2	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:0
-masking	node: -2.975 (-425%)	 output: 0.002
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p1_p2	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:1 cin:1
-masking	node: -3.058 (-436%)	 output: 0.699
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p1_p2	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:0 cin:0
-masking	node: -3.018 (-431%)	 output: 0.023
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p1_p2	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:0 cin:1
-masking	node: 1.766 (252%)	 output: -0.000
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.002
-2	current: 75.0	peak_tension:-0.003
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.001
-5	current: 46.9	peak_tension:0.653
-6	current: 51.6	peak_tension:0.073
-7	current: 49.2	peak_tension:0.468
-8	current: 50.4	peak_tension:0.294
-9	current: 49.8	peak_tension:0.363
-10	current: 50.1	peak_tension:0.337
-11	current: 50.0	peak_tension:0.344
-12	current: 49.9	peak_tension:0.352
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p1_p2	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:1 cin:0
-masking	node: -3.147 (-449%)	 output: -0.001
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:0.653
-2	current: 225.0	peak_tension:-0.001
-3	current: 187.5	peak_tension:-0.001
-4	current: 168.8	peak_tension:-0.001
-5	current: 159.4	peak_tension:0.000
-6	current: 154.7	peak_tension:0.056
-7	current: 152.3	peak_tension:0.356
-8	current: 153.5	peak_tension:0.112
-9	current: 152.9	peak_tension:0.285
-10	current: 152.6	peak_tension:0.333
-11	current: 152.5	peak_tension:0.342
-12	current: 152.4	peak_tension:0.348
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p1_p2	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: -6.204 (-886%)	 output: -8.036
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: p1_p2	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -3.066 (-438%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p1_p2	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: -3.128 (-446%)	 output: 0.000
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.001
-2	current: 75.0	peak_tension:-0.001
-3	current: 37.5	peak_tension:0.700
-4	current: 56.2	peak_tension:0.700
-5	current: 65.6	peak_tension:0.700
-6	current: 70.3	peak_tension:0.671
-7	current: 72.7	peak_tension:0.010
-8	current: 71.5	peak_tension:0.254
-9	current: 70.9	peak_tension:0.535
-10	current: 71.2	peak_tension:0.401
-11	current: 71.3	peak_tension:0.334
-12	current: 71.3	peak_tension:0.365
-13	current: 71.3	peak_tension:0.348
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p1_p2	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:1 cin:0
-masking	node: -2.975 (-425%)	 output: -0.000
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:0.700
-2	current: 225.0	peak_tension:0.699
-3	current: 262.5	peak_tension:-0.000
-4	current: 243.8	peak_tension:-2.562
-5	current: 234.4	peak_tension:0.283
-6	current: 229.7	peak_tension:0.697
-7	current: 232.0	peak_tension:0.674
-8	current: 233.2	peak_tension:0.536
-9	current: 233.8	peak_tension:0.404
-10	current: 234.1	peak_tension:0.332
-11	current: 233.9	peak_tension:0.361
-12	current: 234.0	peak_tension:0.346
-13	current: 234.0	peak_tension:0.352
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p1_p2	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: -3.058 (-436%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p1_p2	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: -3.018 (-431%)	 output: -0.001
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.000
-2	current: 75.0	peak_tension:0.700
-3	current: 112.5	peak_tension:0.700
-4	current: 131.2	peak_tension:0.001
-5	current: 121.9	peak_tension:0.698
-6	current: 126.6	peak_tension:0.477
-7	current: 128.9	peak_tension:0.069
-8	current: 127.7	peak_tension:0.272
-9	current: 127.1	peak_tension:0.357
-10	current: 127.4	peak_tension:0.323
-11	current: 127.3	peak_tension:0.335
-12	current: 127.2	peak_tension:0.344
-13	current: 127.2	peak_tension:0.350
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p1_p2	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: 1.766 (252%)	 output: 0.705
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
-2	current: 75.0	peak_tension:0.700
-3	current: 37.5	peak_tension:0.000
-4	current: 56.2	peak_tension:0.705
-5	current: 46.9	peak_tension:0.001
-6	current: 51.6	peak_tension:0.705
-7	current: 49.2	peak_tension:0.628
-8	current: 48.0	peak_tension:0.003
-9	current: 48.6	peak_tension:0.166
-10	current: 48.9	peak_tension:0.463
-11	current: 48.8	peak_tension:0.304
-12	current: 48.9	peak_tension:0.357
-13	current: 48.8	peak_tension:0.337
-14	current: 48.8	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p1_p2	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: -3.147 (-449%)	 output: 0.701
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.001
-2	current: 225.0	peak_tension:0.702
-3	current: 187.5	peak_tension:0.700
-4	current: 168.8	peak_tension:0.701
-5	current: 159.4	peak_tension:0.706
-6	current: 154.7	peak_tension:0.696
-7	current: 152.3	peak_tension:0.476
-8	current: 151.2	peak_tension:0.003
-9	current: 151.8	peak_tension:0.031
-10	current: 152.1	peak_tension:0.155
-11	current: 152.2	peak_tension:0.289
-12	current: 152.3	peak_tension:0.341
-13	current: 152.3	peak_tension:0.357
-14	current: 152.3	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p1_p2	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: -6.204 (-886%)	 output: -4.841
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: p2_n1	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -0.871 (-124%)	 output: 0.705
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.703
-2	current: 75.0	peak_tension:0.007
-3	current: 112.5	peak_tension:0.704
-4	current: 93.8	peak_tension:0.690
-5	current: 84.4	peak_tension:0.140
-6	current: 89.1	peak_tension:0.560
-7	current: 86.7	peak_tension:0.333
-8	current: 87.9	peak_tension:0.399
-9	current: 87.3	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p2_n1	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:1
-masking	node: -2.304 (-329%)	 output: 0.724
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
-2	current: 75.0	peak_tension:0.703
-3	current: 37.5	peak_tension:0.257
-4	current: 56.2	peak_tension:0.704
-5	current: 46.9	peak_tension:0.703
-6	current: 42.2	peak_tension:0.700
-7	current: 39.8	peak_tension:0.623
-8	current: 38.7	peak_tension:0.453
-9	current: 38.1	peak_tension:0.340
-10	current: 38.4	peak_tension:0.373
-11	current: 38.2	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p2_n1	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:0
-masking	node: -1.022 (-145%)	 output: 0.701
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.704
-2	current: 75.0	peak_tension:0.704
-3	current: 37.5	peak_tension:0.297
-4	current: 56.2	peak_tension:0.704
-5	current: 46.9	peak_tension:0.703
-6	current: 42.2	peak_tension:0.701
-7	current: 39.8	peak_tension:0.646
-8	current: 38.7	peak_tension:0.532
-9	current: 38.1	peak_tension:0.361
-10	current: 37.8	peak_tension:0.337
-11	current: 37.9	peak_tension:0.346
-12	current: 38.0	peak_tension:0.350
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p2_n1	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:1 cin:1
-masking	node: 1.649 (235%)	 output: -0.004
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.001
-2	current: 75.0	peak_tension:-0.004
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.003
-5	current: 46.9	peak_tension:0.657
-6	current: 51.6	peak_tension:0.067
-7	current: 49.2	peak_tension:0.467
-8	current: 50.4	peak_tension:0.296
-9	current: 49.8	peak_tension:0.362
-10	current: 50.1	peak_tension:0.338
-11	current: 50.0	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p2_n1	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:0 cin:0
-masking	node: -0.889 (-126%)	 output: 0.700
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.704
-2	current: 75.0	peak_tension:0.704
-3	current: 37.5	peak_tension:0.306
-4	current: 56.2	peak_tension:0.703
-5	current: 46.9	peak_tension:0.704
-6	current: 42.2	peak_tension:0.702
-7	current: 39.8	peak_tension:0.651
-8	current: 38.7	peak_tension:0.551
-9	current: 38.1	peak_tension:0.371
-10	current: 37.8	peak_tension:7.127
-11	current: 37.6	peak_tension:0.330
-12	current: 37.7	peak_tension:0.336
-13	current: 37.8	peak_tension:0.339
-14	current: 37.8	peak_tension:0.340
-15	current: 37.8	peak_tension:0.341
-16	current: 37.8	peak_tension:0.342
-17	current: 37.8	peak_tension:0.341
-18	current: 37.8	peak_tension:0.334
-19	current: 37.8	peak_tension:0.342
-20	current: 37.8	peak_tension:0.342
-21	current: 37.8	peak_tension:69356100000.000
-22	current: 37.8	peak_tension:0.342
-23	current: 37.8	peak_tension:17498899999999.998
-24	current: 37.8	peak_tension:0.341
+2	current: 225.0	peak_tension:0.000
+3	current: 262.5	peak_tension:0.716
+4	current: 243.8	peak_tension:5790700000000000000.000
+5	current: 234.4	peak_tension:0.000
+6	current: 239.1	peak_tension:0.703
+7	current: 236.7	peak_tension:0.000
+8	current: 237.9	peak_tension:0.000
+9	current: 238.5	peak_tension:0.001
+10	current: 238.8	peak_tension:0.706
+11	current: 238.6	peak_tension:0.705
+12	current: 238.5	peak_tension:7.182
+13	current: 238.5	peak_tension:0.714
+14	current: 238.5	peak_tension:0.001
+15	current: 238.5	peak_tension:0.708
+16	current: 238.5	peak_tension:0.709
+17	current: 238.5	peak_tension:0.714
+18	current: 238.5	peak_tension:0.710
+19	current: 238.5	peak_tension:0.001
+20	current: 238.5	peak_tension:0.710
+21	current: 238.5	peak_tension:0.001
+22	current: 238.5	peak_tension:0.001
+23	current: 238.5	peak_tension:0.710
+24	current: 238.5	peak_tension:0.710
 Minimal Let Found - Maximum Simulation Number Reached
 
 Starting a LET finding job
-node: p2_n1	output: cout
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: -2.952 (-421%)	 output: 0.709
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.008
+2	current: 225.0	peak_tension:0.009
+3	current: 262.5	peak_tension:0.010
+4	current: 281.2	peak_tension:0.011
+5	current: 290.6	peak_tension:0.012
+6	current: 295.3	peak_tension:0.019
+7	current: 297.7	peak_tension:0.710
+8	current: 296.5	peak_tension:0.704
+9	current: 295.9	peak_tension:0.707
+10	current: 295.6	peak_tension:0.708
+11	current: 295.5	peak_tension:0.713
+12	current: 295.4	peak_tension:0.020
+13	current: 295.4	peak_tension:0.022
+14	current: 295.4	peak_tension:0.025
+15	current: 295.4	peak_tension:0.713
+16	current: 295.4	peak_tension:0.027
+17	current: 295.4	peak_tension:0.028
+18	current: 295.4	peak_tension:0.713
+19	current: 295.4	peak_tension:0.028
+20	current: 295.4	peak_tension:0.713
+21	current: 295.4	peak_tension:0.707
+22	current: 295.4	peak_tension:0.711
+23	current: 295.4	peak_tension:0.709
+24	current: 295.4	peak_tension:0.709
+Minimal Let Found - Maximum Simulation Number Reached
+
+Starting a LET finding job
+node: p11_p12	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.511 (-358%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 0.295 (42%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:1
+masking	node: -0.426 (-60%)	 output: 0.698
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.001
+2	current: 225.0	peak_tension:0.612
+3	current: 187.5	peak_tension:0.013
+4	current: 206.2	peak_tension:0.122
+5	current: 215.6	peak_tension:0.370
+6	current: 210.9	peak_tension:0.254
+7	current: 213.3	peak_tension:0.324
+8	current: 214.5	peak_tension:0.346
+9	current: 215.0	peak_tension:0.353
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:1 cin:0
+masking	node: -0.476 (-68%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -0.476 (-68%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:1 b:0 cin:0
+masking	node: -2.585 (-369%)	 output: 0.010
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
 vdd: 0.7	safe: False
 inc1: rise	inc2: fall
 input vector: a:1 b:0 cin:1
-masking	node: 1.732 (247%)	 output: -0.003
+masking	node: 1.231 (175%)	 output: -0.003
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.000
-2	current: 75.0	peak_tension:-0.003
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.002
-5	current: 46.9	peak_tension:0.654
-6	current: 51.6	peak_tension:0.074
-7	current: 49.2	peak_tension:0.485
-8	current: 50.4	peak_tension:0.319
-9	current: 49.8	peak_tension:0.385
-10	current: 50.1	peak_tension:0.343
-11	current: 50.0	peak_tension:0.357
-12	current: 50.0	peak_tension:0.349
+1	current: 150.0	peak_tension:0.064
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.688
+5	current: 140.6	peak_tension:0.640
+6	current: 145.3	peak_tension:0.471
+7	current: 147.7	peak_tension:0.280
+8	current: 146.5	peak_tension:0.365
+9	current: 147.1	peak_tension:0.334
+10	current: 146.8	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: -2.503 (-357%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.503 (-357%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 0.295 (42%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -0.426 (-60%)	 output: -0.004
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:-0.341
+3	current: 187.5	peak_tension:0.700
+4	current: 206.2	peak_tension:0.698
+5	current: 215.6	peak_tension:0.018
+6	current: 210.9	peak_tension:0.680
+7	current: 213.3	peak_tension:0.452
+8	current: 214.5	peak_tension:0.095
+9	current: 213.9	peak_tension:0.326
+10	current: 213.6	peak_tension:0.384
+11	current: 213.7	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.476 (-68%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: -0.476 (-68%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -2.585 (-369%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: 1.231 (175%)	 output: 0.708
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.705
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.000
+4	current: 131.2	peak_tension:0.000
+5	current: 140.6	peak_tension:0.001
+6	current: 145.3	peak_tension:0.026
+7	current: 147.7	peak_tension:0.699
+8	current: 146.5	peak_tension:0.378
+9	current: 145.9	peak_tension:0.130
+10	current: 146.2	peak_tension:0.251
+11	current: 146.3	peak_tension:0.332
+12	current: 146.4	peak_tension:0.352
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: -2.503 (-357%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p1_p2	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -2.503 (-357%)	 output: 0.700
+Invalid Let - Masked Fault
 
 Starting a LET finding job
 node: p2_n1	output: cout
 vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:0
-masking	node: 1.758 (251%)	 output: -0.003
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.004
-2	current: 75.0	peak_tension:-0.003
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.001
-5	current: 46.9	peak_tension:0.656
-6	current: 51.6	peak_tension:0.118
-7	current: 49.2	peak_tension:0.521
-8	current: 50.4	peak_tension:0.356
-9	current: 51.0	peak_tension:0.285
-10	current: 50.7	peak_tension:0.335
-11	current: 50.5	peak_tension:0.343
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: -0.044 (-6%)	 output: 0.704
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.000
+2	current: 225.0	peak_tension:0.009
+3	current: 262.5	peak_tension:0.655
+4	current: 243.8	peak_tension:0.056
+5	current: 253.1	peak_tension:0.335
+6	current: 257.8	peak_tension:0.599
+7	current: 255.5	peak_tension:0.469
+8	current: 254.3	peak_tension:0.373
+9	current: 253.7	peak_tension:0.359
+10	current: 253.4	peak_tension:0.342
+11	current: 253.6	peak_tension:0.344
 Minimal Let Found - Convergence
 
 Starting a LET finding job
 node: p2_n1	output: cout
 vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 1.604 (229%)	 output: -0.006
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.004
-2	current: 75.0	peak_tension:0.700
-3	current: 112.5	peak_tension:0.470
-4	current: 131.2	peak_tension:-0.005
-5	current: 121.9	peak_tension:0.000
-6	current: 117.2	peak_tension:0.097
-7	current: 114.8	peak_tension:0.320
-8	current: 113.7	peak_tension:0.381
-9	current: 114.3	peak_tension:0.336
-10	current: 114.0	peak_tension:0.356
-11	current: 114.1	peak_tension:0.345
-Minimal Let Found - Convergence
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:1
+masking	node: -0.493 (-70%)	 output: 0.701
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.704
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.476
+4	current: 93.8	peak_tension:0.004
+5	current: 103.1	peak_tension:0.024
+6	current: 107.8	peak_tension:0.119
+7	current: 110.2	peak_tension:0.285
+8	current: 111.3	peak_tension:0.351
+Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
-node: p2_n1	output: sum
+node: p2_n1	output: cout
 vdd: 0.7	safe: False
 inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -0.871 (-124%)	 output: 0.001
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p2_n1	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: -2.304 (-329%)	 output: -0.001
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.000
-2	current: 75.0	peak_tension:-0.002
-3	current: 37.5	peak_tension:0.012
-4	current: 18.8	peak_tension:0.700
-5	current: 28.1	peak_tension:0.700
-6	current: 32.8	peak_tension:0.700
-7	current: 35.2	peak_tension:0.699
-8	current: 36.3	peak_tension:0.696
-9	current: 36.9	peak_tension:0.441
-10	current: 37.2	peak_tension:0.147
-11	current: 37.1	peak_tension:0.274
-12	current: 37.0	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p2_n1	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
 input vector: a:0 b:1 cin:0
-masking	node: -1.022 (-145%)	 output: -0.004
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.002
-2	current: 75.0	peak_tension:-0.002
-3	current: 37.5	peak_tension:-0.001
-4	current: 18.8	peak_tension:0.700
-5	current: 28.1	peak_tension:0.700
-6	current: 32.8	peak_tension:0.700
-7	current: 35.2	peak_tension:0.699
-8	current: 36.3	peak_tension:0.683
-9	current: 36.9	peak_tension:0.104
-10	current: 36.6	peak_tension:0.526
-11	current: 36.8	peak_tension:0.341
-12	current: 36.7	peak_tension:0.438
-13	current: 36.7	peak_tension:0.391
-14	current: 36.7	peak_tension:0.365
-15	current: 36.8	peak_tension:0.352
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p2_n1	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: 1.649 (235%)	 output: 0.705
+masking	node: -0.480 (-68%)	 output: 0.704
 0	current: 0.0	peak_tension:0.000
 1	current: 150.0	peak_tension:0.705
-2	current: 75.0	peak_tension:0.706
-3	current: 37.5	peak_tension:0.000
-4	current: 56.2	peak_tension:0.702
-5	current: 46.9	peak_tension:0.000
-6	current: 51.6	peak_tension:0.703
-7	current: 49.2	peak_tension:0.618
-8	current: 48.0	peak_tension:0.003
-9	current: 48.6	peak_tension:0.041
-10	current: 48.9	peak_tension:0.317
-11	current: 49.1	peak_tension:0.450
-12	current: 49.0	peak_tension:0.352
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.554
+4	current: 93.8	peak_tension:0.005
+5	current: 103.1	peak_tension:0.027
+6	current: 107.8	peak_tension:0.138
+7	current: 110.2	peak_tension:0.313
+8	current: 111.3	peak_tension:0.395
+9	current: 110.7	peak_tension:0.345
+10	current: 111.0	peak_tension:0.359
+11	current: 110.9	peak_tension:0.349
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
-node: p2_n1	output: sum
+node: p2_n1	output: cout
 vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: -0.889 (-126%)	 output: -0.004
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: 1.171 (167%)	 output: -0.004
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.004
-2	current: 75.0	peak_tension:-0.004
-3	current: 37.5	peak_tension:0.002
-4	current: 18.8	peak_tension:0.700
-5	current: 28.1	peak_tension:0.700
-6	current: 32.8	peak_tension:0.700
-7	current: 35.2	peak_tension:0.699
-8	current: 36.3	peak_tension:0.690
-9	current: 36.9	peak_tension:0.334
-10	current: 36.6	peak_tension:0.628
-11	current: 36.8	peak_tension:0.517
-12	current: 36.8	peak_tension:0.411
-13	current: 36.9	peak_tension:0.361
-14	current: 36.9	peak_tension:0.344
-15	current: 36.9	peak_tension:0.351
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p2_n1	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: 1.732 (247%)	 output: 0.701
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.705
+1	current: 150.0	peak_tension:0.066
 2	current: 75.0	peak_tension:0.700
-3	current: 37.5	peak_tension:0.000
-4	current: 56.2	peak_tension:0.702
-5	current: 46.9	peak_tension:0.001
-6	current: 51.6	peak_tension:0.704
-7	current: 49.2	peak_tension:0.630
-8	current: 48.0	peak_tension:0.003
-9	current: 48.6	peak_tension:0.118
-10	current: 48.9	peak_tension:0.362
-11	current: 48.8	peak_tension:0.227
-12	current: 48.9	peak_tension:0.302
-13	current: 48.9	peak_tension:0.338
-14	current: 48.9	peak_tension:0.351
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.689
+5	current: 140.6	peak_tension:0.641
+6	current: 145.3	peak_tension:0.468
+7	current: 147.7	peak_tension:0.275
+8	current: 146.5	peak_tension:0.382
+9	current: 147.1	peak_tension:0.333
+10	current: 146.8	peak_tension:0.343
+11	current: 146.6	peak_tension:0.371
+12	current: 146.7	peak_tension:0.346
+13	current: 146.7	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
-node: p2_n1	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: 1.758 (251%)	 output: 0.702
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.706
-2	current: 75.0	peak_tension:0.700
-3	current: 37.5	peak_tension:0.000
-4	current: 56.2	peak_tension:0.701
-5	current: 46.9	peak_tension:0.001
-6	current: 51.6	peak_tension:0.704
-7	current: 49.2	peak_tension:0.279
-8	current: 50.4	peak_tension:0.699
-9	current: 49.8	peak_tension:0.665
-10	current: 49.5	peak_tension:0.533
-11	current: 49.4	peak_tension:0.416
-12	current: 49.3	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p2_n1	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 1.604 (229%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p3_p4	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -2.090 (-298%)	 output: 0.006
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p3_p4	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:1
-masking	node: -2.333 (-333%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p3_p4	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:0
-masking	node: -2.798 (-399%)	 output: 0.700
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
-2	current: 75.0	peak_tension:0.348
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p3_p4	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:1 cin:1
-masking	node: -2.664 (-380%)	 output: 0.699
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p3_p4	output: cout
+node: p2_n1	output: cout
 vdd: 0.7	safe: False
 inc1: fall	inc2: rise
 input vector: a:1 b:0 cin:0
-masking	node: -2.789 (-398%)	 output: 0.701
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
-2	current: 75.0	peak_tension:0.356
-3	current: 37.5	peak_tension:0.000
-4	current: 56.2	peak_tension:0.002
-5	current: 65.6	peak_tension:0.028
-6	current: 70.3	peak_tension:0.144
-7	current: 72.7	peak_tension:0.280
-8	current: 73.8	peak_tension:0.335
-9	current: 74.4	peak_tension:0.344
-10	current: 74.7	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p3_p4	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:0 cin:1
-masking	node: -2.665 (-380%)	 output: 0.699
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p3_p4	output: cout
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:0
-masking	node: 1.484 (212%)	 output: -0.000
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.000
-2	current: 75.0	peak_tension:-0.002
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.002
-5	current: 46.9	peak_tension:0.656
-6	current: 51.6	peak_tension:0.103
-7	current: 49.2	peak_tension:0.506
-8	current: 50.4	peak_tension:0.342
-9	current: 49.8	peak_tension:0.426
-10	current: 50.1	peak_tension:0.376
-11	current: 50.2	peak_tension:0.354
-12	current: 50.3	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p3_p4	output: cout
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: -10.843 (-1549%)	 output: -4.813
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: p3_p4	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -2.090 (-298%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p3_p4	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: -2.333 (-333%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p3_p4	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:1 cin:0
-masking	node: -2.798 (-399%)	 output: -0.002
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.002
-2	current: 75.0	peak_tension:-0.002
-3	current: 37.5	peak_tension:0.700
-4	current: 56.2	peak_tension:0.700
-5	current: 65.6	peak_tension:0.700
-6	current: 70.3	peak_tension:0.627
-7	current: 72.7	peak_tension:0.005
-8	current: 71.5	peak_tension:0.088
-9	current: 70.9	peak_tension:0.400
-10	current: 71.2	peak_tension:0.294
-11	current: 71.0	peak_tension:0.334
-12	current: 71.0	peak_tension:0.364
-13	current: 71.0	peak_tension:0.347
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p3_p4	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: -2.664 (-380%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p3_p4	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: -2.789 (-398%)	 output: -0.000
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.002
-2	current: 75.0	peak_tension:-0.001
-3	current: 37.5	peak_tension:0.700
-4	current: 56.2	peak_tension:0.700
-5	current: 65.6	peak_tension:0.700
-6	current: 70.3	peak_tension:0.645
-7	current: 72.7	peak_tension:0.007
-8	current: 71.5	peak_tension:0.137
-9	current: 70.9	peak_tension:0.446
-10	current: 71.2	peak_tension:0.325
-11	current: 71.0	peak_tension:0.383
-12	current: 71.1	peak_tension:0.355
-13	current: 71.2	peak_tension:0.340
-14	current: 71.1	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p3_p4	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: -2.665 (-380%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p3_p4	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: 1.484 (212%)	 output: 0.705
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
-2	current: 75.0	peak_tension:0.705
-3	current: 37.5	peak_tension:0.000
-4	current: 56.2	peak_tension:0.700
-5	current: 46.9	peak_tension:0.000
-6	current: 51.6	peak_tension:0.703
-7	current: 49.2	peak_tension:0.362
-8	current: 48.0	peak_tension:0.002
-9	current: 48.6	peak_tension:0.005
-10	current: 48.9	peak_tension:0.087
-11	current: 49.1	peak_tension:0.220
-12	current: 49.1	peak_tension:0.319
-13	current: 49.2	peak_tension:0.345
-14	current: 49.2	peak_tension:0.353
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p3_p4	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: -10.843 (-1549%)	 output: -4.728
-Weird Masking, DIE!
-
-Starting a LET finding job
-node: p6_p9	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -0.476 (-67%)	 output: 0.000
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p6_p9	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: -2.281 (-325%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p6_p9	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:0 b:1 cin:0
-masking	node: -2.281 (-325%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p6_p9	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: -2.628 (-375%)	 output: 0.700
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
-2	current: 75.0	peak_tension:0.453
-3	current: 37.5	peak_tension:0.000
-4	current: 56.2	peak_tension:0.002
-5	current: 65.6	peak_tension:0.030
-6	current: 70.3	peak_tension:0.174
-7	current: 72.7	peak_tension:0.323
-8	current: 73.8	peak_tension:0.355
-9	current: 73.2	peak_tension:0.343
-10	current: 73.5	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p6_p9	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: fall
-input vector: a:1 b:0 cin:0
-masking	node: -2.280 (-325%)	 output: 0.700
-Invalid Let - Masked Fault
-
-Starting a LET finding job
-node: p6_p9	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:0 cin:1
-masking	node: -2.628 (-375%)	 output: 0.700
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.701
-2	current: 75.0	peak_tension:0.501
-3	current: 37.5	peak_tension:0.000
-4	current: 56.2	peak_tension:0.002
-5	current: 65.6	peak_tension:0.035
-6	current: 70.3	peak_tension:0.192
-7	current: 72.7	peak_tension:0.338
-8	current: 73.8	peak_tension:0.391
-9	current: 73.2	peak_tension:0.352
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p6_p9	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:1 b:1 cin:0
-masking	node: -2.630 (-375%)	 output: 0.700
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.700
-2	current: 75.0	peak_tension:0.459
-3	current: 37.5	peak_tension:0.000
-4	current: 56.2	peak_tension:0.002
-5	current: 65.6	peak_tension:0.027
-6	current: 70.3	peak_tension:0.181
-7	current: 72.7	peak_tension:0.334
-8	current: 73.8	peak_tension:0.378
-9	current: 73.2	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p6_p9	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:1 b:1 cin:1
-masking	node: 1.388 (198%)	 output: -0.000
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.001
-2	current: 75.0	peak_tension:-0.002
-3	current: 37.5	peak_tension:-0.000
-4	current: 18.8	peak_tension:0.700
-5	current: 28.1	peak_tension:0.697
-6	current: 32.8	peak_tension:0.647
-7	current: 35.2	peak_tension:0.325
-8	current: 34.0	peak_tension:0.549
-9	current: 34.6	peak_tension:0.450
-10	current: 34.9	peak_tension:0.366
-11	current: 35.0	peak_tension:0.339
-12	current: 34.9	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p9_n6	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:0 cin:0
-masking	node: -2.341 (-334%)	 output: 0.723
-0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.701
-2	current: 75.0	peak_tension:0.701
-3	current: 37.5	peak_tension:0.703
-4	current: 18.8	peak_tension:0.001
-5	current: 28.1	peak_tension:0.700
-6	current: 23.4	peak_tension:0.023
-7	current: 25.8	peak_tension:0.353
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p9_n6	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:0 cin:1
-masking	node: 1.670 (238%)	 output: -0.000
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.005
-2	current: 75.0	peak_tension:-0.004
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.002
-5	current: 46.9	peak_tension:0.657
-6	current: 51.6	peak_tension:0.080
-7	current: 49.2	peak_tension:0.464
-8	current: 50.4	peak_tension:0.283
-9	current: 49.8	peak_tension:0.365
-10	current: 50.1	peak_tension:0.326
-11	current: 50.0	peak_tension:0.341
-12	current: 49.9	peak_tension:0.352
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p9_n6	output: sum
-vdd: 0.7	safe: False
-inc1: rise	inc2: fall
-input vector: a:0 b:1 cin:0
-masking	node: 1.715 (245%)	 output: -0.001
-0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.005
-2	current: 75.0	peak_tension:-0.003
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.002
-5	current: 46.9	peak_tension:0.649
-6	current: 51.6	peak_tension:0.090
-7	current: 49.2	peak_tension:0.451
-8	current: 50.4	peak_tension:0.294
-9	current: 49.8	peak_tension:0.359
-10	current: 50.1	peak_tension:0.334
-11	current: 50.0	peak_tension:0.343
-12	current: 49.9	peak_tension:0.349
-Minimal Let Found - Precision Satisfied
-
-Starting a LET finding job
-node: p9_n6	output: sum
-vdd: 0.7	safe: False
-inc1: fall	inc2: rise
-input vector: a:0 b:1 cin:1
-masking	node: -1.112 (-158%)	 output: 0.702
+masking	node: -0.459 (-65%)	 output: 0.705
 0	current: 0.0	peak_tension:0.000
 1	current: 150.0	peak_tension:0.703
-2	current: 75.0	peak_tension:0.703
-3	current: 37.5	peak_tension:0.321
-4	current: 56.2	peak_tension:0.705
-5	current: 46.9	peak_tension:0.703
-6	current: 42.2	peak_tension:0.701
-7	current: 39.8	peak_tension:0.662
-8	current: 38.7	peak_tension:0.555
-9	current: 38.1	peak_tension:0.400
-10	current: 37.8	peak_tension:0.347
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:6.225
+4	current: 93.8	peak_tension:0.005
+5	current: 103.1	peak_tension:0.028
+6	current: 107.8	peak_tension:0.103
+7	current: 110.2	peak_tension:0.302
+8	current: 111.3	peak_tension:0.391
+9	current: 110.7	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: 1.191 (170%)	 output: -0.001
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.072
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.688
+5	current: 140.6	peak_tension:0.634
+6	current: 145.3	peak_tension:0.465
+7	current: 147.7	peak_tension:0.312
+8	current: 146.5	peak_tension:0.375
+9	current: 147.1	peak_tension:0.341
+10	current: 146.8	peak_tension:0.354
+11	current: 146.9	peak_tension:0.346
+Minimal Let Found - Convergence
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: 1.203 (171%)	 output: -0.003
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.152
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.689
+5	current: 140.6	peak_tension:0.644
+6	current: 145.3	peak_tension:0.494
+7	current: 147.7	peak_tension:0.346
+8	current: 146.5	peak_tension:0.425
+9	current: 147.1	peak_tension:0.382
+10	current: 147.4	peak_tension:0.361
+11	current: 147.5	peak_tension:0.352
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p2_n1	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.283 (40%)	 output: 0.689
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: -0.044 (-6%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: -0.493 (-70%)	 output: -0.006
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:-0.003
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:-0.001
+4	current: 93.8	peak_tension:0.700
+5	current: 103.1	peak_tension:0.700
+6	current: 107.8	peak_tension:0.698
+7	current: 110.2	peak_tension:0.647
+8	current: 111.3	peak_tension:0.097
+9	current: 110.7	peak_tension:0.421
+10	current: 111.0	peak_tension:0.201
+11	current: 110.9	peak_tension:0.338
+12	current: 110.8	peak_tension:0.382
+13	current: 110.9	peak_tension:0.352
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.480 (-68%)	 output: -0.007
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:-0.007
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:-0.002
+4	current: 93.8	peak_tension:0.700
+5	current: 103.1	peak_tension:0.700
+6	current: 107.8	peak_tension:0.697
+7	current: 110.2	peak_tension:0.385
+8	current: 111.3	peak_tension:0.002
+9	current: 110.7	peak_tension:0.041
+10	current: 110.4	peak_tension:0.199
+11	current: 110.3	peak_tension:0.319
+12	current: 110.2	peak_tension:0.347
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: 1.171 (167%)	 output: 0.706
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.703
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.000
+4	current: 131.2	peak_tension:0.000
+5	current: 140.6	peak_tension:0.001
+6	current: 145.3	peak_tension:0.012
+7	current: 147.7	peak_tension:0.666
+8	current: 146.5	peak_tension:0.104
+9	current: 147.1	peak_tension:0.595
+10	current: 146.8	peak_tension:0.367
+11	current: 146.6	peak_tension:0.176
+12	current: 146.7	peak_tension:0.346
+13	current: 146.7	peak_tension:0.357
+Minimal Let Found - Convergence
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -0.459 (-65%)	 output: -0.003
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:-0.005
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:-18440999999999999737856.000
+4	current: 93.8	peak_tension:0.700
+5	current: 103.1	peak_tension:0.700
+6	current: 107.8	peak_tension:0.698
+7	current: 110.2	peak_tension:0.595
+8	current: 111.3	peak_tension:0.036
+9	current: 110.7	peak_tension:0.317
+10	current: 110.4	peak_tension:0.473
+11	current: 110.6	peak_tension:0.395
+12	current: 110.7	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: 1.191 (170%)	 output: 0.706
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.705
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.000
+4	current: 131.2	peak_tension:0.000
+5	current: 140.6	peak_tension:0.001
+6	current: 145.3	peak_tension:0.019
+7	current: 147.7	peak_tension:0.691
+8	current: 146.5	peak_tension:0.330
+9	current: 147.1	peak_tension:0.576
+10	current: 146.8	peak_tension:0.461
+11	current: 146.6	peak_tension:0.377
+12	current: 146.6	peak_tension:0.353
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: 1.203 (171%)	 output: 0.701
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.704
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.000
+4	current: 131.2	peak_tension:0.000
+5	current: 140.6	peak_tension:0.001
+6	current: 145.3	peak_tension:0.003
+7	current: 147.7	peak_tension:0.362
+8	current: 146.5	peak_tension:0.033
+9	current: 147.1	peak_tension:0.125
+10	current: 147.4	peak_tension:0.244
+11	current: 147.5	peak_tension:0.319
+12	current: 147.6	peak_tension:0.344
+13	current: 147.6	peak_tension:0.353
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p2_n1	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 0.283 (40%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 0.540 (77%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:1
+masking	node: 0.492 (70%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:1 cin:0
+masking	node: -0.424 (-60%)	 output: 0.698
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.001
+2	current: 225.0	peak_tension:0.614
+3	current: 187.5	peak_tension:0.014
+4	current: 206.2	peak_tension:0.134
+5	current: 215.6	peak_tension:0.380
+6	current: 210.9	peak_tension:0.261
+7	current: 213.3	peak_tension:0.330
+8	current: 214.5	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:1
+masking	node: -0.472 (-67%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:1 b:0 cin:0
+masking	node: -0.463 (-66%)	 output: 0.699
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.001
+2	current: 225.0	peak_tension:0.624
+3	current: 187.5	peak_tension:0.011
+4	current: 206.2	peak_tension:0.110
+5	current: 215.6	peak_tension:0.394
+6	current: 210.9	peak_tension:0.254
+7	current: 213.3	peak_tension:0.333
+8	current: 214.5	peak_tension:0.351
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:1
+masking	node: -0.472 (-67%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:0
+masking	node: 1.165 (166%)	 output: -0.003
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.113
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.688
+5	current: 140.6	peak_tension:0.641
+6	current: 145.3	peak_tension:0.478
+7	current: 147.7	peak_tension:0.336
+8	current: 146.5	peak_tension:0.409
+9	current: 147.1	peak_tension:0.363
+10	current: 147.4	peak_tension:0.344
+11	current: 147.2	peak_tension:0.352
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p3_p4	output: cout
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -3.216 (-459%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 0.540 (77%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 0.492 (70%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: -0.424 (-60%)	 output: -0.003
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:-0.001
+3	current: 187.5	peak_tension:0.700
+4	current: 206.2	peak_tension:0.698
+5	current: 215.6	peak_tension:0.004
+6	current: 210.9	peak_tension:0.635
+7	current: 213.3	peak_tension:0.185
+8	current: 212.1	peak_tension:0.479
+9	current: 212.7	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: -0.472 (-67%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: -0.463 (-66%)	 output: -0.004
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.700
+2	current: 225.0	peak_tension:-0.003
+3	current: 187.5	peak_tension:0.700
+4	current: 206.2	peak_tension:0.698
+5	current: 215.6	peak_tension:0.010
+6	current: 210.9	peak_tension:0.671
+7	current: 213.3	peak_tension:0.417
+8	current: 214.5	peak_tension:0.064
+9	current: 213.9	peak_tension:0.296
+10	current: 213.6	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: -0.472 (-67%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: 1.165 (166%)	 output: 0.701
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.705
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.000
+4	current: 131.2	peak_tension:0.000
+5	current: 140.6	peak_tension:0.001
+6	current: 145.3	peak_tension:0.004
+7	current: 147.7	peak_tension:0.633
+8	current: 146.5	peak_tension:0.033
+9	current: 147.1	peak_tension:0.233
+10	current: 147.4	peak_tension:0.471
+11	current: 147.2	peak_tension:0.307
+12	current: 147.3	peak_tension:0.351
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p3_p4	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: -3.216 (-459%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: 0.580 (82%)	 output: 0.000
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 0.492 (70%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: 0.492 (70%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: -0.440 (-62%)	 output: 0.699
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.001
+2	current: 225.0	peak_tension:0.665
+3	current: 187.5	peak_tension:0.012
+4	current: 206.2	peak_tension:0.155
+5	current: 215.6	peak_tension:0.500
+6	current: 210.9	peak_tension:0.317
+7	current: 213.3	peak_tension:0.376
+8	current: 212.1	peak_tension:0.343
+9	current: 212.7	peak_tension:0.352
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: fall
+input vector: a:1 b:0 cin:0
+masking	node: 0.492 (70%)	 output: 0.700
+Invalid Let - Masked Fault
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:1 b:0 cin:1
+masking	node: -0.446 (-63%)	 output: 0.699
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.001
+2	current: 225.0	peak_tension:0.676
+3	current: 187.5	peak_tension:0.015
+4	current: 206.2	peak_tension:0.192
+5	current: 215.6	peak_tension:0.558
+6	current: 210.9	peak_tension:0.342
+7	current: 213.3	peak_tension:0.445
+8	current: 212.1	peak_tension:0.375
+9	current: 211.5	peak_tension:0.355
+10	current: 211.2	peak_tension:0.349
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:1 b:1 cin:0
+masking	node: -0.445 (-63%)	 output: 0.700
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.001
+2	current: 225.0	peak_tension:0.674
+3	current: 187.5	peak_tension:0.011
+4	current: 206.2	peak_tension:0.187
+5	current: 215.6	peak_tension:0.560
+6	current: 210.9	peak_tension:0.353
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p6_p9	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:1 b:1 cin:1
+masking	node: 1.157 (165%)	 output: -0.001
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:-0.002
+2	current: 75.0	peak_tension:0.699
+3	current: 112.5	peak_tension:-0.001
+4	current: 93.8	peak_tension:0.684
+5	current: 103.1	peak_tension:0.306
+6	current: 98.4	peak_tension:0.626
+7	current: 100.8	peak_tension:0.512
+8	current: 102.0	peak_tension:0.402
+9	current: 102.5	peak_tension:0.343
+10	current: 102.2	peak_tension:0.368
+11	current: 102.4	peak_tension:0.354
+12	current: 102.5	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:0 cin:0
+masking	node: -0.531 (-75%)	 output: 0.705
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.701
+2	current: 75.0	peak_tension:0.324
+3	current: 112.5	peak_tension:0.704
+4	current: 93.8	peak_tension:0.703
+5	current: 84.4	peak_tension:0.701
+6	current: 79.7	peak_tension:0.694
+7	current: 77.3	peak_tension:0.600
+8	current: 76.2	peak_tension:0.493
+9	current: 75.6	peak_tension:0.370
+10	current: 75.3	peak_tension:0.346
+11	current: 75.4	peak_tension:0.355
+12	current: 75.4	peak_tension:0.350
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:0 cin:1
+masking	node: 1.173 (167%)	 output: -0.005
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.058
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.690
+5	current: 140.6	peak_tension:0.634
+6	current: 145.3	peak_tension:0.443
+7	current: 147.7	peak_tension:0.257
+8	current: 146.5	peak_tension:0.337
+9	current: 145.9	peak_tension:0.380
+10	current: 146.2	peak_tension:0.354
+11	current: 146.3	peak_tension:0.345
+Minimal Let Found - Convergence
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: rise	inc2: fall
+input vector: a:0 b:1 cin:0
+masking	node: 1.190 (169%)	 output: -0.001
+0	current: 0.0	peak_tension:0.700
+1	current: 150.0	peak_tension:0.069
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.688
+5	current: 140.6	peak_tension:0.636
+6	current: 145.3	peak_tension:0.421
+7	current: 147.7	peak_tension:0.221
+8	current: 146.5	peak_tension:0.333
+9	current: 145.9	peak_tension:0.369
+10	current: 146.2	peak_tension:0.348
+Minimal Let Found - Precision Satisfied
+
+Starting a LET finding job
+node: p9_n6	output: sum
+vdd: 0.7	safe: False
+inc1: fall	inc2: rise
+input vector: a:0 b:1 cin:1
+masking	node: -0.494 (-70%)	 output: 0.701
+0	current: 0.0	peak_tension:0.000
+1	current: 150.0	peak_tension:0.702
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.595
+4	current: 93.8	peak_tension:0.005
+5	current: 103.1	peak_tension:0.030
+6	current: 107.8	peak_tension:0.153
+7	current: 110.2	peak_tension:0.340
+8	current: 111.3	peak_tension:0.457
+9	current: 110.7	peak_tension:0.380
+10	current: 110.4	peak_tension:0.351
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -1939,18 +1874,19 @@ node: p9_n6	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: fall
 input vector: a:1 b:0 cin:0
-masking	node: 1.787 (255%)	 output: -0.003
+masking	node: 1.202 (171%)	 output: -0.003
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.001
-2	current: 75.0	peak_tension:-0.002
-3	current: 37.5	peak_tension:0.699
-4	current: 56.2	peak_tension:-0.002
-5	current: 46.9	peak_tension:0.656
-6	current: 51.6	peak_tension:0.094
-7	current: 49.2	peak_tension:0.483
-8	current: 50.4	peak_tension:0.328
-9	current: 49.8	peak_tension:0.396
-10	current: 50.1	peak_tension:0.348
+1	current: 150.0	peak_tension:0.095
+2	current: 75.0	peak_tension:0.700
+3	current: 112.5	peak_tension:0.699
+4	current: 131.2	peak_tension:0.689
+5	current: 140.6	peak_tension:0.638
+6	current: 145.3	peak_tension:0.473
+7	current: 147.7	peak_tension:0.320
+8	current: 146.5	peak_tension:0.387
+9	current: 147.1	peak_tension:0.343
+10	current: 146.8	peak_tension:0.360
+11	current: 146.9	peak_tension:0.350
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -1958,19 +1894,18 @@ node: p9_n6	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: rise
 input vector: a:1 b:0 cin:1
-masking	node: -0.996 (-142%)	 output: 0.703
+masking	node: -0.481 (-68%)	 output: 0.705
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.701
-2	current: 75.0	peak_tension:0.703
-3	current: 37.5	peak_tension:0.340
-4	current: 56.2	peak_tension:0.702
-5	current: 46.9	peak_tension:0.704
-6	current: 42.2	peak_tension:0.702
-7	current: 39.8	peak_tension:0.675
-8	current: 38.7	peak_tension:0.591
-9	current: 38.1	peak_tension:0.453
-10	current: 37.8	peak_tension:0.372
-11	current: 37.6	peak_tension:0.349
+1	current: 150.0	peak_tension:0.704
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.612
+4	current: 93.8	peak_tension:0.005
+5	current: 103.1	peak_tension:0.036
+6	current: 107.8	peak_tension:0.195
+7	current: 110.2	peak_tension:0.375
+8	current: 109.0	peak_tension:0.295
+9	current: 109.6	peak_tension:0.334
+10	current: 109.9	peak_tension:0.349
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -1978,20 +1913,19 @@ node: p9_n6	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: rise
 input vector: a:1 b:1 cin:0
-masking	node: -0.924 (-132%)	 output: 0.705
+masking	node: -0.460 (-65%)	 output: 0.706
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:0.701
-2	current: 75.0	peak_tension:0.704
-3	current: 37.5	peak_tension:0.335
-4	current: 56.2	peak_tension:0.704
-5	current: 46.9	peak_tension:0.703
-6	current: 42.2	peak_tension:0.702
-7	current: 39.8	peak_tension:0.674
-8	current: 38.7	peak_tension:0.502
-9	current: 38.1	peak_tension:0.448
-10	current: 37.8	peak_tension:0.358
-11	current: 37.6	peak_tension:0.345
-12	current: 37.7	peak_tension:0.350
+1	current: 150.0	peak_tension:0.706
+2	current: 75.0	peak_tension:0.000
+3	current: 112.5	peak_tension:0.620
+4	current: 93.8	peak_tension:0.005
+5	current: 103.1	peak_tension:0.031
+6	current: 107.8	peak_tension:0.150
+7	current: 110.2	peak_tension:0.356
+8	current: 109.0	peak_tension:0.272
+9	current: 109.6	peak_tension:0.330
+10	current: 109.9	peak_tension:0.344
+11	current: 110.0	peak_tension:0.350
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -1999,21 +1933,18 @@ node: p9_n6	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: fall
 input vector: a:1 b:1 cin:1
-masking	node: 1.971 (281%)	 output: -0.001
+masking	node: 1.252 (178%)	 output: -0.000
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.000
-2	current: 75.0	peak_tension:-0.003
-3	current: 37.5	peak_tension:0.001
-4	current: 18.8	peak_tension:0.700
-5	current: 28.1	peak_tension:0.697
-6	current: 32.8	peak_tension:0.652
-7	current: 35.2	peak_tension:0.345
-8	current: 34.0	peak_tension:0.565
-9	current: 34.6	peak_tension:0.461
-10	current: 34.9	peak_tension:0.402
-11	current: 35.0	peak_tension:0.372
-12	current: 35.1	peak_tension:0.355
-13	current: 35.1	peak_tension:0.349
+1	current: 150.0	peak_tension:-0.005
+2	current: 75.0	peak_tension:0.699
+3	current: 112.5	peak_tension:0.000
+4	current: 93.8	peak_tension:0.683
+5	current: 103.1	peak_tension:0.329
+6	current: 98.4	peak_tension:0.636
+7	current: 100.8	peak_tension:0.529
+8	current: 102.0	peak_tension:0.436
+9	current: 102.5	peak_tension:0.378
+10	current: 102.8	peak_tension:0.350
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -2021,17 +1952,13 @@ node: sum	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: rise
 input vector: a:0 b:0 cin:0
-masking	node: 1.948 (278%)	 output: 1.948
+masking	node: 0.709 (101%)	 output: 0.709
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:1.258
-2	current: 75.0	peak_tension:0.263
-3	current: 112.5	peak_tension:0.897
-4	current: 93.8	peak_tension:0.469
-5	current: 84.4	peak_tension:0.335
-6	current: 89.1	peak_tension:0.379
-7	current: 86.7	peak_tension:0.346
-8	current: 87.9	peak_tension:0.357
-9	current: 87.3	peak_tension:0.349
+1	current: 150.0	peak_tension:0.141
+2	current: 225.0	peak_tension:0.268
+3	current: 262.5	peak_tension:0.401
+4	current: 243.8	peak_tension:0.320
+5	current: 253.1	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -2039,15 +1966,15 @@ node: sum	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:0 b:0 cin:1
-masking	node: -1.276 (-182%)	 output: -1.276
+masking	node: -0.313 (-44%)	 output: -0.313
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.004
-2	current: 75.0	peak_tension:0.272
-3	current: 37.5	peak_tension:0.560
-4	current: 56.2	peak_tension:0.447
-5	current: 65.6	peak_tension:0.368
-6	current: 70.3	peak_tension:0.336
-7	current: 68.0	peak_tension:0.350
+1	current: 150.0	peak_tension:0.489
+2	current: 225.0	peak_tension:0.236
+3	current: 187.5	peak_tension:0.389
+4	current: 206.2	peak_tension:0.334
+5	current: 196.9	peak_tension:0.359
+6	current: 201.6	peak_tension:0.344
+7	current: 199.2	peak_tension:0.351
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -2055,15 +1982,15 @@ node: sum	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:0 b:1 cin:0
-masking	node: -1.276 (-182%)	 output: -1.276
+masking	node: -0.313 (-44%)	 output: -0.313
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.533
-2	current: 75.0	peak_tension:0.272
-3	current: 37.5	peak_tension:0.560
-4	current: 56.2	peak_tension:0.447
-5	current: 65.6	peak_tension:0.368
-6	current: 70.3	peak_tension:0.336
-7	current: 68.0	peak_tension:0.350
+1	current: 150.0	peak_tension:0.489
+2	current: 225.0	peak_tension:0.236
+3	current: 187.5	peak_tension:0.389
+4	current: 206.2	peak_tension:0.334
+5	current: 196.9	peak_tension:0.359
+6	current: 201.6	peak_tension:0.344
+7	current: 199.2	peak_tension:0.351
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -2071,15 +1998,13 @@ node: sum	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: rise
 input vector: a:0 b:1 cin:1
-masking	node: 1.954 (279%)	 output: 1.954
+masking	node: 0.724 (103%)	 output: 0.724
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:1.259
-2	current: 75.0	peak_tension:0.263
-3	current: 112.5	peak_tension:0.904
-4	current: 93.8	peak_tension:0.466
-5	current: 84.4	peak_tension:0.335
-6	current: 89.1	peak_tension:0.380
-7	current: 86.7	peak_tension:0.347
+1	current: 150.0	peak_tension:0.141
+2	current: 225.0	peak_tension:0.268
+3	current: 262.5	peak_tension:0.402
+4	current: 243.8	peak_tension:0.321
+5	current: 253.1	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -2087,15 +2012,15 @@ node: sum	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:1 b:0 cin:0
-masking	node: -1.276 (-182%)	 output: -1.276
+masking	node: -0.313 (-44%)	 output: -0.313
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.530
-2	current: 75.0	peak_tension:0.272
-3	current: 37.5	peak_tension:0.560
-4	current: 56.2	peak_tension:0.447
-5	current: 65.6	peak_tension:0.368
-6	current: 70.3	peak_tension:0.336
-7	current: 68.0	peak_tension:0.350
+1	current: 150.0	peak_tension:0.489
+2	current: 225.0	peak_tension:0.236
+3	current: 187.5	peak_tension:0.389
+4	current: 206.2	peak_tension:0.334
+5	current: 196.9	peak_tension:0.359
+6	current: 201.6	peak_tension:0.344
+7	current: 199.2	peak_tension:0.351
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -2103,15 +2028,13 @@ node: sum	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: rise
 input vector: a:1 b:0 cin:1
-masking	node: 1.954 (279%)	 output: 1.954
+masking	node: 0.726 (103%)	 output: 0.726
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:1.259
-2	current: 75.0	peak_tension:0.263
-3	current: 112.5	peak_tension:0.906
-4	current: 93.8	peak_tension:0.466
-5	current: 84.4	peak_tension:0.335
-6	current: 89.1	peak_tension:0.380
-7	current: 86.7	peak_tension:0.347
+1	current: 150.0	peak_tension:0.141
+2	current: 225.0	peak_tension:0.268
+3	current: 262.5	peak_tension:0.402
+4	current: 243.8	peak_tension:0.321
+5	current: 253.1	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -2119,15 +2042,13 @@ node: sum	output: sum
 vdd: 0.7	safe: False
 inc1: rise	inc2: rise
 input vector: a:1 b:1 cin:0
-masking	node: 1.953 (279%)	 output: 1.953
+masking	node: 0.719 (102%)	 output: 0.719
 0	current: 0.0	peak_tension:0.000
-1	current: 150.0	peak_tension:1.258
-2	current: 75.0	peak_tension:0.263
-3	current: 112.5	peak_tension:0.904
-4	current: 93.8	peak_tension:0.468
-5	current: 84.4	peak_tension:0.335
-6	current: 89.1	peak_tension:0.380
-7	current: 86.7	peak_tension:0.347
+1	current: 150.0	peak_tension:0.141
+2	current: 225.0	peak_tension:0.268
+3	current: 262.5	peak_tension:0.402
+4	current: 243.8	peak_tension:0.321
+5	current: 253.1	peak_tension:0.347
 Minimal Let Found - Precision Satisfied
 
 Starting a LET finding job
@@ -2135,15 +2056,15 @@ node: sum	output: sum
 vdd: 0.7	safe: False
 inc1: fall	inc2: fall
 input vector: a:1 b:1 cin:1
-masking	node: -1.260 (-179%)	 output: -1.260
+masking	node: -0.310 (-44%)	 output: -0.310
 0	current: 0.0	peak_tension:0.700
-1	current: 150.0	peak_tension:-0.533
-2	current: 75.0	peak_tension:0.272
-3	current: 37.5	peak_tension:0.560
-4	current: 56.2	peak_tension:0.448
-5	current: 65.6	peak_tension:0.369
-6	current: 70.3	peak_tension:0.337
-7	current: 68.0	peak_tension:0.352
+1	current: 150.0	peak_tension:0.489
+2	current: 225.0	peak_tension:0.237
+3	current: 187.5	peak_tension:0.389
+4	current: 206.2	peak_tension:0.335
+5	current: 196.9	peak_tension:0.359
+6	current: 201.6	peak_tension:0.344
+7	current: 199.2	peak_tension:0.351
 Minimal Let Found - Precision Satisfied
 
 Carregamento do Json realizado com sucesso
