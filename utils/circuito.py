@@ -62,6 +62,16 @@ class Circuito():
         self.nodos = [Nodo(nodo) for nodo in nodes_set]
         return self
 
+    def set_signals(self, sig_values: list):
+        """
+        Sets signals of inputs given its values.
+
+            :param list sig_values: A list of input values.
+        """
+
+        for input_gate, input_signal in zip(self.entradas, sig_values):
+            input_gate.sinal = input_signal
+
 if __name__ == "__main__":
     print("Testing Circuit Module...")
     # Decodification test of the circuit

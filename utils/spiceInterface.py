@@ -501,6 +501,7 @@ class SpiceRunner():
             :param str path_to_folder: relative path into the folder that contain spice files.
         """
         self.path_to_folder = path_to_folder
+        self.default(0.7)
         SpiceRunner.file_manager = SpiceFileManager(path_to_folder=path_to_folder)
 
     class Monte_Carlo():
@@ -580,6 +581,13 @@ class SpiceRunner():
         Context Mangers that sets the input signals of the simulation.
         """
         def __init__ (self, entradas: list, vdd: float, vss: float = 0):
+            """
+            Constructor.
+
+                :param list[int] entradas: Input logical values, either 0 or 1.
+                :param float vdd: Input vdd.
+                :param float vdd: Input vss.
+            """
             self.vdd = vdd
             self.vss = vss
             self.entradas = {}
@@ -755,6 +763,7 @@ if __name__ == "__main__":
     from .circuito import Circuito
     TestRunner = SpiceRunner(path_to_folder=ptf)
     TestManager = SpiceFileManager(path_to_folder=ptf)
+    TestRunner.default(0.7)
 
     print("\tTesting node tensions...")
     nand_test = Circuito("nand", ptf, 0.7).from_json()
@@ -774,7 +783,7 @@ if __name__ == "__main__":
     for vi, entrada in zip(valid_input, nand_test.entradas): entrada.sinal = vi
     with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.entradas, 0.7), TestRunner.MC_Instance(4.7443, 4.3136):
         peak_node, peak_output = TestRunner.run_SET(nand_test.arquivo, valid_let, path_to_root="debug/..")
-        assert abs(peak_node-expected_let_value) <= 10e-6, "SET SIMULATION FAILED"
+        assert abs(peak_node-expected_let_value) <= 10e-6, f"SET SIMULATION FAILED simulated: {peak_node} expected: {expected_let_value}"
 
     print("\tTesting delay simulation with known delay value...")
     delay_input = [1, "atraso"]

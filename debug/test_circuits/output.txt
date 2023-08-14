@@ -1,4 +1,4 @@
-Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
+Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
  ****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
   Copyright (c) 1986 - 2023 by Synopsys, Inc. All Rights Reserved.
   This software and the associated documentation are proprietary
@@ -7,12 +7,12 @@ Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
   Synopsys, Inc. All other use, reproduction, or distribution of
   this software is strictly prohibited.
   Input File: nand.cir                                                          
-  Command line options: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
-  Start time: Thu Jul 27 20:13:32 2023
+  Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
+  Start time: Mon Aug 14 20:35:20 2023
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      2784010 
+ lic: HOSTID: d76153d              PID:      195261 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
@@ -1902,9 +1902,9 @@ Random number generator is MCG            , and seed =      1, stream =   1
              from=   1.0000n    to=   3.8000n
  maxout= 702.9309m    at=   1.0123n
              from=   1.0000n    to=   3.8000n
- minnod= 667.5157m    at=   2.0216n
+ minnod= 667.5155m    at=   2.0216n
              from=   1.0000n    to=   3.8000n
- maxnod= 668.1753m    at=   1.0107n
+ maxnod= 668.1751m    at=   1.0107n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
@@ -1915,9 +1915,9 @@ Random number generator is MCG            , and seed =      1, stream =   1
              from=   1.0000n    to=   3.8000n
  maxout= 702.9496m    at=   1.0116n
              from=   1.0000n    to=   3.8000n
- minnod= 672.3000m    at=   2.0227n
+ minnod= 672.2999m    at=   2.0227n
              from=   1.0000n    to=   3.8000n
- maxnod= 673.0204m    at=   1.0107n
+ maxnod= 673.0203m    at=   1.0107n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
@@ -1928,9 +1928,9 @@ Random number generator is MCG            , and seed =      1, stream =   1
              from=   1.0000n    to=   3.8000n
  maxout= 703.1855m    at=   1.0115n
              from=   1.0000n    to=   3.8000n
- minnod= 670.1101m    at=   2.0217n
+ minnod= 670.1099m    at=   2.0217n
              from=   1.0000n    to=   3.8000n
- maxnod= 670.8460m    at=   3.0106n
+ maxnod= 670.8459m    at=   3.0106n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
@@ -1941,9 +1941,9 @@ Random number generator is MCG            , and seed =      1, stream =   1
              from=   1.0000n    to=   3.8000n
  maxout= 702.4883m    at=   1.0133n
              from=   1.0000n    to=   3.8000n
- minnod= 596.3943m    at=   2.0216n
+ minnod= 596.3932m    at=   2.0216n
              from=   1.0000n    to=   3.8000n
- maxnod= 596.9657m    at=   3.0114n
+ maxnod= 596.9646m    at=   3.0114n
              from=   1.0000n    to=   3.8000n
  
 
@@ -1952,31 +1952,31 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
     meas_variable = minout
-   mean  =  697.1595m  varian =  248.2395n
-   sigma =  498.2364u  avgdev =  367.8803u
+   mean  =  697.1595m  varian =  248.2377n
+   sigma =  498.2345u  avgdev =  367.8787u
    max   =  697.7113m  min    =  696.7426m
-   1-sigma =  498.2364u  median =  697.0245m
+   1-sigma =  498.2345u  median =  697.0245m
 
 
     meas_variable = maxout
-   mean  =  702.8745m  varian =  125.7585n
-   sigma =  354.6245u  avgdev =  257.4427u
+   mean  =  702.8745m  varian =  125.7611n
+   sigma =  354.6282u  avgdev =  257.4458u
    max   =  703.1855m  min    =  702.4883m
-   1-sigma =  354.6245u  median =  702.9496m
+   1-sigma =  354.6282u  median =  702.9496m
 
 
     meas_variable = minnod
-   mean  =  646.2681m  varian =    1.8668m
-   sigma =   43.2059m  avgdev =   33.2492m
-   max   =  672.3000m  min    =  596.3943m
-   1-sigma =   43.2059m  median =  670.1101m
+   mean  =  646.2677m  varian =    1.8668m
+   sigma =   43.2065m  avgdev =   33.2497m
+   max   =  672.2999m  min    =  596.3932m
+   1-sigma =   43.2065m  median =  670.1099m
 
 
     meas_variable = maxnod
-   mean  =  646.9441m  varian =    1.8746m
-   sigma =   43.2961m  avgdev =   33.3189m
-   max   =  673.0204m  min    =  596.9657m
-   1-sigma =   43.2961m  median =  670.8460m
+   mean  =  646.9436m  varian =    1.8746m
+   sigma =   43.2967m  avgdev =   33.3193m
+   max   =  673.0203m  min    =  596.9646m
+   1-sigma =   43.2967m  median =  670.8459m
 
 
 
@@ -1993,9 +1993,9 @@ Random number generator is MCG            , and seed =      1, stream =   1
  CPU(s)		: 12
   
  OS:
- Linux version 5.15.0-76-generic (buildd@lcy02-amd64-019) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #83~20.04.1-Ubuntu SMP Wed Jun 21 20:23:31 UTC 2023
+ Linux version 5.15.0-78-generic (buildd@lcy02-amd64-027) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #85~20.04.1-Ubuntu SMP Mon Jul 17 09:42:39 UTC 2023
 
- System loadavg : 0.87 0.41 0.15 3/849 2784082
+ System loadavg : 0.92 0.45 0.29 2/721 195357
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -2020,7 +2020,7 @@ Random number generator is MCG            , and seed =      1, stream =   1
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           0.01           1          40
+  op point           0.01           1          39
   transient          0.10        1604        1200         452 rev=        16
   readin             0.00
   errchk             0.01
@@ -2028,14 +2028,14 @@ Random number generator is MCG            , and seed =      1, stream =   1
   output             0.00
 
 
-           peak memory used        449.59 megabytes
-           total cpu time            3.82 seconds
-           total elapsed time        3.86 seconds
-           job started at     20:13:32 07/27/2023
-           job ended   at     20:13:36 07/27/2023
+           peak memory used        450.55 megabytes
+           total cpu time            3.79 seconds
+           total elapsed time        3.83 seconds
+           job started at     20:35:20 08/14/2023
+           job ended   at     20:35:24 08/14/2023
 
 >info:         ***** hspice job concluded
-           job total runtime         3.86 seconds
+           job total runtime         3.83 seconds
 
 
  lic: Release hspice token(s) 

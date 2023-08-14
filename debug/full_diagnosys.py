@@ -1,12 +1,8 @@
 import os
 
+modules = ["matematica", "graph", "concorrencia", "spiceInterface", "circuito", "letFinder", "circuitManager", "mcManager"]
+
 print("Testing Quasar...")
-os.system("python -m utils.matematica")
-os.system("python -m utils.graph")
-os.system("python -m utils.concorrencia")
-os.system("python -m utils.spiceInterface")
-os.system("python -m utils.circuito")
-os.system("python -m utils.letFinder")
-os.system("python -m utils.circuitManager")
-os.system("python -m utils.mcManager")
+for module in modules:
+    os.system(f"python -m utils.{module}")
 print("Quasar OK")
