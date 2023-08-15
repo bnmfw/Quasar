@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.graph &mdash; Quasar 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Quasar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">github</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Quasar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.graph</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.graph</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Graph Module. Used to model wich nodes of a circuit can propagate a fault to.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../utils.html#utils.graph.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Graph object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transistors</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a graph given a transistor list.</span>
+
+<span class="sd">            :param list[list[str]] transistors: List of transistors to be interpreted as vertices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_list</span> <span class="o">=</span> <span class="n">ignore</span>
+
+        <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="n">lista</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">lista</span><span class="p">:</span>
+                <span class="n">lista</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Creates the graph from transistor files</span>
+        <span class="k">for</span> <span class="n">transistor</span> <span class="ow">in</span> <span class="n">transistors</span><span class="p">:</span>
+            <span class="n">source_name</span><span class="p">,</span> <span class="n">gate_name</span><span class="p">,</span> <span class="n">drain_name</span> <span class="o">=</span> <span class="n">transistor</span>
+
+            <span class="c1"># Gets the source, gate and drain objects</span>
+            <span class="c1"># Look I had to do it fast, didnt have much time, sorry</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">source_name</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">source_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">source_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">source_name</span><span class="p">,</span> <span class="s2">&quot;sees&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;reaches&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+                <span class="n">source</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">source_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">gate_name</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">gate_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">gate_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">gate_name</span><span class="p">,</span> <span class="s2">&quot;sees&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;reaches&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+                <span class="n">gate</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">gate_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">drain_name</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">drain_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">drain_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">drain_name</span><span class="p">,</span> <span class="s2">&quot;sees&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;reaches&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+                <span class="n">drain</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">drain_name</span><span class="p">]</span>
+
+            <span class="c1"># Creates the relationships</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">drain_name</span> <span class="ow">in</span> <span class="n">ignore</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">source_name</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                <span class="n">put</span><span class="p">(</span><span class="n">drain</span><span class="p">[</span><span class="s2">&quot;sees&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">source_name</span><span class="p">])</span>
+                <span class="n">put</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;sees&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">drain_name</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">drain_name</span> <span class="ow">in</span> <span class="n">ignore</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">gate_name</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                <span class="n">put</span><span class="p">(</span><span class="n">gate</span><span class="p">[</span><span class="s2">&quot;sees&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">drain_name</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">source_name</span> <span class="ow">in</span> <span class="n">ignore</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">gate_name</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                <span class="n">put</span><span class="p">(</span><span class="n">gate</span><span class="p">[</span><span class="s2">&quot;sees&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">source_name</span><span class="p">])</span>
+    
+        <span class="k">for</span> <span class="n">vi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">vi</span><span class="p">[</span><span class="s2">&quot;reaches&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_reach</span><span class="p">(</span><span class="n">vi</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+    
+<div class="viewcode-block" id="Graph.sees"><a class="viewcode-back" href="../../utils.html#utils.graph.Graph.sees">[docs]</a>    <span class="k">def</span> <span class="nf">sees</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">already_seen</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether or not source node sees the target. (DPS)</span>
+
+<span class="sd">            :param str source: Source og the search.</span>
+<span class="sd">            :param str target: Target of the search.</span>
+<span class="sd">            :param str already_seen: A list of already seen vertices, used by recursive call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># If there already is a reaches list</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">source</span><span class="p">][</span><span class="s2">&quot;reaches&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">return</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">source</span><span class="p">][</span><span class="s2">&quot;reaches&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Creates the already seen set if necessary</span>
+        <span class="k">if</span> <span class="n">already_seen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">already_seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        
+        <span class="c1"># Found it</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># Stops infinite search</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">already_seen</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Adds source to already seen node</span>
+        <span class="n">already_seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="c1"># Passes the call to all children</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">source</span><span class="p">][</span><span class="s2">&quot;sees&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sees</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">already_seen</span><span class="o">=</span><span class="n">already_seen</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># If none of children sees it returns false</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Graph.my_reach"><a class="viewcode-back" href="../../utils.html#utils.graph.Graph.my_reach">[docs]</a>    <span class="k">def</span> <span class="nf">my_reach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">already_seen</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a set with the names of all vertices the source can see.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Creates the already seen set if necessary</span>
+        <span class="k">if</span> <span class="n">already_seen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">already_seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="c1"># Stops infinite search</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">already_seen</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Adds source to already seen node</span>
+        <span class="n">already_seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="c1"># Passes the call to all children</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">source</span><span class="p">][</span><span class="s2">&quot;sees&quot;</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">my_reach</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">already_seen</span><span class="o">=</span><span class="n">already_seen</span><span class="p">)</span>
+
+        <span class="c1"># If none of children sees it returns false</span>
+        <span class="k">return</span> <span class="n">already_seen</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing Graph module...&quot;</span><span class="p">)</span>
+
+    <span class="n">transistors</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;vdd a1 p1_p2&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;p1_p2 b1 p2_n1&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd a1 p3_p4&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;p3_p4 cin1 p2_n1&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd b1 p3_p4&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd cin1 p6_p9&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd a1 p6_p9&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd b1 p6_p9&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;p6_p9 p2_n1 p9_n6&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd a1 p10_p11&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;p10_p11 b1 p11_p12&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;p11_p12 cin1 p9_n6&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;p2_n1 b1 n1_n2&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;n1_n2 a1 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;n4_n3 a1 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;p2_n1 cin1 n4_n3&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;n4_n3 b1 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;p9_n6 p2_n1 n6_n7&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;n6_n7 cin1 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;n6_n7 a1 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;n6_n7 b1 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;p9_n6 cin1 i10&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;i10 b1 i11&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;i11 a1 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd p9_n6 sum&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;sum p9_n6 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd p2_n1 cout&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;cout p2_n1 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;n6_n7 cin1 vdd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd sum nsum&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;nsum sum gnd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;vdd cout ncout&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;ncout cout gnd&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing sees method...&quot;</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">transistors</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;vdd&quot;</span><span class="p">,</span> <span class="s2">&quot;gnd&quot;</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="n">g</span><span class="o">.</span><span class="n">sees</span><span class="p">(</span><span class="s2">&quot;p1_p2&quot;</span><span class="p">,</span><span class="s2">&quot;cout&quot;</span><span class="p">),</span> <span class="s2">&quot;SEES FUNCTION FAILED&quot;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">sees</span><span class="p">(</span><span class="s2">&quot;cout&quot;</span><span class="p">,</span><span class="s2">&quot;p1_p2&quot;</span><span class="p">),</span> <span class="s2">&quot;SEES FUNCTION FAILED&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing my_reach method...&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">g</span><span class="o">.</span><span class="n">my_reach</span><span class="p">(</span><span class="s2">&quot;p1_p2&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s1">&#39;p9_n6&#39;</span><span class="p">,</span> <span class="s1">&#39;p3_p4&#39;</span><span class="p">,</span> <span class="s1">&#39;i11&#39;</span><span class="p">,</span> <span class="s1">&#39;i10&#39;</span><span class="p">,</span> <span class="s1">&#39;n1_n2&#39;</span><span class="p">,</span> <span class="s1">&#39;p2_n1&#39;</span><span class="p">,</span> <span class="s1">&#39;p1_p2&#39;</span><span class="p">,</span> <span class="s1">&#39;n4_n3&#39;</span><span class="p">,</span> <span class="s1">&#39;p6_p9&#39;</span><span class="p">,</span> <span class="s1">&#39;p11_p12&#39;</span><span class="p">,</span> <span class="s1">&#39;n6_n7&#39;</span><span class="p">,</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="s1">&#39;nsum&#39;</span><span class="p">,</span> <span class="s1">&#39;p10_p11&#39;</span><span class="p">,</span> <span class="s1">&#39;ncout&#39;</span><span class="p">,</span> <span class="s1">&#39;cout&#39;</span><span class="p">}</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Borges Sandoval.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

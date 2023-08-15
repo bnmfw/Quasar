@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.mcManager &mdash; Quasar 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Quasar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">github</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Quasar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.mcManager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.mcManager</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Monte Carlo Simulations Module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.matematica</span> <span class="kn">import</span> <span class="n">InDir</span><span class="p">,</span> <span class="n">Time</span>
+<span class="kn">from</span> <span class="nn">.spiceInterface</span> <span class="kn">import</span> <span class="n">SpiceRunner</span>
+<span class="kn">from</span> <span class="nn">.components</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.concorrencia</span> <span class="kn">import</span> <span class="n">PersistentProcessMaster</span>
+<span class="kn">from</span> <span class="nn">.arquivos</span> <span class="kn">import</span> <span class="n">CManager</span>
+<span class="kn">from</span> <span class="nn">.circuitManager</span> <span class="kn">import</span> <span class="n">CircuitManager</span>
+
+<div class="viewcode-block" id="MCManager"><a class="viewcode-back" href="../../utils.html#utils.mcManager.MCManager">[docs]</a><span class="k">class</span> <span class="nc">MCManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Responsible for Monte Carlo simulations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor.</span>
+
+<span class="sd">            :param Circuito circuit: Circuit to be simulated.</span>
+<span class="sd">            :para bool delay: Whether or not delay will be taken into consideration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span> <span class="o">=</span> <span class="n">circuit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circ_man</span> <span class="o">=</span> <span class="n">CircuitManager</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">delay</span>
+
+        <span class="c1"># Estado de simulacoes MC</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">em_analise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_jobs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">done_jobs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>   
+
+    <span class="k">def</span> <span class="nf">__determinar_variabilidade</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_analysis</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates variability points for MC simulation.</span>
+
+<span class="sd">            :param int n_analysis: Number of total simulations points.</span>
+<span class="sd">            :returns: A list of items on the format (id, [pmos, nmos])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">var</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">SpiceRunner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">path_to_circuits</span><span class="p">)</span><span class="o">.</span><span class="n">run_MC_var</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="n">n_analysis</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">var</span><span class="p">:</span>
+            <span class="n">var</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">4.8108</span> <span class="o">+</span> <span class="n">var</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="mf">4.8108</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span>
+            <span class="n">var</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">4.372</span> <span class="o">+</span> <span class="n">var</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="mf">4.372</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span>
+
+        <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">items</span>
+
+<div class="viewcode-block" id="MCManager.run_mc_iteration"><a class="viewcode-back" href="../../utils.html#utils.mcManager.MCManager.run_mc_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">run_mc_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs a single Monte Carlo simulation.</span>
+
+<span class="sd">            :param int index: Id of the simulation.</span>
+<span class="sd">            :param list point: A tuple of floats in the format (pmos, nmos)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pmos</span><span class="p">,</span> <span class="n">nmos</span> <span class="o">=</span> <span class="n">point</span>
+        <span class="k">with</span> <span class="n">SpiceRunner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">path_to_circuits</span><span class="p">)</span><span class="o">.</span><span class="n">MC_Instance</span><span class="p">(</span><span class="n">pmos</span><span class="p">,</span> <span class="n">nmos</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">delay</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">circ_man</span><span class="o">.</span><span class="n">get_atrasoCC</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">circ_man</span><span class="o">.</span><span class="n">atualizar_LETths</span><span class="p">(</span><span class="n">delay</span><span class="o">=</span><span class="n">delay</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">pmos</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">nmos</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span><span class="o">.</span><span class="n">nodo_nome</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span><span class="o">.</span><span class="n">saida_nome</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span><span class="o">.</span><span class="n">corrente</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span><span class="o">.</span><span class="n">valor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+    
+<div class="viewcode-block" id="MCManager.analise_monte_carlo_total"><a class="viewcode-back" href="../../utils.html#utils.mcManager.MCManager.analise_monte_carlo_total">[docs]</a>    <span class="k">def</span> <span class="nf">analise_monte_carlo_total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_analysis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">continue_backup</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">progress_report</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the full Monte Carlo simulation and puts the results in &lt;path&gt;/&lt;circuit_name&gt;_mc_LET.csv.</span>
+
+<span class="sd">            :param int n_analysis: Number of MC analysis.</span>
+<span class="sd">            :param bool continue_backup: Whether or not the simulation should continue from a backup if one exists.</span>
+<span class="sd">            :param bool delay: Whether or not delay should be taken into consideration.</span>
+<span class="sd">            :param Callable progress_report: Optional function that progress can be reported to.</span>
+<span class="sd">            :returns: Nothing, puts data in &lt;path&gt;/&lt;circuit_name&gt;_mc_LET.csv.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">PersistentProcessMaster</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_mc_iteration</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">path_to_my_dir</span><span class="si">}</span><span class="s2">/MC&quot;</span><span class="p">,</span> <span class="n">progress_report</span><span class="o">=</span><span class="n">progress_report</span><span class="p">,</span> <span class="n">work_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">path_to_circuits</span><span class="p">)</span>        
+
+        <span class="c1"># If there is a backup continues from where it stopped.</span>
+        <span class="k">if</span> <span class="n">continue_backup</span> <span class="ow">and</span> <span class="n">manager</span><span class="o">.</span><span class="n">check_backup</span><span class="p">():</span>
+            <span class="n">manager</span><span class="o">.</span><span class="n">load_backup</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">jobs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__determinar_variabilidade</span><span class="p">(</span><span class="n">n_analysis</span><span class="p">)</span>
+            <span class="n">manager</span><span class="o">.</span><span class="n">load_jobs</span><span class="p">(</span><span class="n">jobs</span><span class="p">)</span>
+
+        <span class="c1"># Concurrent execution, where the magic happens.</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">work</span><span class="p">((</span><span class="n">delay</span><span class="p">,))</span>
+
+        <span class="c1"># Dumps data into a csv.</span>
+        <span class="n">saida</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">return_done</span><span class="p">()</span>
+        <span class="n">CManager</span><span class="o">.</span><span class="n">tup_to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">path_to_my_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">nome</span><span class="si">}</span><span class="s2">_mc_LET.csv&quot;</span><span class="p">,</span> <span class="n">saida</span><span class="p">)</span>
+
+        <span class="c1"># Deletes the backup files.</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">delete_backup</span><span class="p">()</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing MC Manager...&quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.circuito</span> <span class="kn">import</span> <span class="n">Circuito</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing MC simulation...&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">InDir</span><span class="p">(</span><span class="s2">&quot;debug&quot;</span><span class="p">):</span>
+        <span class="n">nand</span> <span class="o">=</span> <span class="n">Circuito</span><span class="p">(</span><span class="s2">&quot;nand&quot;</span><span class="p">,</span> <span class="s2">&quot;test_circuits&quot;</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">from_json</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">MCManager</span><span class="p">(</span><span class="n">nand</span><span class="p">)</span><span class="o">.</span><span class="n">analise_monte_carlo_total</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;test_circuits/nand/nand_mc_LET.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;MC SIMULATION FAILED&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MC Manager OK&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Borges Sandoval.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

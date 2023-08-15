@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.circuito &mdash; Quasar 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Quasar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">github</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Quasar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.circuito</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.circuito</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Circuit object module. The Circuit object only tracks its nodes, delay, inputs, outputs and Lets.</span>
+<span class="sd">The actual circuit is fully described in the .cir file and simulated by Spice.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.arquivos</span> <span class="kn">import</span> <span class="n">JManager</span>
+<span class="kn">from</span> <span class="nn">.spiceInterface</span> <span class="kn">import</span> <span class="n">SpiceRunner</span>
+<span class="kn">from</span> <span class="nn">.graph</span> <span class="kn">import</span> <span class="n">Graph</span>
+<span class="kn">from</span> <span class="nn">.components</span> <span class="kn">import</span> <span class="n">Nodo</span><span class="p">,</span> <span class="n">Entrada</span><span class="p">,</span> <span class="n">LET</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="Circuito"><a class="viewcode-back" href="../../utils.html#utils.circuito.Circuito">[docs]</a><span class="k">class</span> <span class="nc">Circuito</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Circuit object. Tracks its file, relevant nodes and LETs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_to_circuits</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;circuitos&quot;</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor.</span>
+
+<span class="sd">            :param str name: Name of the circuit.</span>
+<span class="sd">            :param str path_to_circuits: Path from project dir to circuits dir.</span>
+<span class="sd">            :param float vdd: Vdd of the circuit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">##### ATRIBUTOS DO CIRCUITO #####</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nome</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_circuits</span> <span class="o">=</span> <span class="n">path_to_circuits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_my_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path_to_circuits</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arquivo</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.cir&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">:</span> <span class="n">Graph</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entradas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Entrada</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saidas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Nodo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodos</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Nodo</span><span class="p">]</span><span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">vdd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atrasoCC</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LETth</span><span class="p">:</span> <span class="n">LET</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Circuito.ha_cadastro"><a class="viewcode-back" href="../../utils.html#utils.circuito.Circuito.ha_cadastro">[docs]</a>    <span class="k">def</span> <span class="nf">ha_cadastro</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks whether or not a json file containing the circuit data exists.</span>
+
+<span class="sd">            :returns: If the json file exists or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_my_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nome</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Circuito.from_json"><a class="viewcode-back" href="../../utils.html#utils.circuito.Circuito.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fills the circuit object data from the json file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">JManager</span><span class="o">.</span><span class="n">decodificar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_folder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_circuits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+    
+<div class="viewcode-block" id="Circuito.from_nodes"><a class="viewcode-back" href="../../utils.html#utils.circuito.Circuito.from_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">from_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">outputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fills the circuit object by parsing the .cir file.</span>
+
+<span class="sd">            :param list[str] inputs: List of node names to be interpreted as inputs.</span>
+<span class="sd">            :param list[str] outputs: List of node names to be interpreted as outputs.</span>
+<span class="sd">            :param list[str] ignore: Nodes that should be ignored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saidas</span> <span class="o">=</span> <span class="p">[</span><span class="n">Nodo</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entradas</span> <span class="o">=</span> <span class="p">[</span><span class="n">Entrada</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
+        <span class="n">nodes_set</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">SpiceRunner</span><span class="p">(</span><span class="n">path_to_folder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_circuits</span><span class="p">)</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodos</span> <span class="o">=</span> <span class="p">[</span><span class="n">Nodo</span><span class="p">(</span><span class="n">nodo</span><span class="p">)</span> <span class="k">for</span> <span class="n">nodo</span> <span class="ow">in</span> <span class="n">nodes_set</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Circuito.set_signals"><a class="viewcode-back" href="../../utils.html#utils.circuito.Circuito.set_signals">[docs]</a>    <span class="k">def</span> <span class="nf">set_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sig_values</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets signals of inputs given its values.</span>
+
+<span class="sd">            :param list sig_values: A list of input values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">input_gate</span><span class="p">,</span> <span class="n">input_signal</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entradas</span><span class="p">,</span> <span class="n">sig_values</span><span class="p">):</span>
+            <span class="n">input_gate</span><span class="o">.</span><span class="n">sinal</span> <span class="o">=</span> <span class="n">input_signal</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing Circuit Module...&quot;</span><span class="p">)</span>
+    <span class="c1"># Decodification test of the circuit</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing decodification of circuit from json file...&quot;</span><span class="p">)</span>
+    <span class="n">decodec_test</span> <span class="o">=</span> <span class="n">Circuito</span><span class="p">(</span><span class="s2">&quot;decodec_test&quot;</span><span class="p">,</span> <span class="n">path_to_circuits</span><span class="o">=</span><span class="s2">&quot;debug/test_circuits&quot;</span><span class="p">,</span> <span class="n">vdd</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">from_json</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">ha_cadastro</span><span class="p">(),</span> <span class="s2">&quot;CIRCUIT FAILED FOR CHECKING JSON FILE&quot;</span>
+    <span class="k">assert</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">nome</span> <span class="o">==</span> <span class="s2">&quot;decodec_test&quot;</span><span class="p">,</span> <span class="s2">&quot;CIRCUIT DECODE FAILED FOR NAME&quot;</span>
+    <span class="k">assert</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">path_to_my_dir</span> <span class="o">==</span> <span class="s2">&quot;debug/test_circuits/decodec_test&quot;</span><span class="p">,</span> <span class="s2">&quot;CIRCUIT DECODE FAILED FOR PATH&quot;</span>
+    <span class="k">assert</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">arquivo</span> <span class="o">==</span> <span class="s2">&quot;decodec_test.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;CIRCUIT DECODE FAILED FOR FILE NAME&quot;</span>
+    <span class="k">assert</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">entradas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nome</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span> <span class="ow">and</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">entradas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sinal</span> <span class="o">==</span> <span class="s2">&quot;setup&quot;</span><span class="p">,</span> <span class="s2">&quot;CIRCUIT DECODE FAILED FOR INPUT SIGNALS&quot;</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">nodos</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="s2">&quot;i1&quot;</span><span class="p">],</span> <span class="s2">&quot;CIRCUIT DECODE FAILED FOR NODES&quot;</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">LETs</span><span class="p">),</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">nodos</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;CIRCUIT DECODE FAILED FOR NUMBER OS LETS&quot;</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">saidas</span><span class="p">))</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;g1&quot;</span><span class="p">],</span> <span class="s2">&quot;CIRCUIT DECODE FAILED FOR OUTPUTS&quot;</span>
+    <span class="k">assert</span> <span class="n">decodec_test</span><span class="o">.</span><span class="n">vdd</span> <span class="o">==</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">&quot;CIRCUIT DECODE FAILED FOR VDD&quot;</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing parsing of circuit file...&quot;</span><span class="p">)</span>
+    <span class="n">parsing_test</span> <span class="o">=</span> <span class="n">Circuito</span><span class="p">(</span><span class="s2">&quot;fadder&quot;</span><span class="p">,</span> <span class="n">path_to_circuits</span><span class="o">=</span><span class="s2">&quot;debug/test_circuits&quot;</span><span class="p">,</span> <span class="n">vdd</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">from_nodes</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;cin&quot;</span><span class="p">],[</span><span class="s2">&quot;cout&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">])</span>
+    <span class="c1"># assert {nodo.nome for nodo in parsing_test.nodos} == {&quot;cout&quot;, &quot;sum&quot;}, &quot;CIRCUIT PARSING FAILED&quot;</span>
+    <span class="c1"># for vi in parsing_test.graph.vertices.values():</span>
+    <span class="c1">#     print(vi[&quot;name&quot;],end=&quot;\t&quot;)</span>
+    <span class="c1">#     print(vi[&quot;reaches&quot;])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Circuit Module OK&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Borges Sandoval.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

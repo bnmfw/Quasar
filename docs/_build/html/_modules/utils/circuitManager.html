@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.circuitManager &mdash; Quasar 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Quasar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">github</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Quasar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.circuitManager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.circuitManager</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Circuit level simulation (Lvl 2) manager.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.matematica</span> <span class="kn">import</span> <span class="n">combinacoes_possiveis</span><span class="p">,</span> <span class="n">InDir</span><span class="p">,</span> <span class="n">Time</span>
+<span class="kn">from</span> <span class="nn">.spiceInterface</span> <span class="kn">import</span> <span class="n">HSRunner</span>
+<span class="kn">from</span> <span class="nn">.components</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.letFinder</span> <span class="kn">import</span> <span class="n">LetFinder</span>
+<span class="kn">from</span> <span class="nn">.concorrencia</span> <span class="kn">import</span> <span class="n">ProcessMaster</span>
+<span class="n">relatorio</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="CircuitManager"><a class="viewcode-back" href="../../utils.html#utils.circuitManager.CircuitManager">[docs]</a><span class="k">class</span> <span class="nc">CircuitManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Circuit level simulations manager.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">report</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor.</span>
+
+<span class="sd">            :param Circuit circuit: Circuit subject to the simulations.</span>
+<span class="sd">            :param bool report: Whether or not print reports will be done.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span> <span class="o">=</span> <span class="n">circuit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">let_manager</span> <span class="o">=</span> <span class="n">LetFinder</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">circuit</span><span class="o">.</span><span class="n">path_to_circuits</span><span class="p">,</span> <span class="n">report</span><span class="o">=</span><span class="n">report</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__limite_sup</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">400</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__limite_sim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">25</span>
+    
+    <span class="k">def</span> <span class="nf">__possible_LETs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">outputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">input_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recieves a list of nodes, outputs and the number of inputs and returns all possible lets.</span>
+
+<span class="sd">            :param list nodes: List of Node objects (Includes output nodes).</span>
+<span class="sd">            :param list outputs: List of Node objects interpreted as outputs.</span>
+<span class="sd">            :param int input_num: Number of inputs in circuit.</span>
+<span class="sd">            :returns: A list of all possible lets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">graph</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lets</span> <span class="o">=</span> <span class="p">[[</span><span class="n">node</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">signals</span><span class="p">]</span>\
+                    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span>\
+                    <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">outputs</span>\
+                    <span class="k">for</span> <span class="n">signals</span> <span class="ow">in</span> <span class="n">combinacoes_possiveis</span><span class="p">(</span><span class="n">input_num</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lets</span> <span class="o">=</span> <span class="p">[[</span><span class="n">node</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">signals</span><span class="p">]</span>\
+                    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span>\
+                    <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">outputs</span>\
+                    <span class="k">for</span> <span class="n">signals</span> <span class="ow">in</span> <span class="n">combinacoes_possiveis</span><span class="p">(</span><span class="n">input_num</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">sees</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">nome</span><span class="p">)]</span>
+        <span class="n">lets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nome</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;cin&quot;</span><span class="p">},</span> <span class="n">lets</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">let</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lets</span><span class="p">):</span>
+            <span class="n">let</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lets</span>
+    
+<div class="viewcode-block" id="CircuitManager.get_atrasoCC"><a class="viewcode-back" href="../../utils.html#utils.circuitManager.CircuitManager.get_atrasoCC">[docs]</a>    <span class="k">def</span> <span class="nf">get_atrasoCC</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the delay of shortest path of the circuit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">critical_input</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">critical_output</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">atrasoCC</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sim_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Todas as entradas em todas as saidas com todas as combinacoes</span>
+        <span class="k">for</span> <span class="n">entrada_analisada</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">entradas</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">saidas</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">validacao</span> <span class="ow">in</span> <span class="n">combinacoes_possiveis</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">entradas</span><span class="p">)):</span>
+
+                    <span class="c1"># Probabilly a better way to do it, but it is not just enumerate</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">for</span> <span class="n">entrada</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">entradas</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">entrada</span> <span class="o">!=</span> <span class="n">entrada_analisada</span><span class="p">:</span>
+                            <span class="n">entrada</span><span class="o">.</span><span class="n">sinal</span> <span class="o">=</span> <span class="n">validacao</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">entrada_analisada</span><span class="o">.</span><span class="n">sinal</span> <span class="o">=</span> <span class="s2">&quot;atraso&quot;</span>
+
+                    <span class="c1"># Etapa de medicao de atraso</span>
+                    <span class="n">delay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">HSRunner</span><span class="o">.</span><span class="n">run_delay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="n">entrada_analisada</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">vdd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">entradas</span><span class="p">)</span>
+
+                    <span class="n">sim_num</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="k">if</span> <span class="n">delay</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">atrasoCC</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">atrasoCC</span> <span class="o">=</span> <span class="n">delay</span>
+                        <span class="n">critical_output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">nome</span>
+                        <span class="n">critical_input</span> <span class="o">=</span> <span class="n">entrada</span><span class="o">.</span><span class="n">nome</span>
+        <span class="c1"># with open(&quot;atrasoCC.txt&quot;, &quot;a&quot;) as arq:</span>
+        <span class="c1">#     arq.write(f&quot;entrada: {critical_input}\t saida: {critical_output}\n&quot;)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atraso CC do arquivo: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">atrasoCC</span><span class="si">}</span><span class="s2"> simulacoes: </span><span class="si">{</span><span class="n">sim_num</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CircuitManager.atualizar_LETths"><a class="viewcode-back" href="../../utils.html#utils.circuitManager.CircuitManager.atualizar_LETths">[docs]</a>    <span class="k">def</span> <span class="nf">atualizar_LETths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the minimal LETs of the circuit.</span>
+
+<span class="sd">            :param bool delay: Whether the delay will be considered in the simulations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">HSRunner</span><span class="o">.</span><span class="n">Vdd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">vdd</span><span class="p">):</span>
+            <span class="n">sim_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1">##### BUSCA DO LETs DO CIRCUITO #####</span>
+            <span class="k">for</span> <span class="n">nodo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">nodos</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">let</span> <span class="ow">in</span> <span class="n">nodo</span><span class="o">.</span><span class="n">LETs</span><span class="p">:</span>
+                    <span class="c1"># try: </span>
+                    <span class="c1">##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####</span>
+                    <span class="k">if</span> <span class="n">relatorio</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">let</span><span class="o">.</span><span class="n">nodo_nome</span><span class="p">,</span> <span class="n">let</span><span class="o">.</span><span class="n">saida_nome</span><span class="p">,</span> <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">,</span> <span class="n">let</span><span class="o">.</span><span class="n">validacoes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">sim</span><span class="p">,</span> <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">let_manager</span><span class="o">.</span><span class="n">definir_corrente</span><span class="p">(</span><span class="n">let</span><span class="p">,</span> <span class="n">let</span><span class="o">.</span><span class="n">validacoes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">safe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="n">delay</span><span class="p">)</span>
+                    <span class="n">sim_num</span> <span class="o">+=</span> <span class="n">sim</span>
+                    <span class="k">if</span> <span class="n">relatorio</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;corrente: </span><span class="si">{</span><span class="n">let</span><span class="o">.</span><span class="n">corrente</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span> <span class="o">=</span> <span class="n">let</span>
+                    <span class="k">elif</span> <span class="n">let</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span><span class="p">:</span> 
+                        <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span> <span class="o">=</span> <span class="n">let</span></div>
+                    <span class="c1"># except KeyboardInterrupt:</span>
+                    <span class="c1">#     exit() </span>
+                    <span class="c1"># except (ValueError, KeyError):</span>
+                    <span class="c1">#     with open(&quot;erros.txt&quot;, &quot;a&quot;) as erro:</span>
+                    <span class="c1">#         erro.write(f&quot;pmos {pmos} nmos {nmos} {let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n&quot;)  </span>
+            <span class="c1"># print(f&quot;{sim_num} simulacoes feitas na atualizacao&quot;)</span>
+
+<div class="viewcode-block" id="CircuitManager.run_let_job"><a class="viewcode-back" href="../../utils.html#utils.circuitManager.CircuitManager.run_let_job">[docs]</a>    <span class="k">def</span> <span class="nf">run_let_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">input_signals</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs a single let job a returns the same let with its minimal current. </span>
+<span class="sd">        Method meant to be run cuncurrently </span>
+
+<span class="sd">            :param _: Important for cuncurrency, dont you dare take it out.</span>
+<span class="sd">            :param Nodo node: Node object where fault originates.</span>
+<span class="sd">            :param Node output: Output where fault propagates to.</span>
+<span class="sd">            :param list input_signals: Signal values of inputs.</span>
+<span class="sd">            :param bool delay: Whether or not delay will be taken into consideration.</span>
+<span class="sd">            :returns: A tuple with the minimal let and the input signals run.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">let_analisado</span> <span class="o">=</span> <span class="n">LET</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">vdd</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">let_manager</span><span class="o">.</span><span class="n">definir_corrente</span><span class="p">(</span><span class="n">let_analisado</span><span class="p">,</span> <span class="n">input_signals</span><span class="p">,</span> <span class="n">delay</span> <span class="o">=</span> <span class="n">delay</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">let_analisado</span><span class="p">,</span> <span class="n">input_signals</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="CircuitManager.determinar_LETths"><a class="viewcode-back" href="../../utils.html#utils.circuitManager.CircuitManager.determinar_LETths">[docs]</a>    <span class="k">def</span> <span class="nf">determinar_LETths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines all the minimal LETs of the circuit from all possible configurations.</span>
+
+<span class="sd">            :param bool delay: Whether or not delay will be taken into consideration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">nodos</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">LETs</span> <span class="o">=</span> <span class="p">[]</span>
+    
+        <span class="n">jobs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__possible_LETs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">nodos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">saidas</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">entradas</span><span class="p">))</span>
+
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">ProcessMaster</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_let_job</span><span class="p">,</span> <span class="n">jobs</span><span class="p">,</span> <span class="n">work_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">path_to_circuits</span><span class="p">)</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">work</span><span class="p">((</span><span class="n">delay</span><span class="p">,),</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">lets</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">return_done</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">let</span><span class="p">,</span> <span class="n">validacao</span><span class="p">)</span> <span class="ow">in</span> <span class="n">lets</span><span class="p">:</span>
+            <span class="c1"># Ignora correntes invalidas</span>
+            <span class="k">if</span> <span class="n">let</span><span class="o">.</span><span class="n">corrente</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">let</span><span class="o">.</span><span class="n">corrente</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">:</span> <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">nodo_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">nodos</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">nodo_</span><span class="o">.</span><span class="n">nome</span> <span class="o">==</span> <span class="n">let</span><span class="o">.</span><span class="n">nodo_nome</span><span class="p">:</span>
+                    <span class="n">node</span> <span class="o">=</span> <span class="n">nodo_</span>
+
+            <span class="c1"># Atualizacao do LETth do circuito</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">let</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">LETth</span> <span class="o">=</span> <span class="n">let</span>
+            
+            <span class="k">for</span> <span class="n">let_possivel</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">LETs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">let_possivel</span> <span class="o">==</span> <span class="n">let</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">let</span> <span class="o">&lt;</span> <span class="n">let_possivel</span><span class="p">:</span>
+                        <span class="n">node</span><span class="o">.</span><span class="n">LETs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">let_possivel</span><span class="p">)</span>
+                        <span class="n">node</span><span class="o">.</span><span class="n">LETs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">let</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">let</span><span class="o">.</span><span class="n">corrente</span> <span class="o">==</span> <span class="n">let_possivel</span><span class="o">.</span><span class="n">corrente</span><span class="p">:</span>
+                        <span class="n">let_possivel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validacao</span><span class="p">)</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">LETs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">let</span><span class="p">)</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing Circuit Manager...&quot;</span><span class="p">)</span>
+
+    <span class="kn">from</span> <span class="nn">.circuito</span> <span class="kn">import</span> <span class="n">Circuito</span>
+    <span class="n">ptf</span> <span class="o">=</span> <span class="s2">&quot;debug/test_circuits&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing update of minimal LETs...&quot;</span><span class="p">)</span>
+    <span class="n">nand_test</span> <span class="o">=</span> <span class="n">Circuito</span><span class="p">(</span><span class="s2">&quot;nand&quot;</span><span class="p">,</span> <span class="n">ptf</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">from_json</span><span class="p">()</span>
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">CircuitManager</span><span class="p">(</span><span class="n">nand_test</span><span class="p">,</span> <span class="n">report</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">manager</span><span class="o">.</span><span class="n">atualizar_LETths</span><span class="p">()</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing determining minimal LETs...&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">InDir</span><span class="p">(</span><span class="s2">&quot;debug&quot;</span><span class="p">):</span>
+        <span class="n">ptf</span> <span class="o">=</span> <span class="s2">&quot;test_circuits&quot;</span>
+        <span class="n">nor_test</span> <span class="o">=</span> <span class="n">Circuito</span><span class="p">(</span><span class="s2">&quot;nor&quot;</span><span class="p">,</span> <span class="n">ptf</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">from_nodes</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;g1&quot;</span><span class="p">])</span>
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">CircuitManager</span><span class="p">(</span><span class="n">nor_test</span><span class="p">,</span> <span class="n">report</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">determinar_LETths</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Circuit Manager OK.&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Borges Sandoval.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

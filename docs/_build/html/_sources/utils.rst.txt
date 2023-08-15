@@ -52,10 +52,26 @@ utils.concorrencia module
    :undoc-members:
    :show-inheritance:
 
+utils.graph module
+------------------
+
+.. automodule:: utils.graph
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 utils.letFinder module
 ----------------------
 
 .. automodule:: utils.letFinder
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+utils.logicValueFinder module
+-----------------------------
+
+.. automodule:: utils.logicValueFinder
    :members:
    :undoc-members:
    :show-inheritance:

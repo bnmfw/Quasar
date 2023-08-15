@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.concorrencia &mdash; Quasar 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Quasar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">github</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Quasar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.concorrencia</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.concorrencia</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Concurrent Framework.</span>
+<span class="sd">This is the only module in the project that knows cuncurrency existis, as it should be transparent to other modules.</span>
+<span class="sd">The interface provided is of a function executed multiple times with a queue of its inputs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">perf_counter</span>
+
+<div class="viewcode-block" id="ProcessFolder"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessFolder">[docs]</a><span class="k">class</span> <span class="nc">ProcessFolder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Context manager that creates a directory for a process that is a copy of the circuits directory. These copys are created in the work directory.</span>
+<span class="sd">    As the context manager is exited said folder is deleted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="nb">dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">first_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;work/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cp -R </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">first_dir</span><span class="si">}</span><span class="s2"> work/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">first_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;work/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="si">}</span><span class="s2">/..&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;..&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rm -r </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;..&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProcessWorker"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessWorker">[docs]</a><span class="k">class</span> <span class="nc">ProcessWorker</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes some function multiple times with different inputs. The static_args+job define the inputs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">static_args</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">max_work</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">work_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;circuitos&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor.</span>
+
+<span class="sd">            :param Callable work_func: Function to be executed multiple times.</span>
+<span class="sd">            :param list static_args: Arguments in function input that do not change over different jobs. Static args must be the last part of the input.</span>
+<span class="sd">            :param int max_work: Maximum number of functions a worker can run (used to not loop indefinatly in very edge cases).</span>
+<span class="sd">            :param str workdir: Main circuits directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">work_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">static_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_work</span> <span class="o">=</span> <span class="n">max_work</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">=</span> <span class="n">work_dir</span>
+
+    <span class="k">def</span> <span class="nf">__termination_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handles the termination signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="ProcessWorker.run"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessWorker.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes multiple jobs and posts its results.</span>
+
+<span class="sd">            :param object master: Process Master.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This line has to come here in run. Do not dare to put it in the constructor. Learn more about signals.</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__termination_handler</span><span class="p">)</span>
+
+        <span class="c1"># Changes the worker execution to its own folder</span>
+        <span class="k">with</span> <span class="n">ProcessFolder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">):</span>
+            
+            <span class="c1"># While True limited by the max_work load</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_work</span><span class="p">):</span>
+
+                <span class="c1"># Gets a job from the master</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">master</span><span class="o">.</span><span class="n">request_job</span><span class="p">()</span>
+                <span class="c1"># Job bein -1 means there is no more jobs to be done</span>
+                <span class="k">if</span> <span class="n">job</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="c1"># Does the job and times it as well</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">job</span><span class="p">[</span><span class="s2">&quot;job&quot;</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+                <span class="n">end_time</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
+
+                <span class="c1"># Posts a job to master</span>
+                <span class="n">master</span><span class="o">.</span><span class="n">post_result</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">job</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span>
+        <span class="k">return</span></div></div>
+
+<div class="viewcode-block" id="ProcessMaster"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessMaster">[docs]</a><span class="k">class</span> <span class="nc">ProcessMaster</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handles the multiple workers, jobs and sync.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">jobs</span><span class="p">:</span> <span class="nb">list</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span> <span class="n">work_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;circuitos&quot;</span><span class="p">,</span> <span class="n">progress_report</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor.</span>
+
+<span class="sd">            :param Callable func: Function to be executed multiple times.</span>
+<span class="sd">            :param list or None jobs: List of jobs to be done.</span>
+<span class="sd">            :param str work_dir: Main circuits directory.</span>
+<span class="sd">            :param Callable progress_report: Function that the progress is to be reported to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span> <span class="c1"># Function to be executed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">=</span>  <span class="n">work_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_report</span> <span class="o">=</span> <span class="n">progress_report</span> <span class="c1"># Function that Master should report its progress to</span>
+        <span class="k">if</span> <span class="n">jobs</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_jobs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">jobs</span><span class="p">)</span>
+
+        <span class="c1"># Sync</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock_jobs</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock_done</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock_inpg</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span> <span class="c1">#inpg = in progress</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inpg</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+
+        <span class="c1"># Queue for smart sleep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sleep_time</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__starting_sleep_time</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job_time</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock_time</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+        <span class="c1"># Fills the job Queue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">jobs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">job</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">jobs</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">put</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;job&quot;</span><span class="p">:</span> <span class="n">job</span><span class="p">})</span>
+       
+<div class="viewcode-block" id="ProcessMaster.terminate_work"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessMaster.terminate_work">[docs]</a>    <span class="k">def</span> <span class="nf">terminate_work</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workers</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Terminates all the Process Workers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="ProcessMaster.smart_sleep"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessMaster.smart_sleep">[docs]</a>    <span class="k">def</span> <span class="nf">smart_sleep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sleeps for a variable amount of time depending on the time workers post jobs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Actually sleeps zzzzz</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sleep_time</span><span class="o">*</span><span class="mf">0.8</span><span class="p">)</span>
+
+        <span class="c1"># Maintanance of sleep_time</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_time</span><span class="p">:</span>
+
+            <span class="c1"># If no job_time was reported no job has ended yet, so we just add 20 seconds because</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_time</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__starting_sleep_time</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__starting_sleep_time</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sleep_time</span> <span class="o">+=</span> <span class="mi">20</span>
+
+            <span class="c1"># New sleep_time is the longest job time yet</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sleep_time</span><span class="p">]</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_time</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_time</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sleep_time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">times</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProcessMaster.master_routine"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessMaster.master_routine">[docs]</a>    <span class="k">def</span> <span class="nf">master_routine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Routine of Process Master, including sleeping, reporting progress and finishing parallel execution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="c1"># Like sleep, but better</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">smart_sleep</span><span class="p">()</span>
+
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_done</span><span class="p">:</span>
+
+                <span class="c1"># Report progress if there is something to report progress to</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress_report</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">progress_report</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">total_jobs</span><span class="p">)</span>
+
+                <span class="c1"># Continues working if there still are jobs to be done</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_jobs</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># No job to be done, just gets all jobs (dont remembre why I do this)</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+                
+                <span class="k">return</span></div>
+    
+    <span class="k">def</span> <span class="nf">__remove_from_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Queue</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recieves a Queue and an id and removes the item from the Queue (kinda evil).</span>
+
+<span class="sd">            :param mp.Queue queue: Queue to have the item removed from.</span>
+<span class="sd">            :param int id: Id of the item to be removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">id</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProcessMaster.request_job"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessMaster.request_job">[docs]</a>    <span class="k">def</span> <span class="nf">request_job</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a single job to be executed. If there are no jobs left returns -1. Called by workers.</span>
+
+<span class="sd">            :returns: A job or -1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_jobs</span><span class="p">:</span>
+            
+            <span class="c1"># If there are no jobs left returns -1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            
+            <span class="c1"># Gets a job and puts it in progress</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_inpg</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">inpg</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">job</span></div>
+    
+<div class="viewcode-block" id="ProcessMaster.post_result"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessMaster.post_result">[docs]</a>    <span class="k">def</span> <span class="nf">post_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">total_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Posts the output of a function. Called by workers.</span>
+
+<span class="sd">            :param output: Output of the function.</span>
+<span class="sd">            :param int id: Id of the job completed.</span>
+<span class="sd">            :param float total_time: Time taken to complete the job.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Puts the done job in its queue</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_done</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+            <span class="c1"># print(f&quot;Finished job: {id}/{self.total_jobs}&quot;)</span>
+        <span class="c1"># Removes job from in progress queue</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_inpg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__remove_from_queue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inpg</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="c1"># Puts time used to run job in its queue</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_time</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">job_time</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">total_time</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ProcessMaster.return_done"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessMaster.return_done">[docs]</a>    <span class="k">def</span> <span class="nf">return_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all completed jobs.</span>
+
+<span class="sd">            :returns: Complete jobs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span></div>
+
+<div class="viewcode-block" id="ProcessMaster.work"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.ProcessMaster.work">[docs]</a>    <span class="k">def</span> <span class="nf">work</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">static_args</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates all workers and runs all workers.</span>
+
+<span class="sd">            :param list static_args: List containing the static arguments of the jobs, that dont change in between jobs.</span>
+<span class="sd">            :param int n_workers: Number of workers to be created, will take the cpu count as standard. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Creates all workers</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="p">[</span><span class="n">mp</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">ProcessWorker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">static_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">qsize</span><span class="p">(),</span> <span class="n">work_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="p">,))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_workers</span><span class="p">)]</span>
+
+        <span class="c1"># Starts all workers</span>
+        <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># Master rountine executed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">master_routine</span><span class="p">()</span>
+
+        <span class="c1"># This should never happen</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">qsize</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: Queue done finished with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span><span class="si">}</span><span class="s2"> items&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">qsize</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: Queue jobs finished with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span><span class="si">}</span><span class="s2"> items&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inpg</span><span class="o">.</span><span class="n">qsize</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: Queue inpg finished with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inpg</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span><span class="si">}</span><span class="s2"> items&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Joins all workers</span>
+        <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        
+        <span class="c1"># Should never happen</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;work&quot;</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ChildProcessError</span><span class="p">(</span><span class="s2">&quot;Master Process Joined Without Child Finishing&quot;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="PersistentProcessMaster"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.PersistentProcessMaster">[docs]</a><span class="k">class</span> <span class="nc">PersistentProcessMaster</span><span class="p">(</span><span class="n">ProcessMaster</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Specialization of ProcessMaster that also backups jobs in its routine.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">jobs</span><span class="p">:</span> <span class="nb">list</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span> <span class="n">backup_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">work_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;circuitos&quot;</span><span class="p">,</span> <span class="n">progress_report</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor.</span>
+
+<span class="sd">            :param Callable func: Function to be executed.</span>
+<span class="sd">            :param list or None jobs: List of jobe to be run.</span>
+<span class="sd">            :param str work_dir: Main circuits directory.</span>
+<span class="sd">            :param str backup_prefix: Path and prefix from root to backup, in the format path/.../filename excluding extensions.</span>
+<span class="sd">            :param Callable progress_report: Function that the progress is to be reported to. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">jobs</span><span class="p">,</span> <span class="n">work_dir</span><span class="o">=</span><span class="n">work_dir</span><span class="p">,</span> <span class="n">progress_report</span><span class="o">=</span><span class="n">progress_report</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">backup_prefix</span>
+        
+        <span class="c1"># Copias dos conteudos das queues usados para dump e load</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jobs_copy</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inpg_copy</span> <span class="o">=</span> <span class="p">[]</span>   
+    
+<div class="viewcode-block" id="PersistentProcessMaster.check_backup"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.PersistentProcessMaster.check_backup">[docs]</a>    <span class="k">def</span> <span class="nf">check_backup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks whether of not a backup exists.</span>
+
+<span class="sd">            :returns: A boolean informing whether or not said backup exists.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_jobs.json&quot;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="PersistentProcessMaster.empty_queue"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.PersistentProcessMaster.empty_queue">[docs]</a>    <span class="k">def</span> <span class="nf">empty_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Queue</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Emptys a queue.</span>
+
+<span class="sd">            :param mp.Queue queue: Queue to be emptied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="PersistentProcessMaster.delete_backup"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.PersistentProcessMaster.delete_backup">[docs]</a>    <span class="k">def</span> <span class="nf">delete_backup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes backups.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_jobs.json&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_done.json&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PersistentProcessMaster.dump_backup"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.PersistentProcessMaster.dump_backup">[docs]</a>    <span class="k">def</span> <span class="nf">dump_backup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dumps all jobs into backup files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inpg_copy</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">jobs_copy</span><span class="p">),</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_jobs.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">))</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span><span class="p">),</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_done.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="PersistentProcessMaster.load_backup"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.PersistentProcessMaster.load_backup">[docs]</a>    <span class="k">def</span> <span class="nf">load_backup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads jobs from backup.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jobs_copy</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_jobs.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_done.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_jobs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jobs_copy</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span><span class="p">)</span>
+        <span class="c1"># Carregamento das Queues com os conteudos do arquivo</span>
+        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs_copy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">job</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PersistentProcessMaster.load_jobs"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.PersistentProcessMaster.load_jobs">[docs]</a>    <span class="k">def</span> <span class="nf">load_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobs</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alternative for passing jobs in the construction of the object.</span>
+
+<span class="sd">            :param list jobs: List containing jobs to be done.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_jobs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">jobs</span><span class="p">)</span>
+        <span class="c1"># Enumera os jobs com ids</span>
+        <span class="n">jobs</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="s2">&quot;job&quot;</span><span class="p">:</span> <span class="n">job</span><span class="p">}</span> <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">job</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">jobs</span><span class="p">)]</span>
+
+        <span class="c1"># Preenche a Queue dos trabalhos</span>
+        <span class="k">for</span> <span class="n">job_dict</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">job_dict</span><span class="p">)</span>
+
+        <span class="c1"># Persistencia do trabalho feito</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jobs_copy</span> <span class="o">=</span> <span class="n">jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inpg_copy</span> <span class="o">=</span> <span class="p">[]</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">dump_backup</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__read_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Queue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the contents of a queue.</span>
+
+<span class="sd">            :param mp.Queue queue: Queue to be read.</span>
+<span class="sd">            :returns: the contents of the queue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">contents</span>
+    
+<div class="viewcode-block" id="PersistentProcessMaster.master_routine"><a class="viewcode-back" href="../../utils.html#utils.concorrencia.PersistentProcessMaster.master_routine">[docs]</a>    <span class="k">def</span> <span class="nf">master_routine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Routine of Process Master, including sleeping, reporting progress and backuping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Periodicamente salva o progresso</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">smart_sleep</span><span class="p">()</span>
+
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_jobs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_inpg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock_done</span><span class="p">:</span>
+                <span class="c1"># Le todas as queues</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">jobs_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__read_queue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inpg_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__read_queue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inpg</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__read_queue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="p">)</span>
+                <span class="c1"># Realiza o backup</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dump_backup</span><span class="p">()</span>
+
+                <span class="c1"># Atualiza o progresso (ISSO EH DO MAL KKKKKKKK)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress_report</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">progress_report</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">total_jobs</span><span class="p">)</span>
+
+                <span class="c1"># Se ainda ha trabalhos a serem feitos continua</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done_copy</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_jobs</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Pela forma que Queues funcionam em python eh necessario limpalas antes de dar join</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">empty_queue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="p">)</span>
+                <span class="k">break</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing Concurrent Module...&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing Process Folder...&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">&quot;debug&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">ProcessFolder</span><span class="p">(</span><span class="s2">&quot;folder_depth_test/deeper&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;deeper/deepest.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;test text.&quot;</span><span class="p">,</span> <span class="s2">&quot;PROCESS FOLDER FAILED&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing Simple Parallel execution...&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">a</span>
+
+    <span class="n">test_jobs</span> <span class="o">=</span> <span class="p">[[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">ProcessMaster</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">test_jobs</span><span class="p">)</span>
+    <span class="n">manager</span><span class="o">.</span><span class="n">work</span><span class="p">((</span><span class="mi">10</span><span class="p">,))</span>
+    <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">manager</span><span class="o">.</span><span class="n">return_done</span><span class="p">())</span> <span class="o">==</span> <span class="p">{</span><span class="n">i</span><span class="o">*</span><span class="mi">10</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)},</span> <span class="s2">&quot;SIMPLE PARALLEL MANAGER FAILED&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing Backuping Parallel execution...&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sleeper</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">a</span>
+    
+    <span class="n">backuper</span> <span class="o">=</span> <span class="n">PersistentProcessMaster</span><span class="p">(</span><span class="n">sleeper</span><span class="p">,</span> <span class="n">test_jobs</span><span class="p">,</span> <span class="s2">&quot;debug/backup_test/test&quot;</span><span class="p">)</span>
+    <span class="n">backuper</span><span class="o">.</span><span class="n">work</span><span class="p">((</span><span class="mi">10</span><span class="p">,))</span>
+    <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">backuper</span><span class="o">.</span><span class="n">return_done</span><span class="p">())</span> <span class="o">==</span> <span class="p">{</span><span class="n">i</span><span class="o">*</span><span class="mi">10</span>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)},</span> <span class="s2">&quot;BACKUPING PARALLEL MANAGER FAILED&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Concurrent Module OK.&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Borges Sandoval.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

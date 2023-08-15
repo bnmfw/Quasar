@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.spiceInterface &mdash; Quasar 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Quasar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">github</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Quasar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.spiceInterface</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.spiceInterface</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Spice Interface.</span>
+<span class="sd">The interaction with Spice is always done through SpiceRunner.</span>
+<span class="sd">No other file in the Project should know how to interact with Spice.</span>
+<span class="sd">Both classes in this file are stateless, therefore the classes are instantiated and its instances are accessed </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.matematica</span> <span class="kn">import</span> <span class="n">spice_to_float</span>
+<span class="kn">from</span> <span class="nn">.components</span> <span class="kn">import</span> <span class="n">LET</span>
+<span class="kn">from</span> <span class="nn">.graph</span> <span class="kn">import</span> <span class="n">Graph</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+<span class="c1"># Defines the start and end of the measuring window, must have only 2 elements</span>
+<span class="n">measure_window</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpiceFileManager"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager">[docs]</a><span class="k">class</span> <span class="nc">SpiceFileManager</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Responsible for altering the .cir files used by Spice and reading its output.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;circuitos&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor</span>
+
+<span class="sd">            :param str path_to_folder: relative path into the folder that contain spice files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span> <span class="o">=</span> <span class="n">path_to_folder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__write_peak_meas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">peak</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">finish</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a peak measurement line in the measurement .cir file.</span>
+
+<span class="sd">            :param type file: File object that is to be written to.</span>
+<span class="sd">            :param str label: Label of the measurement.</span>
+<span class="sd">            :param str peak: Type of peak to be measured. Either &#39;min&#39; or &#39;max&#39;.</span>
+<span class="sd">            :param str grandeza: Physical quantity. Either &#39;V&#39; or &#39;i&#39;.</span>
+<span class="sd">            :param str node: Name of the node to be measured.</span>
+<span class="sd">            :param float start: Starting time of the measurement window.</span>
+<span class="sd">            :param float finish: Finishing time of the measurement window.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">peak</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;peak cannot be </span><span class="si">{</span><span class="n">peak</span><span class="si">}</span><span class="s2">, must be min or max&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;quantity cannot be </span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2">, must be i or V&quot;</span><span class="p">)</span>
+         
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.meas tran </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">peak</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">) from=</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">n to=</span><span class="si">{</span><span class="n">finish</span><span class="si">}</span><span class="s2">n</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__write_trig_meas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trig</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trig_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">trig_inclin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">targ</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">targ_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">targ_inclin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a trig measurement line in the measurement .cir file.</span>
+
+<span class="sd">            :param type file: File object that is to be written to.</span>
+<span class="sd">            :param str label: Label of the measurement.</span>
+<span class="sd">            :param str trig: Name of the monitored triggering node.</span>
+<span class="sd">            :param float trig_value: Value to trigger the measurement.</span>
+<span class="sd">            :param str trig_inclin: Inclination of trigger. Must be &#39;rise&#39; or &#39;fall&#39;.</span>
+<span class="sd">            :param str targ: Name of the monitored target node.</span>
+<span class="sd">            :param float targ_value: Value of target node ot end the measurement.</span>
+<span class="sd">            :param str targ_inclin: Inclination of target. Must be &#39;rise&#39; or &#39;fall&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.meas tran </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> TRIG v(</span><span class="si">{</span><span class="n">trig</span><span class="si">}</span><span class="s2">) val=&#39;</span><span class="si">{</span><span class="n">trig_value</span><span class="si">}</span><span class="s2">&#39; </span><span class="si">{</span><span class="n">trig_inclin</span><span class="si">}</span><span class="s2">=1 TARG v(</span><span class="si">{</span><span class="n">targ</span><span class="si">}</span><span class="s2">) val=&#39;</span><span class="si">{</span><span class="n">targ_value</span><span class="si">}</span><span class="s2">&#39; </span><span class="si">{</span><span class="n">targ_inclin</span><span class="si">}</span><span class="s2">=1</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="SpiceFileManager.measure_pulse"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.measure_pulse">[docs]</a>    <span class="k">def</span> <span class="nf">measure_pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alters the measure.cir file to track min and max tension on given node and output</span>
+
+<span class="sd">            :param str node: Node with to have min and max tensions measured</span>
+<span class="sd">            :param str output: Output to have min and max tensions measured</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/measure.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*File with measures of lowest and highest values in node and output</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_peak_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;minout&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="o">*</span><span class="n">measure_window</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_peak_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;maxout&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="o">*</span><span class="n">measure_window</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_peak_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;minnod&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">*</span><span class="n">measure_window</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_peak_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;maxnod&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">*</span><span class="n">measure_window</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.measure_tension"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.measure_tension">[docs]</a>    <span class="k">def</span> <span class="nf">measure_tension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alters the measure.cir file to track min and max tension on given node.</span>
+
+<span class="sd">            :param str node: Node with to have min and max tensions measured.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/measure.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*File with measures of lowest and highest values in node</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_peak_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;minnod&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">*</span><span class="n">measure_window</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_peak_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;maxnod&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">*</span><span class="n">measure_window</span><span class="p">)</span> </div>
+    
+<div class="viewcode-block" id="SpiceFileManager.measure_nodes"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.measure_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">measure_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alters the measure.cir file to track the min and max value of given nodes.</span>
+
+<span class="sd">            :param list[str] nodes: List of node names to be measured.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/measure.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*File with measured of lowest and highest values in list of nodes</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__write_peak_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;min</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">*</span><span class="n">measure_window</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__write_peak_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;max</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">*</span><span class="n">measure_window</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.set_vdd"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.set_vdd">[docs]</a>    <span class="k">def</span> <span class="nf">set_vdd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alters the vdd.cir file to set the vdd of the simulations.</span>
+
+<span class="sd">            :param float vdd: Defines the vdd of the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/vdd.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*File with the vdd tension used by all circuits</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vvdd vdd gnd </span><span class="si">{</span><span class="n">vdd</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vvcc vcc gnd </span><span class="si">{</span><span class="n">vdd</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vclk clk gnd PULSE(0 </span><span class="si">{</span><span class="n">vdd</span><span class="si">}</span><span class="s2"> 1n 0.01n 0.01n 1n 2n)&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.set_vss"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.set_vss">[docs]</a>    <span class="k">def</span> <span class="nf">set_vss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alters the vss.cir file to set the vss of the simulations</span>
+
+<span class="sd">            :param float vss: defines the vss of the simulation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/vss.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*File with the vss tension used by all circuits</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vvss vss gnd </span><span class="si">{</span><span class="n">vss</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.set_signals"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.set_signals">[docs]</a>    <span class="k">def</span> <span class="nf">set_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">vss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alters the fontes.cir file defining the input values of the simulation.</span>
+<span class="sd">        </span>
+<span class="sd">            :param float vdd: the vdd of the simulation.</span>
+<span class="sd">            :param dict inputs: dict with input values in the form {input_name: input_value}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># print(&quot;I will try to acces:&quot;)</span>
+        <span class="c1"># os.system(&quot;pwd&quot;)</span>
+        <span class="c1"># print(f&quot;{self.path_to_folder}/include/fontes.cir&quot;)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/fontes.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*Input signals to be altered by Quasar</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Escreve o sinal analogico a partir do sinal logico</span>
+            <span class="k">for</span> <span class="n">entrada</span><span class="p">,</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;V</span><span class="si">{</span><span class="n">entrada</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">entrada</span><span class="si">}</span><span class="s2"> gnd &quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vdd</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">vss</span><span class="p">:</span>
+                        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vss</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;0.0</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;atraso&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">vss</span><span class="p">:</span>
+                        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PWL(0n </span><span class="si">{</span><span class="n">vss</span><span class="si">}</span><span class="s2"> 1n </span><span class="si">{</span><span class="n">vss</span><span class="si">}</span><span class="s2"> 1.01n </span><span class="si">{</span><span class="n">vdd</span><span class="si">}</span><span class="s2"> 3n </span><span class="si">{</span><span class="n">vdd</span><span class="si">}</span><span class="s2"> 3.01n </span><span class="si">{</span><span class="n">vss</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PWL(0n 0 1n 0 1.01n </span><span class="si">{</span><span class="n">vdd</span><span class="si">}</span><span class="s2"> 3n </span><span class="si">{</span><span class="n">vdd</span><span class="si">}</span><span class="s2"> 3.01n 0)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid signal type recieved: &quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.set_pulse"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.set_pulse">[docs]</a>    <span class="k">def</span> <span class="nf">set_pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alters the SETs.cir file wich models the fault.</span>
+
+<span class="sd">            :param LET let: let to be modeled.</span>
+<span class="sd">            :param float current: current of the fault. If left as None let.current will be used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;fall&quot;</span><span class="p">,</span> <span class="s2">&quot;rise&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recieved: </span><span class="si">{</span><span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> instead of a inclination&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">current</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">let</span><span class="o">.</span><span class="n">corrente</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/SETs.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">sets</span><span class="p">:</span>
+            <span class="n">sets</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*SET faults</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;rise&quot;</span><span class="p">:</span> <span class="n">sets</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+            <span class="n">sets</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iseu gnd </span><span class="si">{</span><span class="n">let</span><span class="o">.</span><span class="n">nodo_nome</span><span class="si">}</span><span class="s2"> EXP(0 </span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s2">u 2n 50p 164p 200p) //rise</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span><span class="p">:</span> <span class="n">sets</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+            <span class="n">sets</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iseu </span><span class="si">{</span><span class="n">let</span><span class="o">.</span><span class="n">nodo_nome</span><span class="si">}</span><span class="s2"> gnd EXP(0 </span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s2">u 2n 50p 164p 200p) //fall</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.measure_delay"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.measure_delay">[docs]</a>    <span class="k">def</span> <span class="nf">measure_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Altes the measure.cir file to measure the delay from one input to one output.</span>
+
+<span class="sd">            :param str input: name of the input node.</span>
+<span class="sd">            :param str out: name of the output node.</span>
+<span class="sd">            :param float vdd: value of the vdd of the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/measure.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*File with the dealys to be measured</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">half_vdd</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">vdd</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_trig_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;atraso_rr&quot;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">half_vdd</span><span class="p">,</span> <span class="s2">&quot;rise&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">half_vdd</span><span class="p">,</span> <span class="s2">&quot;rise&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_trig_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;atraso_rf&quot;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">half_vdd</span><span class="p">,</span> <span class="s2">&quot;rise&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">half_vdd</span><span class="p">,</span> <span class="s2">&quot;fall&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_trig_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;atraso_ff&quot;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">half_vdd</span><span class="p">,</span> <span class="s2">&quot;fall&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">half_vdd</span><span class="p">,</span> <span class="s2">&quot;fall&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_trig_meas</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;atraso_fr&quot;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">half_vdd</span><span class="p">,</span> <span class="s2">&quot;fall&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">half_vdd</span><span class="p">,</span> <span class="s2">&quot;rise&quot;</span><span class="p">)</span></div>
+            <span class="c1"># self.__write_trig_meas(file, &quot;largura&quot;, out, half_vdd, &quot;fall&quot;, out, half_vdd, &quot;rise&quot;)</span>
+
+<div class="viewcode-block" id="SpiceFileManager.measure_pulse_width"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.measure_pulse_width">[docs]</a>    <span class="k">def</span> <span class="nf">measure_pulse_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alters the measure.cir file to measure the fault width of the let on the output.</span>
+<span class="sd">        The fault width is the time the output node is flipped by the fault.</span>
+
+<span class="sd">            :param LET let: let modeled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/measure.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">arquivo</span><span class="p">:</span>
+            <span class="n">arquivo</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*File with the fault width to be measured</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">tensao</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">let</span><span class="o">.</span><span class="n">vdd</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__write_trig_meas</span><span class="p">(</span><span class="n">arquivo</span><span class="p">,</span> <span class="s2">&quot;larg&quot;</span><span class="p">,</span> <span class="n">let</span><span class="o">.</span><span class="n">nodo_nome</span><span class="p">,</span> <span class="n">tensao</span><span class="p">,</span> <span class="s2">&quot;rise&quot;</span><span class="p">,</span> <span class="n">let</span><span class="o">.</span><span class="n">nodo_nome</span><span class="p">,</span> <span class="n">tensao</span><span class="p">,</span> <span class="s2">&quot;fall&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.set_monte_carlo"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.set_monte_carlo">[docs]</a>    <span class="k">def</span> <span class="nf">set_monte_carlo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the monte carlo parameter in the monte_carlo.cir file.</span>
+
+<span class="sd">            :param int simulations: number o Monte Carlo simulations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/monte_carlo.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mc</span><span class="p">:</span>
+            <span class="n">mc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;*Arquivo Analise Monte Carlo</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">mc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;.tran 0.01n 4n&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">simulations</span><span class="p">:</span> <span class="n">mc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; sweep monte=</span><span class="si">{</span><span class="n">simulations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.set_variability"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.set_variability">[docs]</a>    <span class="k">def</span> <span class="nf">set_variability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pvar</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nvar</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alterts the mc.cir file to set the variability parameters.</span>
+
+<span class="sd">            :param float pvar: work function of pfet devices.</span>
+<span class="sd">            :param float nvar: work function of nfer devices.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/include/mc.cir&quot;</span><span class="p">,</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mc</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pvar</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">nvar</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">mc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;* Analise MC</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;.param phig_var_p = gauss(4.8108, 0.05, 3)</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;.param phig_var_n = gauss(4.372, 0.05, 3)&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;* Analise MC</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;.param phig_var_p = </span><span class="si">{</span><span class="n">pvar</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;.param phig_var_n = </span><span class="si">{</span><span class="n">nvar</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    <span class="c1">################### ^ SETS | GETS v ################################</span>
+
+<div class="viewcode-block" id="SpiceFileManager.Meas_from"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.Meas_from">[docs]</a>    <span class="nd">@dataclass</span>
+    <span class="k">class</span> <span class="nc">Meas_from</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Measure struct of the from type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+        <span class="n">time</span><span class="p">:</span> <span class="nb">float</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.Meas_targ"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.Meas_targ">[docs]</a>    <span class="nd">@dataclass</span>
+    <span class="k">class</span> <span class="nc">Meas_targ</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Measure struct of the trig targ type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+        <span class="n">targ</span><span class="p">:</span> <span class="nb">float</span>
+        <span class="n">trig</span><span class="p">:</span> <span class="nb">float</span></div>
+    
+    <span class="k">def</span> <span class="nf">__format_measure_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Meas_from</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gatters the data from a measurement from the from type.</span>
+
+<span class="sd">            :param str line: line containing the data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">label_value</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;at=&quot;</span><span class="p">)</span>
+        <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">label_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Meas_from</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">spice_to_float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">spice_to_float</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__format_measure_trig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Meas_targ</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gatters the data from a measurement from the trig trag type.</span>
+
+<span class="sd">            :param str line: line containing the data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">label</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Meas_targ</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">label_value_targ</span><span class="p">,</span> <span class="n">trig</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;trig=&quot;</span><span class="p">)</span>  
+        <span class="n">label_value</span><span class="p">,</span> <span class="n">targ</span><span class="o">=</span> <span class="n">label_value_targ</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;targ=&quot;</span><span class="p">)</span>
+        <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">label_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Meas_targ</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">spice_to_float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">spice_to_float</span><span class="p">(</span><span class="n">targ</span><span class="p">),</span> <span class="n">spice_to_float</span><span class="p">(</span><span class="n">trig</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">__format_output_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recieves a measurement line and outputs it data.</span>
+
+<span class="sd">            :param line</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">measure</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">&quot;at=&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">measure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__format_measure_from</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;trig=&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">measure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__format_measure_trig</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;**warning**&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">measure</span><span class="o">.</span><span class="n">label</span><span class="p">:</span> <span class="n">measure</span><span class="p">}</span>
+
+<div class="viewcode-block" id="SpiceFileManager.get_nodes"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.get_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">get_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse a &lt;circut_name&gt;.cir file and gets all nodes connected to transistor devices.</span>
+
+<span class="sd">            :param str curcuit_name: name of the circuit to be parsed.</span>
+<span class="sd">            :returns: a set containing the label of all nodes and a Graph object.</span>
+<span class="sd">            :param list[str] ignore: Nodes that should be ignored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;vdd&quot;</span><span class="p">,</span> <span class="s2">&quot;gnd&quot;</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore</span><span class="p">:</span>
+            <span class="n">ignore</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">ignore</span> <span class="o">|=</span> <span class="p">{</span><span class="s2">&quot;vcc&quot;</span><span class="p">,</span> <span class="s2">&quot;vdd&quot;</span><span class="p">,</span> <span class="s2">&quot;gnd&quot;</span><span class="p">,</span> <span class="s2">&quot;vss&quot;</span><span class="p">}</span>
+        <span class="n">critical_region</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">circuit_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">circuit_name</span><span class="si">}</span><span class="s2">.cir&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">transistor_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+
+                <span class="c1"># Identifies the quasar region of the circuit file</span>
+                <span class="c1"># if &quot;START QUASAR&quot; in line:</span>
+                <span class="c1">#     critical_region = True</span>
+                <span class="c1">#     continue</span>
+                <span class="c1"># elif &quot;END QUASAR&quot; in line:</span>
+                <span class="c1">#     critical_region = False</span>
+                <span class="c1">#     continue</span>
+                <span class="c1"># if not critical_region:</span>
+                <span class="c1">#     continue</span>
+
+                <span class="c1"># A line starting with M identifies a transistor, wich means its connected to availabel nodes</span>
+                <span class="k">if</span> <span class="s2">&quot;M&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="c1"># Im not sure if those are actually source and drain, but doesent matter to identifing them</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">gate</span><span class="p">,</span> <span class="n">drain</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="n">transistor_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">source</span><span class="p">,</span> <span class="n">gate</span><span class="p">,</span> <span class="n">drain</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="p">[</span><span class="n">source</span><span class="p">,</span> <span class="n">gate</span><span class="p">,</span> <span class="n">drain</span><span class="p">]:</span>
+                        <span class="n">nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span> <span class="ow">and</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;t&quot;</span><span class="p">},</span> <span class="n">Graph</span><span class="p">(</span><span class="n">transistor_list</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.get_output"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.get_output">[docs]</a>    <span class="k">def</span> <span class="nf">get_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads data in the output.txt file.</span>
+
+<span class="sd">            :returns: a dict containing all data formatted as {&#39;label&#39;: data}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/output.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">linha</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__format_output_line</span><span class="p">(</span><span class="n">linha</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+    
+<div class="viewcode-block" id="SpiceFileManager.get_peak_tension"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.get_peak_tension">[docs]</a>    <span class="k">def</span> <span class="nf">get_peak_tension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inclination</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nodMeas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the peak tension of a node.</span>
+
+<span class="sd">            :param str inclination: Inclination measured. Must be &#39;rise&#39; or &#39;fall&#39;</span>
+<span class="sd">            :param bool nodMeas: Node measured is an output = False; is not an output = True.</span>
+<span class="sd">            :returns: peak tension measured.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inclination</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;fall&quot;</span><span class="p">,</span> <span class="s2">&quot;rise&quot;</span><span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inclination value not accepted: </span><span class="si">{</span><span class="n">inclination</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">nodMeas</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inclination</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;minnod&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;maxnod&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inclination</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;minout&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;maxout&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.get_nodes_tension"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.get_nodes_tension">[docs]</a>    <span class="k">def</span> <span class="nf">get_nodes_tension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the max and min tension of given nodes</span>
+
+<span class="sd">            :param list[str] nodes: List of node names to be retrieved.</span>
+<span class="sd">            :returns: a dict in the form {node: (min_tension, max_tension)}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;min</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">output</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;max</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">}</span></div>
+    
+<div class="viewcode-block" id="SpiceFileManager.get_tension"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.get_tension">[docs]</a>    <span class="k">def</span> <span class="nf">get_tension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the max and min tension of a node</span>
+
+<span class="sd">            :returns: A tuple containing the max and min tensions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;maxnod&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;minnod&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+    
+    <span class="k">def</span> <span class="nf">__get_csv_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads a csv file (usually mc0.csv or mt0.csv) as returns its data.</span>
+
+<span class="sd">            :param str filename: name of the file to be read.</span>
+<span class="sd">            :param str start: substring which indicates the reading starts in the next line.</span>
+<span class="sd">            :returns: a dict containing the columns of the csv of the form data[label] = [column vector]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">():</span>
+                <span class="k">pass</span>
+
+            <span class="c1"># criacao do padrao do dicionario</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">label</span><span class="p">:</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">linha</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">valores</span> <span class="o">=</span> <span class="n">linha</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">chave</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                    <span class="n">valor</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">valores</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;failed&quot;</span> <span class="k">else</span> <span class="n">spice_to_float</span><span class="p">(</span><span class="n">valores</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">chave</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="SpiceFileManager.get_mc_faults"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.get_mc_faults">[docs]</a>    <span class="k">def</span> <span class="nf">get_mc_faults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sim_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">inclination</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the number of simulations that resulted in a fault in a MC simulation.</span>
+
+<span class="sd">            :param str circuit_name: Name of the circuit.</span>
+<span class="sd">            :param int sim_num: Number of Monte Carlo simulations done.</span>
+<span class="sd">            :param str inclination: Inclination of fault on the output. Must be &#39;rise&#39; or &#39;fall&#39;.</span>
+<span class="sd">            :param float vdd: Vdd of the simulations.</span>
+<span class="sd">            :returns: Number of simulations that faulted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">faults</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_csv_data</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">circuit_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">circuit_name</span><span class="si">}</span><span class="s2">.mt0.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;.TITLE&quot;</span><span class="p">)</span>
+
+        <span class="n">inclination_corr</span> <span class="o">=</span> <span class="s2">&quot;mincor&quot;</span> <span class="k">if</span> <span class="n">inclination</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span> <span class="k">else</span> <span class="s2">&quot;maxcor&quot;</span>
+        <span class="n">inclination_tens</span> <span class="o">=</span> <span class="s2">&quot;minout&quot;</span> <span class="k">if</span> <span class="n">inclination</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span> <span class="k">else</span> <span class="s2">&quot;maxout&quot;</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sim_num</span><span class="p">):</span>
+            <span class="c1"># corrente_pico = dados[inclinacao_corr][i]</span>
+            <span class="n">peak_tension</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">inclination_tens</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">inclination</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span> <span class="ow">and</span> <span class="n">peak_tension</span> <span class="o">&lt;</span> <span class="n">vdd</span> <span class="o">/</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">inclination</span> <span class="o">==</span> <span class="s2">&quot;rise&quot;</span> <span class="ow">and</span> <span class="n">peak_tension</span> <span class="o">&gt;</span> <span class="n">vdd</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">faults</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">faults</span></div>
+
+<div class="viewcode-block" id="SpiceFileManager.get_delay"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.get_delay">[docs]</a>    <span class="k">def</span> <span class="nf">get_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the delay measured from the output.txt file.</span>
+<span class="sd">            </span>
+<span class="sd">            :returns: the delay measured.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
+
+        <span class="n">delays</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;atraso_rr&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;atraso_ff&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;atraso_rf&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;atraso_fr&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+        <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">delays</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        
+        <span class="c1"># Sorting</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atraso</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">delays</span><span class="p">):</span>
+            <span class="n">delays</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">atraso</span><span class="p">)</span>
+        <span class="n">delays</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+        <span class="c1"># Basically because we are running all kinds of delay measures delays[2] and delays[3] contain nonsense so we get only delays[1] witch will be the gratest</span>
+
+        <span class="k">return</span> <span class="n">delays</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+    
+<div class="viewcode-block" id="SpiceFileManager.get_mc_instances"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceFileManager.get_mc_instances">[docs]</a>    <span class="k">def</span> <span class="nf">get_mc_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circ_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the instances in &lt;circuit&gt;.mc0.csv.</span>
+
+<span class="sd">            :param str circ_name: Name of the circuit.</span>
+<span class="sd">            :returns: Dict containing the instances of variability.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">instances</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_csv_data</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">circ_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">circ_name</span><span class="si">}</span><span class="s2">.mc0.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;$ IRV&quot;</span><span class="p">)</span>
+
+        <span class="n">ps</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pmos_rvt:@:phig_var_p:@:IGNC&quot;</span>
+        <span class="n">ns</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nmos_rvt:@:phig_var_n:@:IGNC&quot;</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pmos</span><span class="p">,</span> <span class="n">nmos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">ps</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">ns</span><span class="p">]):</span>
+            <span class="n">instances</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">))]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">pmos</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">nmos</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">instances</span></div></div>
+
+<div class="viewcode-block" id="SpiceRunner"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner">[docs]</a><span class="k">class</span> <span class="nc">SpiceRunner</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Responsible for running spice. Used as a Interface for spice to the rest of the system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># This is a huge problem, this variable is a class variable not a object variable</span>
+    <span class="c1"># I want you to be able to call with SpiceRunner().Vdd(0.5) for example but for that the Vdd context manager</span>
+    <span class="c1"># Must know path_to_folder of the SpiceRunner instance, wich seems to be very hard to do</span>
+    <span class="n">file_manager</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_folder</span> <span class="o">=</span> <span class="s2">&quot;circuitos&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor</span>
+
+<span class="sd">            :param str path_to_folder: relative path into the folder that contain spice files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span> <span class="o">=</span> <span class="n">path_to_folder</span>
+        <span class="c1"># self.default(0.7)</span>
+        <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span> <span class="o">=</span> <span class="n">SpiceFileManager</span><span class="p">(</span><span class="n">path_to_folder</span><span class="o">=</span><span class="n">path_to_folder</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpiceRunner.Monte_Carlo"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.Monte_Carlo">[docs]</a>    <span class="k">class</span> <span class="nc">Monte_Carlo</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Context Mangers that sets the number of MC simulations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_testes</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">num_testes</span>
+
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_monte_carlo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_monte_carlo</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.MC_Instance"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.MC_Instance">[docs]</a>    <span class="k">class</span> <span class="nc">MC_Instance</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Context Mangers that sets the variability instance of the circuit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pmos</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nmos</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pmos</span> <span class="o">=</span> <span class="n">pmos</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nmos</span> <span class="o">=</span> <span class="n">nmos</span>
+
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_variability</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pmos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmos</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_variability</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.SET"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.SET">[docs]</a>    <span class="k">class</span> <span class="nc">SET</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Context Mangers that sets the number a single fault.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">,</span> <span class="n">corrente</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">let</span> <span class="o">=</span> <span class="n">let</span>
+            <span class="k">if</span> <span class="n">corrente</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">corrente</span> <span class="o">=</span> <span class="n">let</span><span class="o">.</span><span class="n">corrente</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">corrente</span> <span class="o">=</span> <span class="n">corrente</span>
+
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">let</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrente</span><span class="p">)</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">measure_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">let</span><span class="o">.</span><span class="n">nodo_nome</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">let</span><span class="o">.</span><span class="n">saida_nome</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">let</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.Vss"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.Vss">[docs]</a>    <span class="k">class</span> <span class="nc">Vss</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Context Manager that sets the vss of the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vss</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vss</span> <span class="o">=</span> <span class="n">vss</span>
+
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_vss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vss</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+            <span class="k">pass</span></div>
+    
+<div class="viewcode-block" id="SpiceRunner.Vdd"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.Vdd">[docs]</a>    <span class="k">class</span> <span class="nc">Vdd</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Context Manager that sets the vdd of the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vdd</span> <span class="o">=</span> <span class="n">vdd</span>
+
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_vdd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vdd</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.Inputs"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.Inputs">[docs]</a>    <span class="k">class</span> <span class="nc">Inputs</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Context Mangers that sets the input signals of the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entradas</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">vss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Constructor.</span>
+
+<span class="sd">                :param list[int] entradas: Input logical values, either 0 or 1.</span>
+<span class="sd">                :param float vdd: Input vdd.</span>
+<span class="sd">                :param float vdd: Input vss.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vdd</span> <span class="o">=</span> <span class="n">vdd</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vss</span> <span class="o">=</span> <span class="n">vss</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">entradas</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">entrada</span> <span class="ow">in</span> <span class="n">entradas</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">entradas</span><span class="p">[</span><span class="n">entrada</span><span class="o">.</span><span class="n">nome</span><span class="p">]</span> <span class="o">=</span> <span class="n">entrada</span><span class="o">.</span><span class="n">sinal</span>
+
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_signals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entradas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vdd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vss</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+            <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">__run_spice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs spice and dumps labels into output.txt.</span>
+
+<span class="sd">            :param str filename: Name of the file.</span>
+<span class="sd">            :param list[str] labels: labels to be dumped</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="s2">&quot;\|&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cd </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.cir&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> ; hspice </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> | grep </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> &gt; ../output.txt&quot;</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="SpiceRunner.test_spice"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.test_spice">[docs]</a>    <span class="k">def</span> <span class="nf">test_spice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Testes if spice is working. If not will exit as nothing can be done without spice.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hspice debug/empty.cir &gt; output.txt&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;output.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">linha</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;Cannot connect to license server system&quot;</span> <span class="ow">in</span> <span class="n">linha</span><span class="p">:</span>
+                    <span class="n">exit</span><span class="p">(</span><span class="s2">&quot;HSPICE LicenseError: Cannot connect to license server system&quot;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="SpiceRunner.default"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.default">[docs]</a>    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets circuit to default configuration, includind vdd, no fault and no MC.</span>
+
+<span class="sd">            :param float vdd: Standard vdd of the simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_vdd</span><span class="p">(</span><span class="n">vdd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_vss</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_pulse</span><span class="p">(</span><span class="n">LET</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">vdd</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_monte_carlo</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.get_nodes"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.get_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">get_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circ_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse a &lt;circut_name&gt;.cir file and gets all nodes connected to transistor devices.</span>
+
+<span class="sd">            :param str curcuit_name: name of the circuit to be parsed.</span>
+<span class="sd">            :returns: a set containing the label of all nodes.</span>
+<span class="sd">            :param list[str] ignore: Nodes that should be ignored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">circ_name</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.run_delay"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.run_delay">[docs]</a>    <span class="k">def</span> <span class="nf">run_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">input_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the delay of shortest path from a input to and output.</span>
+
+<span class="sd">            :param str filename: Name of the file.</span>
+<span class="sd">            :param str input_name: Name of the input node from where the delay is propagated.</span>
+<span class="sd">            :param str output_name: Name of the output node where the delay propagates to.</span>
+<span class="sd">            :param float vdd: Vdd of the simulation.</span>
+<span class="sd">            :param list inputs: A list of Entrada objects.</span>
+<span class="sd">            :returns: the delay of shortest path from the input to the output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Set the signals to be simualted</span>
+        <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">measure_delay</span><span class="p">(</span><span class="n">input_name</span><span class="p">,</span> <span class="n">output_name</span><span class="p">,</span> <span class="n">vdd</span><span class="p">)</span>
+        <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">set_signals</span><span class="p">({</span><span class="nb">input</span><span class="o">.</span><span class="n">nome</span><span class="p">:</span> <span class="nb">input</span><span class="o">.</span><span class="n">sinal</span> <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">},</span> <span class="n">vdd</span><span class="p">)</span>
+        <span class="c1"># Runs the simulation in the respective folder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__run_spice</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;atraso_rr&quot;</span><span class="p">,</span> <span class="s2">&quot;atraso_rf&quot;</span><span class="p">,</span> <span class="s2">&quot;atraso_fr&quot;</span><span class="p">,</span> <span class="s2">&quot;atraso_ff&quot;</span><span class="p">])</span>
+        <span class="c1"># Gets and returns the results</span>
+        <span class="n">delay</span> <span class="o">=</span> <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">get_delay</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">delay</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.run_SET"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.run_SET">[docs]</a>    <span class="k">def</span> <span class="nf">run_SET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">path_to_root</span> <span class="o">=</span> <span class="s2">&quot;../../../..&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the peak voltage output for a given let.</span>
+
+<span class="sd">            :param str filename: Name of the file.</span>
+<span class="sd">            :param LET let: let simulated.</span>
+<span class="sd">            :param float current: current of the fault. If left as None let.current will be used.</span>
+<span class="sd">            :param str path_to_root: path to root directory of the project.</span>
+<span class="sd">            :returns: a tuple containing the peak tension at the node where the fault originated and output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Sets the SET</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">SET</span><span class="p">(</span><span class="n">let</span><span class="p">,</span> <span class="n">current</span><span class="p">):</span>
+            <span class="c1"># Runs the simulation</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__run_spice</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;minout&quot;</span><span class="p">,</span> <span class="s2">&quot;maxout&quot;</span><span class="p">,</span> <span class="s2">&quot;minnod&quot;</span><span class="p">,</span> <span class="s2">&quot;maxnod&quot;</span><span class="p">])</span>
+                <span class="c1"># Gets the peak tensions in the node and output</span>
+                <span class="n">peak_node</span> <span class="o">=</span> <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">get_peak_tension</span><span class="p">(</span><span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">peak_output</span> <span class="o">=</span> <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">get_peak_tension</span><span class="p">(</span><span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;*** ERROR IN SET SIMULATION! FULL REPORT GENERATED AT DEBUG/CRASH_REPORT/</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span><span class="si">}</span><span class="s2">_REPORT.TXT ***&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;*** ERROR: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cd </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.cir&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> ; hspice </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> &gt; ~/github/debug/crash_report/</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span><span class="si">}</span><span class="s2">_report.txt&quot;</span><span class="p">)</span>
+                <span class="n">exit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">peak_node</span><span class="p">,</span> <span class="n">peak_output</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="SpiceRunner.run_pulse_width"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.run_pulse_width">[docs]</a>    <span class="k">def</span> <span class="nf">run_pulse_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the pulse width of the propagated fault.</span>
+
+<span class="sd">            :param str filename: Name of the file.</span>
+<span class="sd">            :param LET let: Let to be simulated.</span>
+<span class="sd">            :param float current: current to be simulated. If None then let.current will be used.</span>
+<span class="sd">            :returns: Fault width at output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">SET</span><span class="p">(</span><span class="n">let</span><span class="p">,</span> <span class="n">current</span><span class="p">):</span>
+            <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">measure_pulse_width</span><span class="p">(</span><span class="n">let</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__run_spice</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;larg&quot;</span><span class="p">])</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;larg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;larg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.run_nodes_value"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.run_nodes_value">[docs]</a>    <span class="k">def</span> <span class="nf">run_nodes_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the standard circuit and retrieves all the nodes min and max tensions</span>
+
+<span class="sd">            :param str filename: Name of the file.</span>
+<span class="sd">            :param float vdd: Vdd of the simulation.</span>
+<span class="sd">            :param list[str] nodes: A list of node names to be measured.</span>
+<span class="sd">            :returns: a dict in the form {node: (min_tension, max_tension)}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">measure_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;max</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;min</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">measure_nodes</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__run_spice</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">measure_labels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">get_nodes_tension</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.run_simple_MC"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.run_simple_MC">[docs]</a>    <span class="k">def</span> <span class="nf">run_simple_MC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sim_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_incl</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the number of MC simulation that faulted.</span>
+
+<span class="sd">            :param str circuit_name: Name of the circuit.</span>
+<span class="sd">            :param str name_name: Name of the node.</span>
+<span class="sd">            :param str output_name: Name of the output.</span>
+<span class="sd">            :param int sim_num: Number of simulations.</span>
+<span class="sd">            :param str output_incl: Inclination of fault at the output.</span>
+<span class="sd">            :param float vdd: Vdd of the simulation.</span>
+<span class="sd">            :return: The number of simulations that faulted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">measure_pulse</span><span class="p">(</span><span class="n">name_name</span><span class="p">,</span> <span class="n">output_name</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">Monte_Carlo</span><span class="p">(</span><span class="n">sim_num</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__run_spice</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">circuit_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">circuit_name</span><span class="si">}</span><span class="s2">.cir&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;minout&quot;</span><span class="p">,</span> <span class="s2">&quot;maxout&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">get_mc_faults</span><span class="p">(</span><span class="n">circuit_name</span><span class="p">,</span> <span class="n">sim_num</span><span class="p">,</span> <span class="n">output_incl</span><span class="p">,</span> <span class="n">vdd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiceRunner.run_MC_var"><a class="viewcode-back" href="../../utils.html#utils.spiceInterface.SpiceRunner.run_MC_var">[docs]</a>    <span class="k">def</span> <span class="nf">run_MC_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">circuit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sim_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the MC variability points.</span>
+
+<span class="sd">            :param str filename: Name of the file</span>
+<span class="sd">            :param str circuit_name: Name of the circuit.</span>
+<span class="sd">            :param int sim_num: Number of simulations.</span>
+<span class="sd">            :return: MC variability instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">Monte_Carlo</span><span class="p">(</span><span class="n">sim_num</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cd </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_folder</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.cir&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> ; hspice </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> &gt; ../output.txt&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SpiceRunner</span><span class="o">.</span><span class="n">file_manager</span><span class="o">.</span><span class="n">get_mc_instances</span><span class="p">(</span><span class="n">circuit_name</span><span class="p">)</span></div></div>
+
+<span class="n">HSRunner</span> <span class="o">=</span> <span class="n">SpiceRunner</span><span class="p">()</span>
+
+<span class="c1"># Runs a bunch of routine checks to see if the Spice Interface is running accordingly</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing Spice Interface...&quot;</span><span class="p">)</span>
+    <span class="n">ptf</span> <span class="o">=</span> <span class="s2">&quot;debug/test_circuits&quot;</span>
+    <span class="kn">from</span> <span class="nn">.circuito</span> <span class="kn">import</span> <span class="n">Circuito</span>
+    <span class="n">TestRunner</span> <span class="o">=</span> <span class="n">SpiceRunner</span><span class="p">(</span><span class="n">path_to_folder</span><span class="o">=</span><span class="n">ptf</span><span class="p">)</span>
+    <span class="n">TestManager</span> <span class="o">=</span> <span class="n">SpiceFileManager</span><span class="p">(</span><span class="n">path_to_folder</span><span class="o">=</span><span class="n">ptf</span><span class="p">)</span>
+    <span class="n">TestRunner</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="mf">0.7</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing node tensions...&quot;</span><span class="p">)</span>
+    <span class="n">nand_test</span> <span class="o">=</span> <span class="n">Circuito</span><span class="p">(</span><span class="s2">&quot;nand&quot;</span><span class="p">,</span> <span class="n">ptf</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">from_json</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">vi</span><span class="p">,</span> <span class="n">entrada</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">nand_test</span><span class="o">.</span><span class="n">entradas</span><span class="p">):</span> <span class="n">entrada</span><span class="o">.</span><span class="n">sinal</span> <span class="o">=</span> <span class="n">vi</span>
+    <span class="k">with</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">Vdd</span><span class="p">(</span><span class="mf">0.7</span><span class="p">),</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">nand_test</span><span class="o">.</span><span class="n">entradas</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">run_nodes_value</span><span class="p">(</span><span class="n">nand_test</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;i1&quot;</span><span class="p">,</span> <span class="s2">&quot;g1&quot;</span><span class="p">])[</span><span class="s2">&quot;i1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.0275015</span> <span class="o">&lt;</span> <span class="mf">10e-3</span><span class="p">,</span> <span class="s2">&quot;TENSIONS RUN FAILED&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing circuit parsing...&quot;</span><span class="p">)</span>
+    <span class="n">nor_test</span> <span class="o">=</span> <span class="n">Circuito</span><span class="p">(</span><span class="s2">&quot;nor&quot;</span><span class="p">,</span> <span class="n">ptf</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">from_nodes</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span><span class="s2">&quot;b&quot;</span><span class="p">],[</span><span class="s2">&quot;g1&quot;</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="p">{</span><span class="n">nodo</span><span class="o">.</span><span class="n">nome</span> <span class="k">for</span> <span class="n">nodo</span> <span class="ow">in</span> <span class="n">nor_test</span><span class="o">.</span><span class="n">nodos</span><span class="p">}</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="s2">&quot;i1&quot;</span><span class="p">},</span> <span class="s2">&quot;CIRCUIT PARSING FAILED&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing SET simulation with known SET value...&quot;</span><span class="p">)</span>
+    <span class="n">nand_test</span> <span class="o">=</span> <span class="n">Circuito</span><span class="p">(</span><span class="s2">&quot;nand&quot;</span><span class="p">,</span> <span class="n">ptf</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">from_json</span><span class="p">()</span>
+    <span class="n">valid_input</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> 
+    <span class="n">valid_let</span> <span class="o">=</span> <span class="n">LET</span><span class="p">(</span><span class="mf">156.25</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;fall&quot;</span><span class="p">,</span> <span class="s2">&quot;fall&quot;</span><span class="p">],</span> <span class="n">valid_input</span><span class="p">)</span>
+    <span class="n">expected_let_value</span> <span class="o">=</span> <span class="mf">0.36585829999999997</span>
+    <span class="k">for</span> <span class="n">vi</span><span class="p">,</span> <span class="n">entrada</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">valid_input</span><span class="p">,</span> <span class="n">nand_test</span><span class="o">.</span><span class="n">entradas</span><span class="p">):</span> <span class="n">entrada</span><span class="o">.</span><span class="n">sinal</span> <span class="o">=</span> <span class="n">vi</span>
+    <span class="k">with</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">Vdd</span><span class="p">(</span><span class="mf">0.7</span><span class="p">),</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">nand_test</span><span class="o">.</span><span class="n">entradas</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">MC_Instance</span><span class="p">(</span><span class="mf">4.7443</span><span class="p">,</span> <span class="mf">4.3136</span><span class="p">):</span>
+        <span class="n">peak_node</span><span class="p">,</span> <span class="n">peak_output</span> <span class="o">=</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">run_SET</span><span class="p">(</span><span class="n">nand_test</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="n">valid_let</span><span class="p">,</span> <span class="n">path_to_root</span><span class="o">=</span><span class="s2">&quot;debug/..&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">peak_node</span><span class="o">-</span><span class="n">expected_let_value</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">10e-6</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;SET SIMULATION FAILED simulated: </span><span class="si">{</span><span class="n">peak_node</span><span class="si">}</span><span class="s2"> expected: </span><span class="si">{</span><span class="n">expected_let_value</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing delay simulation with known delay value...&quot;</span><span class="p">)</span>
+    <span class="n">delay_input</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;atraso&quot;</span><span class="p">]</span>
+    <span class="n">expected_delay_value</span> <span class="o">=</span> <span class="mf">9.1557e-12</span>
+    <span class="k">for</span> <span class="n">vi</span><span class="p">,</span> <span class="n">entrada</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">delay_input</span><span class="p">,</span> <span class="n">nand_test</span><span class="o">.</span><span class="n">entradas</span><span class="p">):</span> <span class="n">entrada</span><span class="o">.</span><span class="n">sinal</span> <span class="o">=</span> <span class="n">vi</span>
+    <span class="k">with</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">Vdd</span><span class="p">(</span><span class="mf">0.7</span><span class="p">),</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">nand_test</span><span class="o">.</span><span class="n">entradas</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">):</span>
+        <span class="n">delay</span> <span class="o">=</span> <span class="n">TestRunner</span><span class="o">.</span><span class="n">run_delay</span><span class="p">(</span><span class="n">nand_test</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">nand_test</span><span class="o">.</span><span class="n">entradas</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delay</span> <span class="o">-</span> <span class="n">expected_delay_value</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">10e-14</span><span class="p">,</span> <span class="s2">&quot;DELAY SIMULATION FAILED&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing MC points generation...&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">TestRunner</span><span class="o">.</span><span class="n">run_MC_var</span><span class="p">(</span><span class="n">nand_test</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="n">nand_test</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span> <span class="o">==</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;MC POINTS GENERATION FAILED&quot;</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Spice Interface OK.&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Borges Sandoval.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

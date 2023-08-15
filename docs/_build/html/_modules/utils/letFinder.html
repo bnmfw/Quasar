@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.letFinder &mdash; Quasar 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Quasar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">github</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Quasar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.letFinder</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.letFinder</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module with LetFinder a Level 1 simulation responsible for calculating the minimal Let for a fault given some parameters.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.spiceInterface</span> <span class="kn">import</span> <span class="n">SpiceRunner</span>
+<span class="kn">from</span> <span class="nn">.components</span> <span class="kn">import</span> <span class="n">LET</span>
+
+<div class="viewcode-block" id="LetFinder"><a class="viewcode-back" href="../../utils.html#utils.letFinder.LetFinder">[docs]</a><span class="k">class</span> <span class="nc">LetFinder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Responsible for finding the minimal LET value from a faulted node to an output.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">path_to_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;circuitos&quot;</span><span class="p">,</span> <span class="n">report</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor.</span>
+
+<span class="sd">            :param Circuit circuit: A Circuit object to have its let found.</span>
+<span class="sd">            :param str path_to_folder: relative path into the folder that contain spice files.</span>
+<span class="sd">            :param bool report: Whether or not the run will report to terminal with prints</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span> <span class="o">=</span> <span class="n">circuit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runner</span> <span class="o">=</span> <span class="n">SpiceRunner</span><span class="p">(</span><span class="n">path_to_folder</span><span class="o">=</span><span class="n">path_to_folder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__report</span> <span class="o">=</span> <span class="n">report</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">300</span> <span class="c1"># Valor maximo considerado da falha</span>
+        <span class="c1"># 200 é um numero bem razoavel de quanto é uma falha real</span>
+        <span class="c1"># Pede pro rafael o tga ou tfa ?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__limite_sim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">25</span>
+
+    <span class="k">def</span> <span class="nf">__fault_inclination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the fault inclination on the given node.</span>
+
+<span class="sd">            :param str node_name: Relevant node.</span>
+<span class="sd">            :param float vdd: Vdd of the simulation.</span>
+<span class="sd">            :param LET let: Let of the simulation.</span>
+<span class="sd">            :returns: A string representing the inclination, either &#39;rise&#39; or &#39;fall&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner</span><span class="o">.</span><span class="n">SET</span><span class="p">(</span><span class="n">let</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">min_ten</span><span class="p">,</span> <span class="n">max_ten</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner</span><span class="o">.</span><span class="n">run_nodes_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="p">[</span><span class="n">node_name</span><span class="p">])[</span><span class="n">node_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">max_ten</span> <span class="o">-</span> <span class="n">min_ten</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">vdd</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max and Min vdd have too much variation max: </span><span class="si">{</span><span class="n">max_ten</span><span class="si">}</span><span class="s2"> min: </span><span class="si">{</span><span class="n">min_ten</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;rise&quot;</span> <span class="k">if</span> <span class="n">max_ten</span> <span class="o">&lt;</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">vdd</span> <span class="k">else</span> <span class="s2">&quot;fall&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__verify_let_validity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Verifies the validity of the Let, if in this configuration a fault in the node will have an effect on the output.</span>
+
+<span class="sd">            :param float vdd: Vdd of the simulation.</span>
+<span class="sd">            :param LET let: Let being validated.</span>
+<span class="sd">            :returns: A tuple with a boolean informing the validity of the let and the number of Spice runs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node_inclination</span><span class="p">,</span> <span class="n">output_inclination</span> <span class="o">=</span> <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span>
+        
+        <span class="c1"># Checks if the fault is logically masked</span>
+        <span class="n">lower_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span>
+        <span class="n">upper_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span>
+
+        <span class="n">node_peak</span><span class="p">,</span> <span class="n">output_peak</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner</span><span class="o">.</span><span class="n">run_SET</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="n">let</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;masking</span><span class="se">\t</span><span class="s2">node: </span><span class="si">{</span><span class="n">node_peak</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">node_peak</span><span class="o">/</span><span class="n">vdd</span><span class="p">)</span><span class="si">}</span><span class="s2">%)</span><span class="se">\t</span><span class="s2"> output: </span><span class="si">{</span><span class="n">output_peak</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">output_inclination</span> <span class="o">==</span> <span class="s2">&quot;rise&quot;</span> <span class="ow">and</span> <span class="n">output_peak</span> <span class="o">&lt;</span> <span class="n">vdd</span> <span class="o">*</span> <span class="n">lower_tolerance</span><span class="p">)</span> <span class="ow">or</span>\
+            <span class="p">(</span><span class="n">output_inclination</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span> <span class="ow">and</span> <span class="n">output_peak</span> <span class="o">&gt;</span> <span class="n">vdd</span> <span class="o">*</span> <span class="n">upper_tolerance</span><span class="p">)</span> <span class="ow">or</span>\
+            <span class="p">(</span><span class="n">node_inclination</span> <span class="o">==</span> <span class="s2">&quot;rise&quot;</span> <span class="ow">and</span> <span class="n">node_peak</span> <span class="o">&lt;</span> <span class="n">vdd</span> <span class="o">*</span> <span class="n">lower_tolerance</span><span class="p">)</span> <span class="ow">or</span>\
+            <span class="p">(</span><span class="n">node_inclination</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span> <span class="ow">and</span> <span class="n">node_peak</span> <span class="o">&gt;</span> <span class="n">vdd</span> <span class="o">*</span> <span class="n">upper_tolerance</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid Let - Masked Fault</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># Greater then 2* vdd, weird stuff</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">node_peak</span><span class="o">/</span><span class="n">vdd</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Weird Masking, DIE!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__find_maximal_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the upper limit for the current of the Let.</span>
+
+<span class="sd">            :param LET let: Let to have the upper limit found.</span>
+<span class="sd">            :returns: The maximal current for the Let.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span> <span class="o">=</span> <span class="mi">400</span>
+
+        <span class="n">output_inclination</span> <span class="o">=</span> <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">output_peak</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner</span><span class="o">.</span><span class="n">run_SET</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="n">let</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span><span class="p">)</span>
+
+            <span class="c1"># Fault effect on the output was found</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">output_inclination</span> <span class="o">==</span> <span class="s2">&quot;rise&quot;</span> <span class="ow">and</span> <span class="n">output_peak</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">vdd</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="ow">or</span>\
+                <span class="p">(</span><span class="n">output_inclination</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span> <span class="ow">and</span> <span class="n">output_peak</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">vdd</span><span class="o">/</span><span class="mi">2</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Upper current bound: (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span> <span class="o">+=</span> <span class="mi">100</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Upper current too big&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">800</span>
+
+    <span class="k">def</span> <span class="nf">__find_minimal_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the lower limit for the current of the Let.</span>
+
+<span class="sd">            :param LET let: Let to have the upper limit found.</span>
+<span class="sd">            :returns: The minimal current for the Let.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Variables for the minary search of the current</span>
+        <span class="n">limite_sup</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span>
+        <span class="n">csup</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span>
+        <span class="n">cinf</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">current</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="n">csup</span> <span class="o">+</span> <span class="n">cinf</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+
+        <span class="c1"># Busca binaria para largura de pulso</span>
+        <span class="n">diferenca_largura</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">precisao_largura</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05e-9</span>
+
+        <span class="c1"># Binary search for minimal current</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__limite_sim</span><span class="p">):</span>
+            <span class="c1"># Encontra a largura minima de pulso pra vencer o atraso</span>
+            <span class="n">largura</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner</span><span class="o">.</span><span class="n">run_pulse_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="n">let</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span>
+            <span class="n">diferenca_largura</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">largura</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">largura</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">atrasoCC</span>
+
+            <span class="c1"># checks if minimal width is satisfied</span>
+            <span class="k">if</span> <span class="n">diferenca_largura</span> <span class="ow">and</span> <span class="o">-</span><span class="n">precisao_largura</span> <span class="o">&lt;</span> <span class="n">diferenca_largura</span> <span class="o">&lt;</span> <span class="n">precisao_largura</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA (</span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">current</span>
+
+
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">csup</span> <span class="o">-</span> <span class="n">cinf</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA (</span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">current</span>
+            <span class="k">if</span> <span class="n">diferenca_largura</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cinf</span> <span class="o">=</span> <span class="n">current</span>
+            <span class="k">elif</span> <span class="n">diferenca_largura</span> <span class="o">&gt;</span> <span class="n">precisao_largura</span><span class="p">:</span>
+                <span class="n">csup</span> <span class="o">=</span> <span class="n">current</span>
+            <span class="k">elif</span> <span class="n">diferenca_largura</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">precisao_largura</span><span class="p">:</span>
+                <span class="n">cinf</span> <span class="o">=</span> <span class="n">current</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="p">(</span><span class="n">csup</span> <span class="o">+</span> <span class="n">cinf</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PULSO MINIMO NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="LetFinder.definir_corrente"><a class="viewcode-back" href="../../utils.html#utils.letFinder.LetFinder.definir_corrente">[docs]</a>    <span class="k">def</span> <span class="nf">definir_corrente</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">let</span><span class="p">:</span> <span class="n">LET</span><span class="p">,</span> <span class="n">input_signals</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the minimal current of a modeled Set to propagate a fault from the node to the output.</span>
+
+<span class="sd">            :param LET let: Let modeled including node and output.</span>
+<span class="sd">            :param list input_signals: Logical value of each input.</span>
+<span class="sd">            :param bool False: Whether the Let is already known to be valid.</span>
+<span class="sd">            :param bool delay: Whether the delay of the circuit will be taken into consideration.</span>
+<span class="sd">            :returns: A tuple containing the simulation number and the current found, if any.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">limite_sup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span>
+        <span class="n">precision</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span>
+        <span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">vdd</span>
+        <span class="n">lower_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">precision</span><span class="p">)</span> <span class="o">*</span> <span class="n">vdd</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">upper_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">precision</span><span class="p">)</span> <span class="o">*</span> <span class="n">vdd</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">sim_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">entradas</span>
+
+        <span class="c1"># Sets the input signals</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)):</span>
+            <span class="n">inputs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sinal</span> <span class="o">=</span> <span class="n">input_signals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">vdd</span><span class="p">):</span>
+            
+            <span class="c1"># Figures the inclination of the simulation</span>
+            <span class="k">if</span> <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">safe</span><span class="p">:</span>
+                <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fault_inclination</span><span class="p">(</span><span class="n">let</span><span class="o">.</span><span class="n">nodo_nome</span><span class="p">,</span> <span class="n">vdd</span><span class="p">,</span> <span class="n">let</span><span class="p">)</span>
+                <span class="n">sim_num</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">safe</span><span class="p">:</span>
+                <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fault_inclination</span><span class="p">(</span><span class="n">let</span><span class="o">.</span><span class="n">saida_nome</span><span class="p">,</span> <span class="n">vdd</span><span class="p">,</span> <span class="n">let</span><span class="p">)</span>
+                <span class="n">sim_num</span> <span class="o">+=</span> <span class="mi">1</span>
+              <span class="c1"># debugging report</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting a LET finding job</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span>
+                      <span class="sa">f</span><span class="s2">&quot;node: </span><span class="si">{</span><span class="n">let</span><span class="o">.</span><span class="n">nodo_nome</span><span class="si">}</span><span class="se">\t</span><span class="s2">output: </span><span class="si">{</span><span class="n">let</span><span class="o">.</span><span class="n">saida_nome</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span>
+                      <span class="sa">f</span><span class="s2">&quot;vdd: </span><span class="si">{</span><span class="n">vdd</span><span class="si">}</span><span class="se">\t</span><span class="s2">safe: </span><span class="si">{</span><span class="n">safe</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span>
+                      <span class="sa">f</span><span class="s2">&quot;inc1: </span><span class="si">{</span><span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="se">\t</span><span class="s2">inc2: </span><span class="si">{</span><span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span>
+                      <span class="sa">f</span><span class="s2">&quot;input vector: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">inp</span><span class="o">.</span><span class="n">nome</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">sinal</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">inp</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">inputs</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Checks if the Let configuration is valid</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">safe</span><span class="p">:</span>
+                <span class="n">valid_let</span><span class="p">,</span> <span class="n">sim_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__verify_let_validity</span><span class="p">(</span><span class="n">vdd</span><span class="p">,</span> <span class="n">let</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_let</span><span class="p">:</span>
+                    <span class="n">let</span><span class="o">.</span><span class="n">corrente</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">return</span> <span class="n">sim_num</span><span class="p">,</span> <span class="kc">None</span>
+
+            <span class="c1"># Binary search variables</span>
+            <span class="n">csup</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">limite_sup</span>
+            <span class="n">cinf</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">delay</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__find_minimal_current</span><span class="p">(</span><span class="n">let</span><span class="p">)</span>
+            <span class="n">current</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">cinf</span>
+            <span class="n">sup_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">peak_tension</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">peak_tension_lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">peak_tension_upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># Binary Search</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__limite_sim</span><span class="p">):</span>
+
+                <span class="n">_</span><span class="p">,</span> <span class="n">peak_tension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner</span><span class="o">.</span><span class="n">run_SET</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuito</span><span class="o">.</span><span class="n">arquivo</span><span class="p">,</span> <span class="n">let</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="se">\t</span><span class="s2">current: </span><span class="si">{</span><span class="n">current</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="se">\t</span><span class="s2">peak_tension:</span><span class="si">{</span><span class="n">peak_tension</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">sim_num</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="c1">##### Precision Satisfied #####</span>
+                <span class="k">if</span> <span class="n">lower_tolerance</span> <span class="o">&lt;</span> <span class="n">peak_tension</span> <span class="o">&lt;</span> <span class="n">upper_tolerance</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Minimal Let Found - Precision Satisfied</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">let</span><span class="o">.</span><span class="n">corrente</span> <span class="o">=</span> <span class="n">current</span>
+                    <span class="n">let</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_signals</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">sim_num</span><span class="p">,</span> <span class="n">current</span>
+
+                <span class="c1">##### Convergence ####</span>
+                <span class="k">elif</span> <span class="n">csup</span> <span class="o">-</span> <span class="n">cinf</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+                    <span class="c1"># To an exact value #</span>
+                    <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">current</span> <span class="o">&lt;</span> <span class="n">limite_sup</span><span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">peak_tension_upper</span> <span class="o">-</span> <span class="n">peak_tension_lower</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">upper_tolerance</span> <span class="o">-</span> <span class="n">lower_tolerance</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Minimal Let Found - Convergence</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">let</span><span class="o">.</span><span class="n">corrente</span> <span class="o">=</span> <span class="n">current</span>
+                        <span class="n">let</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_signals</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">sim_num</span><span class="p">,</span> <span class="n">current</span>
+                    <span class="c1"># To 0 #</span>
+                    <span class="k">elif</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Minimal Let NOT Found - Lower Divergence</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">let</span><span class="o">.</span><span class="n">corrente</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">return</span> <span class="n">sim_num</span><span class="p">,</span> <span class="n">current</span>
+                    <span class="c1"># To the upper bound #</span>
+                    <span class="k">elif</span> <span class="n">current</span> <span class="o">&gt;=</span> <span class="n">limite_sup</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Upper Divergence - Upper Bound Increased</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">csup</span> <span class="o">+=</span> <span class="mi">100</span>
+                        <span class="n">limite_sup</span> <span class="o">+=</span> <span class="mi">100</span>
+                        <span class="n">sup_flag</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="c1"># Next current calculation #</span>
+                <span class="k">if</span> <span class="n">let</span><span class="o">.</span><span class="n">orientacao</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;fall&quot;</span><span class="p">:</span>
+                    <span class="c1"># More intense current = lower peak tension</span>
+                    <span class="k">if</span> <span class="n">peak_tension</span> <span class="o">&lt;=</span> <span class="n">lower_tolerance</span><span class="p">:</span>
+                        <span class="n">csup</span> <span class="o">=</span> <span class="n">current</span>
+                        <span class="n">peak_tension_lower</span> <span class="o">=</span> <span class="n">peak_tension</span>
+                    <span class="k">elif</span> <span class="n">peak_tension</span> <span class="o">&gt;=</span> <span class="n">upper_tolerance</span><span class="p">:</span>
+                        <span class="n">cinf</span> <span class="o">=</span> <span class="n">current</span>
+                        <span class="n">peak_tension_upper</span> <span class="o">=</span> <span class="n">peak_tension</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># More intense current = higher peak tension</span>
+                    <span class="k">if</span> <span class="n">peak_tension</span> <span class="o">&lt;=</span> <span class="n">lower_tolerance</span><span class="p">:</span>
+                        <span class="n">cinf</span> <span class="o">=</span> <span class="n">current</span>
+                        <span class="n">peak_tension_lower</span> <span class="o">=</span> <span class="n">peak_tension</span>
+                    <span class="k">elif</span> <span class="n">peak_tension</span> <span class="o">&gt;=</span> <span class="n">upper_tolerance</span><span class="p">:</span>
+                        <span class="n">csup</span> <span class="o">=</span> <span class="n">current</span>
+                        <span class="n">peak_tension_upper</span> <span class="o">=</span> <span class="n">peak_tension</span>
+
+                <span class="n">current</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">csup</span> <span class="o">+</span> <span class="n">cinf</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># simulation number limit reached (Very rare) #</span>
+
+            <span class="c1"># By chance converges to an exact value #</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">current</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__upper_bound</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Minimal Let Found - Maximum Simulation Number Reached</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">let</span><span class="o">.</span><span class="n">corrente</span> <span class="o">=</span> <span class="n">current</span>
+                <span class="n">let</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_signals</span><span class="p">)</span>
+            
+            <span class="c1"># Did not converge #</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__report</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Minimal Let NOT Found - Maximum Simulation Number Reached</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">let</span><span class="o">.</span><span class="n">corrente</span> <span class="o">=</span> <span class="mi">99999</span> <span class="k">if</span> <span class="n">sup_flag</span> <span class="k">else</span> <span class="mi">11111</span>
+            <span class="k">return</span> <span class="n">sim_num</span><span class="p">,</span> <span class="n">current</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="c1"># from .circuito import Circuito</span>
+    <span class="c1"># fadder = Circuito(&quot;fadder&quot;, &quot;debug/test_circuits&quot;, 0.7).from_nodes([&quot;a&quot;,&quot;b&quot;,&quot;cin&quot;],[&quot;cout&quot;,&quot;sum&quot;])</span>
+    <span class="c1"># let = LET(0, 0.7, &quot;i10&quot;, &quot;cout&quot;, [&quot;fall&quot;, &quot;fall&quot;], [0,0,0])</span>
+    <span class="c1"># LetFinder(fadder, fadder.path_to_circuits, True).definir_corrente(let, [0,0,0])</span>
+    <span class="c1"># exit()</span>
+   
+    <span class="c1"># from .circuito import Circuito</span>
+    <span class="c1"># nand_test = Circuito(&quot;nand&quot;, &quot;debug/test_circuits&quot;, 0.7).from_json()</span>
+    <span class="c1"># SpiceRunner(nand_test.path_to_circuits).default(0.7)</span>
+    <span class="c1"># exit()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing LET finder...&quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.circuito</span> <span class="kn">import</span> <span class="n">Circuito</span>
+    <span class="n">nand</span> <span class="o">=</span> <span class="n">Circuito</span><span class="p">(</span><span class="s2">&quot;nand&quot;</span><span class="p">,</span> <span class="s2">&quot;debug/test_circuits&quot;</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">from_json</span><span class="p">()</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing Finding Current of safe Let...&quot;</span><span class="p">)</span>
+    <span class="n">valid_input</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">let</span> <span class="o">=</span> <span class="n">LET</span><span class="p">(</span><span class="mf">140.625</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">valid_input</span><span class="p">)</span>
+    <span class="n">measured</span> <span class="o">=</span> <span class="n">LetFinder</span><span class="p">(</span><span class="n">nand</span><span class="p">,</span> <span class="s2">&quot;debug/test_circuits&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">definir_corrente</span><span class="p">(</span><span class="n">let</span><span class="p">,</span> <span class="n">valid_input</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">measured</span><span class="o">-</span><span class="mf">140.625</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">10e-6</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;LET FINDING FAILED simulated:</span><span class="si">{</span><span class="n">measured</span><span class="si">}</span><span class="s2"> expected:</span><span class="si">{</span><span class="mf">140.625</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># print(&quot;\tTesting Finding Current of invalid unsafe Let...&quot;)</span>
+    <span class="c1"># invalid_let = LET(314.152, 0.7, &quot;g1&quot;, &quot;g1&quot;, [None, None], valid_input)</span>
+    <span class="c1"># print(LetFinder(nand, &quot;debug/test_circuits&quot;, False).definir_corrente(invalid_let, valid_input, safe=False))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Testing Finding Current of valid unsafe Let...&quot;</span><span class="p">)</span>
+    <span class="n">valid_input</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">unsafe_valid_let</span> <span class="o">=</span> <span class="n">LET</span><span class="p">(</span><span class="mf">140.625</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">&quot;i1&quot;</span><span class="p">,</span> <span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">valid_input</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">LetFinder</span><span class="p">(</span><span class="n">nand</span><span class="p">,</span> <span class="s2">&quot;debug/test_circuits&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">definir_corrente</span><span class="p">(</span><span class="n">unsafe_valid_let</span><span class="p">,</span> <span class="n">valid_input</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mf">248.4375</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LET Finder OK&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Borges Sandoval.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 .. Quasar documentation master file, created by
-   sphinx-quickstart on Fri Jul 14 02:20:03 2023.
+   sphinx-quickstart on Mon Aug 14 20:55:17 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 

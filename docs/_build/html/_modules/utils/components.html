@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.components &mdash; Quasar 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Quasar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">github</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Quasar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.components</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.components</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.matematica</span> <span class="kn">import</span> <span class="n">current_to_let</span>
+
+<div class="viewcode-block" id="Entrada"><a class="viewcode-back" href="../../utils.html#utils.components.Entrada">[docs]</a><span class="k">class</span> <span class="nc">Entrada</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nome</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sinal</span> <span class="o">=</span> <span class="s2">&quot;setup&quot;</span>
+
+<div class="viewcode-block" id="Entrada.codec"><a class="viewcode-back" href="../../utils.html#utils.components.Entrada.codec">[docs]</a>    <span class="k">def</span> <span class="nf">codec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;nome&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nome</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;sinal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sinal</span>
+        <span class="k">return</span> <span class="n">dic</span></div>
+
+<div class="viewcode-block" id="Entrada.decodec"><a class="viewcode-back" href="../../utils.html#utils.components.Entrada.decodec">[docs]</a>    <span class="k">def</span> <span class="nf">decodec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nome</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;nome&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sinal</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;sinal&quot;</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nome</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sinal</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="Nodo"><a class="viewcode-back" href="../../utils.html#utils.components.Nodo">[docs]</a><span class="k">class</span> <span class="nc">Nodo</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nome</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nome</span> <span class="o">=</span> <span class="n">nome</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LETs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Eh um dicionario de dicionarios</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LETth</span><span class="p">:</span> <span class="n">LET</span> <span class="o">=</span> <span class="n">LET</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="s2">&quot;saida&quot;</span><span class="p">,</span> <span class="s2">&quot;aa&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atraso</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nome</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">nome: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nome</span><span class="si">}</span><span class="se">\t</span><span class="s2">LETth: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">LETth</span><span class="o">.</span><span class="n">corrente</span><span class="si">}</span><span class="se">\t</span><span class="s2">Quantidade de LETs:</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LETs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<div class="viewcode-block" id="Nodo.codec"><a class="viewcode-back" href="../../utils.html#utils.components.Nodo.codec">[docs]</a>    <span class="k">def</span> <span class="nf">codec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;nome&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nome</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;critico&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LETth</span><span class="o">.</span><span class="n">codec</span><span class="p">()</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;atraso&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atraso</span>
+        <span class="n">lista_de_lets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">let</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">LETs</span><span class="p">:</span>
+            <span class="n">lista_de_lets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">let</span><span class="o">.</span><span class="n">codec</span><span class="p">())</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;lets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lista_de_lets</span>
+        <span class="k">return</span> <span class="n">dic</span></div>
+
+<div class="viewcode-block" id="Nodo.decodec"><a class="viewcode-back" href="../../utils.html#utils.components.Nodo.decodec">[docs]</a>    <span class="k">def</span> <span class="nf">decodec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span><span class="nb">float</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vdd</span><span class="p">,(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dic (dict): </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span><span class="si">}</span><span class="s2">, vdd (float): </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">vdd</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nome</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;nome&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LETth</span> <span class="o">=</span> <span class="n">LET</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">vdd</span><span class="p">,</span> <span class="s2">&quot;nodo&quot;</span><span class="p">,</span> <span class="s2">&quot;saida&quot;</span><span class="p">,</span> <span class="s2">&quot;orientacao&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LETth</span><span class="o">.</span><span class="n">decodec</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s2">&quot;critico&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atraso</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;atraso&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">dicionario_let</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;lets&quot;</span><span class="p">]:</span>
+            <span class="n">let</span> <span class="o">=</span> <span class="n">LET</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">vdd</span><span class="p">,</span> <span class="s2">&quot;nodo&quot;</span><span class="p">,</span> <span class="s2">&quot;saida&quot;</span><span class="p">,</span> <span class="s2">&quot;orientacao&quot;</span><span class="p">)</span>
+            <span class="n">let</span><span class="o">.</span><span class="n">decodec</span><span class="p">(</span><span class="n">dicionario_let</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">LETs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">let</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="LET"><a class="viewcode-back" href="../../utils.html#utils.components.LET">[docs]</a><span class="k">class</span> <span class="nc">LET</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corrente</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">vdd</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">nodo_nome</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">saida_nome</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span> <span class="n">orientacao</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">validacoes</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__corrente</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">corrente</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientacao</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">orientacao</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vdd</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">vdd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodo_nome</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">nodo_nome</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saida_nome</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">saida_nome</span>
+        <span class="k">if</span> <span class="n">validacoes</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validacoes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validacoes</span> <span class="o">=</span> <span class="n">validacoes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">corrente</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__corrente</span>
+
+    <span class="nd">@corrente</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">corrente</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corrente</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__corrente</span> <span class="o">=</span> <span class="n">corrente</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valor</span> <span class="o">=</span> <span class="n">current_to_let</span><span class="p">(</span><span class="n">corrente</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodo_nome</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">nodo_nome</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">saida_nome</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">saida_nome</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientacao</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">orientacao</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">corrente: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">corrente</span><span class="si">}</span><span class="s2">, orientacao: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">orientacao</span><span class="si">}</span><span class="s2">, vdd: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vdd</span><span class="si">}</span><span class="s2">, nodo: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nodo_nome</span><span class="si">}</span><span class="s2">, saida: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">saida_nome</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validacoes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrente</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">corrente</span>
+    
+    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrente</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">corrente</span>
+    
+    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrente</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">corrente</span>
+
+    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrente</span> <span class="o">&gt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">corrente</span>
+
+<div class="viewcode-block" id="LET.append"><a class="viewcode-back" href="../../utils.html#utils.components.LET.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validacao</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">validacao</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Validacao nao eh uma lista&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">validacao</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">validacoes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validacoes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validacao</span><span class="p">)</span>  </div>
+
+<div class="viewcode-block" id="LET.codec"><a class="viewcode-back" href="../../utils.html#utils.components.LET.codec">[docs]</a>    <span class="k">def</span> <span class="nf">codec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;corr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrente</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;orie&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientacao</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;nodo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodo_nome</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;said&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saida_nome</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validacoes</span>
+        <span class="k">return</span> <span class="n">dic</span></div>
+
+<div class="viewcode-block" id="LET.decodec"><a class="viewcode-back" href="../../utils.html#utils.components.LET.decodec">[docs]</a>    <span class="k">def</span> <span class="nf">decodec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">dict</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nao recebi um dicionario, recebi </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">dic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corrente</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;corr&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientacao</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;orie&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodo_nome</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;nodo&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saida_nome</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;said&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validacoes</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">objeto_codificado</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">LET</span><span class="p">(</span><span class="mf">154.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">&quot;nodo1&quot;</span><span class="p">,</span> <span class="s2">&quot;saida1&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;fall&quot;</span><span class="p">,</span> <span class="s2">&quot;rise&quot;</span><span class="p">]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">objeto_codificado</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="c1">#TESTES DE ENTRADA</span>
+    <span class="c1"># e1 = Entrada(&quot;ent1&quot;, &quot;t&quot;)</span>
+    <span class="c1"># e2 = Entrada(&quot;ent2&quot;, &quot;t&quot;)</span>
+    <span class="c1"># print(e1.codec())</span>
+    <span class="c1"># e2.decodec(e1.codec())</span>
+    <span class="c1"># assert e1.nome == e2.nome and e1.sinal == e2.sinal, &quot;Entrada FALHOU&quot;</span>
+
+    <span class="c1"># # TESTE DE NODO</span>
+    <span class="c1"># n1 = Nodo(&quot;nodo1&quot;)</span>
+    <span class="c1"># n2 = Nodo(&quot;nodo2&quot;)</span>
+    <span class="c1"># n2.decodec(n1.codec(),0.7)</span>
+    <span class="c1"># assert n1.nome == n2.nome and n1.atraso == n2.atraso and \</span>
+    <span class="c1">#         n1.LETs == n2.LETs and\</span>
+    <span class="c1">#        n1.LETth == n2.LETth, &quot;Nodo FALHOU&quot;</span>
+
+    <span class="c1"># # TESTE DE LET</span>
+    <span class="c1"># let1 = LET(154.3, 0.7, &quot;nodo1&quot;, &quot;saida1&quot;, [&quot;fall&quot;, &quot;rise&quot;])</span>
+    <span class="c1"># let2 = LET(300, 0.7, &quot;nodo1&quot;, &quot;saida1&quot;, [&quot;rise&quot;,&quot;fall&quot;])</span>
+    <span class="c1"># let2.decodec(let1.codec())</span>
+    <span class="c1"># assert let1 == let2, &quot;LET FALHOU no teste de Overloading e Codificacao&quot;</span>
+
+    <span class="c1"># entrada = [0,0,1,0,1]</span>
+    <span class="c1"># let1.append(entrada)</span>
+    <span class="c1"># assert entrada in let1.validacoes, &quot;LET FALHOU no teste de Append&quot;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Borges Sandoval.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
