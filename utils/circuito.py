@@ -48,17 +48,16 @@ class Circuito():
         JManager.decodificar(self, path_to_folder=self.path_to_circuits)
         return self
     
-    def from_nodes(self, inputs: list, outputs: list, ignore: list = None):
+    def from_nodes(self, inputs: list, outputs: list):
         """
         Fills the circuit object by parsing the .cir file.
 
             :param list[str] inputs: List of node names to be interpreted as inputs.
             :param list[str] outputs: List of node names to be interpreted as outputs.
-            :param list[str] ignore: Nodes that should be ignored.
         """
         self.saidas = [Nodo(output) for output in outputs]
         self.entradas = [Entrada(input) for input in inputs]
-        nodes_set, self.graph = SpiceRunner(path_to_folder=self.path_to_circuits).get_nodes(self.nome, ignore)
+        nodes_set, self.graph = SpiceRunner(path_to_folder=self.path_to_circuits).get_nodes(self.nome)
         self.nodos = [Nodo(nodo) for nodo in nodes_set]
         return self
 
@@ -71,6 +70,17 @@ class Circuito():
 
         for input_gate, input_signal in zip(self.entradas, sig_values):
             input_gate.sinal = input_signal
+    
+    def get_node(self, node: str):
+        """
+        Gets the node object given its name
+
+        Args:
+            node (str): Node name
+        """
+        for n in self.nodos:
+            if n.nome == node: return n
+        return None
 
 if __name__ == "__main__":
     print("Testing Circuit Module...")

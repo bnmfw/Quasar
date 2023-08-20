@@ -7,9 +7,9 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-AVA Version: T-2022.06-SP2, Build time: Wed Nov 23 00:57:55 2022, Application start time: Mon Aug 14 20:35:22 2023
-Hostname: aorus, Username: bborges, PID: 195311
-Working_Directory : /home/bborges/github/debug/test_circuits/nand
+AVA Version: T-2022.06-SP2, Build time: Wed Nov 23 00:57:55 2022, Application start time: Sat Aug 19 17:27:08 2023
+Hostname: aorus, Username: bborges, PID: 439977
+Working_Directory : /home/bborges/quasar/debug/test_circuits/nand
 Command_Line_Options : nand.hsp.json
 
 This file format and content are subject to change.

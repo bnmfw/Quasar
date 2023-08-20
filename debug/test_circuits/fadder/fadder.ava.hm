@@ -7,7 +7,7 @@ with the terms and conditions of a written license agreement with
 Synopsys, Inc. All other use, reproduction, or distribution of
 this software is strictly prohibited.
 
-Username: bborges, PID: 2336006
+Username: bborges, PID: 443923
 Command_Line_Options: fadder.hsp.json
 
 System Activity Monitoring (format subject to change)
@@ -17,7 +17,7 @@ Hostname: aorus
 N cores: 12
 Model name: AMD Ryzen 5 3600 6-Core Processor
 Cache size: 512 KB
-OS kernel: Linux 5.15.0-76-generic
+OS kernel: Linux 5.15.0-78-generic
 OS release: NAME="Ubuntu"
 VERSION="20.04.4 LTS (Focal Fossa)"
 ID=ubuntu
@@ -30,8 +30,8 @@ BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
 VERSION_CODENAME=focal
 UBUNTU_CODENAME=focal
-CPU load: 0.830000, 3.150000, 7.790000
-Virtual memory: Total=31.3G, Available=29.2G, Percent=6.7, Used=1.6G, Free=350.0M, Active=11.5G, Inactive=14.4G, Buffers=7.5G, Cached=21.8G, Shared=7.3M, Slab=4.8G
+CPU load: 0.230000, 1.040000, 0.950000
+Virtual memory: Total=31.3G, Available=29.2G, Percent=6.8, Used=1.7G, Free=578.1M, Active=11.7G, Inactive=14.1G, Buffers=4.1G, Cached=25.0G, Shared=7.7M, Slab=4.7G
 
 System resource limits (soft, hard) set by user for current process
 (0, 0): The maximum size (in bytes) of a core file that the current process can create
@@ -51,15 +51,15 @@ System resource limits (soft, hard) set by user for current process
 
 /tmp file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
-/dev/sdb5             95    15        76  17% /
+/dev/sdb5             95    15        75  17% /
 
-Output directory /home/bborges/github/debug/test_circuits/fadder file space:
+Output directory /home/bborges/quasar/debug/test_circuits/fadder file space:
 Filesystem     1G-blocks  Used Available Use% Mounted on
-/dev/sdb4            819   615       163  80% /home
+/dev/sdb4            819   615       162  80% /home
 
-Start time: 2023-07-27 03:13:27 1690438407.8
+Start time: 2023-08-19 17:31:01 1692477061.5
 
    elapsed    cpu    memory      /tmp        output      estimated  MC       AVA    total   total
    time       load   available   available   available   time_to    samples  %cpu   rss     vms
      (s)        %      (GB)        (GB)        (GB)      finish     done
-         0     6.9      29.2        76.0      163.0        NA       NA        0.0   90.1M    354.1M  
+         0     1.9      29.2        75.0      162.0        NA       NA       98.5   90.9M    354.3M  

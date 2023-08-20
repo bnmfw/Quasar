@@ -1,6 +1,6 @@
 """
 Concurrent Framework.
-This is the only module in the project that knows cuncurrency existis, as it should be transparent to other modules.
+This is the only module in the project that knows cuncurrency exists, as it should be transparent to other modules.
 The interface provided is of a function executed multiple times with a queue of its inputs.
 """
 import os
@@ -42,10 +42,10 @@ class ProcessWorker:
         """
         Constructor.
 
-            :param Callable work_func: Function to be executed multiple times.
-            :param list static_args: Arguments in function input that do not change over different jobs. Static args must be the last part of the input.
-            :param int max_work: Maximum number of functions a worker can run (used to not loop indefinatly in very edge cases).
-            :param str workdir: Main circuits directory.
+            :work_func (Callable): Function to be executed multiple times.
+            :static_args (list): Arguments in function input that do not change over different jobs. Static args must be the last part of the input.
+            :max_work (int): Maximum number of functions a worker can run (used to not loop indefinatly in very edge cases).
+            :workdir (str): Main circuits directory.
         """
         self.func = work_func
         self.args = static_args
@@ -62,7 +62,7 @@ class ProcessWorker:
         """
         Executes multiple jobs and posts its results.
 
-            :param object master: Process Master.
+            :master (ProcessMaster): Process Master.
         """
         # This line has to come here in run. Do not dare to put it in the constructor. Learn more about signals.
         signal.signal(signal.SIGTERM, self.__termination_handler)
@@ -96,10 +96,10 @@ class ProcessMaster:
         """
         Constructor.
 
-            :param Callable func: Function to be executed multiple times.
-            :param list or None jobs: List of jobs to be done.
-            :param str work_dir: Main circuits directory.
-            :param Callable progress_report: Function that the progress is to be reported to.
+            :func (Callable): Function to be executed multiple times.
+            :jobs (list or None): List of jobs to be done.
+            :work_dir (str): Main circuits directory.
+            :progress_report (Callable): Function that the progress is to be reported to.
         """
         self.func = func # Function to be executed
         self.work_dir =  work_dir
@@ -186,8 +186,8 @@ class ProcessMaster:
         """
         Recieves a Queue and an id and removes the item from the Queue (kinda evil).
 
-            :param mp.Queue queue: Queue to have the item removed from.
-            :param int id: Id of the item to be removed.
+            :queue (mp.Queue): Queue to have the item removed from.
+            :id (int): Id of the item to be removed.
         """
         for _ in range(queue.qsize()):
             content = queue.get()
@@ -218,9 +218,9 @@ class ProcessMaster:
         """
         Posts the output of a function. Called by workers.
 
-            :param output: Output of the function.
-            :param int id: Id of the job completed.
-            :param float total_time: Time taken to complete the job.
+            :output: Output of the function.
+            :id (int): Id of the job completed.
+            :total_time (float): Time taken to complete the job.
         """
         # Puts the done job in its queue
         with self.lock_done:
@@ -245,8 +245,8 @@ class ProcessMaster:
         """
         Creates all workers and runs all workers.
 
-            :param list static_args: List containing the static arguments of the jobs, that dont change in between jobs.
-            :param int n_workers: Number of workers to be created, will take the cpu count as standard. 
+            :static_args (list): List containing the static arguments of the jobs, that dont change in between jobs.
+            :n_workers (int): Number of workers to be created, will take the cpu count as standard. 
         """
         # Creates all workers
         workers = [mp.Process(target=ProcessWorker(self.func, static_args, self.jobs.qsize(), work_dir=self.work_dir).run, args = (self,)) for _ in range(n_workers)]
@@ -279,11 +279,11 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Constructor.
 
-            :param Callable func: Function to be executed.
-            :param list or None jobs: List of jobe to be run.
-            :param str work_dir: Main circuits directory.
-            :param str backup_prefix: Path and prefix from root to backup, in the format path/.../filename excluding extensions.
-            :param Callable progress_report: Function that the progress is to be reported to. 
+            :func (Callable): Function to be executed.
+            :jobs (list or None): List of jobe to be run.
+            :work_dir (str): Main circuits directory.
+            :backup_prefix (str): Path and prefix from root to backup, in the format path/.../filename excluding extensions.
+            :progress_report (Callable): Function that the progress is to be reported to. 
         """
         super().__init__(func, jobs, work_dir=work_dir, progress_report=progress_report)
 
@@ -306,7 +306,7 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Emptys a queue.
 
-            :param mp.Queue queue: Queue to be emptied.
+            :queue (mp.Queue): Queue to be emptied.
         """
         while not queue.empty():
             queue.get()
@@ -342,7 +342,7 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Alternative for passing jobs in the construction of the object.
 
-            :param list jobs: List containing jobs to be done.
+            :jobs (list): List containing jobs to be done.
         """
 
         self.total_jobs = len(jobs)
@@ -364,7 +364,7 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Reads the contents of a queue.
 
-            :param mp.Queue queue: Queue to be read.
+            :queue (mp.Queue): Queue to be read.
             :returns: the contents of the queue.
         """
         contents = []
@@ -424,7 +424,7 @@ if __name__ == "__main__":
 
     print("\tTesting Backuping Parallel execution...")
     def sleeper(a, x):
-        sleep(10)
+        sleep(2)
         return x * a
     
     backuper = PersistentProcessMaster(sleeper, test_jobs, "debug/backup_test/test")

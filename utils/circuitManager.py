@@ -22,29 +22,43 @@ class CircuitManager:
         """
         self.circuito = circuit
         self.let_manager = LetFinder(circuit, circuit.path_to_circuits, report=report)
-        self.__limite_sup: float = 400
-        self.__limite_sim: int = 25
+        self.report = report
     
-    def __possible_LETs(self, nodes: list, outputs: list, input_num: int) -> list:
+    def __possible_LETs(self, nodes: list, outputs: list, inputs: list) -> list:
         """
         Recieves a list of nodes, outputs and the number of inputs and returns all possible lets.
 
-            :param list nodes: List of Node objects (Includes output nodes).
-            :param list outputs: List of Node objects interpreted as outputs.
-            :param int input_num: Number of inputs in circuit.
+            :nodes (list): List of Node objects (Includes output nodes).
+            :outputs (list): List of Node objects interpreted as outputs.
+            :input_num (list): List of circuit inputs.
             :returns: A list of all possible lets.
         """
         if self.circuito.graph is None:
             lets = [[node, output, signals]\
                     for node in nodes\
                     for output in outputs\
-                    for signals in combinacoes_possiveis(input_num)]
+                    for signals in combinacoes_possiveis(len(inputs))]
         else:
-            lets = [[node, output, signals]\
-                    for node in nodes\
-                    for output in outputs\
-                    for signals in combinacoes_possiveis(input_num) if self.circuito.graph.sees(node.nome, output.nome)]
-        lets = list(filter(lambda e: e[0].nome not in {"a", "b", "cin"}, lets))
+            lets = []
+            #Iterates over all input combinations 
+            for signals in combinacoes_possiveis(len(inputs)):
+                # Sets the inputs
+                logic_signals = [("t"+inp.nome, sig) for inp, sig in zip(inputs, signals)] + [("vdd", 1), ("vcc", 1), ("gnd", 0), ("vss", 0)]
+                # print(logic_signals)
+                self.circuito.graph.set_logic(logic_signals)
+                for output in outputs:
+                    # Gets the nodes that affect it
+                    effect_group = list(filter(lambda e: e in map(lambda e: e.nome, nodes), self.circuito.graph.is_affected_by(output.nome)))
+                    lets += [[self.circuito.get_node(node), output, signals] for node in effect_group]
+
+                # lets = [[node, output, signals]\
+                #         for node in nodes\
+                #         for output in outputs\
+                #         for signals in combinacoes_possiveis(input_num) if self.circuito.graph.sees(node.nome, output.nome)]
+        
+        # lets = list(filter(lambda e: e[0].nome not in {"a", "b", "cin"}, lets))
+        
+        # Enumerates lets
         for i, let in enumerate(lets):
             let.insert(0, i)
         return lets
@@ -138,10 +152,14 @@ class CircuitManager:
         for node in self.circuito.nodos:
             node.LETs = []
     
-        jobs = self.__possible_LETs(self.circuito.nodos, self.circuito.saidas, len(self.circuito.entradas))
+        jobs = self.__possible_LETs(self.circuito.nodos, self.circuito.saidas, self.circuito.entradas)
 
+        if self.report:
+            [print(j) for j in jobs]
+            print()
+        
         manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuito.path_to_circuits)
-        manager.work((delay,),1)
+        manager.work((delay,),)
 
         lets = manager.return_done()
 
@@ -183,6 +201,7 @@ if __name__ == "__main__":
     with InDir("debug"):
         ptf = "test_circuits"
         nor_test = Circuito("nor", ptf, 0.7).from_nodes(["a", "b"], ["g1"])
+        # fadder_test = Circuito("fadder", ptf, 0.7).from_nodes(["a", "b", "cin"], ["sum", "cout"])
         manager = CircuitManager(nor_test, report=False)
         manager.determinar_LETths()
 

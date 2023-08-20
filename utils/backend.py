@@ -47,15 +47,15 @@ if __name__ == "__main__":
 
     with InDir("debug"):
 
-        nand: Circuito = Circuito("nand", "test_crcuits", 0.7).from_json()
-        backend: Backend = Backend.set(nand, 0.7)
+        # fadder: Circuito = Circuito("fadder", "test_crcuits", 0.7).from_json()
+        # backend: Backend = Backend.set(fadder, 0.7)
 
-        print("\tTesting LETth determination...")
-        backend.determinar_lets()
+        # print("\tTesting LETth determination...")
+        # backend.determinar_lets()
 
 
-        # # fadder = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"], {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"})
-        # fadder = Circuito("fadder", "test_circuits", 0.7).from_json()
-        # fadder.nodos.sort(key=lambda e: e.nome)
-        # backend = Backend().set(fadder, 0.7)
-        # backend.analise_mc(1000)
+        # fadder = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"], {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"})
+        fadder = Circuito("fadder", "test_circuits", 0.7).from_json()
+        fadder.nodos.sort(key=lambda e: e.nome)
+        backend = Backend().set(fadder, 0.7)
+        backend.analise_mc(1000)

@@ -1,6 +1,6 @@
 {
  "Simulator" : "HSPICE",
- "HSPICE_Home" : "/usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice",
+ "HSPICE_Home" : "/home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice",
  "adv" : "fadder_dm.user.json",
  "o" : "fadder"
 }

@@ -296,19 +296,18 @@ class SpiceFileManager():
             return []
         return {measure.label: measure}
 
-    def get_nodes(self, circuit_name: str, ignore: list) -> set:
+    def get_nodes(self, circuit_name: str, tension_sources: list = None) -> set:
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
             :param str curcuit_name: name of the circuit to be parsed.
+            :tension_sources (list): List of tesion sources.
+
             :returns: a set containing the label of all nodes and a Graph object.
-            :param list[str] ignore: Nodes that should be ignored.
         """
         nodes = {"vdd", "gnd"}
-        if not ignore:
-            ignore = set()
-        ignore |= {"vcc", "vdd", "gnd", "vss"}
-        critical_region = False
+        if tension_sources is None: tension_sources = ["vcc", "vdd", "gnd", "vss"]
+        # critical_region = False
         with open(f"{self.path_to_folder}/{circuit_name}/{circuit_name}.cir", "r") as file:
             transistor_list: list = []
             for line in file:
@@ -326,11 +325,11 @@ class SpiceFileManager():
                 # A line starting with M identifies a transistor, wich means its connected to availabel nodes
                 if "M" in line[0]:
                     # Im not sure if those are actually source and drain, but doesent matter to identifing them
-                    _, source, gate, drain, *_ = line.split()
-                    transistor_list.append([source, gate, drain])
+                    ttype, source, gate, drain, *_ = line.split()
+                    transistor_list.append((ttype[1] == "p", [source, gate, drain]))
                     for node in [source, gate, drain]:
                         nodes.add(node)
-        return {node for node in nodes if node not in ignore and node[0] != "t"}, Graph(transistor_list, ignore)
+        return {node for node in nodes if node not in tension_sources}, Graph(transistor_list, tension_sources)
 
     def get_output(self) -> dict:
         """
@@ -501,7 +500,7 @@ class SpiceRunner():
             :param str path_to_folder: relative path into the folder that contain spice files.
         """
         self.path_to_folder = path_to_folder
-        self.default(0.7)
+        # self.default(0.7)
         SpiceRunner.file_manager = SpiceFileManager(path_to_folder=path_to_folder)
 
     class Monte_Carlo():
@@ -631,7 +630,7 @@ class SpiceRunner():
         self.file_manager.set_pulse(LET(0, vdd, "none", "none", [None, None]))
         self.file_manager.set_monte_carlo(0)
 
-    def get_nodes(self, circ_name: str, ignore: list) -> set:
+    def get_nodes(self, circ_name: str, tension_sources: list = None) -> set:
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
@@ -639,7 +638,7 @@ class SpiceRunner():
             :returns: a set containing the label of all nodes.
             :param list[str] ignore: Nodes that should be ignored.
         """
-        return SpiceRunner.file_manager.get_nodes(circ_name, ignore)
+        return SpiceRunner.file_manager.get_nodes(circ_name, tension_sources)
 
     def run_delay(self, filename: str, input_name: str, output_name: str, vdd: float, inputs: list) -> float:
         """
@@ -765,6 +764,14 @@ if __name__ == "__main__":
     TestManager = SpiceFileManager(path_to_folder=ptf)
     TestRunner.default(0.7)
 
+    
+    # igl = ["a","b","cin","na","nb","ncin","ncout","nsum","gate_p15", "drain_p15", "gate_p16", "drain_p16", "gate_q15", "drain_q15", "gate_q16", "drain_q16"]
+    # fadder = Circuito("fadder", ptf, 0.7).from_nodes(["a1","b1","cin1"],["sum","cout"], igl)
+    # fadder.graph.set_logic([("a1",0), ("b1",0), ("cin1",0),("vdd",1),("gnd",0),("vss",0),("vcc",1)])
+    # assert fadder.graph.is_affected_by("sum") == {'a1', 'cin1', 'p9_n6', 'b1', 'p3_p4', 'p1_p2', 'p11_p12', 'n6_n7', 'p10_p11', 'sum', 'p2_n1'}, "IS AFFECTED BY FUNCTION FAILED"
+    
+    # exit()
+
     print("\tTesting node tensions...")
     nand_test = Circuito("nand", ptf, 0.7).from_json()
     for vi, entrada in zip([0,0], nand_test.entradas): entrada.sinal = vi
@@ -773,7 +780,7 @@ if __name__ == "__main__":
 
     print("\tTesting circuit parsing...")
     nor_test = Circuito("nor", ptf, 0.7).from_nodes(["a","b"],["g1"])
-    assert {nodo.nome for nodo in nor_test.nodos} == {"g1", "i1"}, "CIRCUIT PARSING FAILED"
+    assert {nodo.nome for nodo in nor_test.nodos} == {"g1", "i1", "ta", "tb"}, "CIRCUIT PARSING FAILED"
 
     print("\tTesting SET simulation with known SET value...")
     nand_test = Circuito("nand", ptf, 0.7).from_json()

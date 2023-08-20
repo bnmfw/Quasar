@@ -12,9 +12,9 @@ class LetFinder:
         """
         Constructor.
 
-            :param Circuit circuit: A Circuit object to have its let found.
-            :param str path_to_folder: relative path into the folder that contain spice files.
-            :param bool report: Whether or not the run will report to terminal with prints
+            :circuit (Circuit): A Circuit object to have its let found.
+            :path_to_folder (str): relative path into the folder that contain spice files.
+            :report (bool): Whether or not the run will report to terminal with prints
         """
         self.circuito = circuit
         self.runner = SpiceRunner(path_to_folder=path_to_folder)
@@ -28,9 +28,9 @@ class LetFinder:
         """
         Returns the fault inclination on the given node.
 
-            :param str node_name: Relevant node.
-            :param float vdd: Vdd of the simulation.
-            :param LET let: Let of the simulation.
+            :node_name (str): Relevant node.
+            :vdd (float): Vdd of the simulation.
+            :let (LET): Let of the simulation.
             :returns: A string representing the inclination, either 'rise' or 'fall'
         """
         with self.runner.SET(let, 0):
@@ -43,8 +43,8 @@ class LetFinder:
         """
         Verifies the validity of the Let, if in this configuration a fault in the node will have an effect on the output.
 
-            :param float vdd: Vdd of the simulation.
-            :param LET let: Let being validated.
+            :vdd (float): Vdd of the simulation.
+            :let (LET): Let being validated.
             :returns: A tuple with a boolean informing the validity of the let and the number of Spice runs.
         """
         node_inclination, output_inclination = let.orientacao
@@ -75,7 +75,7 @@ class LetFinder:
         """
         Finds the upper limit for the current of the Let.
 
-            :param LET let: Let to have the upper limit found.
+            :let (LET): Let to have the upper limit found.
             :returns: The maximal current for the Let.
         """
         self.__upper_bound = 400
@@ -100,7 +100,7 @@ class LetFinder:
         """
         Finds the lower limit for the current of the Let.
 
-            :param LET let: Let to have the upper limit found.
+            :let (LET): Let to have the upper limit found.
             :returns: The minimal current for the Let.
         """
 
@@ -144,10 +144,10 @@ class LetFinder:
         """
         Returns the minimal current of a modeled Set to propagate a fault from the node to the output.
 
-            :param LET let: Let modeled including node and output.
-            :param list input_signals: Logical value of each input.
-            :param bool False: Whether the Let is already known to be valid.
-            :param bool delay: Whether the delay of the circuit will be taken into consideration.
+            :let (LET): Let modeled including node and output.
+            :input_signals (list): Logical value of each input.
+            :safe (bool): Whether the Let is already known to be valid.
+            :delay (bool): Whether the delay of the circuit will be taken into consideration.
             :returns: A tuple containing the simulation number and the current found, if any.
         """
         limite_sup = self.__upper_bound

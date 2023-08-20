@@ -4,5 +4,5 @@ modules = ["matematica", "graph", "concorrencia", "spiceInterface", "circuito", 
 
 print("Testing Quasar...")
 for module in modules:
-    os.system(f"python -m utils.{module}")
+    os.system(f"python3 -m utils.{module}")
 print("Quasar OK")
