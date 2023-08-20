@@ -2,6 +2,9 @@ requirements:
 	@pip install -r .piprequirements
 
 test:
+	for module in matematica; do \
+		python3 -m utils.$$module graph concorrencia spiceInterface circuito letFinder circuitManager mcManager; \
+	done
 	@python3 debug/full_diagnosis.py
 
 clean:
