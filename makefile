@@ -2,17 +2,16 @@ requirements:
 	@pip install -r .piprequirements
 
 test:
-	for module in matematica; do \
-		python3 -m utils.$$module graph concorrencia spiceInterface circuito letFinder circuitManager mcManager; \
+	@for module in matematica graph concorrencia spiceInterface circuito letFinder circuitManager mcManager; do \
+		python3 -m utils.$$module; \
 	done
-	@python3 debug/full_diagnosis.py
 
 clean:
 	@rm -rf __pycache__
 	@rm -rf utils/__pycache__
 	@find . -name "scope.log*" -type f -delete
 	@for dir in circuitos debug/test_circuits; do \
-		for ext in ava.* mpp0 ic0 crash mt0 mc0 st0 user* pa0 tr0 info* hsp*; do \
+		for ext in ava.* mpp0 ic0 crash mt0* mc0* st0 user* pa0 tr0 info* hsp*; do \
 			find $$dir -name "*.$$ext" -type f -delete; \
 		done; \
 	done
