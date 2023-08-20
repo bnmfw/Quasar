@@ -16,3 +16,5 @@ circuitos/output.txt
 *.ava
 invisible/
 *scrap.txt
+.idea/
+temperatura*/
