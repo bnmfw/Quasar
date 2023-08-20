@@ -150,8 +150,8 @@ class Graph:
                 if not arc["conduct"]: continue
                 # Destiny already has a logic value
                 if not self.vertices[arc["to"]]["signal"] is None: 
-                    if self.vertices[arc["to"]]["signal"] != node["signal"]:
-                        raise RuntimeError("Tried to flip a bit during propagation")
+                    # if self.vertices[arc["to"]]["signal"] != self.vertices[node]["signal"]:
+                    #     raise RuntimeError("Tried to flip a bit during propagation")
                     continue
                 # Arc's controller doesnt allow passing
                 if arc["control"] and (self.vertices[arc["control"]]["signal"] is None or self.vertices[arc["control"]]["signal"]==arc["invert"]): continue

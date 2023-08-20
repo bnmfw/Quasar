@@ -1,5 +1,0 @@
-Nodo,Saida,Pulso,Pulso,Corrente,LETs,Num Val,Validacoes->
-g1,g1,fall,fall,193.75,9.74e+07,2,'01,'10
-g1,g1,rise,rise,140.62,7.07e+07,1,'11
-i1,g1,rise,rise,250.00,1.26e+08,1,'11
-i1,g1,fall,fall,193.75,9.74e+07,1,'10
