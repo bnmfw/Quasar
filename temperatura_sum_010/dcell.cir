@@ -1,5 +1,0 @@
-*dcell node cout
-Mp15 vccbloco gate_p15 drain_p15 vdd 				pmos_rvt w=27.0n l=20n nfin=3
-Mn15 gate_p15 drain_p15 cout ground				nmos_rvt w=27.0n l=20n nfin=3
-Mp16 cout gate_p16 drain_p16 vdd					pmos_rvt w=27.0n l=20n nfin=3
-Mn16 gate_p16 drain_p16 vssbloco ground				nmos_rvt w=27.0n l=20n nfin=3
