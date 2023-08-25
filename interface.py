@@ -45,39 +45,36 @@ class GUI:
                 circ_nome = inputs["circ"]
                 cadastro = inputs["cadastro"]
                 if cadastro:
-                    self.circuito = Circuito(circ_nome, vdd).from_json()
-                    self.backend.set(self.circuito,vdd)
-                    with HSRunner.Vdd(vdd):
-                        self.backend.atualizar_lets()
+                    self.circuito = Circuito(circ_nome, vdd=vdd).from_json()
+                    self.backend.set_circuit(self.circuito,vdd)
 
             # TELA DE CADASTRO
             elif current_screen == "cadastro":
                 
                 current_screen, inputs = self.ui.tela_cadastro(circ_nome)
-                self.circuito = Circuito(circ_nome, vdd).from_nodes(inputs["nodos"], inputs["entradas"], inputs["saidas"])    
-                print(self.circuito.nodos)
-                self.backend.set(self.circuito,vdd)
+                self.circuito = Circuito(circ_nome, vdd=vdd).from_nodes(inputs["entradas"], inputs["saidas"])    
+                print(self.circuito.nodes)
+                self.backend.set_circuit(self.circuito,vdd)
                 with HSRunner.Vdd(vdd):
-                    self.backend.determinar_lets()
+                    self.backend.determine_LETs()
 
             # TELA PRINCIPAL
             elif current_screen == "main":
                 current_screen, inputs = self.ui.tela_principal(self.circuito)
                 if inputs["acao"] == "atualizar":
                     with HSRunner.Vdd(vdd):
-                        self.backend.atualizar_lets()
+                        self.backend.update_lets()
                 elif inputs["acao"] == "csv":
-                        CManager.escrever_csv_total(self.circuito)
+                        CManager.write_full_csv(self.circuito, self.circuito.path_to_circuits)
 
             # TELA MONTE CARLO
             elif current_screen == "mc":
                 current_screen, inputs = self.ui.tela_mc(self.circuito)
                 with HSRunner.Vdd(vdd):
-                    self.backend.analise_mc(inputs["n_sim"], inputs["continue"], inputs["progress"])
+                    self.backend.mc_analysis(inputs["n_sim"], inputs["continue"], inputs["progress"])
                 if not inputs["window"] is None:
                     inputs["window"].close()
 
+            # EXIT
             elif current_screen is None:
                 break
-
-g = GUI()

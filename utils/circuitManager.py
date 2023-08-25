@@ -2,7 +2,7 @@
 Circuit level simulation (Lvl 2) manager.
 """
 
-from .matematica import combinacoes_possiveis, InDir, Time
+from .matematica import all_vector_n_bits, InDir, Time
 from .spiceInterface import HSRunner
 from .components import *
 from .letFinder import LetFinder
@@ -17,8 +17,9 @@ class CircuitManager:
         """
         Constructor.
 
-            :param Circuit circuit: Circuit subject to the simulations.
-            :param bool report: Whether or not print reports will be done.
+        Args:
+            circuit (Circuit): Circuit subject to the simulations.
+            report (bool, optional): Whether or not print reports will be done.
         """
         self.circuito = circuit
         self.let_manager = LetFinder(circuit, circuit.path_to_circuits, report=report)
@@ -28,35 +29,39 @@ class CircuitManager:
         """
         Recieves a list of nodes, outputs and the number of inputs and returns all possible lets.
 
-            :nodes (list): List of Node objects (Includes output nodes).
-            :outputs (list): List of Node objects interpreted as outputs.
-            :input_num (list): List of circuit inputs.
-            :returns: A list of all possible lets.
+        Args:    
+            nodes (list): List of Node objects (Includes output nodes).
+            outputs (list): List of Node objects interpreted as outputs.
+            input_num (list): List of circuit inputs.
+        
+        Returns:
+            list: A list of all possible lets.
         """
         if self.circuito.graph is None:
             lets = [[node, output, signals]\
                     for node in nodes\
                     for output in outputs\
-                    for signals in combinacoes_possiveis(len(inputs))]
+                    for signals in all_vector_n_bits(len(inputs))]
         else:
             lets = []
             #Iterates over all input combinations 
-            for signals in combinacoes_possiveis(len(inputs)):
+            for signals in all_vector_n_bits(len(inputs)):
                 # Sets the inputs
-                logic_signals = [("t"+inp.nome, sig) for inp, sig in zip(inputs, signals)] + [("vdd", 1), ("vcc", 1), ("gnd", 0), ("vss", 0)]
+                logic_signals = [(inp.name, sig) for inp, sig in zip(inputs, signals)] + [("vdd", 1), ("vcc", 1), ("gnd", 0), ("vss", 0)]
                 # print(logic_signals)
                 self.circuito.graph.set_logic(logic_signals)
                 for output in outputs:
                     # Gets the nodes that affect it
-                    effect_group = list(filter(lambda e: e in map(lambda e: e.nome, nodes), self.circuito.graph.is_affected_by(output.nome)))
+                    effect_group = list(filter(lambda e: e in map(lambda e: e.name, nodes), self.circuito.graph.is_affected_by(output.name)))
+                    effect_group = list(filter(lambda e: e[0] not in {"f"}, effect_group))
                     lets += [[self.circuito.get_node(node), output, signals] for node in effect_group]
 
                 # lets = [[node, output, signals]\
                 #         for node in nodes\
                 #         for output in outputs\
-                #         for signals in combinacoes_possiveis(input_num) if self.circuito.graph.sees(node.nome, output.nome)]
+                #         for signals in combinacoes_possiveis(input_num) if self.circuito.graph.sees(node.name, output.name)]
         
-        # lets = list(filter(lambda e: e[0].nome not in {"a", "b", "cin"}, lets))
+        # lets = list(filter(lambda e: e[0].name not in {"a", "b", "cin"}, lets))
         
         # Enumerates lets
         for i, let in enumerate(lets):
@@ -69,51 +74,52 @@ class CircuitManager:
         """
         critical_input = None
         critical_output = None
-        self.circuito.atrasoCC = 0
+        self.circuito.SPdelay = 0
         sim_num: int = 0
 
-        # Todas as entradas em todas as saidas com todas as combinacoes
-        for entrada_analisada in self.circuito.entradas:
+        # Todas as inputs em todas as saidas com todas as combinacoes
+        for entrada_analisada in self.circuito.inputs:
             for output in self.circuito.saidas:
-                for validacao in combinacoes_possiveis(len(self.circuito.entradas)):
+                for validacao in all_vector_n_bits(len(self.circuito.inputs)):
 
                     # Probabilly a better way to do it, but it is not just enumerate
                     index = 0
-                    for entrada in self.circuito.entradas:
+                    for entrada in self.circuito.inputs:
                         if entrada != entrada_analisada:
-                            entrada.sinal = validacao[index]
+                            entrada.signal = validacao[index]
                             index += 1
-                    entrada_analisada.sinal = "atraso"
+                    entrada_analisada.signal = "delay"
 
-                    # Etapa de medicao de atraso
-                    delay: float = HSRunner.run_delay(self.circuito.arquivo, entrada_analisada.nome, output.nome, self.circuito.vdd, self.circuito.entradas)
+                    # Etapa de medicao de delay
+                    delay: float = HSRunner.run_delay(self.circuito.file, entrada_analisada.name, output.name, self.circuito.vdd, self.circuito.inputs)
 
                     sim_num += 1
 
-                    if delay > self.circuito.atrasoCC:
-                        self.circuito.atrasoCC = delay
-                        critical_output = output.nome
-                        critical_input = entrada.nome
-        # with open("atrasoCC.txt", "a") as arq:
+                    if delay > self.circuito.SPdelay:
+                        self.circuito.SPdelay = delay
+                        critical_output = output.name
+                        critical_input = entrada.name
+        # with open("SPdelay.txt", "a") as arq:
         #     arq.write(f"entrada: {critical_input}\t saida: {critical_output}\n")
-        print(f"Atraso CC do arquivo: {self.circuito.atrasoCC} simulacoes: {sim_num}")
+        print(f"Atraso CC do file: {self.circuito.SPdelay} simulacoes: {sim_num}")
 
-    def atualizar_LETths(self, delay: bool = False):
+    def update_LETs(self, delay: bool = False):
         """
         Updates the minimal LETs of the circuit.
 
-            :param bool delay: Whether the delay will be considered in the simulations.
+        Args:    
+            delay (bool): Whether the delay will be considered in the simulations.
         """
         with HSRunner.Vdd(self.circuito.vdd):
             sim_num: int = 0
             self.circuito.LETth = None
             ##### BUSCA DO LETs DO CIRCUITO #####
-            for nodo in self.circuito.nodos:
+            for nodo in self.circuito.nodes:
                 for let in nodo.LETs:
                     # try: 
                     ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
-                    if relatorio: print(let.nodo_nome, let.saida_nome, let.orientacao, let.validacoes[0])
-                    sim, current = self.let_manager.definir_corrente(let, let.validacoes[0], safe=True, delay=delay)
+                    if relatorio: print(let.node_nome, let.saida_nome, let.orientacao, let.validacoes[0])
+                    sim, current = self.let_manager.minimal_LET(let, let.validacoes[0], safe=True, delay=delay)
                     sim_num += sim
                     if relatorio: print(f"corrente: {let.corrente}\n")
                     if not self.circuito.LETth:
@@ -124,35 +130,39 @@ class CircuitManager:
                     #     exit() 
                     # except (ValueError, KeyError):
                     #     with open("erros.txt", "a") as erro:
-                    #         erro.write(f"pmos {pmos} nmos {nmos} {let.nodo_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")  
+                    #         erro.write(f"pmos {pmos} nmos {nmos} {let.node_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")  
             # print(f"{sim_num} simulacoes feitas na atualizacao")
 
     def run_let_job(self, _, node, output, input_signals: list, delay: bool) -> tuple:
         """
         Runs a single let job a returns the same let with its minimal current. 
-        Method meant to be run cuncurrently 
+        Method meant to be run cuncurrently.
 
-            :param _: Important for cuncurrency, dont you dare take it out.
-            :param Nodo node: Node object where fault originates.
-            :param Node output: Output where fault propagates to.
-            :param list input_signals: Signal values of inputs.
-            :param bool delay: Whether or not delay will be taken into consideration.
-            :returns: A tuple with the minimal let and the input signals run.
+        Args:
+            _: Important for cuncurrency, dont you dare take it out.
+            node (Node): Node object where fault originates.
+            output (Node): Output where fault propagates to.
+            input_signals (list): Signal values of inputs.
+            delay (bool): Whether or not delay will be taken into consideration.
+
+        Returns:    
+            tuple: A tuple with the minimal let and the input signals run.
         """
-        let_analisado = LET(None, self.circuito.vdd, node.nome, output.nome, [None, None])
-        self.let_manager.definir_corrente(let_analisado, input_signals, delay = delay)
+        let_analisado = LET(None, self.circuito.vdd, node.name, output.name, [None, None])
+        self.let_manager.minimal_LET(let_analisado, input_signals, delay = delay)
         return (let_analisado, input_signals)
     
-    def determinar_LETths(self, delay: bool = False):
+    def determine_LETs(self, delay: bool = False):
         """
         Determines all the minimal LETs of the circuit from all possible configurations.
 
-            :param bool delay: Whether or not delay will be taken into consideration.
+        Args:    
+            delay (bool): Whether or not delay will be taken into consideration.
         """
-        for node in self.circuito.nodos:
+        for node in self.circuito.nodes:
             node.LETs = []
     
-        jobs = self.__possible_LETs(self.circuito.nodos, self.circuito.saidas, self.circuito.entradas)
+        jobs = self.__possible_LETs(self.circuito.nodes, self.circuito.saidas, self.circuito.inputs)
 
         if self.report:
             [print(j) for j in jobs]
@@ -167,8 +177,8 @@ class CircuitManager:
             # Ignora correntes invalidas
             if let.corrente is None or let.corrente > 10000: continue
 
-            for nodo_ in self.circuito.nodos:
-                if nodo_.nome == let.nodo_nome:
+            for nodo_ in self.circuito.nodes:
+                if nodo_.name == let.node_nome:
                     node = nodo_
 
             # Atualizacao do LETth do circuito
@@ -195,7 +205,7 @@ if __name__ == "__main__":
     print("\tTesting update of minimal LETs...")
     nand_test = Circuito("nand", ptf, 0.7).from_json()
     manager = CircuitManager(nand_test, report=False)
-    manager.atualizar_LETths()
+    manager.update_LETs()
     
     print("\tTesting determining minimal LETs...")
     with InDir("debug"):
@@ -203,6 +213,6 @@ if __name__ == "__main__":
         nor_test = Circuito("nor", ptf, 0.7).from_nodes(["a", "b"], ["g1"])
         # fadder_test = Circuito("fadder", ptf, 0.7).from_nodes(["a", "b", "cin"], ["sum", "cout"])
         manager = CircuitManager(nor_test, report=False)
-        manager.determinar_LETths()
+        manager.determine_LETs()
 
     print("Circuit Manager OK.")

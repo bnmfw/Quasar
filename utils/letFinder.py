@@ -12,9 +12,10 @@ class LetFinder:
         """
         Constructor.
 
-            :circuit (Circuit): A Circuit object to have its let found.
-            :path_to_folder (str): relative path into the folder that contain spice files.
-            :report (bool): Whether or not the run will report to terminal with prints
+        Args:
+            circuit (Circuit): A Circuit object to have its let found.
+            path_to_folder (str): relative path into the folder that contain spice files.
+            report (bool): Whether or not the run will report to terminal with prints.
         """
         self.circuito = circuit
         self.runner = SpiceRunner(path_to_folder=path_to_folder)
@@ -28,13 +29,16 @@ class LetFinder:
         """
         Returns the fault inclination on the given node.
 
-            :node_name (str): Relevant node.
-            :vdd (float): Vdd of the simulation.
-            :let (LET): Let of the simulation.
-            :returns: A string representing the inclination, either 'rise' or 'fall'
+        Args:
+            node_name (str): Relevant node.
+            vdd (float): Vdd of the simulation.
+            let (LET): Let of the simulation.
+
+        Returns:    
+            str: A string representing the inclination, either 'rise' or 'fall'
         """
         with self.runner.SET(let, 0):
-            min_ten, max_ten = self.runner.run_nodes_value(self.circuito.arquivo, [node_name])[node_name]
+            min_ten, max_ten = self.runner.run_nodes_value(self.circuito.file, [node_name])[node_name]
         if (max_ten - min_ten) > 0.1 * vdd:
             raise RuntimeError(f"Max and Min vdd have too much variation max: {max_ten} min: {min_ten}")
         return "rise" if max_ten < 0.5 * vdd else "fall"
@@ -43,9 +47,12 @@ class LetFinder:
         """
         Verifies the validity of the Let, if in this configuration a fault in the node will have an effect on the output.
 
-            :vdd (float): Vdd of the simulation.
-            :let (LET): Let being validated.
-            :returns: A tuple with a boolean informing the validity of the let and the number of Spice runs.
+        Args:    
+            vdd (float): Vdd of the simulation.
+            let (LET): Let being validated.
+            
+        Returns:    
+            tuple: A tuple with a boolean informing the validity of the let and the number of Spice runs.
         """
         node_inclination, output_inclination = let.orientacao
         
@@ -53,7 +60,7 @@ class LetFinder:
         lower_tolerance: float = 0.2
         upper_tolerance: float = 0.8
 
-        node_peak, output_peak = self.runner.run_SET(self.circuito.arquivo, let,self.__upper_bound)
+        node_peak, output_peak = self.runner.run_SET(self.circuito.file, let,self.__upper_bound)
 
         if self.__report:
             print(f"masking\tnode: {node_peak:.3f} ({int(100*node_peak/vdd)}%)\t output: {output_peak:.3f}")
@@ -75,15 +82,18 @@ class LetFinder:
         """
         Finds the upper limit for the current of the Let.
 
-            :let (LET): Let to have the upper limit found.
-            :returns: The maximal current for the Let.
+        Args:
+            let (LET): Let to have the upper limit found.
+        
+        Returns:
+            float: The maximal current for the Let.
         """
         self.__upper_bound = 400
 
         output_inclination = let.orientacao[1]
 
         for _ in range(10):
-            _, output_peak = self.runner.run_SET(self.circuito.arquivo, let, self.__upper_bound)
+            _, output_peak = self.runner.run_SET(self.circuito.file, let, self.__upper_bound)
 
             # Fault effect on the output was found
             if (output_inclination == "rise" and output_peak > self.circuito.vdd/2) or\
@@ -100,8 +110,11 @@ class LetFinder:
         """
         Finds the lower limit for the current of the Let.
 
-            :let (LET): Let to have the upper limit found.
-            :returns: The minimal current for the Let.
+        Args:
+            let (LET): Let to have the upper limit found.
+            
+        Returns: 
+            float: The minimal current for the Let.
         """
 
         # Variables for the minary search of the current
@@ -116,9 +129,9 @@ class LetFinder:
 
         # Binary search for minimal current
         for _ in range(self.__limite_sim):
-            # Encontra a largura minima de pulso pra vencer o atraso
-            largura = self.runner.run_pulse_width(self.circuito.arquivo, let, current)
-            diferenca_largura: float = None if largura is None else largura - self.circuito.atrasoCC
+            # Encontra a largura minima de pulso pra vencer o delay
+            largura = self.runner.run_pulse_width(self.circuito.file, let, current)
+            diferenca_largura: float = None if largura is None else largura - self.circuito.SPdelay
 
             # checks if minimal width is satisfied
             if diferenca_largura and -precisao_largura < diferenca_largura < precisao_largura:
@@ -140,15 +153,18 @@ class LetFinder:
         if self.__report: print(f"PULSO MINIMO NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO")
         return None
 
-    def definir_corrente(self, let: LET, input_signals: list, safe: bool = False, delay: bool = False) -> tuple:
+    def minimal_LET(self, let: LET, input_signals: list, safe: bool = False, delay: bool = False) -> tuple:
         """
         Returns the minimal current of a modeled Set to propagate a fault from the node to the output.
 
-            :let (LET): Let modeled including node and output.
-            :input_signals (list): Logical value of each input.
-            :safe (bool): Whether the Let is already known to be valid.
-            :delay (bool): Whether the delay of the circuit will be taken into consideration.
-            :returns: A tuple containing the simulation number and the current found, if any.
+        Args:
+            let (LET): Let modeled including node and output.
+            input_signals (list): Logical value of each input.
+            safe (bool): Whether the Let is already known to be valid.
+            delay (bool): Whether the delay of the circuit will be taken into consideration.
+        
+        Returns:
+            tuple: A tuple containing the simulation number and the current found, if any.
         """
         limite_sup = self.__upper_bound
         precision: float = 0.01
@@ -156,17 +172,17 @@ class LetFinder:
         lower_tolerance: float = (1 - precision) * vdd / 2
         upper_tolerance: float = (1 + precision) * vdd / 2
         sim_num: int = 0
-        inputs: list = self.circuito.entradas
+        inputs: list = self.circuito.inputs
 
         # Sets the input signals
         for i in range(len(inputs)):
-            inputs[i].sinal = input_signals[i]
+            inputs[i].signal = input_signals[i]
         
         with self.runner.Inputs(inputs, vdd):
             
             # Figures the inclination of the simulation
             if let.orientacao[0] is None or not safe:
-                let.orientacao[0] = self.__fault_inclination(let.nodo_nome, vdd, let)
+                let.orientacao[0] = self.__fault_inclination(let.node_nome, vdd, let)
                 sim_num += 1
             if let.orientacao[1] is None or not safe:
                 let.orientacao[1] = self.__fault_inclination(let.saida_nome, vdd, let)
@@ -175,10 +191,10 @@ class LetFinder:
 
             if self.__report:
                 print("Starting a LET finding job\n"+
-                      f"node: {let.nodo_nome}\toutput: {let.saida_nome}\n"+
+                      f"node: {let.node_nome}\toutput: {let.saida_nome}\n"+
                       f"vdd: {vdd}\tsafe: {safe}\n"+
                       f"inc1: {let.orientacao[0]}\tinc2: {let.orientacao[1]}\n"+
-                      f"input vector: {' '.join([inp.nome+':'+str(inp.sinal) for inp in inputs])}")
+                      f"input vector: {' '.join([inp.name+':'+str(inp.signal) for inp in inputs])}")
 
             # Checks if the Let configuration is valid
             if not safe:
@@ -199,7 +215,7 @@ class LetFinder:
             # Binary Search
             for i in range(self.__limite_sim):
 
-                _, peak_tension = self.runner.run_SET(self.circuito.arquivo, let, current)
+                _, peak_tension = self.runner.run_SET(self.circuito.file, let, current)
                 if self.__report:
                     print(f"{i}\tcurrent: {current:.1f}\tpeak_tension:{peak_tension:.3f}")
                 sim_num += 1
@@ -270,7 +286,7 @@ if __name__ == "__main__":
     # from .circuito import Circuito
     # fadder = Circuito("fadder", "debug/test_circuits", 0.7).from_nodes(["a","b","cin"],["cout","sum"])
     # let = LET(0, 0.7, "i10", "cout", ["fall", "fall"], [0,0,0])
-    # LetFinder(fadder, fadder.path_to_circuits, True).definir_corrente(let, [0,0,0])
+    # LetFinder(fadder, fadder.path_to_circuits, True).minimal_LET(let, [0,0,0])
     # exit()
    
     # from .circuito import Circuito
@@ -285,16 +301,16 @@ if __name__ == "__main__":
     print("\tTesting Finding Current of safe Let...")
     valid_input = [1,1]
     let = LET(140.625, 0.7, "g1", "g1", [None, None], valid_input)
-    measured = LetFinder(nand, "debug/test_circuits", False).definir_corrente(let, valid_input, safe=True)[1]
+    measured = LetFinder(nand, "debug/test_circuits", False).minimal_LET(let, valid_input, safe=True)[1]
     assert abs(measured-140.625) <= 10e-6, f"LET FINDING FAILED simulated:{measured} expected:{140.625}"
 
     # print("\tTesting Finding Current of invalid unsafe Let...")
     # invalid_let = LET(314.152, 0.7, "g1", "g1", [None, None], valid_input)
-    # print(LetFinder(nand, "debug/test_circuits", False).definir_corrente(invalid_let, valid_input, safe=False))
+    # print(LetFinder(nand, "debug/test_circuits", False).minimal_LET(invalid_let, valid_input, safe=False))
 
     print("\tTesting Finding Current of valid unsafe Let...")
     valid_input = [1,1]
     unsafe_valid_let = LET(140.625, 0.7, "i1", "g1", [None, None], valid_input)
-    assert LetFinder(nand, "debug/test_circuits", False).definir_corrente(unsafe_valid_let, valid_input, safe=False)[1] == 248.4375
+    assert LetFinder(nand, "debug/test_circuits", False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] == 248.4375
     
     print("LET Finder OK")

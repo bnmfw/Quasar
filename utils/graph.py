@@ -48,11 +48,14 @@ class Graph:
         """
         Returns whether or not source node sees the target. (DPS)
 
-            :source (str): Source of the search.
-            :target (str): Target of the search.
-            :already_seen (str): A list of already seen vertices, used by recursive call.
-        """
+        Args:
+            source (str): Source of search
+            target (str): Target of searc
+            already_seen (set, optional): A list of already seen vertices, used by recursive call. Defaults to None.
 
+        Returns:
+            bool: Whether or not source node sees the target
+        """
         
         # If there already is a reaches list
         if self.vertices[source]["reaches"] != []:
@@ -92,8 +95,18 @@ class Graph:
         """
         Returns a set with the names of all vertices the source can see.
 
-            :source (str): Node that will have its reach defined.
+        Args:
+            source (str): Node that will have its reach defined.
+            already_seen (set, optional): A list of already seen vertices, used by recursive call. Defaults to None.
+
+        Returns:
+            set: Set with the names of all vertices the source can see.
         """
+        # ""
+        # Returns a set with the names of all vertices the source can see.
+
+        #     :source (str): Node that will have its reach defined.
+        # ""
         # Creates the already seen set if necessary
         original = False
         if already_seen is None:
@@ -124,8 +137,8 @@ class Graph:
         Given input values sets the logic value of all vertices. Must contain vdd, gnd and other tension sources
 
         Args:
-            input_list (list[tuple]): List of tuples on the format (vertice_name, 0 or 1). The list MUST contain vdd, gnd, etc... i.g. (vdd, 1), (gnd, 0)
-            faulty_nodes (list[str]): List of nodes that should be flipped.
+            input_list (list): List of tuples on the format (vertice_name, 0 or 1). The list MUST contain vdd, gnd, etc... i.g. (vdd, 1), (gnd, 0).
+            faulty_nodes (list, optional): List of nodes that should be flipped. Defaults to None.
         """
         # Default value of faulty_nodes
         if faulty_nodes is None:
@@ -218,7 +231,7 @@ class Graph:
 
 if __name__ == "__main__":
 
-    print("Testing Graph module...")
+    print("Testing Logic module...")
 
     fadder = [
         (1, "vdd ta p1_p2".split()),
@@ -277,13 +290,17 @@ if __name__ == "__main__":
     print("\tTesting sees method...")
     assert g.sees("p1_p2","cout"), "SEES FUNCTION FAILED"
     assert not g.sees("cout","p1_p2"), "SEES FUNCTION FAILED"
+
     print("\tTesting my_reach method...")
     assert g.my_reach("p1_p2") == {'p9_n6', 'p3_p4', 'i11', 'i10', 'n1_n2', 'p2_n1', 'p1_p2', 'n4_n3', 'p6_p9', 'p11_p12', 'n6_n7', 'sum', 'nsum', 'p10_p11', 'ncout', 'cout'}
+    
     print("\tTesting set_logic method...")
     g.set_logic([("ta",1), ("tb",0), ("tcin",1),("vdd",1),("gnd",0)])
     assert list(map(lambda e: e["signal"], g.vertices.values())) == [1,1,0,0,0,1,1,1,1,None,None,0,0,0,0,1,0,0,1,1,0], "SET LOGIC FUNCTION FAILED"
+    
     print("\tTesting is affected_by method...")
     assert g.is_affected_by("sum") == {'i10', 'ta', 'tb', 'p2_n1', 'p6_p9', 'p9_n6', 'n4_n3', 'p1_p2', 'sum', 'tcin'}, "IS AFFECTED BY FUNCTION FAILED"
     g.set_logic([("ta",0), ("tb",0), ("tcin",0),("vdd",1),("gnd",0)])
     assert g.is_affected_by("sum") == {'ta', 'tcin', 'p9_n6', 'tb', 'p3_p4', 'p1_p2', 'p11_p12', 'n6_n7', 'p10_p11', 'sum', 'p2_n1'}, "IS AFFECTED BY FUNCTION FAILED"
     
+    print("Logic Module OK")

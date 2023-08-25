@@ -44,7 +44,7 @@ class TXTUI:
         inputs = {"acao": None}
         print(barra_comprida)
         inputs["acao"] = acao[int(input(f"{barra_comprida}\n"
-                    f"Trabalhando com o {circuito.nome} em {circuito.vdd} volts\n"
+                    f"Trabalhando com o {circuito.name} em {circuito.vdd} volts\n"
                      "O que deseja fazer?\n"
                      "0. Atualizar LETs\n"
                      "1. Gerar CSV de LETs\n"
@@ -53,7 +53,7 @@ class TXTUI:
                      "Resposta: "))]
 
         # Encerra o Quasar
-        if inputs["acao"] == None:
+        if inputs["acao"] is None:
             return None, inputs
         
         # Atualiza os LETs do circuito
@@ -72,7 +72,7 @@ class TXTUI:
         inputs = {"progress": None, "n_sim": None, "continue": False, "window": None}
 
         # Continua simulacao onde parou se ha backup
-        if path.exists(f"circuitos/{circuito.nome}/MC_jobs.json"): 
+        if path.exists(f"circuitos/{circuito.name}/MC_jobs.json"): 
             print("\nSimulacao em andamento encontrada, continuando de onde parou...\n")
             inputs["continue"] = True
             return "main", inputs

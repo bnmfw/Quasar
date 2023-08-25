@@ -1,8 +1,8 @@
 venv/
 debug/crash_report/
 debug/backup_test/
+debug/test_circuits/output.txt
+circuitos/output.txt
 *work/
-*output.txt
-*.ava
 invisible/
 .idea/

@@ -1,45 +1,89 @@
+"""
+Backend module, responsible for acting as an interface to the other files in the package
+"""
 from .circuito import Circuito
 from .circuitManager import CircuitManager
 from .mcManager import MCManager
 from .arquivos import JManager, CManager
 from .matematica import InDir
+from collections.abc import Callable
 
 class Backend:
-
+    """
+    Backend object, this is the only object of the project the interface should interact with
+    """
     def __init__(self) -> None:
-        self.circuito = None
+        """
+        Constructor object
+        """
+        self.circuit = None
         self.vdd = None
 
-    def set(self, circuito: Circuito, vdd: float):
-        self.circuito = circuito
+    def set_circuit(self, circuit: Circuito, vdd: float):
+        """
+        Sets the simulated circuit
+
+        Args:
+            circuit (Circuito): circuit to be simulated.
+            vdd (float): vdd of the simulation
+        """
+        self.circuit = circuit
         self.vdd = vdd
         return self
 
-    # def __exit__(self, type, value, traceback):
-    #     self.circuito = None
-    #     self.vdd = None
-
     def check_circuit(self):
-        if self.circuito is None:
-            raise ValueError("Circuito nao informado")
+        """
+        Checks whether or not a circuit is set. Raises a ValueError if one is not
+        """
+        if self.circuit is None:
+            raise ValueError("Circuit not informed")
 
-    def determinar_lets(self, delay: bool = False, report: bool = False):
-        self.check_circuit()
-        CircuitManager(self.circuito, report=report).determinar_LETths(delay=delay)
-        JManager.codificar(self.circuito, self.circuito.path_to_circuits)
-    
-    def atualizar_lets(self, delay: bool = False, report: bool = False):
-        self.check_circuit()
-        CircuitManager(self.circuito, report=report).atualizar_LETths(delay=delay)
-        JManager.codificar(self.circuito, self.circuito.path_to_circuits)
+    def determine_LETs(self, delay: bool = False, report: bool = False):
+        """
+        Determines the LETs of the set circuit from scratch
 
-    def criar_let_csv(self):
+        Args:
+            delay (bool, optional): Whether the delay of the circuit is to be taken into consideration. Defaults to False.
+            report (bool, optional): Whether work is to be print to terminal. Defaults to False.
+        """
         self.check_circuit()
-        CManager.escrever_csv_total(self.circuito)
+        CircuitManager(self.circuit, report=True).determine_LETs(delay=delay)
+        JManager.codify(self.circuit, self.circuit.path_to_circuits)
     
-    def analise_mc(self, n_simu: int, continuar:bool = False, delay:bool = False, progress_report = None):
+    def update_lets(self, delay: bool = False, report: bool = False):
+        """
+        Updates the LETs of a circuit. For this to be run LETs must already have been determined.
+
+        Args:
+            delay (bool, optional): Whether the delay of the circuit is to be taken into consideration. Defaults to False.
+            report (bool, optional): Whether work is to be print to terminal. Defaults to False.
+        """
         self.check_circuit()
-        MCManager(self.circuito).analise_monte_carlo_total(n_simu, continue_backup=continuar, delay=delay, progress_report=progress_report)
+        CircuitManager(self.circuit, report=report).update_LETs(delay=delay)
+        JManager.codify(self.circuit, self.circuit.path_to_circuits)
+
+    def save_let_data(self, path_to_folder: str):
+        """
+        Saves all the LETs data into a .csv file
+
+        Args:
+            path_to_folder (str): Path to folder where the file is to be saved.
+        """
+        self.check_circuit()
+        CManager.write_full_csv(self.circuit, path_to_folder)
+    
+    def mc_analysis(self, n_simu: int, continue_backup:bool = False, delay:bool = False, progress_report: Callable = None):
+        """
+        Runs a full Monte Carlo analysis of the circuit
+
+        Args:
+            n_simu (int): number of MC points
+            continue_backup (bool, optional): Whether the MC work should continue from a backup file. Defaults to False.
+            delay (bool, optional): Whether delay should be taken into consideration. Defaults to False.
+            progress_report (Callable, optional): _description_. Defaults to None.
+        """
+        self.check_circuit()
+        MCManager(self.circuit).full_mc_analysis(n_simu, continue_backup=continue_backup, delay=delay, progress_report=progress_report)
 
 if __name__ == "__main__":
 
@@ -47,15 +91,22 @@ if __name__ == "__main__":
 
     with InDir("debug"):
 
-        # fadder: Circuito = Circuito("fadder", "test_crcuits", 0.7).from_json()
-        # backend: Backend = Backend.set(fadder, 0.7)
+        fadder: Circuito = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"])
+        xor1: Circuito = Circuito("xorv1", "test_circuits", 0.7).from_json()
+        xor5: Circuito = Circuito("xorv5", "test_circuits", 0.7).from_json()
+
+        # {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"}
+
+        backend: Backend = Backend().set_circuit(xor5, 0.7)
 
         # print("\tTesting LETth determination...")
-        # backend.determinar_lets()
+        # backend.determine_LETs(report=True)
+        # backend.save_let_data("test_circuits")
 
+        backend.mc_analysis(1000)
 
         # fadder = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"], {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"})
-        fadder = Circuito("fadder", "test_circuits", 0.7).from_json()
-        fadder.nodos.sort(key=lambda e: e.nome)
-        backend = Backend().set(fadder, 0.7)
-        backend.analise_mc(1000)
+        # fadder = Circuito("fadder", "test_circuits", 0.7).from_json()
+        # fadder.nodes.sort(key=lambda e: e.name)
+        # backend = Backend().set(fadder, 0.7)
+        # backend.analise_mc(1000)

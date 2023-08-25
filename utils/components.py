@@ -1,40 +1,40 @@
 from .matematica import current_to_let
 
-class Entrada:
+class Signal_Input:
     def __init__(self, name: str):
-        self.nome = name
-        self.sinal = "setup"
+        self.name = name
+        self.signal = "setup"
 
     def codec(self):
         dic = {}
-        dic["nome"] = self.nome
-        dic["sinal"] = self.sinal
+        dic["name"] = self.name
+        dic["signal"] = self.signal
         return dic
 
     def decodec(self, dic: dict):
-        self.nome = dic["nome"]
-        self.sinal = dic["sinal"]
+        self.name = dic["name"]
+        self.signal = dic["signal"]
 
     def __repr__(self):
-        return f"{self.nome}:{self.sinal}"
+        return f"{self.name}:{self.signal}"
 
-class Nodo:
-    def __init__(self, nome: str):
-        self.nome = nome
+class Node:
+    def __init__(self, name: str):
+        self.name = name
         self.LETs = []
         # Eh um dicionario de dicionarios
-        self.LETth: LET = LET(None, None, self.nome, "saida", "aa")
-        self.atraso = {}
+        self.LETth: LET = LET(None, None, self.name, "saida", "aa")
+        self.delay = {}
 
     def __repr__(self):
-        return f"{self.nome}"
-        return f"\nnome: {self.nome}\tLETth: {self.LETth.corrente}\tQuantidade de LETs:{len(self.LETs)}"
+        return f"{self.name}"
+        return f"\nnome: {self.name}\tLETth: {self.LETth.corrente}\tQuantidade de LETs:{len(self.LETs)}"
 
     def codec(self):
         dic = {}
-        dic["nome"] = self.nome
+        dic["name"] = self.name
         dic["critico"] = self.LETth.codec()
-        dic["atraso"] = self.atraso
+        dic["delay"] = self.delay
         lista_de_lets = []
         for let in self.LETs:
             lista_de_lets.append(let.codec())
@@ -43,10 +43,10 @@ class Nodo:
 
     def decodec(self, dic:dict, vdd:float):
         if not isinstance(dic, dict) or not isinstance(vdd,(int, float)): raise TypeError(f"dic (dict): {type(dic)}, vdd (float): {type(vdd)}")
-        self.nome = dic["nome"]
+        self.name = dic["name"]
         self.LETth = LET(None, vdd, "nodo", "saida", "orientacao")
         self.LETth.decodec(dic["critico"])
-        self.atraso = dic["atraso"]
+        self.delay = dic["delay"]
         for dicionario_let in dic["lets"]:
             let = LET(None, vdd, "nodo", "saida", "orientacao")
             let.decodec(dicionario_let)
@@ -58,7 +58,7 @@ class LET:
         self.__corrente: float = corrente
         self.orientacao: list = orientacao
         self.vdd: float = vdd
-        self.nodo_nome: str = nodo_nome
+        self.node_nome: str = nodo_nome
         self.saida_nome: str = saida_nome
         if validacoes == None:
             self.validacoes = []
@@ -75,11 +75,11 @@ class LET:
         self.valor = current_to_let(corrente)
 
     def __eq__(self, other):
-        return (self.nodo_nome == other.nodo_nome and self.saida_nome == other.saida_nome and self.orientacao == other.orientacao)
+        return (self.node_nome == other.node_nome and self.saida_nome == other.saida_nome and self.orientacao == other.orientacao)
 
     def __repr__(self):
         return ""
-        return f"\ncorrente: {self.corrente}, orientacao: {self.orientacao}, vdd: {self.vdd}, nodo: {self.nodo_nome}, saida: {self.saida_nome}"
+        return f"\ncorrente: {self.corrente}, orientacao: {self.orientacao}, vdd: {self.vdd}, nodo: {self.node_nome}, saida: {self.saida_nome}"
 
     def __len__(self):
         return len(self.validacoes)
@@ -105,7 +105,7 @@ class LET:
         dic = {}
         dic["corr"] = self.corrente
         dic["orie"] = self.orientacao
-        dic["nodo"] = self.nodo_nome
+        dic["nodo"] = self.node_nome
         dic["said"] = self.saida_nome
         dic["val"] = self.validacoes
         return dic
@@ -114,7 +114,7 @@ class LET:
         if type(dic) != dict: raise TypeError(f"Nao recebi um dicionario, recebi {type(dic)}: {dic}")
         self.corrente = dic["corr"]
         self.orientacao = dic["orie"]
-        self.nodo_nome = dic["nodo"]
+        self.node_nome = dic["nodo"]
         self.saida_nome = dic["said"]
         self.validacoes = dic["val"]
 
@@ -124,19 +124,19 @@ if __name__ == "__main__":
     print(objeto_codificado.values())
 
     #TESTES DE ENTRADA
-    # e1 = Entrada("ent1", "t")
-    # e2 = Entrada("ent2", "t")
+    # e1 = Signal_Input("ent1", "t")
+    # e2 = Signal_Input("ent2", "t")
     # print(e1.codec())
     # e2.decodec(e1.codec())
-    # assert e1.nome == e2.nome and e1.sinal == e2.sinal, "Entrada FALHOU"
+    # assert e1.name == e2.name and e1.signal == e2.signal, "Signal_Input FALHOU"
 
     # # TESTE DE NODO
-    # n1 = Nodo("nodo1")
-    # n2 = Nodo("nodo2")
+    # n1 = Node("nodo1")
+    # n2 = Node("nodo2")
     # n2.decodec(n1.codec(),0.7)
-    # assert n1.nome == n2.nome and n1.atraso == n2.atraso and \
+    # assert n1.name == n2.name and n1.delay == n2.delay and \
     #         n1.LETs == n2.LETs and\
-    #        n1.LETth == n2.LETth, "Nodo FALHOU"
+    #        n1.LETth == n2.LETth, "Node FALHOU"
 
     # # TESTE DE LET
     # let1 = LET(154.3, 0.7, "nodo1", "saida1", ["fall", "rise"])

@@ -22,9 +22,10 @@ class SpiceFileManager():
 
     def __init__(self, path_to_folder: str = "circuitos") -> None:
         """
-        Constructor
+        Constructor.
 
-            :param str path_to_folder: relative path into the folder that contain spice files.
+        Args:
+            path_to_folder (str): relative path into the folder that contain spice files.
         """
         self.path_to_folder = path_to_folder
         self.output: dict = None
@@ -33,13 +34,14 @@ class SpiceFileManager():
         """
         Writes a peak measurement line in the measurement .cir file.
 
-            :param type file: File object that is to be written to.
-            :param str label: Label of the measurement.
-            :param str peak: Type of peak to be measured. Either 'min' or 'max'.
-            :param str grandeza: Physical quantity. Either 'V' or 'i'.
-            :param str node: Name of the node to be measured.
-            :param float start: Starting time of the measurement window.
-            :param float finish: Finishing time of the measurement window.
+        Args:    
+            file: File object that is to be written to.
+            label (str): Label of the measurement.
+            peak (str): Type of peak to be measured. Either 'min' or 'max'.
+            quantity (str): Physical quantity. Either 'V' or 'i'.
+            node (str): Name of the node to be measured.
+            start (float): Starting time of the measurement window.
+            finish (float): Finishing time of the measurement window.
         """
         if not peak in {"min", "max"}:
             raise ValueError(f"peak cannot be {peak}, must be min or max")
@@ -52,14 +54,15 @@ class SpiceFileManager():
         """
         Writes a trig measurement line in the measurement .cir file.
 
-            :param type file: File object that is to be written to.
-            :param str label: Label of the measurement.
-            :param str trig: Name of the monitored triggering node.
-            :param float trig_value: Value to trigger the measurement.
-            :param str trig_inclin: Inclination of trigger. Must be 'rise' or 'fall'.
-            :param str targ: Name of the monitored target node.
-            :param float targ_value: Value of target node ot end the measurement.
-            :param str targ_inclin: Inclination of target. Must be 'rise' or 'fall'.
+        Args:    
+            file: File object that is to be written to.
+            label (str): Label of the measurement.
+            trig (str): Name of the monitored triggering node.
+            trig_value (float): Value to trigger the measurement.
+            trig_inclin (str): Inclination of trigger. Must be 'rise' or 'fall'.
+            targ (targ): Name of the monitored target node.
+            targ_value (float): Value of target node ot end the measurement.
+            targ_inclin (str): Inclination of target. Must be 'rise' or 'fall'.
         """
 
         file.write(f".meas tran {label} TRIG v({trig}) val='{trig_value}' {trig_inclin}=1 TARG v({targ}) val='{targ_value}' {targ_inclin}=1\n")
@@ -68,8 +71,9 @@ class SpiceFileManager():
         """
         Alters the measure.cir file to track min and max tension on given node and output
 
-            :param str node: Node with to have min and max tensions measured
-            :param str output: Output to have min and max tensions measured
+        Args:
+            node (str): Node with to have min and max tensions measured
+            output (str): Output to have min and max tensions measured
         """
         with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
             file.write("*File with measures of lowest and highest values in node and output\n")
@@ -82,7 +86,8 @@ class SpiceFileManager():
         """
         Alters the measure.cir file to track min and max tension on given node.
 
-            :param str node: Node with to have min and max tensions measured.
+        Args:
+            node (str): Node with to have min and max tensions measured.
         """
         with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
             file.write("*File with measures of lowest and highest values in node\n")
@@ -93,7 +98,8 @@ class SpiceFileManager():
         """
         Alters the measure.cir file to track the min and max value of given nodes.
 
-            :param list[str] nodes: List of node names to be measured.
+        Args:
+            nodes (list[str]): List of node names to be measured.
         """
         with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
             file.write("*File with measured of lowest and highest values in list of nodes\n")
@@ -105,7 +111,8 @@ class SpiceFileManager():
         """
         Alters the vdd.cir file to set the vdd of the simulations.
 
-            :param float vdd: Defines the vdd of the simulation.
+        Args:
+            vdd (float): Defines the vdd of the simulation.
         """
         with open(f"{self.path_to_folder}/include/vdd.cir", "w") as file:
             file.write("*File with the vdd tension used by all circuits\n")
@@ -117,7 +124,8 @@ class SpiceFileManager():
         """
         Alters the vss.cir file to set the vss of the simulations
 
-            :param float vss: defines the vss of the simulation
+        Args:
+            vss (float): defines the vss of the simulation
         """
         with open(f"{self.path_to_folder}/include/vss.cir", "w") as file:
             file.write("*File with the vss tension used by all circuits\n")
@@ -127,18 +135,15 @@ class SpiceFileManager():
         """
         Alters the fontes.cir file defining the input values of the simulation.
         
-            :param float vdd: the vdd of the simulation.
-            :param dict inputs: dict with input values in the form {input_name: input_value}
+        Args:
+            vdd (float): the vdd of the simulation.
+            inputs (dict): dict with input values in the form {input_name: input_value}
         """
-        
-        # print("I will try to acces:")
-        # os.system("pwd")
-        # print(f"{self.path_to_folder}/include/fontes.cir")
 
         with open(f"{self.path_to_folder}/include/fontes.cir", "w") as file:
             file.write("*Input signals to be altered by Quasar\n")
 
-            # Escreve o sinal analogico a partir do sinal logico
+            # Writes the signal from the signal dict
             for entrada, level in inputs.items():
                 file.write(f"V{entrada} {entrada} gnd ")
                 if level == 1:
@@ -148,7 +153,7 @@ class SpiceFileManager():
                         file.write(f"{vss}\n")
                     else:
                         file.write(f"0.0\n")
-                elif level == "atraso":
+                elif level == "delay":
                     if vss:
                         file.write(f"PWL(0n {vss} 1n {vss} 1.01n {vdd} 3n {vdd} 3.01n {vss})\n")
                     else:
@@ -160,8 +165,9 @@ class SpiceFileManager():
         """
         Alters the SETs.cir file wich models the fault.
 
-            :param LET let: let to be modeled.
-            :param float current: current of the fault. If left as None let.current will be used.
+        Args:
+            let (LET): let to be modeled.
+            current (float): current of the fault. If left as None let.current will be used.
         """
 
         if not let.orientacao[0] in {"fall", "rise", None}:
@@ -172,17 +178,18 @@ class SpiceFileManager():
         with open(f"{self.path_to_folder}/include/SETs.cir", "w") as sets:
             sets.write("*SET faults\n")
             if not let.orientacao[0] == "rise": sets.write("*")
-            sets.write(f"Iseu gnd {let.nodo_nome} EXP(0 {current}u 2n 50p 164p 200p) //rise\n")
+            sets.write(f"Iseu gnd {let.node_nome} EXP(0 {current}u 2n 50p 164p 200p) //rise\n")
             if not let.orientacao[0] == "fall": sets.write("*")
-            sets.write(f"Iseu {let.nodo_nome} gnd EXP(0 {current}u 2n 50p 164p 200p) //fall\n")
+            sets.write(f"Iseu {let.node_nome} gnd EXP(0 {current}u 2n 50p 164p 200p) //fall\n")
 
     def measure_delay(self, input: str, out: str, vdd: float) -> None:
         """
         Altes the measure.cir file to measure the delay from one input to one output.
 
-            :param str input: name of the input node.
-            :param str out: name of the output node.
-            :param float vdd: value of the vdd of the simulation.
+        Args:
+            input (str): name of the input node.
+            out (str): name of the output node.
+            vdd (float): value of the vdd of the simulation.
         """
 
         with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
@@ -199,18 +206,20 @@ class SpiceFileManager():
         Alters the measure.cir file to measure the fault width of the let on the output.
         The fault width is the time the output node is flipped by the fault.
 
-            :param LET let: let modeled.
+        Args:
+            let (LET): let modeled.
         """
-        with open(f"{self.path_to_folder}/include/measure.cir", "w") as arquivo:
-            arquivo.write("*File with the fault width to be measured\n")
+        with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
+            file.write("*File with the fault width to be measured\n")
             tensao = str(let.vdd * 0.5)
-            self.__write_trig_meas(arquivo, "larg", let.nodo_nome, tensao, "rise", let.nodo_nome, tensao, "fall")
+            self.__write_trig_meas(file, "larg", let.node_nome, tensao, "rise", let.node_nome, tensao, "fall")
 
     def set_monte_carlo(self, simulations: int = 0) -> None:
         """
         Sets the monte carlo parameter in the monte_carlo.cir file.
 
-            :param int simulations: number o Monte Carlo simulations.
+        Args:
+            simulations (int): number o Monte Carlo simulations.
         """
         with open(f"{self.path_to_folder}/include/monte_carlo.cir", "w") as mc:
             mc.write("*Arquivo Analise Monte Carlo\n")
@@ -221,8 +230,9 @@ class SpiceFileManager():
         """
         Alterts the mc.cir file to set the variability parameters.
 
-            :param float pvar: work function of pfet devices.
-            :param float nvar: work function of nfer devices.
+        Args:
+            pvar (float): work function of pfet devices.
+            nvar (float): work function of nfer devices.
 
         """
         with open (f"{self.path_to_folder}/include/mc.cir","w") as mc:
@@ -240,7 +250,7 @@ class SpiceFileManager():
     @dataclass
     class Meas_from:
         """
-        Measure struct of the from type
+        Measure struct of the from type.
         """
         label: str
         value: float
@@ -249,7 +259,7 @@ class SpiceFileManager():
     @dataclass
     class Meas_targ:
         """
-        Measure struct of the trig targ type
+        Measure struct of the trig targ type.
         """
         label: str
         value: float
@@ -260,7 +270,11 @@ class SpiceFileManager():
         """
         Gatters the data from a measurement from the from type.
 
-            :param str line: line containing the data
+        Args:
+            line (str): line containing the data.
+        
+        Returns:
+            Meas_from: An data object containing the data.
         """
         label_value, time = line.split("at=")
         label, value = label_value.split("=")
@@ -270,7 +284,11 @@ class SpiceFileManager():
         """
         Gatters the data from a measurement from the trig trag type.
 
-            :param str line: line containing the data
+        Args:
+            line (str): line containing the data.
+        
+        Returns:
+            Meas_targ: An data object containing the data.
         """
         if "not found" in line:
             label, *_ = line.split("=")
@@ -281,11 +299,15 @@ class SpiceFileManager():
         label, value = label_value.split("=")
         return self.Meas_targ(label.strip(), spice_to_float(value), spice_to_float(targ), spice_to_float(trig))
     
-    def __format_output_line(self, line: str) -> None:
+    def __format_output_line(self, line: str) -> dict:
         """
         Recieves a measurement line and outputs it data.
 
-            :param line
+        Args:
+            line (str): line of output.
+        
+        Returns:
+            dict: A dictionary in the format {label: value}
         """
         measure = None
         if "at=" in line:
@@ -300,10 +322,12 @@ class SpiceFileManager():
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
-            :param str curcuit_name: name of the circuit to be parsed.
-            :tension_sources (list): List of tesion sources.
+        Args:
+            curcuit_name (str): name of the circuit to be parsed.
+            tension_sources (list[str]): List of tesion sources.
 
-            :returns: a set containing the label of all nodes and a Graph object.
+        Returns:
+            set: a set containing the label of all nodes and a Graph object.
         """
         nodes = {"vdd", "gnd"}
         if tension_sources is None: tension_sources = ["vcc", "vdd", "gnd", "vss"]
@@ -335,7 +359,8 @@ class SpiceFileManager():
         """
         Reads data in the output.txt file.
 
-            :returns: a dict containing all data formatted as {'label': data}
+        Returns:    
+            dict: a dict containing all data formatted as {'label': data}
         """
         data: dict = {}
         with open(f"{self.path_to_folder}/output.txt", "r") as output:
@@ -348,9 +373,12 @@ class SpiceFileManager():
         """
         Reads the peak tension of a node.
 
-            :param str inclination: Inclination measured. Must be 'rise' or 'fall'
-            :param bool nodMeas: Node measured is an output = False; is not an output = True.
-            :returns: peak tension measured.
+        Args:
+            inclination (str): Inclination measured. Must be 'rise' or 'fall'.
+            nodMeas (bool): Node measured is an output = False; is not an output = True.
+        
+        Returns:
+            float: peak tension measured.
         """
         if not inclination in {"fall", "rise"}:
             raise ValueError(f"Inclination value not accepted: {inclination}")
@@ -370,19 +398,23 @@ class SpiceFileManager():
 
     def get_nodes_tension(self, nodes: list) -> dict:
         """
-        Reads the max and min tension of given nodes
+        Reads the max and min tension of given nodes.
 
-            :param list[str] nodes: List of node names to be retrieved.
-            :returns: a dict in the form {node: (min_tension, max_tension)}
+        Args:
+            nodes (list[str]): List of node names to be retrieved.
+        
+        Returns:
+            Returns: a dict in the form {node: (min_tension, max_tension)}
         """
         output = self.get_output()
         return {node: (output[f"min{node}"].value, output[f"max{node}"].value) for node in nodes}
     
     def get_tension(self) -> tuple:
         """
-        Reads the max and min tension of a node
+        Reads the max and min tension of a node.
 
-            :returns: A tuple containing the max and min tensions.
+        Returns:
+            tuple: A tuple containing the max and min tensions.
         """
         output = self.get_output()
         return (output["maxnod"].value, output["minnod"].value)
@@ -391,9 +423,12 @@ class SpiceFileManager():
         """
         Reads a csv file (usually mc0.csv or mt0.csv) as returns its data.
 
-            :param str filename: name of the file to be read.
-            :param str start: substring which indicates the reading starts in the next line.
-            :returns: a dict containing the columns of the csv of the form data[label] = [column vector]
+        Args:
+            filename (str): name of the file to be read.
+            start (str): substring which indicates the reading starts in the next line.
+            
+        Returns:    
+            dict: The columns of the csv of the form data[label] = [column vector]
         """
         
         data: dict = {}
@@ -421,11 +456,14 @@ class SpiceFileManager():
         """
         Returns the number of simulations that resulted in a fault in a MC simulation.
 
-            :param str circuit_name: Name of the circuit.
-            :param int sim_num: Number of Monte Carlo simulations done.
-            :param str inclination: Inclination of fault on the output. Must be 'rise' or 'fall'.
-            :param float vdd: Vdd of the simulations.
-            :returns: Number of simulations that faulted.
+        Args:    
+            circuit_name (str): Name of the circuit.
+            sim_num (int): Number of Monte Carlo simulations done.
+            inclination (str): Inclination of fault on the output. Must be 'rise' or 'fall'.
+            vdd (float): Vdd of the simulations.
+        
+        Returns:
+            int: Number of simulations that faulted.
         """
 
         faults: int = 0
@@ -447,7 +485,8 @@ class SpiceFileManager():
         """
         Reads the delay measured from the output.txt file.
             
-            :returns: the delay measured.
+        Returns:    
+            float: The delay measured.
         """
 
         output = self.get_output()
@@ -457,8 +496,8 @@ class SpiceFileManager():
             return 0
         
         # Sorting
-        for i, atraso in enumerate(delays):
-            delays[i] = abs(atraso)
+        for i, delay in enumerate(delays):
+            delays[i] = abs(delay)
         delays.sort()
 
         # Basically because we are running all kinds of delay measures delays[2] and delays[3] contain nonsense so we get only delays[1] witch will be the gratest
@@ -469,8 +508,11 @@ class SpiceFileManager():
         """
         Reads the instances in <circuit>.mc0.csv.
 
-            :param str circ_name: Name of the circuit.
-            :returns: Dict containing the instances of variability.
+        Args:    
+            circ_name (str): Name of the circuit.
+        
+        Returns:
+            dict: Instances of variability.
         """
         instances: dict = {}
 
@@ -497,7 +539,8 @@ class SpiceRunner():
         """
         Constructor
 
-            :param str path_to_folder: relative path into the folder that contain spice files.
+        Args:
+            path_to_folder (str): relative path into the folder that contain spice files.
         """
         self.path_to_folder = path_to_folder
         # self.default(0.7)
@@ -544,7 +587,7 @@ class SpiceRunner():
 
         def __enter__(self):
             SpiceRunner.file_manager.set_pulse(self.let, self.corrente)
-            SpiceRunner.file_manager.measure_pulse(self.let.nodo_nome, self.let.saida_nome)
+            SpiceRunner.file_manager.measure_pulse(self.let.node_nome, self.let.saida_nome)
 
         def __exit__(self, type, value, traceback):
             SpiceRunner.file_manager.set_pulse(self.let, 0)
@@ -579,22 +622,22 @@ class SpiceRunner():
         """
         Context Mangers that sets the input signals of the simulation.
         """
-        def __init__ (self, entradas: list, vdd: float, vss: float = 0):
+        def __init__ (self, inputs: list, vdd: float, vss: float = 0):
             """
             Constructor.
 
-                :param list[int] entradas: Input logical values, either 0 or 1.
-                :param float vdd: Input vdd.
-                :param float vdd: Input vss.
+                inputs (list[int]): Input logical values, either 0 or 1.
+                vdd (float): Input vdd.
+                vdd (float): Input vss.
             """
             self.vdd = vdd
             self.vss = vss
-            self.entradas = {}
-            for entrada in entradas:
-                self.entradas[entrada.nome] = entrada.sinal
+            self.inputs = {}
+            for entrada in inputs:
+                self.inputs[entrada.name] = entrada.signal
 
         def __enter__(self):
-            SpiceRunner.file_manager.set_signals(self.entradas, self.vdd, self.vss)
+            SpiceRunner.file_manager.set_signals(self.inputs, self.vdd, self.vss)
 
         def __exit__(self, type, value, traceback):
             pass
@@ -603,8 +646,9 @@ class SpiceRunner():
         """
         Runs spice and dumps labels into output.txt.
 
-            :param str filename: Name of the file.
-            :param list[str] labels: labels to be dumped
+        Args:    
+            filename (str): Name of the file.
+            labels (list[str]): labels to be dumped
         """
         f = "\|"
         os.system(f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} | grep \"{f.join(labels)}\" > ../output.txt")
@@ -623,7 +667,8 @@ class SpiceRunner():
         """
         Sets circuit to default configuration, includind vdd, no fault and no MC.
 
-            :param float vdd: Standard vdd of the simulation.
+        Args:
+            vdd (float): Standard vdd of the simulation.
         """
         self.file_manager.set_vdd(vdd)
         self.file_manager.set_vss(0)
@@ -634,9 +679,12 @@ class SpiceRunner():
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
-            :param str curcuit_name: name of the circuit to be parsed.
-            :returns: a set containing the label of all nodes.
-            :param list[str] ignore: Nodes that should be ignored.
+        Args:    
+            curcuit_name (str): name of the circuit to be parsed.
+            tension_sources (list[str]): Nodes that should be ignored.
+        
+        Returns:
+            set: The label of all nodes.
         """
         return SpiceRunner.file_manager.get_nodes(circ_name, tension_sources)
 
@@ -644,17 +692,20 @@ class SpiceRunner():
         """
         Returns the delay of shortest path from a input to and output.
 
-            :param str filename: Name of the file.
-            :param str input_name: Name of the input node from where the delay is propagated.
-            :param str output_name: Name of the output node where the delay propagates to.
-            :param float vdd: Vdd of the simulation.
-            :param list inputs: A list of Entrada objects.
-            :returns: the delay of shortest path from the input to the output.
+        Args:
+            filename (str): Name of the file.
+            input_name (str): Name of the input node from where the delay is propagated.
+            output_name (str): Name of the output node where the delay propagates to.
+            vdd (float): Vdd of the simulation.
+            inputs (list[Signal_Input]): A list of Signal_Input objects.
+
+        Returns:    
+            float: The delay of shortest path from the input to the output.
         """
         
         # Set the signals to be simualted
         SpiceRunner.file_manager.measure_delay(input_name, output_name, vdd)
-        SpiceRunner.file_manager.set_signals({input.nome: input.sinal for input in inputs}, vdd)
+        SpiceRunner.file_manager.set_signals({input.name: input.signal for input in inputs}, vdd)
         # Runs the simulation in the respective folder
         self.__run_spice(filename, ["atraso_rr", "atraso_rf", "atraso_fr", "atraso_ff"])
         # Gets and returns the results
@@ -665,11 +716,14 @@ class SpiceRunner():
         """
         Returns the peak voltage output for a given let.
 
-            :param str filename: Name of the file.
-            :param LET let: let simulated.
-            :param float current: current of the fault. If left as None let.current will be used.
-            :param str path_to_root: path to root directory of the project.
-            :returns: a tuple containing the peak tension at the node where the fault originated and output.
+        Args:    
+            filename (str): Name of the file.
+            let (LET): let simulated.
+            current (float): current of the fault. If left as None let.current will be used.
+            path_to_root (str): path to root directory of the project.
+
+        Returns:    
+            tuple: A tuple containing the peak tension at the node where the fault originated and output.
         """
         # Sets the SET
         with self.SET(let, current):
@@ -690,10 +744,13 @@ class SpiceRunner():
         """
         Returns the pulse width of the propagated fault.
 
-            :param str filename: Name of the file.
-            :param LET let: Let to be simulated.
-            :param float current: current to be simulated. If None then let.current will be used.
-            :returns: Fault width at output.
+        Args:    
+            filename (str): Name of the file.
+            let (LET): Let to be simulated.
+            current (float): current to be simulated. If None then let.current will be used.
+
+        Returns:    
+            float: Fault width at output.
         """
         with self.SET(let, current):
             SpiceRunner.file_manager.measure_pulse_width(let)
@@ -712,10 +769,13 @@ class SpiceRunner():
         """
         Runs the standard circuit and retrieves all the nodes min and max tensions
 
-            :param str filename: Name of the file.
-            :param float vdd: Vdd of the simulation.
-            :param list[str] nodes: A list of node names to be measured.
-            :returns: a dict in the form {node: (min_tension, max_tension)}
+        Args:    
+            filename (str): Name of the file.
+            vdd (float): Vdd of the simulation.
+            nodes (list[str]): A list of node names to be measured.
+
+        Returns:
+            dict: a dict in the form {node: (min_tension, max_tension)}
         """
         measure_labels = [f"max{node}" for node in nodes] + [f"min{node}" for node in nodes]
         self.file_manager.measure_nodes(nodes)
@@ -726,13 +786,16 @@ class SpiceRunner():
         """
         Returns the number of MC simulation that faulted.
 
-            :param str circuit_name: Name of the circuit.
-            :param str name_name: Name of the node.
-            :param str output_name: Name of the output.
-            :param int sim_num: Number of simulations.
-            :param str output_incl: Inclination of fault at the output.
-            :param float vdd: Vdd of the simulation.
-            :return: The number of simulations that faulted.
+        Args:    
+            circuit_name (str): Name of the circuit.
+            name_name (str): Name of the node.
+            output_name (str): Name of the output.
+            sim_num (int): Number of simulations.
+            output_incl (str): Inclination of fault at the output.
+            vdd (float): Vdd of the simulation.
+
+        Returns:    
+            int: The number of simulations that faulted.
         """
         SpiceRunner.file_manager.measure_pulse(name_name, output_name)
         with self.Monte_Carlo(sim_num):
@@ -743,10 +806,13 @@ class SpiceRunner():
         """
         Returns the MC variability points.
 
-            :param str filename: Name of the file
-            :param str circuit_name: Name of the circuit.
-            :param int sim_num: Number of simulations.
-            :return: MC variability instances.
+        Args:
+            filename (str): Name of the file
+            circuit_name (str): Name of the circuit.
+            sim_num (int): Number of simulations.
+
+        Returns:    
+            dict: MC variability instances.
         """
         with self.Monte_Carlo(sim_num):
             os.system(f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} > ../output.txt")
@@ -774,33 +840,33 @@ if __name__ == "__main__":
 
     print("\tTesting node tensions...")
     nand_test = Circuito("nand", ptf, 0.7).from_json()
-    for vi, entrada in zip([0,0], nand_test.entradas): entrada.sinal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.entradas, 0.7):
-        assert TestRunner.run_nodes_value(nand_test.arquivo, ["i1", "g1"])["i1"][0] - 0.0275015 < 10e-3, "TENSIONS RUN FAILED"
+    for vi, entrada in zip([0,0], nand_test.inputs): entrada.signal = vi
+    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.inputs, 0.7):
+        assert TestRunner.run_nodes_value(nand_test.file, ["i1", "g1"])["i1"][0] - 0.0275015 < 10e-3, "TENSIONS RUN FAILED"
 
     print("\tTesting circuit parsing...")
     nor_test = Circuito("nor", ptf, 0.7).from_nodes(["a","b"],["g1"])
-    assert {nodo.nome for nodo in nor_test.nodos} == {"g1", "i1", "ta", "tb"}, "CIRCUIT PARSING FAILED"
+    assert {nodo.name for nodo in nor_test.nodes} == {"g1", "i1", "ta", "tb"}, "CIRCUIT PARSING FAILED"
 
     print("\tTesting SET simulation with known SET value...")
     nand_test = Circuito("nand", ptf, 0.7).from_json()
     valid_input = [0, 1] 
     valid_let = LET(156.25, 0.7, "g1", "g1", ["fall", "fall"], valid_input)
     expected_let_value = 0.36585829999999997
-    for vi, entrada in zip(valid_input, nand_test.entradas): entrada.sinal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.entradas, 0.7), TestRunner.MC_Instance(4.7443, 4.3136):
-        peak_node, peak_output = TestRunner.run_SET(nand_test.arquivo, valid_let, path_to_root="debug/..")
+    for vi, entrada in zip(valid_input, nand_test.inputs): entrada.signal = vi
+    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.inputs, 0.7), TestRunner.MC_Instance(4.7443, 4.3136):
+        peak_node, peak_output = TestRunner.run_SET(nand_test.file, valid_let, path_to_root="debug/..")
         assert abs(peak_node-expected_let_value) <= 10e-6, f"SET SIMULATION FAILED simulated: {peak_node} expected: {expected_let_value}"
 
     print("\tTesting delay simulation with known delay value...")
-    delay_input = [1, "atraso"]
+    delay_input = [1, "delay"]
     expected_delay_value = 9.1557e-12
-    for vi, entrada in zip(delay_input, nand_test.entradas): entrada.sinal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.entradas, 0.7):
-        delay = TestRunner.run_delay(nand_test.arquivo, "b", "g1", 0.7, nand_test.entradas)
+    for vi, entrada in zip(delay_input, nand_test.inputs): entrada.signal = vi
+    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.inputs, 0.7):
+        delay = TestRunner.run_delay(nand_test.file, "b", "g1", 0.7, nand_test.inputs)
         assert abs(delay - expected_delay_value) <= 10e-14, "DELAY SIMULATION FAILED"
 
     print("\tTesting MC points generation...")
-    assert len(TestRunner.run_MC_var(nand_test.arquivo, nand_test.nome, 10)) == 10, "MC POINTS GENERATION FAILED"
+    assert len(TestRunner.run_MC_var(nand_test.file, nand_test.name, 10)) == 10, "MC POINTS GENERATION FAILED"
     
     print("Spice Interface OK.")

@@ -1,5 +1,5 @@
 """
-Miscellanious auxilarry functions. 
+Miscellanious auxilary functions. 
 """
 from time import perf_counter
 import os
@@ -44,12 +44,15 @@ class InDir():
     def __exit__(self, a, b, c):
         os.chdir("/".join([".."] * self.depth))
 
-def combinacoes_possiveis(bits: int) -> int:
+def all_vector_n_bits(bits: int) -> int:
     """
     Returns of all values from 0 to 2 ^ size in the format of a list of its binary digits.
-    
-        :param int bits: Number of bits
-        :returns: A list of lists of digits.
+
+    Args:
+        bits (int): Number of bits
+
+    Returns:
+        int: A list of lists of digits.
     """
     total: int = 2 ** bits
     combinations: list = []
@@ -67,39 +70,48 @@ def spice_to_float(value: str) -> float:
     """
     Recieves a spice value string and returns the value converted to a float.
 
-        :param str value: Value to be converted.
-        :returns: Converted value.
+    Args:
+        value (str): Value to be converted.
+
+    Raises:
+        ValueError: The input value cannot be interpreted as a spice string value.
+
+    Returns:
+        float: Converted value.
     """
 
     value = value.strip()
     scale_factor: dict = {"a": -18, "f": -15, "p": -12,  
                           "n": -9, "u": -6, "m": -3,
                           "k": 3, "mega": 6, "x": 6, "g": 9, "t": 12}
-    # Guarda failed
+    # Failed guard
     if value == "failed":
         return None
     
-    # Sem grandeza
+    # No scale
     if value[-1] in {"0","1","2","3","4","5","6","7","8","9","."}:
         return float(value)
     
-    # Guarda de mega
+    # Mega guard
     if value[-4] == "mega":
         return float(value[:-4]) * 10 ** 6
     
-    # Outras grandezas
+    # Other scales
     if value[-1] in scale_factor.keys():
         return float(value[:-1]) * 10 ** scale_factor[value[-1]]
 
     # Nao reconhecido
-    raise ValueError(f"Recebi \"{value}\" como entrada de ajuste")
+    raise ValueError(f"Recieved \"{value}\" as an input os spice_to_float")
 
 def current_to_let(current: float) -> float:
     """
     Converts a current value to a let value in its weird unit.
 
-        :param float current: Current to be converted.
-        :returns: The Let value.
+    Args:
+        current (float): Current to be converted.
+
+    Returns:
+        float: The Let value.
     """
     if current is None: return None
     return (current * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / ((1.08 * 10 ** -14) * 0.000000021)

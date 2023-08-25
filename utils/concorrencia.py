@@ -42,10 +42,11 @@ class ProcessWorker:
         """
         Constructor.
 
-            :work_func (Callable): Function to be executed multiple times.
-            :static_args (list): Arguments in function input that do not change over different jobs. Static args must be the last part of the input.
-            :max_work (int): Maximum number of functions a worker can run (used to not loop indefinatly in very edge cases).
-            :workdir (str): Main circuits directory.
+        Args:
+            work_func (Callable): Function to be executed multiple times.
+            static_args (list): Arguments in function input that do not change over different jobs. Static args must be the last part of the input.
+            max_work (int): Maximum number of functions a worker can run (used to not loop indefinatly in very edge cases).
+            workdir (str, optional): Main circuits directory. Defaults to 'circuitos'
         """
         self.func = work_func
         self.args = static_args
@@ -62,7 +63,7 @@ class ProcessWorker:
         """
         Executes multiple jobs and posts its results.
 
-            :master (ProcessMaster): Process Master.
+            master (ProcessMaster): Process Master.
         """
         # This line has to come here in run. Do not dare to put it in the constructor. Learn more about signals.
         signal.signal(signal.SIGTERM, self.__termination_handler)
@@ -96,10 +97,11 @@ class ProcessMaster:
         """
         Constructor.
 
-            :func (Callable): Function to be executed multiple times.
-            :jobs (list or None): List of jobs to be done.
-            :work_dir (str): Main circuits directory.
-            :progress_report (Callable): Function that the progress is to be reported to.
+        Args:
+            func (Callable): Function to be executed multiple times.
+            jobs (list or None): List of jobs to be done.
+            work_dir (str): Main circuits directory.
+            progress_report (Callable): Function that the progress is to be reported to.
         """
         self.func = func # Function to be executed
         self.work_dir =  work_dir
@@ -127,9 +129,12 @@ class ProcessMaster:
             for i, job in enumerate(jobs):
                 self.jobs.put({"id": i, "job": job})
        
-    def terminate_work(self, workers: list):
+    def __terminate_work(self, workers: list):
         """
-        Terminates all the Process Workers.
+        Terminated all the process
+
+        Args:
+            workers (list): List of workers to be terminated
         """
         for worker in workers:
             worker.terminate()
@@ -161,6 +166,10 @@ class ProcessMaster:
         """
         Routine of Process Master, including sleeping, reporting progress and finishing parallel execution.
         """
+
+        # Sets the response to being terminated
+        signal.signal(signal.SIGTERM, self.__terminate_work)
+
         while True:
 
             # Like sleep, but better
@@ -186,6 +195,7 @@ class ProcessMaster:
         """
         Recieves a Queue and an id and removes the item from the Queue (kinda evil).
 
+        Args:
             :queue (mp.Queue): Queue to have the item removed from.
             :id (int): Id of the item to be removed.
         """
@@ -195,11 +205,12 @@ class ProcessMaster:
                 return
             queue.put(content)
 
-    def request_job(self):
+    def request_job(self) -> list or int:
         """
         Returns a single job to be executed. If there are no jobs left returns -1. Called by workers.
 
-            :returns: A job or -1
+        Returns:
+            list or -1: Returns a job to be done or -1 if there are none left
         """
         with self.lock_jobs:
             
@@ -218,6 +229,7 @@ class ProcessMaster:
         """
         Posts the output of a function. Called by workers.
 
+        Args:    
             :output: Output of the function.
             :id (int): Id of the job completed.
             :total_time (float): Time taken to complete the job.
@@ -237,7 +249,8 @@ class ProcessMaster:
         """
         Returns all completed jobs.
 
-            :returns: Complete jobs.
+        Returns:    
+            lsit: Complete jobs.
         """
         return self.done_copy
 
@@ -245,6 +258,7 @@ class ProcessMaster:
         """
         Creates all workers and runs all workers.
 
+        Args:    
             :static_args (list): List containing the static arguments of the jobs, that dont change in between jobs.
             :n_workers (int): Number of workers to be created, will take the cpu count as standard. 
         """
@@ -279,11 +293,12 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Constructor.
 
-            :func (Callable): Function to be executed.
-            :jobs (list or None): List of jobe to be run.
-            :work_dir (str): Main circuits directory.
-            :backup_prefix (str): Path and prefix from root to backup, in the format path/.../filename excluding extensions.
-            :progress_report (Callable): Function that the progress is to be reported to. 
+        Args:
+            func (Callable): Function to be executed.
+            jobs (list or None): List of jobe to be run.
+            work_dir (str): Main circuits directory.
+            backup_prefix (str): Path and prefix from root to backup, in the format path/.../filename excluding extensions.
+            progress_report (Callable): Function that the progress is to be reported to. 
         """
         super().__init__(func, jobs, work_dir=work_dir, progress_report=progress_report)
 
@@ -298,7 +313,9 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Checks whether of not a backup exists.
 
-            :returns: A boolean informing whether or not said backup exists.
+        Args:
+
+            bool: A boolean informing whether or not said backup exists.
         """
         return os.path.exists(f"{self.prefix}_jobs.json")
     
@@ -306,7 +323,9 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Emptys a queue.
 
-            :queue (mp.Queue): Queue to be emptied.
+        Args:
+
+            queue (mp.Queue): Queue to be emptied.
         """
         while not queue.empty():
             queue.get()
@@ -332,7 +351,7 @@ class PersistentProcessMaster(ProcessMaster):
         self.jobs_copy = json.load(open(f"{self.prefix}_jobs.json", "r"))
         self.done_copy = json.load(open(f"{self.prefix}_done.json", "r"))
         self.total_jobs = len(self.jobs_copy) + len(self.done_copy)
-        # Carregamento das Queues com os conteudos do arquivo
+        # Carregamento das Queues com os conteudos do file
         for job in self.jobs_copy:
             self.jobs.put(job)
         for job in self.done_copy:
@@ -342,7 +361,8 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Alternative for passing jobs in the construction of the object.
 
-            :jobs (list): List containing jobs to be done.
+        Args:    
+            jobs (list): List containing jobs to be done.
         """
 
         self.total_jobs = len(jobs)
@@ -364,8 +384,11 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Reads the contents of a queue.
 
-            :queue (mp.Queue): Queue to be read.
-            :returns: the contents of the queue.
+        Args:    
+            queue (mp.Queue): Queue to be read.
+
+        Returns:    
+            list: the contents of the queue.
         """
         contents = []
         for _ in range(queue.qsize()):

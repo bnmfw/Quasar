@@ -17,8 +17,9 @@ class MCManager:
         """
         Constructor.
 
-            :param Circuito circuit: Circuit to be simulated.
-            :para bool delay: Whether or not delay will be taken into consideration.
+        Args:    
+            circuit Circuito): Circuit to be simulated.
+            delay (bool): Whether or not delay will be taken into consideration.
         """
         self.circuito = circuit
         self.circ_man = CircuitManager(circuit)
@@ -29,14 +30,17 @@ class MCManager:
         self.total_jobs: int = None
         self.done_jobs: int = 0   
 
-    def __determinar_variabilidade(self, n_analysis: int) -> list:
+    def __determine_variability(self, n_analysis: int) -> list:
         """
         Generates variability points for MC simulation.
 
-            :param int n_analysis: Number of total simulations points.
-            :returns: A list of items on the format (id, [pmos, nmos])
+        Args:    
+            n_analysis (int): Number of total simulations points.
+
+        Returns:
+            Returns: A list of items on the format (id, [pmos, nmos])
         """
-        var: dict = SpiceRunner(self.circuito.path_to_circuits).run_MC_var(self.circuito.arquivo, self.circuito.nome, n_analysis)
+        var: dict = SpiceRunner(self.circuito.path_to_circuits).run_MC_var(self.circuito.file, self.circuito.name, n_analysis)
 
         for i in var:
             var[i][0] = 4.8108 + var[i][0] * (0.05 * 4.8108)/3
@@ -45,29 +49,33 @@ class MCManager:
         items = list(var.items())
         return items
 
-    def run_mc_iteration(self, index: int, point: list, delay: bool = False):
+    def run_mc_iteration(self, index: int, point: tuple, delay: bool = False):
         """
         Runs a single Monte Carlo simulation.
 
-            :param int index: Id of the simulation.
-            :param list point: A tuple of floats in the format (pmos, nmos)
+        Args:
+            index (int): Id of the simulation.
+            point (tuple): A tuple of floats in the format (pmos, nmos)
         """
         pmos, nmos = point
         with SpiceRunner(self.circuito.path_to_circuits).MC_Instance(pmos, nmos):
             if delay: self.circ_man.get_atrasoCC()
-            self.circ_man.atualizar_LETths(delay=delay)
-            result = (round(pmos,4), round(nmos,4), self.circuito.LETth.nodo_nome, self.circuito.LETth.saida_nome, self.circuito.LETth.corrente, self.circuito.LETth.valor)
+            self.circ_man.update_LETs(delay=delay)
+            result = (round(pmos,4), round(nmos,4), self.circuito.LETth.node_nome, self.circuito.LETth.saida_nome, self.circuito.LETth.corrente, self.circuito.LETth.valor)
         return result
     
-    def analise_monte_carlo_total(self, n_analysis: int, continue_backup: bool = False, delay: bool = False, progress_report = None):
+    def full_mc_analysis(self, n_analysis: int, continue_backup: bool = False, delay: bool = False, progress_report = None):
         """
         Runs the full Monte Carlo simulation and puts the results in <path>/<circuit_name>_mc_LET.csv.
 
-            :param int n_analysis: Number of MC analysis.
-            :param bool continue_backup: Whether or not the simulation should continue from a backup if one exists.
-            :param bool delay: Whether or not delay should be taken into consideration.
-            :param Callable progress_report: Optional function that progress can be reported to.
-            :returns: Nothing, puts data in <path>/<circuit_name>_mc_LET.csv.
+        Args:    
+            n_analysis (int): Number of MC analysis.
+            continue_backup (bool): Whether or not the simulation should continue from a backup if one exists.
+            :delay (bool): Whether or not delay should be taken into consideration.
+            progress_report (Callable): Optional function that progress can be reported to.
+
+        Returns:
+            None: Nothing, puts data in <path>/<circuit_name>_mc_LET.csv.
         """
 
         manager = PersistentProcessMaster(self.run_mc_iteration, None, f"{self.circuito.path_to_my_dir}/MC", progress_report=progress_report, work_dir=self.circuito.path_to_circuits)        
@@ -76,7 +84,7 @@ class MCManager:
         if continue_backup and manager.check_backup():
             manager.load_backup()
         else:
-            jobs = self.__determinar_variabilidade(n_analysis)
+            jobs = self.__determine_variability(n_analysis)
             manager.load_jobs(jobs)
 
         # Concurrent execution, where the magic happens.
@@ -84,7 +92,7 @@ class MCManager:
 
         # Dumps data into a csv.
         saida = manager.return_done()
-        CManager.tup_to_csv(f"{self.circuito.path_to_my_dir}",f"{self.circuito.nome}_mc_LET.csv", saida)
+        CManager.tup_to_csv(f"{self.circuito.path_to_my_dir}",f"{self.circuito.name}_mc_LET.csv", saida)
 
         # Deletes the backup files.
         manager.delete_backup()
@@ -97,7 +105,7 @@ if __name__ == "__main__":
     with InDir("debug"):
         nand = Circuito("nand", "test_circuits", 0.7).from_json()
         n = 4
-        MCManager(nand).analise_monte_carlo_total(4)
+        MCManager(nand).full_mc_analysis(4)
         with open("test_circuits/nand/nand_mc_LET.csv", "r") as file:
             assert file.read().count("\n") == 4, "MC SIMULATION FAILED"
 

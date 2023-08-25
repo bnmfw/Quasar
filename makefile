@@ -1,3 +1,6 @@
+run:
+	@python3 Quasar.py
+
 requirements:
 	@pip install -r .piprequirements
 
