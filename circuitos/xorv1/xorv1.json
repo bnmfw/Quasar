@@ -1,0 +1,233 @@
+{
+    "name": "xorv1",
+    "vdd": 0.7,
+    "SPdelay": 0,
+    "inputs": [
+        "a",
+        "b"
+    ],
+    "saidas": [
+        "axorb"
+    ],
+    "nodos": [
+        {
+            "name": "i1",
+            "critico": {
+                "corr": null,
+                "orie": "aa",
+                "nodo": "i1",
+                "said": "saida",
+                "val": []
+            },
+            "delay": {},
+            "lets": [
+                {
+                    "corr": 140.625,
+                    "orie": [
+                        "rise",
+                        "rise"
+                    ],
+                    "nodo": "i1",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "corr": 195.703125,
+                    "orie": [
+                        "fall",
+                        "fall"
+                    ],
+                    "nodo": "i1",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            1,
+                            0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "axorb",
+            "critico": {
+                "corr": null,
+                "orie": "aa",
+                "nodo": "axorb",
+                "said": "saida",
+                "val": []
+            },
+            "delay": {},
+            "lets": [
+                {
+                    "corr": 140.625,
+                    "orie": [
+                        "rise",
+                        "rise"
+                    ],
+                    "nodo": "axorb",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            1,
+                            1
+                        ]
+                    ]
+                },
+                {
+                    "corr": 102.5390625,
+                    "orie": [
+                        "fall",
+                        "fall"
+                    ],
+                    "nodo": "axorb",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            1,
+                            0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "i4",
+            "critico": {
+                "corr": null,
+                "orie": "aa",
+                "nodo": "i4",
+                "said": "saida",
+                "val": []
+            },
+            "delay": {},
+            "lets": [
+                {
+                    "corr": 102.5390625,
+                    "orie": [
+                        "fall",
+                        "fall"
+                    ],
+                    "nodo": "i4",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            0,
+                            1
+                        ]
+                    ]
+                },
+                {
+                    "corr": 247.265625,
+                    "orie": [
+                        "rise",
+                        "rise"
+                    ],
+                    "nodo": "i4",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            1,
+                            1
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "i2",
+            "critico": {
+                "corr": null,
+                "orie": "aa",
+                "nodo": "i2",
+                "said": "saida",
+                "val": []
+            },
+            "delay": {},
+            "lets": [
+                {
+                    "corr": 195.703125,
+                    "orie": [
+                        "fall",
+                        "fall"
+                    ],
+                    "nodo": "i2",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            0,
+                            1
+                        ]
+                    ]
+                },
+                {
+                    "corr": 140.625,
+                    "orie": [
+                        "rise",
+                        "rise"
+                    ],
+                    "nodo": "i2",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            1,
+                            1
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "i3",
+            "critico": {
+                "corr": null,
+                "orie": "aa",
+                "nodo": "i3",
+                "said": "saida",
+                "val": []
+            },
+            "delay": {},
+            "lets": [
+                {
+                    "corr": 247.265625,
+                    "orie": [
+                        "rise",
+                        "rise"
+                    ],
+                    "nodo": "i3",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "corr": 102.5390625,
+                    "orie": [
+                        "fall",
+                        "fall"
+                    ],
+                    "nodo": "i3",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            1,
+                            0
+                        ]
+                    ]
+                }
+            ]
+        }
+    ]
+}

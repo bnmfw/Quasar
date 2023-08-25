@@ -21,7 +21,7 @@ clean:
 
 veryclean: clean
 	@for dir in circuitos debug/test_circuits; do \
-		for ext in *.csv MC_Context.json *_done.json *_jobs.json; do \
+		for ext in *.csv MC_Context.json *_done.json *_jobs.json *.png; do \
 			find $$dir -name "$$ext" -type f -delete; \
 		done; \
 	done

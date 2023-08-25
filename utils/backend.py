@@ -5,7 +5,7 @@ from .circuito import Circuito
 from .circuitManager import CircuitManager
 from .mcManager import MCManager
 from .arquivos import JManager, CManager
-from .matematica import InDir
+from .dataAnalysis import DataAnalist
 from collections.abc import Callable
 
 class Backend:
@@ -47,7 +47,7 @@ class Backend:
             report (bool, optional): Whether work is to be print to terminal. Defaults to False.
         """
         self.check_circuit()
-        CircuitManager(self.circuit, report=True).determine_LETs(delay=delay)
+        CircuitManager(self.circuit, report=report).determine_LETs(delay=delay)
         JManager.codify(self.circuit, self.circuit.path_to_circuits)
     
     def update_lets(self, delay: bool = False, report: bool = False):
@@ -84,8 +84,21 @@ class Backend:
         """
         self.check_circuit()
         MCManager(self.circuit).full_mc_analysis(n_simu, continue_backup=continue_backup, delay=delay, progress_report=progress_report)
+        scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[]}
+        with open(f"{self.circuit.path_to_my_dir}/{self.circuit.name}_mc_LET.csv") as file:
+            for linha in file:
+                pmos, nmos, node, output, current, let = linha.split(",")
+                scatter_data["PMOS"].append(float(pmos))
+                scatter_data["NMOS"].append(float(nmos))
+                scatter_data["node"].append(node)
+                scatter_data["output"].append(output)
+                scatter_data["current"].append(float(current))
+                scatter_data["LETth"].append(float(let))
+        DataAnalist.draw_scatter(scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir)
 
 if __name__ == "__main__":
+
+    from .matematica import InDir
 
     print("Testing Backend...")
 
