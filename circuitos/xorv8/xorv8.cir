@@ -1,0 +1,24 @@
+Xor v8
+
+****** Dispositivos Lógicos ******
+
+.include ../include.cir
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+Mp1 vdd b nb vdd PMOS_RVT nfin=3
+Mn1 nb b vss vss NMOS_RVT nfin=3
+
+Mp2 a b axorb vdd PMOS_RVT nfin=3
+Mn2 a nb axorb vss NMOS_RVT nfin=3
+
+Mp3 b a axorb vdd PMOS_RVT nfin=3
+Mn3 nb a axorb vss NMOS_RVT nfin=3
+
+************
+.end

@@ -77,5 +77,6 @@ class TXTUI:
             inputs["continue"] = True
             return "main", inputs
         
-        inputs["n_sim"] = int(input("Numero de simulacoes (1000 recomendado): "))
+        n_sim = input("Numero de simulacoes (1000 recomendado): ")
+        inputs["n_sim"] = 1000 if n_sim == "" else int(n_sim)
         return "main", inputs

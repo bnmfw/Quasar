@@ -25,12 +25,13 @@ class Graph:
         
         # Connects all existing arcs
         for invert, transistor in transistors:
+            invert = invert == 1
             source, gate, drain = transistor
             # Creates the relationships
             self.arcs.append({"from": drain, "to": source, "invert": invert ,"control": gate, "conduct": True})
             self.arcs.append({"from": source, "to": drain, "invert": invert ,"control": gate, "conduct": True})
-            self.arcs.append({"from": gate, "to": drain, "invert": 0 ,"control": None, "conduct": False})
-            self.arcs.append({"from": gate, "to": source, "invert": 0 ,"control": None, "conduct": False})
+            self.arcs.append({"from": gate, "to": drain, "invert": False ,"control": None, "conduct": False})
+            self.arcs.append({"from": gate, "to": source, "invert": False ,"control": None, "conduct": False})
     
         self.arcs = sorted(self.arcs, key = lambda e: e["from"])
 
@@ -133,6 +134,7 @@ class Graph:
         return already_seen
 
     def set_logic(self, input_list: list, faulty_nodes: list = None) -> None:
+        print("\n***********CALL***************\n")
         """
         Given input values sets the logic value of all vertices. Must contain vdd, gnd and other tension sources
 
@@ -141,8 +143,8 @@ class Graph:
             faulty_nodes (list, optional): List of nodes that should be flipped. Defaults to None.
         """
         # Default value of faulty_nodes
-        if faulty_nodes is None:
-            faulty_nodes = []
+        # if faulty_nodes is None:
+        #     faulty_nodes = []
 
         # Resets all logic
         for v in self.vertices.values():
@@ -156,6 +158,7 @@ class Graph:
         # Recursivlly propagates logic
         def recursive_propagation(node: str):
             
+            print(f"rec: {node}\tsig: {self.vertices[node]['signal']}")
             # Propagates signal to all nodes in region
             # Iterates over arcs starting from the node
             for arc in self.vertices[node]["from"]:
@@ -174,9 +177,17 @@ class Graph:
             
             # Propagates signal to controlled nodes
             for arc in self.vertices[node]["control"]:
-                # This arc conducting did not change any logical signal
+                # I dont allow passing through this arc
+                if arc['invert'] == self.vertices[node]['signal']: continue
                 # Remember that controlled arcs go both directions so the "to" is a "from" of other arc
-                if self.vertices[arc["from"]]["signal"] is None: continue
+                origin_sig, destiny_sig = self.vertices[arc["from"]]["signal"], self.vertices[arc["to"]]["signal"]
+                # This arc cant propagate signal
+                if origin_sig is None: continue
+                # This arc conducting SHOULD not change anything
+                if not origin_sig is None and not destiny_sig is None:
+                    if origin_sig != destiny_sig:
+                        raise RuntimeError("Origin and destiny signal are different and they connect")
+                    continue
                 recursive_propagation(arc["from"])
         
         # Propagates
@@ -225,7 +236,7 @@ class Graph:
             ret += f"\t{v}: {vi['signal']}\n"
         ret += "Arcs:\n"
         for arc in self.arcs:
-            if not arc["conduct"]: continue
+            # if not arc["conduct"]: continue
             ret += f"\t{arc['from']} {arc['invert']} --{arc['control'] if arc['control'] else ''}--> {arc['to']}\n"
         return ret
 

@@ -5,7 +5,7 @@ requirements:
 	@pip install -r .piprequirements
 
 test:
-	@for module in matematica graph concorrencia spiceInterface circuito letFinder circuitManager mcManager; do \
+	@for module in matematica graph concorrencia dataAnalysis spiceInterface circuito letFinder circuitManager mcManager; do \
 		python3 -m utils.$$module; \
 	done
 
