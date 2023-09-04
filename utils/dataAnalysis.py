@@ -24,17 +24,18 @@ class DataAnalist:
         plt.legend(loc='lower right', fontsize="x-large")
         plt.title(target)
         plt.colorbar()
-        plt.savefig(f'{directory}/scatter.png', format='png', dpi=300)
+        plt.savefig(f'{directory}/letth_scatter.png', format='png', dpi=300)
 
 if __name__ == "__main__":
-    sample_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LET":[]}
-    with open("utils/nand_mc_LET.csv") as file:
-        for linha in file:
-            pmos, nmos, node, output, current, let = linha.split(",")
-            sample_data["PMOS"].append(float(pmos))
-            sample_data["NMOS"].append(float(nmos))
-            sample_data["node"].append(node)
-            sample_data["output"].append(output)
-            sample_data["current"].append(float(current))
-            sample_data["LET"].append(float(let))
-    DataAnalist.draw_scatter(sample_data, "PMOS", "NMOS", "LET", "utils")
+    pass
+    # sample_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LET":[]}
+    # with open("utils/nand_mc_LET.csv") as file:
+    #     for linha in file:
+    #         pmos, nmos, node, output, current, let = linha.split(",")
+    #         sample_data["PMOS"].append(float(pmos))
+    #         sample_data["NMOS"].append(float(nmos))
+    #         sample_data["node"].append(node)
+    #         sample_data["output"].append(output)
+    #         sample_data["current"].append(float(current))
+    #         sample_data["LET"].append(float(let))
+    # DataAnalist.draw_scatter(sample_data, "PMOS", "NMOS", "LET", "utils")

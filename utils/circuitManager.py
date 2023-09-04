@@ -198,7 +198,7 @@ class CircuitManager:
 if __name__ == "__main__":
     print("Testing Circuit Manager...")
 
-    from .circuit import Circuito
+    from .circuito import Circuito
     ptf = "debug/test_circuits"
 
     print("\tTesting update of minimal LETs...")

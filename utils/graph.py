@@ -134,7 +134,6 @@ class Graph:
         return already_seen
 
     def set_logic(self, input_list: list, faulty_nodes: list = None) -> None:
-        print("\n***********CALL***************\n")
         """
         Given input values sets the logic value of all vertices. Must contain vdd, gnd and other tension sources
 
@@ -158,7 +157,6 @@ class Graph:
         # Recursivlly propagates logic
         def recursive_propagation(node: str):
             
-            print(f"rec: {node}\tsig: {self.vertices[node]['signal']}")
             # Propagates signal to all nodes in region
             # Iterates over arcs starting from the node
             for arc in self.vertices[node]["from"]:
