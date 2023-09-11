@@ -1,3 +1,7 @@
+setup:
+	@mkdir work
+	@mkdir debug/work
+
 run:
 	@python3 Quasar.py
 
