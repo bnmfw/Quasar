@@ -1,0 +1,21 @@
+Schimitt Trigger
+
+****** Dispositivos Lógicos ******
+
+.include ../include.cir
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+MpST1 vdd in out vdd PMOS_RVT nfin=3
+MnST1 out in gnd gnd NMOS_RVT nfin=3
+
+MpST2 vdd in i1 vdd PMOS_RVT nfin=3
+MnST2 i1 in out gnd NMOS_RVT nfin=3
+
+************
+.end

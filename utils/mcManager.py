@@ -56,12 +56,15 @@ class MCManager:
         Args:
             index (int): Id of the simulation.
             point (tuple): A tuple of floats in the format (pmos, nmos)
+
+        Returns:
+            tuple: Data regarding the LETth fault
         """
         pmos, nmos = point
         with SpiceRunner(self.circuito.path_to_circuits).MC_Instance(pmos, nmos):
             if delay: self.circ_man.get_atrasoCC()
             self.circ_man.update_LETs(delay=delay)
-            result = (round(pmos,4), round(nmos,4), self.circuito.LETth.node_nome, self.circuito.LETth.saida_nome, self.circuito.LETth.corrente, self.circuito.LETth.valor)
+            result = (round(pmos,4), round(nmos,4), self.circuito.LETth.node_nome, self.circuito.LETth.saida_nome, self.circuito.LETth.orientacao, self.circuito.LETth.corrente, self.circuito.LETth.valor, self.circuito.LETth.validacoes)
         return result
     
     def full_mc_analysis(self, n_analysis: int, continue_backup: bool = False, delay: bool = False, progress_report = None):
@@ -105,8 +108,8 @@ if __name__ == "__main__":
     with InDir("debug"):
         nand = Circuito("nand", "test_circuits", 0.7).from_json()
         n = 4
-        MCManager(nand).full_mc_analysis(4)
+        MCManager(nand).full_mc_analysis(20)
         with open("test_circuits/nand/nand_mc_LET.csv", "r") as file:
-            assert file.read().count("\n") == 4, "MC SIMULATION FAILED"
+            assert file.read().count("\n") == 20, "MC SIMULATION FAILED"
 
     print("MC Manager OK")

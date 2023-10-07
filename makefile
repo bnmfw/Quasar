@@ -1,9 +1,9 @@
+run: clean
+	@python3 Quasar.py
+	
 setup:
 	@mkdir work
 	@mkdir debug/work
-
-run:
-	@python3 Quasar.py
 
 requirements:
 	@pip install -r .piprequirements
@@ -16,6 +16,10 @@ test:
 clean:
 	@rm -rf __pycache__
 	@rm -rf utils/__pycache__
+	@rm -rf work/
+	@mkdir work
+	@rm -rf debug/work
+	@mkdir debug/work
 	@find . -name "scope.log*" -type f -delete
 	@for dir in circuitos debug/test_circuits; do \
 		for ext in ava.* mpp0 ic0 crash mt0* mc0* st0 user* pa0 tr0 info* hsp*; do \

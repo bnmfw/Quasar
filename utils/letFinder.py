@@ -23,7 +23,7 @@ class LetFinder:
         self.__upper_bound: float = 300 # Valor maximo considerado da falha
         # 200 é um numero bem razoavel de quanto é uma falha real
         # Pede pro rafael o tga ou tfa ?
-        self.__limite_sim: int = 25
+        self.__limite_sim: int = 30
 
     def __fault_inclination(self, node_name: str, vdd: float, let: LET) -> str:
         """
@@ -217,7 +217,7 @@ class LetFinder:
 
                 _, peak_tension = self.runner.run_SET(self.circuito.file, let, current)
                 if self.__report:
-                    print(f"{i}\tcurrent: {current:.1f}\tpeak_tension:{peak_tension:.3f}")
+                    print(f"{i}\tcurrent: {current:.1f}\tpeak_tension: {peak_tension:.3f}\tbottom: {cinf:.1f}\ttop: {csup:.1f}")
                 sim_num += 1
 
                 ##### Precision Satisfied #####
@@ -241,7 +241,7 @@ class LetFinder:
                         let.corrente = None
                         return sim_num, current
                     # To the upper bound #
-                    elif current >= limite_sup:
+                    elif current >= limite_sup-1:
                         if self.__report: print("Upper Divergence - Upper Bound Increased\n")
                         csup += 100
                         limite_sup += 100
@@ -278,8 +278,8 @@ class LetFinder:
             # Did not converge #
             else:
                 if self.__report: print("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
-                let.corrente = 99999 if sup_flag else 11111
-            return sim_num, current
+                let.corrente = None
+            return sim_num, None
 
 if __name__ == "__main__":
 

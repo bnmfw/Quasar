@@ -1,0 +1,82 @@
+
+*descricao de fontes
+vf0 f0in gnd 0.7
+vf1 f1in gnd 0.7
+vf2 f2in gnd 0.7
+vf3 f3in gnd 0.7
+vf4 f4in gnd 0.7
+vf5 f5in gnd 0.7
+vf6 f6in gnd 0.7
+vf7 f7in gnd PWL(0n 0.7 2n 0.7 2.01n 0 4n 0)
+
+*multiplicador booth 
+	.include library.cir
+	.include 16nm_LP.pm
+*fonte de tensao--------------------
+	Vvdd vdd gnd 0.7
+	Vvdd2 vdd2 gnd 0.7
+*inciais----------------------------	
+	Va a gnd 0
+	Vp1 pin1 gnd 0
+	Vp2 pin2 gnd 0
+	Vp3 pin3 gnd 0
+	Vp4 pin4 gnd 0
+*entradas-------------------------
+	.include fontes.txt
+	Xinva0 f0in a0 vdd2 gnd INV
+	Xinva1 f1in a1 vdd2 gnd INV
+	Xinva2 f2in a2 vdd2 gnd INV
+	Xinva3 f3in a3 vdd2 gnd INV
+	Xinva4 f4in a4 vdd2 gnd INV
+	Xinva5 f5in a5 vdd2 gnd INV
+	Xinva6 f6in a6 vdd2 gnd INV
+	Xinva7 f7in a7 vdd2 gnd INV
+	Xinvb0 a0 f0 vdd2 gnd INV
+	Xinvb1 a1 f1 vdd2 gnd INV
+	Xinvb2 a2 f2 vdd2 gnd INV
+	Xinvb3 a3 f3 vdd2 gnd INV
+	Xinvb4 a4 f4 vdd2 gnd INV
+	Xinvb5 a5 f5 vdd2 gnd INV
+	Xinvb6 a6 f6 vdd2 gnd INV
+	Xinvb7 a7 f7 vdd2 gnd INV	
+*linha1-------------------------------------------
+	Xxor1 a f3 enb1 vdd gnd XOR
+	Xand1 f3 enb1 c01 vdd gnd AND
+	Xcas11 c01 f7 f3 enb1 pin1 p0 c11 vdd gnd CAS
+	Xcas12 c11 f6 f3 enb1 pin2 sum12 c12 vdd gnd CAS
+	Xcas13 c12 f5 f3 enb1 pin3 sum13 c13 vdd gnd CAS
+	Xcas14 c13 f4 f3 enb1 pin4 sum14 c14 vdd gnd CAS
+*linha2------------------------------------------- 
+	Xxor2 f3 f2 enb2 vdd gnd XOR
+	Xand2 f2 enb2 c02 vdd gnd AND
+	Xcas21 c02 f7 f2 enb2 sum12 p1 c21 vdd gnd CAS
+	Xcas22 c21 f6 f2 enb2 sum13 sum22 c22 vdd gnd CAS
+	Xcas23 c22 f5 f2 enb2 sum14 sum23 c23 vdd gnd CAS
+	Xcas24 c23 f4 f2 enb2 sum14 sum24 c24 vdd gnd CAS
+*linha3-------------------------------------------
+	Xxor3 f2 f1 enb3 vdd gnd XOR
+	Xand3 f1 enb3 c03 vdd gnd AND
+	Xcas31 c03 f7 f1 enb3 sum22 p2 c31 vdd gnd CAS
+	Xcas32 c31 f6 f1 enb3 sum23 sum32 c32 vdd gnd CAS
+	Xcas33 c32 f5 f1 enb3 sum24 sum33 c33 vdd gnd CAS
+	Xcas34 c33 f4 f1 enb3 sum24 sum34 c34 vdd gnd CAS
+*linha4------------------------------------------
+	Xxor4 f1 f0 enb4 vdd gnd XOR
+	Xand4 f0 enb4 c04 vdd gnd AND	
+	Xcas41 c04 f7 f0 enb4 sum32 p3 c41 vdd gnd CAS
+	Xcas42 c41 f6 f0 enb4 sum33 p4 c42 vdd gnd CAS
+	Xcas43 c42 f5 f0 enb4 sum34 p5 c43 vdd gnd CAS
+	Xcas44 c43 f4 f0 enb4 sum34 p6 c44 vdd gnd CAS
+*---saidas---------------------------------------
+	Cload0 p0 gnd 1f
+	Cload1 p1 gnd 1f
+	Cload2 p2 gnd 1f
+	Cload3 p3 gnd 1f
+	Cload4 p4 gnd 1f
+	Cload5 p5 gnd 1f
+	Cload6 p6 gnd 1f
+*simulacao-----------
+.tran 0.001 4n
+*measure-------------
+.include measure.txt
+.end

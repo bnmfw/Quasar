@@ -120,17 +120,12 @@ class CircuitManager:
                     if relatorio: print(let.node_nome, let.saida_nome, let.orientacao, let.validacoes[0])
                     sim, current = self.let_manager.minimal_LET(let, let.validacoes[0], safe=True, delay=delay)
                     sim_num += sim
+                    if let.corrente is None: continue
                     if relatorio: print(f"corrente: {let.corrente}\n")
                     if not self.circuit.LETth:
                         self.circuit.LETth = let
                     elif let < self.circuit.LETth: 
                         self.circuit.LETth = let
-                    # except KeyboardInterrupt:
-                    #     exit() 
-                    # except (ValueError, KeyError):
-                    #     with open("erros.txt", "a") as erro:
-                    #         erro.write(f"pmos {pmos} nmos {nmos} {let.node_nome} {let.saida_nome} {let.orientacao} {let.validacoes[0]}\n")  
-            # print(f"{sim_num} simulacoes feitas na atualizacao")
 
     def run_let_job(self, _, node, output, input_signals: list, delay: bool) -> tuple:
         """

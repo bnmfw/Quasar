@@ -1,10 +1,13 @@
 """
 Backend module, responsible for acting as an interface to the other files in the package
 """
+from .components import LET
 from .circuito import Circuito
 from .circuitManager import CircuitManager
 from .mcManager import MCManager
 from .arquivos import JManager, CManager
+from .letFinder import LetFinder
+from .spiceInterface import SpiceRunner
 from .dataAnalysis import DataAnalist
 from collections.abc import Callable
 
@@ -84,17 +87,39 @@ class Backend:
         """
         self.check_circuit()
         MCManager(self.circuit).full_mc_analysis(n_simu, continue_backup=continue_backup, delay=delay, progress_report=progress_report)
-        scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[]}
+        scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[],"pulse_in":[],"pulse_out":[]}
         with open(f"{self.circuit.path_to_my_dir}/{self.circuit.name}_mc_LET.csv") as file:
             for linha in file:
-                pmos, nmos, node, output, current, let = linha.split(",")
+                pmos, nmos, node, output, pulse_in, pulse_out, current, let, *inputs = linha.split(",")
                 scatter_data["PMOS"].append(float(pmos))
                 scatter_data["NMOS"].append(float(nmos))
                 scatter_data["node"].append(node)
                 scatter_data["output"].append(output)
                 scatter_data["current"].append(float(current))
                 scatter_data["LETth"].append(float(let))
-        DataAnalist.draw_scatter(scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir)
+                scatter_data["pulse_in"].append(pulse_in.strip("['").strip("'"))
+                scatter_data["pulse_out"].append(pulse_out.strip("']").strip("'"))
+        DataAnalist.quantitative_scatter(scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir)
+        DataAnalist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "node", self.circuit.path_to_my_dir)
+        DataAnalist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_in", self.circuit.path_to_my_dir)
+        DataAnalist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_out", self.circuit.path_to_my_dir)
+
+    def find_single_let(self, node: str, output: str, logical_input: list, pmos_var: float = 4.8108, nmos_var: float = 4.372, report: bool = True):
+        """
+        Finds a single minimal LET given a configuration.
+
+        Args:
+            node (str): Name of the node the fault is to be inserted.
+            output (str): Name of the output the fault it to be propagated to. 
+            logical_input (list[bool]): Logical values of the inputs. 
+            pmos_var (float, optional): Pmos var. Defaults to 4.8108.
+            nmos_var (float, optional): Nmos var. Defaults to 4.372.
+            report (bool, optional): Whether a report is to be printed. Defaults to True.
+        """
+        self.check_circuit()
+        with SpiceRunner(self.circuit.path_to_circuits).MC_Instance(pmos_var, nmos_var):
+            let_analisado = LET(None, self.circuit.vdd, node, output, [None, None])
+            LetFinder(self.circuit, path_to_folder=self.circuit.path_to_circuits, report=report).minimal_LET(let_analisado, logical_input)
 
 if __name__ == "__main__":
 
@@ -104,19 +129,24 @@ if __name__ == "__main__":
 
     with InDir("debug"):
 
-        fadder: Circuito = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"])
-        xor1: Circuito = Circuito("xorv1", "test_circuits", 0.7).from_json()
-        xor5: Circuito = Circuito("xorv5", "test_circuits", 0.7).from_json()
+        pseudo: Circuito = Circuito("pseudo", "test_circuits", 0.7).from_json()
+        backend: Backend = Backend().set_circuit(pseudo, 0.7)
+        backend.find_single_let("out", "out", [0], 4.8825, 4.4941)
+
+
+        # fadder: Circuito = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"])
+        # xor1: Circuito = Circuito("xorv1", "test_circuits", 0.7).from_json()
+        # xor5: Circuito = Circuito("xorv5", "test_circuits", 0.7).from_json()
 
         # {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"}
 
-        backend: Backend = Backend().set_circuit(xor5, 0.7)
+        # backend: Backend = Backend().set_circuit(xor5, 0.7)
 
         # print("\tTesting LETth determination...")
         # backend.determine_LETs(report=True)
         # backend.save_let_data("test_circuits")
 
-        backend.mc_analysis(1000)
+        # backend.mc_analysis(1000)
 
         # fadder = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"], {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"})
         # fadder = Circuito("fadder", "test_circuits", 0.7).from_json()

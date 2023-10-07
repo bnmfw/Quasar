@@ -2,9 +2,9 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 class DataAnalist:
-    def draw_scatter(data: dict, x: str, y: str, target: str, directory: str, cmap: str = "inferno"):
+    def quantitative_scatter(data: dict, x: str, y: str, target: str, directory: str, cmap: str = "inferno"):
         """
-        Draws a Scatter plot of the given data.
+        Draws a quantitative Scatter plot of the given data.
 
         Args:
             data (dict): Data given in form of a dictionary
@@ -24,18 +24,53 @@ class DataAnalist:
         plt.legend(loc='lower right', fontsize="x-large")
         plt.title(target)
         plt.colorbar()
-        plt.savefig(f'{directory}/letth_scatter.png', format='png', dpi=300)
+        plt.savefig(f'{directory}/{target}_scatter.png', format='png', dpi=300)
+    
+    def qualitative_scatter(data: dict, x: str, y: str, target: str, directory: str):
+        """
+        Draws a quantitative Scatter plot of the given data.
+
+        Args:
+            data (dict): Data given in form of a dictionary
+            x (str): X axis label.
+            y (str): Y axis label.
+            target (str): Data to be plotted.
+            directory (str): Directory in which the plot is to be saved.
+        """
+
+        # Color generator
+        color = (c for c in ['tab:blue','tab:orange','tab:green','tab:red','tab:purple','tab:brown','tab:pink','tab:gray','tab:olive','tab:cyan'])
+
+        plt.style.use('ggplot')
+        data = pd.DataFrame(data)
+
+        plt.figure(figsize=(10,7))
+
+        for value in data[target].unique():
+            # Filter only data corresponding to designated value
+            value_data = data[data[target]==value]
+
+            # Plots all points corresponding to the value
+            plt.scatter(value_data[x], value_data[y], marker="o", label=value, c=next(color))
+
+        plt.xlabel(x)
+        plt.ylabel(y)
+        plt.legend(loc='lower right', fontsize="x-large")
+        plt.title(target)
+        plt.savefig(f'{directory}/{target}_scatter.png', format='png', dpi=300)
 
 if __name__ == "__main__":
-    pass
-    # sample_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LET":[]}
-    # with open("utils/nand_mc_LET.csv") as file:
-    #     for linha in file:
-    #         pmos, nmos, node, output, current, let = linha.split(",")
-    #         sample_data["PMOS"].append(float(pmos))
-    #         sample_data["NMOS"].append(float(nmos))
-    #         sample_data["node"].append(node)
-    #         sample_data["output"].append(output)
-    #         sample_data["current"].append(float(current))
-    #         sample_data["LET"].append(float(let))
-    # DataAnalist.draw_scatter(sample_data, "PMOS", "NMOS", "LET", "utils")
+    exit()
+    scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[],"pulse_in":[],"pulse_out":[]}
+    with open(f"utils/nand_mc_LET.csv") as file:
+        for linha in file:
+            pmos, nmos, node, output, pulse_in, pulse_out, current, let, *inputs = linha.split(",")
+            scatter_data["PMOS"].append(float(pmos))
+            scatter_data["NMOS"].append(float(nmos))
+            scatter_data["node"].append(node)
+            scatter_data["output"].append(output)
+            scatter_data["current"].append(float(current))
+            scatter_data["LETth"].append(float(let))
+            scatter_data["pulse_in"].append(pulse_in.strip("['").strip("'"))
+            scatter_data["pulse_out"].append(pulse_in.strip("'").strip("']"))
+    DataAnalist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "node", "utils")
