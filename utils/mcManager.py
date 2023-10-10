@@ -81,7 +81,7 @@ class MCManager:
             None: Nothing, puts data in <path>/<circuit_name>_mc_LET.csv.
         """
 
-        manager = PersistentProcessMaster(self.run_mc_iteration, None, f"{self.circuito.path_to_my_dir}/MC", progress_report=progress_report, work_dir=self.circuito.path_to_circuits)        
+        manager = PersistentProcessMaster(self.run_mc_iteration, None, f"{self.circuito.path_to_my_dir}/MC", progress_report=progress_report, work_dir=self.circuito.path_to_my_dir)        
 
         # If there is a backup continues from where it stopped.
         if continue_backup and manager.check_backup():

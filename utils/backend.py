@@ -98,11 +98,12 @@ class Backend:
                 scatter_data["current"].append(float(current))
                 scatter_data["LETth"].append(float(let))
                 scatter_data["pulse_in"].append(pulse_in.strip("['").strip("'"))
-                scatter_data["pulse_out"].append(pulse_out.strip("']").strip("'"))
-        DataAnalist.quantitative_scatter(scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir)
-        DataAnalist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "node", self.circuit.path_to_my_dir)
-        DataAnalist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_in", self.circuit.path_to_my_dir)
-        DataAnalist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_out", self.circuit.path_to_my_dir)
+                scatter_data["pulse_out"].append(pulse_out.strip("']").strip(" '"))
+        analist = DataAnalist()
+        analist.quantitative_scatter(scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir)
+        analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "node", self.circuit.path_to_my_dir)
+        analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_in", self.circuit.path_to_my_dir)
+        analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_out", self.circuit.path_to_my_dir)
 
     def find_single_let(self, node: str, output: str, logical_input: list, pmos_var: float = 4.8108, nmos_var: float = 4.372, report: bool = True):
         """

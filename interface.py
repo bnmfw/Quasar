@@ -71,7 +71,7 @@ class GUI:
             elif current_screen == "mc":
                 current_screen, inputs = self.ui.tela_mc(self.circuito)
                 with HSRunner.Vdd(vdd):
-                    self.backend.mc_analysis(inputs["n_sim"], inputs["continue"], inputs["progress"])
+                    self.backend.mc_analysis(inputs["n_sim"], inputs["continue"], inputs["progress"], self.ui.progress)
                 if not inputs["window"] is None:
                     inputs["window"].close()
 

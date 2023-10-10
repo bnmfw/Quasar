@@ -1,4 +1,4 @@
-Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
+Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nor4.cir
  ****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
   Copyright (c) 1986 - 2023 by Synopsys, Inc. All Rights Reserved.
   This software and the associated documentation are proprietary
@@ -6,13 +6,13 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
   with the terms and conditions of a written license agreement with
   Synopsys, Inc. All other use, reproduction, or distribution of
   this software is strictly prohibited.
-  Input File: nand.cir                                                          
-  Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
-  Start time: Fri Oct  6 16:39:34 2023
+  Input File: nor4.cir                                                          
+  Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nor4.cir
+  Start time: Tue Oct 10 00:51:11 2023
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      132251 
+ lic: HOSTID: d76153d              PID:      307304 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
@@ -21,19 +21,9 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
  lic:   
   **info** Monte Carlo simulation is detected, increase number of measure digits to 7 for Monte Carlo post processing.
   **info** Starting with the 2021.09 relaease, the Monte Carlo data mining functionality has been merged with AVA based-post processing.
-  **warning** (../dis/DFF.cir:19) Global net name "vdd" in subckt pin list. The pin will be connected to the local net. Recommend to not use global net names in subckt pin lists.
 1****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
  ******  
- nand
-
- ****** circuit name directory
- circuit number to circuit name directory
-   number circuitname                     definition         multiplier
-        0 main circuit
-        1 xff1.                           dff                1.00 
-        2 xinv11.                         not                1.00 
- ******  
- nand
+ nor4
 
  ****** mos   model parameters tnom=  25.000 temp=  25.000 ******
  Model file: ../dis/7nm_FF.pm
@@ -1875,7 +1865,19 @@ For Variation Block style variations, use .Option Random_Generator = MOA.
   **warning**  the following singular supplies have a terminal that is not connected to any other element
  supply                 node1                  node2
  vvss                0:vss              defined in subckt 0            0:0                defined in subckt 0
+ vvcc                0:vcc              defined in subckt 0            0:0                defined in subckt 0
+ vclk                0:clk              defined in subckt 0            0:0                defined in subckt 0
   
+             
+ Warning:'No DC path nodes' occurs 2 times
+ No DC path from the following nodes,connected with gdcpath:
+ -----------------------
+ |Node      |Subckt    |
+ |----------+----------|
+ |c         |0         |
+ |d         |0         |
+ -----------------------
+              
       
 
 MONTE CARLO DEFINITIONS
@@ -1893,7 +1895,7 @@ Random number generator is MCG            , and seed =      1, stream =   1
    *** monte carlo  index =            1 ***
 
  ******
- nand
+ nor4
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
  minout=   failed
@@ -8891,10 +8893,7010 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
  minout=   failed
  maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1001 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1002 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1003 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1004 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1005 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1006 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1007 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1008 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1009 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1010 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1011 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1012 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1013 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1014 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1015 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1016 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1017 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1018 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1019 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1020 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1021 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1022 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1023 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1024 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1025 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1026 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1027 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1028 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1029 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1030 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1031 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1032 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1033 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1034 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1035 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1036 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1037 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1038 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1039 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1040 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1041 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1042 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1043 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1044 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1045 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1046 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1047 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1048 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1049 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1050 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1051 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1052 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1053 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1054 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1055 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1056 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1057 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1058 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1059 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1060 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1061 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1062 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1063 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1064 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1065 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1066 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1067 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1068 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1069 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1070 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1071 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1072 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1073 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1074 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1075 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1076 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1077 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1078 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1079 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1080 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1081 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1082 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1083 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1084 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1085 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1086 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1087 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1088 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1089 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1090 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1091 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1092 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1093 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1094 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1095 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1096 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1097 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1098 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1099 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1100 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1101 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1102 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1103 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1104 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1105 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1106 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1107 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1108 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1109 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1110 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1111 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1112 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1113 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1114 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1115 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1116 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1117 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1118 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1119 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1120 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1121 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1122 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1123 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1124 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1125 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1126 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1127 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1128 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1129 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1130 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1131 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1132 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1133 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1134 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1135 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1136 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1137 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1138 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1139 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1140 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1141 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1142 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1143 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1144 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1145 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1146 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1147 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1148 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1149 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1150 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1151 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1152 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1153 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1154 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1155 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1156 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1157 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1158 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1159 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1160 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1161 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1162 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1163 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1164 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1165 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1166 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1167 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1168 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1169 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1170 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1171 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1172 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1173 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1174 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1175 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1176 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1177 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1178 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1179 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1180 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1181 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1182 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1183 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1184 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1185 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1186 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1187 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1188 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1189 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1190 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1191 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1192 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1193 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1194 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1195 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1196 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1197 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1198 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1199 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1200 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1201 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1202 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1203 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1204 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1205 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1206 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1207 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1208 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1209 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1210 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1211 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1212 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1213 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1214 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1215 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1216 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1217 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1218 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1219 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1220 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1221 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1222 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1223 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1224 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1225 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1226 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1227 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1228 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1229 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1230 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1231 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1232 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1233 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1234 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1235 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1236 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1237 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1238 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1239 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1240 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1241 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1242 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1243 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1244 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1245 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1246 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1247 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1248 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1249 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1250 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1251 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1252 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1253 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1254 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1255 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1256 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1257 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1258 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1259 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1260 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1261 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1262 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1263 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1264 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1265 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1266 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1267 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1268 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1269 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1270 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1271 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1272 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1273 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1274 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1275 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1276 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1277 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1278 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1279 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1280 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1281 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1282 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1283 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1284 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1285 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1286 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1287 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1288 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1289 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1290 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1291 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1292 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1293 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1294 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1295 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1296 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1297 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1298 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1299 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1300 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1301 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1302 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1303 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1304 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1305 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1306 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1307 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1308 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1309 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1310 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1311 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1312 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1313 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1314 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1315 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1316 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1317 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1318 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1319 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1320 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1321 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1322 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1323 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1324 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1325 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1326 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1327 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1328 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1329 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1330 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1331 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1332 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1333 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1334 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1335 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1336 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1337 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1338 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1339 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1340 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1341 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1342 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1343 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1344 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1345 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1346 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1347 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1348 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1349 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1350 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1351 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1352 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1353 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1354 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1355 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1356 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1357 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1358 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1359 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1360 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1361 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1362 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1363 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1364 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1365 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1366 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1367 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1368 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1369 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1370 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1371 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1372 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1373 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1374 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1375 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1376 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1377 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1378 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1379 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1380 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1381 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1382 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1383 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1384 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1385 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1386 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1387 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1388 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1389 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1390 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1391 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1392 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1393 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1394 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1395 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1396 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1397 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1398 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1399 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1400 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1401 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1402 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1403 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1404 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1405 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1406 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1407 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1408 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1409 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1410 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1411 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1412 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1413 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1414 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1415 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1416 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1417 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1418 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1419 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1420 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1421 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1422 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1423 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1424 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1425 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1426 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1427 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1428 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1429 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1430 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1431 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1432 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1433 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1434 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1435 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1436 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1437 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1438 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1439 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1440 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1441 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1442 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1443 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1444 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1445 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1446 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1447 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1448 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1449 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1450 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1451 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1452 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1453 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1454 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1455 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1456 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1457 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1458 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1459 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1460 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1461 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1462 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1463 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1464 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1465 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1466 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1467 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1468 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1469 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1470 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1471 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1472 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1473 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1474 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1475 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1476 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1477 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1478 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1479 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1480 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1481 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1482 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1483 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1484 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1485 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1486 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1487 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1488 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1489 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1490 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1491 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1492 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1493 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1494 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1495 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1496 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1497 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1498 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1499 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1500 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1501 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1502 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1503 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1504 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1505 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1506 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1507 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1508 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1509 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1510 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1511 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1512 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1513 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1514 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1515 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1516 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1517 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1518 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1519 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1520 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1521 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1522 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1523 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1524 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1525 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1526 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1527 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1528 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1529 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1530 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1531 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1532 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1533 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1534 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1535 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1536 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1537 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1538 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1539 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1540 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1541 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1542 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1543 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1544 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1545 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1546 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1547 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1548 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1549 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1550 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1551 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1552 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1553 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1554 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1555 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1556 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1557 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1558 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1559 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1560 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1561 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1562 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1563 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1564 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1565 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1566 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1567 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1568 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1569 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1570 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1571 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1572 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1573 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1574 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1575 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1576 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1577 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1578 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1579 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1580 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1581 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1582 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1583 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1584 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1585 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1586 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1587 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1588 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1589 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1590 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1591 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1592 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1593 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1594 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1595 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1596 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1597 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1598 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1599 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1600 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1601 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1602 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1603 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1604 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1605 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1606 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1607 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1608 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1609 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1610 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1611 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1612 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1613 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1614 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1615 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1616 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1617 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1618 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1619 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1620 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1621 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1622 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1623 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1624 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1625 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1626 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1627 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1628 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1629 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1630 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1631 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1632 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1633 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1634 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1635 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1636 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1637 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1638 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1639 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1640 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1641 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1642 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1643 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1644 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1645 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1646 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1647 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1648 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1649 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1650 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1651 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1652 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1653 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1654 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1655 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1656 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1657 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1658 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1659 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1660 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1661 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1662 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1663 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1664 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1665 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1666 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1667 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1668 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1669 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1670 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1671 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1672 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1673 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1674 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1675 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1676 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1677 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1678 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1679 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1680 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1681 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1682 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1683 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1684 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1685 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1686 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1687 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1688 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1689 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1690 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1691 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1692 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1693 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1694 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1695 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1696 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1697 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1698 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1699 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1700 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1701 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1702 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1703 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1704 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1705 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1706 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1707 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1708 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1709 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1710 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1711 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1712 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1713 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1714 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1715 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1716 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1717 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1718 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1719 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1720 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1721 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1722 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1723 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1724 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1725 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1726 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1727 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1728 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1729 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1730 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1731 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1732 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1733 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1734 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1735 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1736 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1737 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1738 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1739 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1740 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1741 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1742 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1743 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1744 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1745 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1746 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1747 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1748 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1749 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1750 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1751 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1752 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1753 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1754 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1755 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1756 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1757 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1758 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1759 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1760 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1761 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1762 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1763 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1764 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1765 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1766 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1767 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1768 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1769 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1770 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1771 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1772 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1773 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1774 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1775 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1776 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1777 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1778 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1779 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1780 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1781 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1782 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1783 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1784 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1785 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1786 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1787 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1788 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1789 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1790 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1791 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1792 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1793 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1794 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1795 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1796 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1797 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1798 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1799 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1800 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1801 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1802 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1803 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1804 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1805 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1806 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1807 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1808 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1809 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1810 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1811 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1812 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1813 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1814 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1815 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1816 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1817 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1818 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1819 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1820 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1821 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1822 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1823 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1824 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1825 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1826 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1827 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1828 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1829 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1830 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1831 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1832 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1833 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1834 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1835 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1836 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1837 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1838 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1839 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1840 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1841 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1842 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1843 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1844 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1845 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1846 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1847 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1848 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1849 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1850 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1851 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1852 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1853 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1854 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1855 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1856 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1857 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1858 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1859 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1860 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1861 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1862 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1863 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1864 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1865 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1866 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1867 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1868 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1869 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1870 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1871 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1872 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1873 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1874 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1875 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1876 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1877 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1878 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1879 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1880 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1881 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1882 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1883 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1884 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1885 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1886 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1887 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1888 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1889 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1890 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1891 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1892 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1893 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1894 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1895 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1896 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1897 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1898 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1899 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1900 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1901 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1902 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1903 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1904 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1905 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1906 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1907 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1908 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1909 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1910 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1911 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1912 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1913 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1914 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1915 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1916 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1917 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1918 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1919 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1920 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1921 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1922 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1923 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1924 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1925 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1926 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1927 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1928 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1929 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1930 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1931 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1932 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1933 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1934 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1935 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1936 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1937 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1938 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1939 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1940 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1941 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1942 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1943 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1944 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1945 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1946 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1947 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1948 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1949 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1950 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1951 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1952 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1953 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1954 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1955 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1956 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1957 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1958 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1959 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1960 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1961 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1962 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1963 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1964 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1965 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1966 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1967 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1968 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1969 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1970 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1971 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1972 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1973 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1974 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1975 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1976 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1977 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1978 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1979 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1980 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1981 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1982 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1983 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1984 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1985 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1986 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1987 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1988 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1989 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1990 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1991 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1992 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1993 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1994 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1995 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1996 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1997 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1998 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         1999 ***
+
+ minout=   failed
+ maxout=   failed
+
+          ***** job concluded
+
+   *** monte carlo  index =         2000 ***
+
+ minout=   failed
+ maxout=   failed
  
 
  ****** Monte Carlo Statistics ******
-  Available sampling count:  1000
+  Available sampling count:  2000
 
 
     meas_variable = minout
@@ -8914,7 +15916,7 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
           ***** job concluded
  ******  
- nand
+ nor4
 
  ****** job statistics summary tnom=  25.000 temp=  25.000 ******
   
@@ -8925,9 +15927,9 @@ Random number generator is MCG            , and seed =      1, stream =   1
  CPU(s)		: 12
   
  OS:
- Linux version 5.15.0-84-generic (buildd@lcy02-amd64-005) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #93~20.04.1-Ubuntu SMP Wed Sep 6 16:15:40 UTC 2023
+ Linux version 5.15.0-86-generic (buildd@lcy02-amd64-062) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #96~20.04.1-Ubuntu SMP Thu Sep 21 13:23:37 UTC 2023
 
- System loadavg : 0.96 0.31 0.44 3/748 132314
+ System loadavg : 3.65 7.43 10.36 4/662 307364
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -8938,12 +15940,12 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
   ******  Circuit Statistics  ******
-  # nodes       =      30 # elements   =      48
+  # nodes       =      14 # elements   =      16
   # resistors   =       0 # capacitors =       0 # inductors   =       0
   # mutual_inds =       0 # vccs       =       0 # vcvs        =       0
   # cccs        =       0 # ccvs       =       0 # volt_srcs   =       6
   # curr_srcs   =       0 # diodes     =       0 # bjts        =       0
-  # jfets       =       0 # mosfets    =      42 # U elements  =       0
+  # jfets       =       0 # mosfets    =      10 # U elements  =       0
   # T elements  =       0 # W elements =       0 # B elements  =       0
   # S elements  =       0 # P elements =       0 # va device   =       0
   # vector_srcs =       0 # N elements =       0
@@ -8952,22 +15954,22 @@ Random number generator is MCG            , and seed =      1, stream =   1
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           1.26           1        6972
-  transient         22.43      401000      287952      106666 rev=      2670
+  op point           0.64           1        8940
+  transient          0.83      802000      100000       50000 rev=         0
   readin             0.00
   errchk             0.01
   setup              0.00
-  output             0.01
+  output             0.02
 
 
-           peak memory used        450.56 megabytes
-           total cpu time           26.30 seconds
-           total elapsed time       26.34 seconds
-           job started at     16:39:34 10/06/2023
-           job ended   at     16:40:00 10/06/2023
+           peak memory used        449.46 megabytes
+           total cpu time            4.29 seconds
+           total elapsed time        4.33 seconds
+           job started at     00:51:11 10/10/2023
+           job ended   at     00:51:15 10/10/2023
 
 >info:         ***** hspice job concluded
-           job total runtime        26.34 seconds
+           job total runtime         4.33 seconds
 
 
  lic: Release hspice token(s) 

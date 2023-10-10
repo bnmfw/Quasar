@@ -16,16 +16,22 @@ class ProcessFolder:
     Context manager that creates a directory for a process that is a copy of the circuits directory. These copys are created in the work directory.
     As the context manager is exited said folder is deleted.
     """
-    def __init__(self, dir: str):
+    def __init__(self, dir: str, circuit: str = None):
         self.pid = None
         self.dir = dir
         self.first_dir = self.dir.split('/')[0]
         self.depth = self.dir.count("/")+1
+        self.circuit_name = circuit
 
     def __enter__(self):
         self.pid = os.getpid()
         os.mkdir(f"work/{self.pid}")
-        os.system(f"cp -R {self.first_dir} work/{self.pid}/{self.first_dir}")
+        os.mkdir(f"work/{self.pid}/{self.first_dir}")
+        if self.circuit_name:
+            for target in {"dis", "include.cir", "include", self.circuit_name}:
+                os.system(f"cp -R {self.first_dir}/{target} work/{self.pid}/{self.first_dir}/{target}")
+        else:
+            os.system(f"cp -R {self.first_dir} work/{self.pid}/{self.first_dir}")
         os.chdir(f"work/{self.pid}/{self.dir}/..")
 
     def __exit__(self, type, value, traceback):
@@ -38,7 +44,7 @@ class ProcessWorker:
     """
     Executes some function multiple times with different inputs. The static_args+job define the inputs.
     """
-    def __init__(self, work_func: Callable, static_args: list, max_work: int, work_dir: str = "circuitos") -> None:
+    def __init__(self, work_func: Callable, static_args: list, max_work: int, work_dir: str = "circuitos",  target_circuit: str = None) -> None:
         """
         Constructor.
 
@@ -47,11 +53,13 @@ class ProcessWorker:
             static_args (list): Arguments in function input that do not change over different jobs. Static args must be the last part of the input.
             max_work (int): Maximum number of functions a worker can run (used to not loop indefinatly in very edge cases).
             workdir (str, optional): Main circuits directory. Defaults to 'circuitos'
+            target_circuit (str, optional): Specific Circuit directory. Defaults to None
         """
         self.func = work_func
         self.args = static_args
         self.max_work = max_work
         self.work_dir = work_dir
+        self.target_circuit = target_circuit
 
     def __termination_handler(self, signal, frame):
         """
@@ -69,7 +77,7 @@ class ProcessWorker:
         signal.signal(signal.SIGTERM, self.__termination_handler)
 
         # Changes the worker execution to its own folder
-        with ProcessFolder(self.work_dir):
+        with ProcessFolder(self.work_dir, self.target_circuit):
             
             # While True limited by the max_work load
             for _ in range(self.max_work):
@@ -104,7 +112,8 @@ class ProcessMaster:
             progress_report (Callable): Function that the progress is to be reported to.
         """
         self.func = func # Function to be executed
-        self.work_dir =  work_dir
+        self.work_dir =  work_dir.split("/")[0]
+        self.target_circuit = None if not work_dir.count("/") else work_dir.split("/")[1]
         self.done_copy = []
         self.progress_report = progress_report # Function that Master should report its progress to
         if jobs: self.total_jobs = len(jobs)
@@ -262,28 +271,38 @@ class ProcessMaster:
             :static_args (list): List containing the static arguments of the jobs, that dont change in between jobs.
             :n_workers (int): Number of workers to be created, will take the cpu count as standard. 
         """
-        # Creates all workers
-        workers = [mp.Process(target=ProcessWorker(self.func, static_args, self.jobs.qsize(), work_dir=self.work_dir).run, args = (self,)) for _ in range(n_workers)]
+        try:
+            # Initial progress report
+            if not self.progress_report is None:
+                self.progress_report(self.done.qsize()/self.total_jobs)
 
-        # Starts all workers
-        for worker in workers:
-            worker.start()
+            # Creates all workers
+            workers = [mp.Process(target=ProcessWorker(self.func, static_args, self.jobs.qsize(), work_dir=self.work_dir, target_circuit=self.target_circuit).run, args = (self,)) for _ in range(n_workers)]
 
-        # Master rountine executed
-        self.master_routine()
+            # Starts all workers
+            for worker in workers:
+                worker.start()
 
-        # This should never happen
-        if self.done.qsize(): print(f"ERROR: Queue done finished with {self.done.qsize()} items")
-        if self.jobs.qsize(): print(f"ERROR: Queue jobs finished with {self.jobs.qsize()} items")
-        if self.inpg.qsize(): print(f"ERROR: Queue inpg finished with {self.inpg.qsize()} items")
+            # Master rountine executed
+            self.master_routine()
 
-        # Joins all workers
-        for worker in workers:
-            worker.join()
+            # This should never happen
+            if self.done.qsize(): print(f"ERROR: Queue done finished with {self.done.qsize()} items")
+            if self.jobs.qsize(): print(f"ERROR: Queue jobs finished with {self.jobs.qsize()} items")
+            if self.inpg.qsize(): print(f"ERROR: Queue inpg finished with {self.inpg.qsize()} items")
+
+            # Joins all workers
+            for worker in workers:
+                worker.join()
+            
+            # Should never happen
+            if len(os.listdir("work")):
+                raise ChildProcessError("Master Process Joined Without Child Finishing")
         
-        # Should never happen
-        if len(os.listdir("work")):
-            raise ChildProcessError("Master Process Joined Without Child Finishing")
+        # Whenever a Keyboard interrupt happens it also terminates all child processes
+        except KeyboardInterrupt as e:
+            self.__terminate_work(workers)
+            raise KeyboardInterrupt(e)
 
 class PersistentProcessMaster(ProcessMaster):
     """

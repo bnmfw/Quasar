@@ -1,9 +1,34 @@
 from os import path
+from typing import Any
 from utils.spiceInterface import HSRunner
+from progress.bar import Bar
 
 barra_comprida = "---------------------------"
 
+class Progress_Bar:
+    def __init__(self):
+        self.alive: bool = False
+
+    def start(self):
+        self.bar = Bar('Processing...')
+        self.progress: int = 0
+        self.alive = True
+        self.bar.next(0)
+
+    def update(self, progress: float):
+        if not self.alive: self.start()
+        floor = int(100*progress)
+        for _ in range(floor-self.progress):
+            self.bar.next()
+        self.progress = floor
+
 class TXTUI:
+    def __init__(self) -> None:
+        self.bar = Progress_Bar()
+
+    # Progress bar
+    def progress(self, value: float):
+        self.bar.update(value)
     
     # Tela inicial onde um circuito é escolhido
     def tela_inicial(self):
@@ -77,6 +102,7 @@ class TXTUI:
             inputs["continue"] = True
             return "main", inputs
         
-        n_sim = input("Numero de simulacoes (1000 recomendado): ")
-        inputs["n_sim"] = 1000 if n_sim == "" else int(n_sim)
+        default_n_sim = 2000
+        n_sim = input(f"Numero de simulacoes ({default_n_sim} recomendado): ")
+        inputs["n_sim"] = default_n_sim if n_sim == "" else int(n_sim)
         return "main", inputs

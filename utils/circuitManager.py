@@ -162,7 +162,7 @@ class CircuitManager:
             [print(j) for j in jobs]
             print()
         
-        manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuit.path_to_circuits)
+        manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuit.path_to_my_dir)
         manager.work((delay,),)
 
         lets = manager.return_done()

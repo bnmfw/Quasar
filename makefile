@@ -13,6 +13,9 @@ test:
 		python3 -m utils.$$module; \
 	done
 
+license:
+	@cd /backup_and_restore_scripts/setup_machine; ./synopsys_start_licenses.sh
+
 clean:
 	@rm -rf __pycache__
 	@rm -rf utils/__pycache__

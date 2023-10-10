@@ -2,7 +2,10 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 class DataAnalist:
-    def quantitative_scatter(data: dict, x: str, y: str, target: str, directory: str, cmap: str = "inferno"):
+    def __init__(self) -> None:
+        plt.style.use('ggplot')
+
+    def quantitative_scatter(self, data: dict, x: str, y: str, target: str, directory: str, cmap: str = "inferno"):
         """
         Draws a quantitative Scatter plot of the given data.
 
@@ -14,9 +17,7 @@ class DataAnalist:
             directory (str): Directory in which the plot is to be saved.
             cmap (str, optional): Color style of the plot. Defaults to "inferno".
         """
-        plt.style.use('ggplot')
         data = pd.DataFrame(data)
-
         plt.figure(figsize=(10,7))
         plt.scatter(data[x], data[y], marker='o', c=data[target], cmap=cmap)
         plt.xlabel(x)
@@ -26,7 +27,7 @@ class DataAnalist:
         plt.colorbar()
         plt.savefig(f'{directory}/{target}_scatter.png', format='png', dpi=300)
     
-    def qualitative_scatter(data: dict, x: str, y: str, target: str, directory: str):
+    def qualitative_scatter(self, data: dict, x: str, y: str, target: str, directory: str):
         """
         Draws a quantitative Scatter plot of the given data.
 
