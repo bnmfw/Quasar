@@ -41,16 +41,17 @@ class Backend:
         if self.circuit is None:
             raise ValueError("Circuit not informed")
 
-    def determine_LETs(self, delay: bool = False, report: bool = False):
+    def determine_LETs(self, delay: bool = False, report: bool = False, progress_report: Callable = None):
         """
         Determines the LETs of the set circuit from scratch
 
         Args:
             delay (bool, optional): Whether the delay of the circuit is to be taken into consideration. Defaults to False.
             report (bool, optional): Whether work is to be print to terminal. Defaults to False.
+            progress_report (Callable, optional): _description_. Defaults to None.
         """
         self.check_circuit()
-        CircuitManager(self.circuit, report=report).determine_LETs(delay=delay)
+        CircuitManager(self.circuit, report=report).determine_LETs(delay=delay, progress_report=progress_report)
         JManager.codify(self.circuit, self.circuit.path_to_circuits)
     
     def update_lets(self, delay: bool = False, report: bool = False):
@@ -100,6 +101,7 @@ class Backend:
                 scatter_data["pulse_in"].append(pulse_in.strip("['").strip("'"))
                 scatter_data["pulse_out"].append(pulse_out.strip("']").strip(" '"))
         analist = DataAnalist()
+        analist.describe(scatter_data, self.circuit.path_to_my_dir)
         analist.quantitative_scatter(scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir)
         analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "node", self.circuit.path_to_my_dir)
         analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_in", self.circuit.path_to_my_dir)

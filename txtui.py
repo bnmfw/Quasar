@@ -28,7 +28,11 @@ class TXTUI:
 
     # Progress bar
     def progress(self, value: float):
-        self.bar.update(value)
+        if (value == -1):
+            print()
+            self.bar = Progress_Bar()
+        else:
+            self.bar.update(value)
     
     # Tela inicial onde um circuito é escolhido
     def tela_inicial(self):
@@ -50,7 +54,9 @@ class TXTUI:
             print("\nCadastro do circuito nao encontrado, tera de ser feito")
         
         # Requisita o vdd
-        inputs["vdd"] = float(input("Vdd (V): "))
+        default_voltage = 0.7
+        voltage = input(f"Vdd [V] ({default_voltage}): ")
+        inputs["vdd"] = default_voltage if voltage == "" else float(voltage)
 
         # Retorna as informacoes pertinentes
         next_screen = "main" if inputs["cadastro"] else "cadastro"

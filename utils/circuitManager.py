@@ -146,12 +146,13 @@ class CircuitManager:
         self.let_manager.minimal_LET(let_analisado, input_signals, delay = delay)
         return (let_analisado, input_signals)
     
-    def determine_LETs(self, delay: bool = False):
+    def determine_LETs(self, delay: bool = False, progress_report = None):
         """
         Determines all the minimal LETs of the circuit from all possible configurations.
 
         Args:    
             delay (bool): Whether or not delay will be taken into consideration.
+            progress_report (Callable): Optional function that progress can be reported to.
         """
         for node in self.circuit.nodes:
             node.LETs = []
@@ -162,7 +163,7 @@ class CircuitManager:
             [print(j) for j in jobs]
             print()
         
-        manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuit.path_to_my_dir)
+        manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuit.path_to_my_dir, progress_report=progress_report)
         manager.work((delay,),)
 
         lets = manager.return_done()

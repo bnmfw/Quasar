@@ -74,7 +74,7 @@ class MCManager:
         Args:    
             n_analysis (int): Number of MC analysis.
             continue_backup (bool): Whether or not the simulation should continue from a backup if one exists.
-            :delay (bool): Whether or not delay should be taken into consideration.
+            delay (bool): Whether or not delay should be taken into consideration.
             progress_report (Callable): Optional function that progress can be reported to.
 
         Returns:

@@ -1,4 +1,4 @@
-Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nor4.cir
+Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nor.cir
  ****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
   Copyright (c) 1986 - 2023 by Synopsys, Inc. All Rights Reserved.
   This software and the associated documentation are proprietary
@@ -6,13 +6,13 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
   with the terms and conditions of a written license agreement with
   Synopsys, Inc. All other use, reproduction, or distribution of
   this software is strictly prohibited.
-  Input File: nor4.cir                                                          
-  Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nor4.cir
-  Start time: Tue Oct 10 00:51:11 2023
+  Input File: nor.cir                                                           
+  Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nor.cir
+  Start time: Tue Oct 10 21:58:10 2023
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      307304 
+ lic: HOSTID: d76153d              PID:      3909191 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
@@ -23,7 +23,7 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
   **info** Starting with the 2021.09 relaease, the Monte Carlo data mining functionality has been merged with AVA based-post processing.
 1****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
  ******  
- nor4
+ nor
 
  ****** mos   model parameters tnom=  25.000 temp=  25.000 ******
  Model file: ../dis/7nm_FF.pm
@@ -1868,16 +1868,6 @@ For Variation Block style variations, use .Option Random_Generator = MOA.
  vvcc                0:vcc              defined in subckt 0            0:0                defined in subckt 0
  vclk                0:clk              defined in subckt 0            0:0                defined in subckt 0
   
-             
- Warning:'No DC path nodes' occurs 2 times
- No DC path from the following nodes,connected with gdcpath:
- -----------------------
- |Node      |Subckt    |
- |----------+----------|
- |c         |0         |
- |d         |0         |
- -----------------------
-              
       
 
 MONTE CARLO DEFINITIONS
@@ -1895,7 +1885,7 @@ Random number generator is MCG            , and seed =      1, stream =   1
    *** monte carlo  index =            1 ***
 
  ******
- nor4
+ nor
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
  minout=   failed
@@ -15916,7 +15906,7 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
           ***** job concluded
  ******  
- nor4
+ nor
 
  ****** job statistics summary tnom=  25.000 temp=  25.000 ******
   
@@ -15929,7 +15919,7 @@ Random number generator is MCG            , and seed =      1, stream =   1
  OS:
  Linux version 5.15.0-86-generic (buildd@lcy02-amd64-062) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #96~20.04.1-Ubuntu SMP Thu Sep 21 13:23:37 UTC 2023
 
- System loadavg : 3.65 7.43 10.36 4/662 307364
+ System loadavg : 1.36 4.35 8.33 3/676 3909271
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -15940,12 +15930,12 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
   ******  Circuit Statistics  ******
-  # nodes       =      14 # elements   =      16
+  # nodes       =      10 # elements   =      12
   # resistors   =       0 # capacitors =       0 # inductors   =       0
   # mutual_inds =       0 # vccs       =       0 # vcvs        =       0
   # cccs        =       0 # ccvs       =       0 # volt_srcs   =       6
   # curr_srcs   =       0 # diodes     =       0 # bjts        =       0
-  # jfets       =       0 # mosfets    =      10 # U elements  =       0
+  # jfets       =       0 # mosfets    =       6 # U elements  =       0
   # T elements  =       0 # W elements =       0 # B elements  =       0
   # S elements  =       0 # P elements =       0 # va device   =       0
   # vector_srcs =       0 # N elements =       0
@@ -15954,8 +15944,8 @@ Random number generator is MCG            , and seed =      1, stream =   1
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           0.64           1        8940
-  transient          0.83      802000      100000       50000 rev=         0
+  op point           0.36           1        4068
+  transient          0.68      802000      100000       50000 rev=         0
   readin             0.00
   errchk             0.01
   setup              0.00
@@ -15963,13 +15953,13 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
            peak memory used        449.46 megabytes
-           total cpu time            4.29 seconds
-           total elapsed time        4.33 seconds
-           job started at     00:51:11 10/10/2023
-           job ended   at     00:51:15 10/10/2023
+           total cpu time            3.84 seconds
+           total elapsed time        3.88 seconds
+           job started at     21:58:10 10/10/2023
+           job ended   at     21:58:14 10/10/2023
 
 >info:         ***** hspice job concluded
-           job total runtime         4.33 seconds
+           job total runtime         3.88 seconds
 
 
  lic: Release hspice token(s) 

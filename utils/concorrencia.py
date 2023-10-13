@@ -299,6 +299,9 @@ class ProcessMaster:
             if len(os.listdir("work")):
                 raise ChildProcessError("Master Process Joined Without Child Finishing")
         
+            # Reports progress completion
+            self.progress_report(-1)
+        
         # Whenever a Keyboard interrupt happens it also terminates all child processes
         except KeyboardInterrupt as e:
             self.__terminate_work(workers)

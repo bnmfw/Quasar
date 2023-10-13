@@ -56,7 +56,7 @@ class GUI:
                 print(self.circuito.nodes)
                 self.backend.set_circuit(self.circuito,vdd)
                 with HSRunner.Vdd(vdd):
-                    self.backend.determine_LETs()
+                    self.backend.determine_LETs(progress_report=self.ui.progress)
 
             # TELA PRINCIPAL
             elif current_screen == "main":

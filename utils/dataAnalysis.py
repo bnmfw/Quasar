@@ -47,7 +47,7 @@ class DataAnalist:
 
         plt.figure(figsize=(10,7))
 
-        for value in data[target].unique():
+        for value in sorted(data[target].unique()):
             # Filter only data corresponding to designated value
             value_data = data[data[target]==value]
 
@@ -59,6 +59,18 @@ class DataAnalist:
         plt.legend(loc='lower right', fontsize="x-large")
         plt.title(target)
         plt.savefig(f'{directory}/{target}_scatter.png', format='png', dpi=300)
+
+    def describe(self, data: dict, directory: str):
+        """
+        Describes the main statistics of the data
+
+        Args:
+            data (dict): Data given in form of a dictionary.
+            directory (str): directory in wich the data is to be saved.
+        """
+        
+        data = pd.DataFrame(data)
+        data.describe().to_csv(f"{directory}/description.csv")
 
 if __name__ == "__main__":
     exit()
