@@ -88,7 +88,7 @@ class Backend:
         """
         self.check_circuit()
         MCManager(self.circuit).full_mc_analysis(n_simu, continue_backup=continue_backup, delay=delay, progress_report=progress_report)
-        scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[],"pulse_in":[],"pulse_out":[]}
+        scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[],"pulse_in":[],"pulse_out":[],"input":[]}
         with open(f"{self.circuit.path_to_my_dir}/{self.circuit.name}_mc_LET.csv") as file:
             for linha in file:
                 pmos, nmos, node, output, pulse_in, pulse_out, current, let, *inputs = linha.split(",")
@@ -100,12 +100,16 @@ class Backend:
                 scatter_data["LETth"].append(float(let))
                 scatter_data["pulse_in"].append(pulse_in.strip("['").strip("'"))
                 scatter_data["pulse_out"].append(pulse_out.strip("']").strip(" '"))
+                inputs = ",".join(inputs).replace("1, ", "1").replace("0, ", "0").replace("[","").replace("]","")
+                scatter_data["input"].append(inputs)
         analist = DataAnalist()
         analist.describe(scatter_data, self.circuit.path_to_my_dir)
         analist.quantitative_scatter(scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir)
         analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "node", self.circuit.path_to_my_dir)
         analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_in", self.circuit.path_to_my_dir)
         analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_out", self.circuit.path_to_my_dir)
+        analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "input", self.circuit.path_to_my_dir)
+        analist.count_unique(scatter_data, "pulse_out", self.circuit.path_to_my_dir)
 
     def find_single_let(self, node: str, output: str, logical_input: list, pmos_var: float = 4.8108, nmos_var: float = 4.372, report: bool = True):
         """

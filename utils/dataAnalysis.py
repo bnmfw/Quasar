@@ -62,7 +62,7 @@ class DataAnalist:
 
     def describe(self, data: dict, directory: str):
         """
-        Describes the main statistics of the data
+        Generates a csv describing the main statistics of the data.
 
         Args:
             data (dict): Data given in form of a dictionary.
@@ -71,6 +71,29 @@ class DataAnalist:
         
         data = pd.DataFrame(data)
         data.describe().to_csv(f"{directory}/description.csv")
+
+    def count_unique(self, data: dict, target: str, directory: str):
+        """
+        Generates a csv countainig the count of each unique value in target column.
+
+        Args:
+            data (dict): Data given in form of a dictionary
+            target (str): Data to be plotted.
+            directory (str): Directory in which the plot is to be saved.
+        """
+        # Finds all unique values
+        unique: dict = {}
+        for value in data[target]:
+            if value not in unique: unique[value] = 0
+            unique[value] += 1
+        
+        # Puts data in csv
+        csv = ",count,ratio\n"
+        for value, count in unique.items():
+            csv += f"{value},{count},{count/len(data[target])}\n"
+            
+        with open(f"{directory}/{target}_count.csv","w") as file:
+            file.writelines(csv)
 
 if __name__ == "__main__":
     exit()
