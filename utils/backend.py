@@ -104,29 +104,31 @@ class Backend:
                 scatter_data["input"].append(inputs)
         analist = DataAnalist()
         analist.describe(scatter_data, self.circuit.path_to_my_dir)
-        analist.quantitative_scatter(scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir)
+        analist.quantitative_scatter(scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir, "winter")
         analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "node", self.circuit.path_to_my_dir)
         analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_in", self.circuit.path_to_my_dir)
         analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "pulse_out", self.circuit.path_to_my_dir)
         analist.qualitative_scatter(scatter_data, "PMOS", "NMOS", "input", self.circuit.path_to_my_dir)
         analist.count_unique(scatter_data, "pulse_out", self.circuit.path_to_my_dir)
 
-    def find_single_let(self, node: str, output: str, logical_input: list, pmos_var: float = 4.8108, nmos_var: float = 4.372, report: bool = True):
+    def find_single_let(self, node: str, output: str, logical_input: list, pulse_in: str = None, pulse_out: str = None, pmos_var: float = 4.8108, nmos_var: float = 4.372, report: bool = True):
         """
         Finds a single minimal LET given a configuration.
 
         Args:
             node (str): Name of the node the fault is to be inserted.
             output (str): Name of the output the fault it to be propagated to. 
-            logical_input (list[bool]): Logical values of the inputs. 
+            logical_input (list[bool]): Logical values of the inputs.
+            pulse_in (str, optional): Pulse type in strucked node, either "rise" or "fall". Defaults to None. 
+            pulse_out (str, optional): Pulse type to be measured, either "rise" or "fall". Defaults to None.
             pmos_var (float, optional): Pmos var. Defaults to 4.8108.
             nmos_var (float, optional): Nmos var. Defaults to 4.372.
             report (bool, optional): Whether a report is to be printed. Defaults to True.
         """
         self.check_circuit()
         with SpiceRunner(self.circuit.path_to_circuits).MC_Instance(pmos_var, nmos_var):
-            let_analisado = LET(None, self.circuit.vdd, node, output, [None, None])
-            LetFinder(self.circuit, path_to_folder=self.circuit.path_to_circuits, report=report).minimal_LET(let_analisado, logical_input)
+            let_analisado = LET(None, self.circuit.vdd, node, output, [pulse_in, pulse_out])
+            LetFinder(self.circuit, path_to_folder=self.circuit.path_to_circuits, report=report).minimal_LET(let_analisado, logical_input, safe=True)
 
 if __name__ == "__main__":
 
@@ -134,11 +136,11 @@ if __name__ == "__main__":
 
     print("Testing Backend...")
 
-    with InDir("debug"):
+    # with InDir("debug"):
 
-        pseudo: Circuito = Circuito("pseudo", "test_circuits", 0.7).from_json()
-        backend: Backend = Backend().set_circuit(pseudo, 0.7)
-        backend.find_single_let("out", "out", [0], 4.8825, 4.4941)
+    nand: Circuito = Circuito("nor", "circuitos", 0.7).from_json()
+    backend: Backend = Backend().set_circuit(nand, 0.7)
+    backend.find_single_let("g1", "g1", [1, 1], "rise", "rise", 4.8108, 4.3720)
 
 
         # fadder: Circuito = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"])

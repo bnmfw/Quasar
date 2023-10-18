@@ -23,7 +23,7 @@ class LetFinder:
         self.__upper_bound: float = 300 # Valor maximo considerado da falha
         # 200 é um numero bem razoavel de quanto é uma falha real
         # Pede pro rafael o tga ou tfa ?
-        self.__limite_sim: int = 30
+        self.__limite_sim: int = 80
 
     def __fault_inclination(self, node_name: str, vdd: float, let: LET) -> str:
         """
@@ -167,7 +167,7 @@ class LetFinder:
             tuple: A tuple containing the simulation number and the current found, if any.
         """
         limite_sup = self.__upper_bound
-        precision: float = 0.01
+        precision: float = 0.001
         vdd: float = self.circuito.vdd
         lower_tolerance: float = (1 - precision) * vdd / 2
         upper_tolerance: float = (1 + precision) * vdd / 2
@@ -228,7 +228,7 @@ class LetFinder:
                     return sim_num, current
 
                 ##### Convergence ####
-                elif csup - cinf < 0.5:
+                elif csup - cinf < 0.05:
                     # To an exact value #
                     if 1 < current < limite_sup-1 and peak_tension_upper - peak_tension_lower < 3 * (upper_tolerance - lower_tolerance):
                         if self.__report: print("Minimal Let Found - Convergence\n")
@@ -302,7 +302,7 @@ if __name__ == "__main__":
     valid_input = [1,1]
     let = LET(140.625, 0.7, "g1", "g1", [None, None], valid_input)
     measured = LetFinder(nand, "debug/test_circuits", False).minimal_LET(let, valid_input, safe=True)[1]
-    assert abs(measured-140.625) <= 10e-6, f"LET FINDING FAILED simulated:{measured} expected:{140.625}"
+    assert abs(measured-140.91796875) <= 10e-6, f"LET FINDING FAILED simulated:{measured} expected:{140.91796875}"
 
     # print("\tTesting Finding Current of invalid unsafe Let...")
     # invalid_let = LET(314.152, 0.7, "g1", "g1", [None, None], valid_input)

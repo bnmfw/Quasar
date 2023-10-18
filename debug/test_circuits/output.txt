@@ -8,11 +8,11 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
   this software is strictly prohibited.
   Input File: nand.cir                                                          
   Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
-  Start time: Fri Oct 13 00:23:25 2023
+  Start time: Tue Oct 17 16:39:52 2023
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      1733294 
+ lic: HOSTID: d76153d              PID:      1795384 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
@@ -2203,7 +2203,7 @@ Random number generator is MCG            , and seed =      1, stream =   1
  OS:
  Linux version 5.15.0-86-generic (buildd@lcy02-amd64-062) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #96~20.04.1-Ubuntu SMP Thu Sep 21 13:23:37 UTC 2023
 
- System loadavg : 1.91 0.77 0.28 2/672 1733364
+ System loadavg : 2.25 1.57 1.71 2/673 1795451
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -2229,7 +2229,7 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
   analysis           time    # points   tot. iter  conv.iter
   op point           0.03           1         151
-  transient          0.51        8020        5999        2233 rev=        72
+  transient          0.50        8020        5999        2233 rev=        72
   readin             0.00
   errchk             0.01
   setup              0.00
@@ -2237,13 +2237,13 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
            peak memory used        450.55 megabytes
-           total cpu time            4.45 seconds
-           total elapsed time        4.49 seconds
-           job started at     00:23:25 10/13/2023
-           job ended   at     00:23:30 10/13/2023
+           total cpu time            4.43 seconds
+           total elapsed time        4.48 seconds
+           job started at     16:39:52 10/17/2023
+           job ended   at     16:39:56 10/17/2023
 
 >info:         ***** hspice job concluded
-           job total runtime         4.49 seconds
+           job total runtime         4.48 seconds
 
 
  lic: Release hspice token(s) 

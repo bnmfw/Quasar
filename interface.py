@@ -75,6 +75,12 @@ class GUI:
                 if not inputs["window"] is None:
                     inputs["window"].close()
 
+            # SINGLE LET SCREEN
+            elif current_screen == "single_let":
+                current_screen, inputs = self.ui.tela_single_let(self.circuito)
+                with HSRunner.Vdd(vdd):
+                    self.backend.find_single_let(inputs["node"], inputs["output"], inputs["input"], *inputs["pulses"], inputs["pmos"], inputs["nmos"], inputs["report"])
+            
             # EXIT
             elif current_screen is None:
                 break

@@ -71,7 +71,7 @@ class TXTUI:
         return "main", inputs
     
     def tela_principal(self, circuito):
-        acao = {0: "atualizar", 1: "csv", 2: "mc", 3: None}
+        acao = {0: "atualizar", 1: "csv", 2: "mc", 3: "single_let", 4: None}
         inputs = {"acao": None}
         print(barra_comprida)
         inputs["acao"] = acao[int(input(f"{barra_comprida}\n"
@@ -80,7 +80,8 @@ class TXTUI:
                      "0. Atualizar LETs\n"
                      "1. Gerar CSV de LETs\n"
                      "2. Analise Monte Carlo\n"
-                     "3. Sair\n"
+                     "3. Analisar LET unico\n"
+                     "4. Sair\n"
                      "Resposta: "))]
 
         # Encerra o Quasar
@@ -95,12 +96,15 @@ class TXTUI:
         if inputs["acao"] == "csv":
             return "main", inputs
 
+        if inputs["acao"] == "single_let":
+            return "single_let", inputs
+        
         # Analise Monte Carlo
-        elif inputs["acao"] == "mc":
+        if inputs["acao"] == "mc":
             return "mc", inputs
     
     def tela_mc(self, circuito):
-        inputs = {"progress": None, "n_sim": None, "continue": False, "window": None}
+        inputs = {"progress": None, "n_sim": 2000, "continue": False, "window": None}
 
         # Continua simulacao onde parou se ha backup
         if path.exists(f"circuitos/{circuito.name}/MC_jobs.json"): 
@@ -108,7 +112,24 @@ class TXTUI:
             inputs["continue"] = True
             return "main", inputs
         
-        default_n_sim = 2000
-        n_sim = input(f"Numero de simulacoes ({default_n_sim} recomendado): ")
-        inputs["n_sim"] = default_n_sim if n_sim == "" else int(n_sim)
+        n_sim = input(f"Numero de simulacoes ({inputs['nsim']} recomendado): ")
+        if n_sim != "": inputs["n_sim"] = int(n_sim)
+        return "main", inputs
+
+    def tela_single_let(self, circuit):
+        inputs = {"node": None, "output": None, "input": None, "pulses": [None, None],"pmos": 4.8108, "nmos": 4.372, "report": True, "window": None}
+        # Node
+        inputs["node"] = input(f"Nodo atingido {list(map(lambda n: n.name, circuit.nodes))}: ")
+        while inputs["node"] not in list(map(lambda n: n.name, circuit.nodes)):  inputs["node"] = input("Nodo invalido, insira novamente: ")
+        # Output
+        inputs["output"] = input(f"Nodo propagado {list(map(lambda n: n.name, circuit.nodes))}: ")
+        while inputs["output"] not in list(map(lambda n: n.name, circuit.nodes)):  inputs["output"] = input("Nodo invalido, insira novamente: ")
+        # Input signals
+        inputs["input"] = [int(s) for s in input(f"Sinais de entrada em 0s e 1s <{', '.join(map(lambda n: n.name, circuit.inputs))}>: ").split()]
+        # Pulses
+        inputs["pulses"] = input("Pulses [rise or fall]: ").split()
+        # Pmos e Nmos
+        var = input(f"Pmos e Nmos Var (4.8108, 4.372): ")
+        if var != "": inputs["pmos"], inputs["nmos"] = [int(v) for v in var]
+        print(barra_comprida + "\n")
         return "main", inputs
