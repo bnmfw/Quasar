@@ -112,7 +112,7 @@ class TXTUI:
             inputs["continue"] = True
             return "main", inputs
         
-        n_sim = input(f"Numero de simulacoes ({inputs['nsim']} recomendado): ")
+        n_sim = input(f"Numero de simulacoes ({inputs['n_sim']} recomendado): ")
         if n_sim != "": inputs["n_sim"] = int(n_sim)
         return "main", inputs
 
@@ -127,7 +127,8 @@ class TXTUI:
         # Input signals
         inputs["input"] = [int(s) for s in input(f"Sinais de entrada em 0s e 1s <{', '.join(map(lambda n: n.name, circuit.inputs))}>: ").split()]
         # Pulses
-        inputs["pulses"] = input("Pulses [rise or fall]: ").split()
+        pulse = input("Pulses [rise or fall]: ")
+        if pulse != "": inputs["pulses"] = pulse.split()
         # Pmos e Nmos
         var = input(f"Pmos e Nmos Var (4.8108, 4.372): ")
         if var != "": inputs["pmos"], inputs["nmos"] = [int(v) for v in var]

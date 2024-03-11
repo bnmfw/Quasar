@@ -102,12 +102,13 @@ class CircuitManager:
         #     arq.write(f"entrada: {critical_input}\t saida: {critical_output}\n")
         print(f"Atraso CC do file: {self.circuit.SPdelay} simulacoes: {sim_num}")
 
-    def update_LETs(self, delay: bool = False):
+    def update_LETs(self, delay: bool = False, only_lowest: bool = False):
         """
         Updates the minimal LETs of the circuit.
 
         Args:    
-            delay (bool): Whether the delay will be considered in the simulations.
+            delay (bool, optional): Whether the delay will be considered in the simulations. Defaults to False.
+            only_lowest (bool, optional): Whether LETs higher than the lowest should be ignored. Deafults to False
         """
         with HSRunner.Vdd(self.circuit.vdd):
             sim_num: int = 0
@@ -115,14 +116,18 @@ class CircuitManager:
             ##### BUSCA DO LETs DO CIRCUITO #####
             for nodo in self.circuit.nodes:
                 for let in nodo.LETs:
-                    # try: 
                     ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                     if relatorio: print(let.node_nome, let.saida_nome, let.orientacao, let.validacoes[0])
-                    sim, current = self.let_manager.minimal_LET(let, let.validacoes[0], safe=True, delay=delay)
+
+                    # Determines a lower threshold 
+                    upperth = None if not only_lowest or self.circuit.LETth is None else self.circuit.LETth.corrente * 1.3
+
+                    sim, current = self.let_manager.minimal_LET(let, let.validacoes[0], safe=True, delay=delay, upperth=None)
+                    let.corrente = current
                     sim_num += sim
                     if let.corrente is None: continue
                     if relatorio: print(f"corrente: {let.corrente}\n")
-                    if not self.circuit.LETth:
+                    if self.circuit.LETth is None and current is not None:
                         self.circuit.LETth = let
                     elif let < self.circuit.LETth: 
                         self.circuit.LETth = let

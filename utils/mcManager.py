@@ -63,7 +63,7 @@ class MCManager:
         pmos, nmos = point
         with SpiceRunner(self.circuito.path_to_circuits).MC_Instance(pmos, nmos):
             if delay: self.circ_man.get_atrasoCC()
-            self.circ_man.update_LETs(delay=delay)
+            self.circ_man.update_LETs(delay=delay, only_lowest=True)
             result = (round(pmos,4), round(nmos,4), self.circuito.LETth.node_nome, self.circuito.LETth.saida_nome, self.circuito.LETth.orientacao, self.circuito.LETth.corrente, self.circuito.LETth.valor, self.circuito.LETth.validacoes)
         return result
     

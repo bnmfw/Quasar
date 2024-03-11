@@ -1,4 +1,33 @@
- minout= 349.7078m    at=   2.1024n
- maxout= 699.9991m    at=   2.0000n
- minnod= 347.5791m    at=   2.1024n
- maxnod= 699.9996m    at=   2.0000n
+Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
+ ****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
+  Copyright (c) 1986 - 2023 by Synopsys, Inc. All Rights Reserved.
+  This software and the associated documentation are proprietary
+  to Synopsys, Inc. This software may only be used in accordance
+  with the terms and conditions of a written license agreement with
+  Synopsys, Inc. All other use, reproduction, or distribution of
+  this software is strictly prohibited.
+  Input File: nand.cir                                                          
+  Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
+  Start time: Wed Dec 13 23:14:34 2023
+ lic:  
+ lic: FLEXlm: SDK_12.11.3 
+ lic: USER:   bborges              HOSTNAME: aorus 
+ lic: HOSTID: d76153d              PID:      103649 
+ lic: Cannot connect to license server system.  The license server manager (lmgrd) has not been started yet,  the wrong port@hos
+ lic: lmgrd did not run on license SERVER 
+ lic: Please start lmgrd on SERVER 
+ lic: Using FLEXlm license files: 
+ lic: 27020@localhost 
+ lic: Unable to checkout (hspice) 
+ lic:   
+ lic: Cannot connect to license server system.  The license server manager (lmgrd) has not been started yet,  the wrong port@hos
+ lic: lmgrd did not run on license SERVER 
+ lic: Please start lmgrd on SERVER 
+ lic: Using FLEXlm license files: 
+ lic: 27020@localhost 
+ lic: Unable to checkout (primesim) 
+ lic:   
+           job total runtime         0.00 seconds
+
+
+ lic: total license checkout elapse time:        0.03(s)

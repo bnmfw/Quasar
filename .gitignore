@@ -9,3 +9,5 @@ invisible/
 *.png
 *.csv
 *.sh
+*MC_done.json
+*MC_jobs.json

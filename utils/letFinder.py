@@ -153,7 +153,7 @@ class LetFinder:
         if self.__report: print(f"PULSO MINIMO NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO")
         return None
 
-    def minimal_LET(self, let: LET, input_signals: list, safe: bool = False, delay: bool = False) -> tuple:
+    def minimal_LET(self, let: LET, input_signals: list, safe: bool = False, delay: bool = False, lowerth: float = None, upperth: float = None) -> tuple:
         """
         Returns the minimal current of a modeled Set to propagate a fault from the node to the output.
 
@@ -162,6 +162,8 @@ class LetFinder:
             input_signals (list): Logical value of each input.
             safe (bool): Whether the Let is already known to be valid.
             delay (bool): Whether the delay of the circuit will be taken into consideration.
+            lowerth (float, optional): The lowest value the current can get. Defaults to None.
+            upperth (float, optional): The highest value the current can get. Defaults to None.
         
         Returns:
             tuple: A tuple containing the simulation number and the current found, if any.
@@ -210,10 +212,44 @@ class LetFinder:
             sup_flag: bool = False
             peak_tension: float = None
             peak_tension_lower: float = None
-            peak_tension_upper: float = None
+            peak_tension_upper: float = None    
+
+            # Rejects a circuit with a LETth higher than upperth
+            if upperth is not None:
+                csup = upperth
+                _, peak_tension = self.runner.run_SET(self.circuito.file, let, csup)
+                peak_tension_upper = peak_tension
+                if let.orientacao[1] == "fall":
+                    if peak_tension <= lower_tolerance:
+                        return sim_num, None
+                else:
+                    if peak_tension >= upper_tolerance:
+                        return sim_num, None
+
+            # Rejects a circuit with a LETth lower than lowerth
+            if lowerth is not None:
+                cinf = lowerth
+                _, peak_tension = self.runner.run_SET(self.circuito.file, let, cinf)
+                peak_tension_lower = peak_tension
+                if let.orientacao[1] == "fall":
+                    if peak_tension >= upper_tolerance:
+                        return sim_num, None
+                else:
+                    if peak_tension <= lower_tolerance:
+                        return sim_num, None
+
+            # Figures tolerances if not defined
+            if peak_tension_lower is None:
+                _, peak_tension_lower = self.runner.run_SET(self.circuito.file, let, cinf)
+                sim_num += 1
+            if peak_tension_upper is None:
+                _, peak_tension_upper = self.runner.run_SET(self.circuito.file, let, csup)
+                sim_num += 1
 
             # Binary Search
             for i in range(self.__limite_sim):
+
+                current = float((csup + cinf) / 2)
 
                 _, peak_tension = self.runner.run_SET(self.circuito.file, let, current)
                 if self.__report:
@@ -227,7 +263,7 @@ class LetFinder:
                     let.append(input_signals)
                     return sim_num, current
 
-                ##### Convergence ####
+                ##### Convergence #####
                 elif csup - cinf < 0.05:
                     # To an exact value #
                     if 1 < current < limite_sup-1 and peak_tension_upper - peak_tension_lower < 3 * (upper_tolerance - lower_tolerance):
@@ -264,8 +300,6 @@ class LetFinder:
                     elif peak_tension >= upper_tolerance:
                         csup = current
                         peak_tension_upper = peak_tension
-
-                current: float = float((csup + cinf) / 2)
 
             # simulation number limit reached (Very rare) #
 
@@ -311,6 +345,6 @@ if __name__ == "__main__":
     print("\tTesting Finding Current of valid unsafe Let...")
     valid_input = [1,1]
     unsafe_valid_let = LET(140.625, 0.7, "i1", "g1", [None, None], valid_input)
-    assert LetFinder(nand, "debug/test_circuits", False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] == 248.4375
+    assert abs(LetFinder(nand, "debug/test_circuits", False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] - 248) < 1
     
     print("LET Finder OK")

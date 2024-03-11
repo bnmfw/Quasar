@@ -1,0 +1,81 @@
+* "simulator" "PrimeSim HSPICE"
+* "version" "T-2022.06-SP2 linux64"
+* "format" "HSP"
+* "rundate" "15:00:08 01/15/2024 "
+* "netlist" "circuitos/c17v0/c17v0.cir "
+* "runtitle" "benchmark c17 v0"
+* time =    0.            
+* temperature =   25.0000        
+*** BEGIN: Saved Operating Point ***                     
+.option 
++ gmindc=   1.0000p       
+.nodeset
++ a = 700.0000m       
++ b = 700.0000m       
++ c = 377.6105m       
++ clk =   0.            
++ d = 377.6105m       
++ e = 377.6105m       
++ e1 = 623.7911n       
++ e2 = 623.7939n       
++ e3 = 699.9998m       
++ e4 =  21.1270n       
++ e5 = 699.9998m       
++ fa = 177.7061n       
++ fb = 177.7061n       
++ fc =  25.2333m       
++ fd =  25.2333m       
++ fe =  25.2333m       
++ g1 = 699.9998m       
++ g2 = 134.6911n       
++ i1 = 313.6972n       
++ i2 = 313.6986n       
++ i3 = 125.1851n       
++ i4 = 125.1851n       
++ i5 = 668.3473m       
++ i61 = 313.6986n       
++ i62 = 623.7939n       
++ i7 = 699.9998m       
++ nnq1 = 699.9998m       
++ nnq2 = 699.9998m       
++ nq1 = 699.9998m       
++ nq2 = 699.9998m       
++ q1 = 264.7467n       
++ q2 = 264.7467n       
++ ta = 699.9998m       
++ tb = 699.9998m       
++ tc = 699.9995m       
++ td = 699.9995m       
++ te = 699.9995m       
++ vcc = 700.0000m       
++ vdd = 700.0000m       
++ vss =   0.            
++ xff1.ci = 134.2135n       
++ xff1.cni = 699.9998m       
++ xff1.z1 = 668.3475m       
++ xff1.z10 = 699.9998m       
++ xff1.z11 =  31.6000m       
++ xff1.z12 = 265.5555n       
++ xff1.z2 = 172.0280n       
++ xff1.z3 = 340.4549n       
++ xff1.z4 = 699.9998m       
++ xff1.z5 =  31.5999m       
++ xff1.z6 =   1.8014n       
++ xff1.z7 = 699.9998m       
++ xff1.z8 = 267.3603n       
++ xff1.z9 = 531.1196n       
++ xff2.ci = 135.7968n       
++ xff2.cni = 699.9998m       
++ xff2.z1 = 700.0000m       
++ xff2.z10 = 699.9998m       
++ xff2.z11 =  31.5999m       
++ xff2.z12 =   1.8014n       
++ xff2.z2 = 667.8243m       
++ xff2.z3 = 699.9993m       
++ xff2.z4 = 135.1404n       
++ xff2.z5 = 699.9997m       
++ xff2.z6 =  27.7340m       
++ xff2.z7 = 668.3478m       
++ xff2.z8 = 172.6753n       
++ xff2.z9 = 341.7495n       
+***   END: Saved Operating Point ***                     

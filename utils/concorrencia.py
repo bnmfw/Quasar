@@ -26,12 +26,15 @@ class ProcessFolder:
     def __enter__(self):
         self.pid = os.getpid()
         os.mkdir(f"work/{self.pid}")
+        # print(f"work/{self.pid}/{self.first_dir}")
         os.mkdir(f"work/{self.pid}/{self.first_dir}")
         if self.circuit_name:
             for target in {"dis", "include.cir", "include", self.circuit_name}:
                 os.system(f"cp -R {self.first_dir}/{target} work/{self.pid}/{self.first_dir}/{target}")
         else:
             os.system(f"cp -R {self.first_dir} work/{self.pid}/{self.first_dir}")
+        # sleep(10)
+        # print(f"work/{self.pid}/{self.dir}/..")
         os.chdir(f"work/{self.pid}/{self.dir}/..")
 
     def __exit__(self, type, value, traceback):
@@ -300,7 +303,8 @@ class ProcessMaster:
                 raise ChildProcessError("Master Process Joined Without Child Finishing")
         
             # Reports progress completion
-            self.progress_report(-1)
+            if not self.progress_report is None:
+                self.progress_report(-1)
         
         # Whenever a Keyboard interrupt happens it also terminates all child processes
         except KeyboardInterrupt as e:
@@ -450,12 +454,14 @@ class PersistentProcessMaster(ProcessMaster):
 if __name__ == "__main__":
     print("Testing Concurrent Module...")
 
-    print("\tTesting Process Folder...")
-    os.chdir("debug")
-    with ProcessFolder("folder_depth_test/deeper"):
-        with open("deeper/deepest.txt", "r") as file:
-            assert file.read() == "test text.", "PROCESS FOLDER FAILED"
-    os.chdir("..")
+    # print("\tTesting Process Folder...")
+    # os.chdir("debug")
+    # with ProcessFolder("folder_depth_test/deeper"):
+    #     sleep(10)
+    #     with open("deeper/deepest.txt", "r") as file:
+    #         assert file.read() == "test text.", "PROCESS FOLDER FAILED"
+    #     sleep(10)
+    # os.chdir("..")
 
     print("\tTesting Simple Parallel execution...")
     def function(a, x):

@@ -1,30 +1,28 @@
-Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
+Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice c17v0.cir
  ****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
-  Copyright (c) 1986 - 2024 by Synopsys, Inc. All Rights Reserved.
+  Copyright (c) 1986 - 2023 by Synopsys, Inc. All Rights Reserved.
   This software and the associated documentation are proprietary
   to Synopsys, Inc. This software may only be used in accordance
   with the terms and conditions of a written license agreement with
   Synopsys, Inc. All other use, reproduction, or distribution of
   this software is strictly prohibited.
-  Input File: nand.cir                                                          
-  Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
-  Start time: Mon Mar 11 15:23:09 2024
+  Input File: c17v0.cir                                                         
+  Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice c17v0.cir
+  Start time: Fri Oct 20 16:07:15 2023
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      1675360 
+ lic: HOSTID: d76153d              PID:      2314691 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
  lic: License/Maintenance for hspice will expire on 30-jun-2024/2023.03 
  lic: 1(in_use)/50(total) FLOATING license(s) on SERVER 27020@localhost 
  lic:   
-  **info** Monte Carlo simulation is detected, increase number of measure digits to 7 for Monte Carlo post processing.
-  **info** Starting with the 2021.09 relaease, the Monte Carlo data mining functionality has been merged with AVA based-post processing.
   **warning** (../dis/DFF.cir:19) Global net name "vdd" in subckt pin list. The pin will be connected to the local net. Recommend to not use global net names in subckt pin lists.
 1****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
  ******  
- nand parsing test
+ benchmark c17 v0
 
  ****** circuit name directory
  circuit number to circuit name directory
@@ -34,10 +32,18 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
         2 xinva2.                         not                1.00 
         3 xinvb1.                         not                1.00 
         4 xinvb2.                         not                1.00 
-        5 xff1.                           dff                1.00 
-        6 xinv11.                         not                1.00 
+        5 xinvc1.                         not                1.00 
+        6 xinvc2.                         not                1.00 
+        7 xinvd1.                         not                1.00 
+        8 xinvd2.                         not                1.00 
+        9 xinve1.                         not                1.00 
+       10 xinve2.                         not                1.00 
+       11 xff1.                           dff                1.00 
+       12 xff2.                           dff                1.00 
+       13 xinv11.                         not                1.00 
+       14 xinv12.                         not                1.00 
  ******  
- nand parsing test
+ benchmark c17 v0
 
  ****** mos   model parameters tnom=  25.000 temp=  25.000 ******
  Model file: ../dis/7nm_FF.pm
@@ -1869,328 +1875,75 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
    NFINmin =      0 
    NFINmax =      1 
   **info** (../include/vdd.cir:4) DC voltage reset to initial transient source value in source 0:vclk. new dc=0.0000D+00
-*** info *** index=1 is a nominal sample in Monte Carlo.
-*** info *** The MCG Random Number Generator and .Option Use_Agauss_Format = Yes are set as defaults starting with PrimeSim HSPICE L-2016.06 to address the needs of advanced technology nodes with large samples and/or large circuits, particularly for distributed processing.
-*** Should you want backward compatibility, please use the following options:
-For traditional Gaussian style variations, use .Option Random_Generator = 3LC;
-For Variation Block style variations, use .Option Random_Generator = MOA.
+  
+  **warning**  the following singular supplies have a terminal that is not connected to any other element
+ supply                 node1                  node2
+ vvss                0:vss              defined in subckt 0            0:0                defined in subckt 0
   
       
-
-MONTE CARLO DEFINITIONS
-
-
-Option sampling_method was set, variation block and agauss format variation are in effect.
-
-Random number generator is MCG            , and seed =      1, stream =   1
+             
+ Warning:'Floating bulk' occurs 3 times
+ Summary of floating bulk:
+ -----------------------
+ |Node      |Device    |
+ |----------+----------|
+ |c         |xinvc1.mp1|
+ |d         |xinvd1.mp1|
+ |e         |xinve1.mp1|
+ -----------------------
+              
  **info** set option symb=1 internally to help for convergence.
  *****************************************************************
  ******  option summary
  ******
  runlvl  = 3         bypass  = 2.0000    
-  Opening plot unit= 15
- file=nand.pa0
+ ******  
+ benchmark c17 v0
 
+ ****** operating point information tnom=  25.000 temp=  25.000 ******
+ ****** operating point status is voltage   simulation time is     0.     
+     node    =voltage       node    =voltage       node    =voltage
 
-   *** monte carlo  index =            1 ***
+ + 0:a       =   0.       0:b       =   0.       0:c       = 377.6105m
+ + 0:clk     =   0.       0:d       = 377.6105m  0:e       = 377.6105m
+ + 0:e1      = 699.9999m  0:e2      = 699.9998m  0:e3      = 612.9032n
+ + 0:e4      =  42.4115n  0:e5      = 177.7071n  0:fa      = 699.9998m
+ + 0:fb      = 699.9998m  0:fc      =  25.2333m  0:fd      =  25.2333m
+ + 0:fe      =  25.2333m  0:g1      = 699.9998m  0:g2      = 699.9991m
+ + 0:i1      =  27.7341m  0:i2      = 667.8250m  0:i3      = 308.2533n
+ + 0:i4      = 667.8251m  0:i5      = 668.3473m  0:i61     = 667.8250m
+ + 0:i62     = 699.9998m  0:i7      = 699.9996m  0:nnq1    = 699.9998m
+ + 0:nnq2    = 699.9998m  0:nq1     = 699.9998m  0:nq2     = 699.9998m
+ + 0:q1      = 264.7467n  0:q2      = 264.7467n  0:ta      = 177.7083n
+ + 0:tb      = 211.2862n  0:tc      = 699.9995m  0:td      = 699.9995m
+ + 0:te      = 699.9995m  0:vcc     = 700.0000m  0:vdd     = 700.0000m
+ + 0:vss     =   0.      11:ci      = 134.2135n 11:cni     = 699.9998m
+ +11:z1      = 668.3475m 11:z10     = 699.9998m 11:z11     =  31.6000m
+ +11:z12     = 265.5632n 11:z2      = 172.0279n 11:z3      = 340.4548n
+ +11:z4      = 699.9998m 11:z5      =  31.5999m 11:z6      =   1.8014n
+ +11:z7      = 699.9998m 11:z8      = 267.3603n 11:z9      = 531.1196n
+ +12:ci      = 134.2135n 12:cni     = 699.9998m 12:z1      = 668.3475m
+ +12:z10     = 699.9998m 12:z11     =  31.6000m 12:z12     = 265.5568n
+ +12:z2      = 172.0312n 12:z3      = 340.4612n 12:z4      = 699.9998m
+ +12:z5      =  31.6004m 12:z6      =   1.8014n 12:z7      = 699.9998m
+ +12:z8      = 267.3603n 12:z9      = 531.1196n
 
  ******
- nand parsing test
+ benchmark c17 v0
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
- minout= 697.0610m    at=   2.0239n
+ minout= 697.0487m    at=   2.0239n
              from=   1.0000n    to=   3.8000n
- maxout= 702.9309m    at=   1.0123n
+ maxout= 702.9582m    at=   1.0123n
              from=   1.0000n    to=   3.8000n
- minnod= 667.5155m    at=   2.0216n
+ minnod=  27.6877m    at=   3.0125n
              from=   1.0000n    to=   3.8000n
- maxnod= 668.1751m    at=   1.0107n
+ maxnod=  27.7840m    at=   1.0107n
              from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            2 ***
-
- minout= 696.7426m    at=   2.0238n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.9496m    at=   1.0116n
-             from=   1.0000n    to=   3.8000n
- minnod= 672.2999m    at=   2.0227n
-             from=   1.0000n    to=   3.8000n
- maxnod= 673.0203m    at=   1.0107n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            3 ***
-
- minout= 697.0245m    at=   2.0226n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.1855m    at=   1.0115n
-             from=   1.0000n    to=   3.8000n
- minnod= 670.1099m    at=   2.0217n
-             from=   1.0000n    to=   3.8000n
- maxnod= 670.8459m    at=   3.0106n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            4 ***
-
- minout= 697.7113m    at=   2.0228n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.4883m    at=   1.0133n
-             from=   1.0000n    to=   3.8000n
- minnod= 596.3932m    at=   2.0216n
-             from=   1.0000n    to=   3.8000n
- maxnod= 596.9646m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            5 ***
-
- minout= 697.4866m    at=   2.0231n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.2102m    at=   1.0115n
-             from=   1.0000n    to=   3.8000n
- minnod= 664.3752m    at=   2.0220n
-             from=   1.0000n    to=   3.8000n
- maxnod= 664.9511m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            6 ***
-
- minout= 696.8727m    at=   2.0220n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.5731m    at=   1.0112n
-             from=   1.0000n    to=   3.8000n
- minnod= 673.3633m    at=   2.0200n
-             from=   1.0000n    to=   3.8000n
- maxnod= 673.8402m    at=   1.0100n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            7 ***
-
- minout= 696.6442m    at=   2.0258n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.8934m    at=   1.0133n
-             from=   1.0000n    to=   3.8000n
- minnod= 651.0995m    at=   2.0239n
-             from=   1.0000n    to=   3.8000n
- maxnod= 651.8702m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            8 ***
-
- minout= 697.1533m    at=   2.0225n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.3621m    at=   1.0114n
-             from=   1.0000n    to=   3.8000n
- minnod= 671.4031m    at=   2.0216n
-             from=   1.0000n    to=   3.8000n
- maxnod= 672.0745m    at=   3.0107n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =            9 ***
-
- minout= 697.6375m    at=   2.0232n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.2163m    at=   1.0115n
-             from=   1.0000n    to=   3.8000n
- minnod= 661.8101m    at=   2.0221n
-             from=   1.0000n    to=   3.8000n
- maxnod= 662.3665m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           10 ***
-
- minout= 697.0227m    at=   2.0239n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.0363m    at=   1.0116n
-             from=   1.0000n    to=   3.8000n
- minnod= 671.4523m    at=   2.0228n
-             from=   1.0000n    to=   3.8000n
- maxnod= 672.1655m    at=   1.0107n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           11 ***
-
- minout= 697.2668m    at=   2.0227n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.7810m    at=   1.0121n
-             from=   1.0000n    to=   3.8000n
- minnod= 654.9200m    at=   2.0217n
-             from=   1.0000n    to=   3.8000n
- maxnod= 655.6166m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           12 ***
-
- minout= 696.8646m    at=   2.0240n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.7926m    at=   1.0132n
-             from=   1.0000n    to=   3.8000n
- minnod= 662.4233m    at=   2.0225n
-             from=   1.0000n    to=   3.8000n
- maxnod= 663.0579m    at=   3.0115n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           13 ***
-
- minout= 696.8986m    at=   2.0254n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.9456m    at=   1.0132n
-             from=   1.0000n    to=   3.8000n
- minnod= 642.8367m    at=   2.0228n
-             from=   1.0000n    to=   3.8000n
- maxnod= 643.6081m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           14 ***
-
- minout= 697.1486m    at=   2.0227n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.3500m    at=   1.0111n
-             from=   1.0000n    to=   3.8000n
- minnod= 673.0980m    at=   2.0210n
-             from=   1.0000n    to=   3.8000n
- maxnod= 673.6950m    at=   1.0105n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           15 ***
-
- minout= 696.6025m    at=   2.0259n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.9724m    at=   1.0134n
-             from=   1.0000n    to=   3.8000n
- minnod= 652.7389m    at=   2.0238n
-             from=   1.0000n    to=   3.8000n
- maxnod= 653.4706m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           16 ***
-
- minout= 697.3969m    at=   2.0231n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.0043m    at=   1.0115n
-             from=   1.0000n    to=   3.8000n
- minnod= 660.1468m    at=   2.0211n
-             from=   1.0000n    to=   3.8000n
- maxnod= 660.7903m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           17 ***
-
- minout= 697.0795m    at=   2.0225n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.1737m    at=   1.0111n
-             from=   1.0000n    to=   3.8000n
- minnod= 673.6724m    at=   2.0215n
-             from=   1.0000n    to=   3.8000n
- maxnod= 674.2451m    at=   1.0100n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           18 ***
-
- minout= 697.2537m    at=   2.0240n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.0015m    at=   1.0132n
-             from=   1.0000n    to=   3.8000n
- minnod= 645.0333m    at=   2.0217n
-             from=   1.0000n    to=   3.8000n
- maxnod= 645.7276m    at=   3.0114n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           19 ***
-
- minout= 697.2121m    at=   2.0218n
-             from=   1.0000n    to=   3.8000n
- maxout= 703.3062m    at=   1.0111n
-             from=   1.0000n    to=   3.8000n
- minnod= 673.1788m    at=   2.0211n
-             from=   1.0000n    to=   3.8000n
- maxnod= 673.7704m    at=   1.0105n
-             from=   1.0000n    to=   3.8000n
-
-          ***** job concluded
-
-   *** monte carlo  index =           20 ***
-
- minout= 696.5670m    at=   2.0238n
-             from=   1.0000n    to=   3.8000n
- maxout= 702.8699m    at=   1.0114n
-             from=   1.0000n    to=   3.8000n
- minnod= 673.8097m    at=   2.0228n
-             from=   1.0000n    to=   3.8000n
- maxnod= 674.4063m    at=   1.0100n
-             from=   1.0000n    to=   3.8000n
- 
-
- ****** Monte Carlo Statistics ******
-  Available sampling count:  20
-
-
-    meas_variable = minout
-   mean  =  697.0835m  varian =  110.6114n
-   sigma =  332.5830u  avgdev =  264.8117u
-   max   =  697.7113m  min    =  696.5670m
-   1-sigma =  332.5830u  median =  697.0795m
-
-
-    meas_variable = maxout
-   mean  =  703.0059m  varian =   59.6250n
-   sigma =  244.1823u  avgdev =  188.7607u
-   max   =  703.3621m  min    =  702.4883m
-   1-sigma =  244.1823u  median =  703.0015m
-
-
-    meas_variable = minnod
-   mean  =  660.2192m  varian =  342.5392u
-   sigma =   18.5078m  avgdev =   12.4596m
-   max   =  673.8097m  min    =  596.3932m
-   1-sigma =   18.5078m  median =  664.3752m
-
-
-    meas_variable = maxnod
-   mean  =  660.8677m  varian =  342.2067u
-   sigma =   18.4988m  avgdev =   12.4238m
-   max   =  674.4063m  min    =  596.9646m
-   1-sigma =   18.4988m  median =  664.9511m
-
-
 
           ***** job concluded
  ******  
- nand parsing test
+ benchmark c17 v0
 
  ****** job statistics summary tnom=  25.000 temp=  25.000 ******
   
@@ -2201,9 +1954,9 @@ Random number generator is MCG            , and seed =      1, stream =   1
  CPU(s)		: 12
   
  OS:
- Linux version 5.15.0-91-generic (buildd@lcy02-amd64-061) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #101~20.04.1-Ubuntu SMP Thu Nov 16 14:22:28 UTC 2023
+ Linux version 5.15.0-86-generic (buildd@lcy02-amd64-062) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #96~20.04.1-Ubuntu SMP Thu Sep 21 13:23:37 UTC 2023
 
- System loadavg : 2.10 1.58 2.04 2/692 1675430
+ System loadavg : 6.21 11.29 12.55 3/712 2314694
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -2214,12 +1967,12 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
   ******  Circuit Statistics  ******
-  # nodes       =      30 # elements   =      49
+  # nodes       =      69 # elements   =     117
   # resistors   =       0 # capacitors =       0 # inductors   =       0
   # mutual_inds =       0 # vccs       =       0 # vcvs        =       0
   # cccs        =       0 # ccvs       =       0 # volt_srcs   =       6
   # curr_srcs   =       1 # diodes     =       0 # bjts        =       0
-  # jfets       =       0 # mosfets    =      42 # U elements  =       0
+  # jfets       =       0 # mosfets    =     110 # U elements  =       0
   # T elements  =       0 # W elements =       0 # B elements  =       0
   # S elements  =       0 # P elements =       0 # va device   =       0
   # vector_srcs =       0 # N elements =       0
@@ -2228,22 +1981,22 @@ Random number generator is MCG            , and seed =      1, stream =   1
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           0.03           1         151
-  transient          0.49        8020        5999        2233 rev=        72
+  op point           0.01           1          30
+  transient          0.05         401         294         109 rev=         4
   readin             0.00
   errchk             0.01
   setup              0.00
   output             0.00
 
 
-           peak memory used        450.55 megabytes
-           total cpu time            4.44 seconds
-           total elapsed time        4.47 seconds
-           job started at     15:23:09 03/11/2024
-           job ended   at     15:23:13 03/11/2024
+           peak memory used        450.66 megabytes
+           total cpu time            0.07 seconds
+           total elapsed time        0.12 seconds
+           job started at     16:07:15 10/20/2023
+           job ended   at     16:07:15 10/20/2023
 
 >info:         ***** hspice job concluded
-           job total runtime         4.47 seconds
+           job total runtime         0.12 seconds
 
 
  lic: Release hspice token(s) 
