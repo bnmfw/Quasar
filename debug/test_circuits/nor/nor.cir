@@ -11,17 +11,13 @@ Nor
 
 ****** Circuito ******
 
-Xinva1 vcc gnd a fa NOT
-Xinva2 vcc gnd fa ta NOT
-Xinvb1 vcc gnd b fb NOT
-Xinvb2 vcc gnd fb tb NOT
+Mp1 vdd a i1 vdd PMOS_RVT nfin=3
+Mp2 i1 b g1 vdd PMOS_RVT nfin=3
+Mn1 g1 a gnd gnd NMOS_RVT nfin=3
+Mn2 g1 b gnd gnd NMOS_RVT nfin=3
 
-****** START QUASAR ******
-
-Mp51 vdd ta i1 ta PMOS_RVT nfin=3
-Mp52 i1 tb g1 tb PMOS_RVT nfin=3
-Mn51 g1 ta gnd ta NMOS_RVT nfin=3
-Mn52 g1 tb gnd tb NMOS_RVT nfin=3
+Mp3 vdd g1 ng1 vdd PMOS_RVT nfin=4
+Mn3 ng1 g1 gnd gnd NMOS_RVT nfin=4
 
 ****** END QUASAR ******
 

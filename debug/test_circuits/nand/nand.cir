@@ -9,19 +9,12 @@ Nand Parsing Test
 .option measform = 3
 .option post = 2
 
-****** Circuito ******
-
-Xinva1 vcc vss a fa NOT
-Xinva2 vcc vss fa ta NOT
-Xinvb1 vcc vss b fb NOT
-Xinvb2 vcc vss fb tb NOT
-
 ****** START QUASAR ******
 
-Mp11 vdd ta g1 vdd PMOS_RVT nfin=3
-Mp12 vdd tb g1 vdd PMOS_RVT nfin=3
-Mn11 g1 ta i1 vss NMOS_RVT nfin=3
-Mn12 i1 tb vss vss NMOS_RVT nfin=3
+Mp11 vdd a g1 vdd PMOS_RVT nfin=3
+Mp12 vdd b g1 vdd PMOS_RVT nfin=3
+Mn11 g1 a i1 vss NMOS_RVT nfin=3
+Mn12 i1 b vss vss NMOS_RVT nfin=3
 
 ****** END QUASAR ******
 

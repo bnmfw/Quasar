@@ -2,6 +2,8 @@
 Graph Module. Used to model wich nodes of a circuit can propagate a fault to and logically simulate a circuit.
 """
 
+from .matematica import all_vector_n_bits
+
 class Graph:
     """
     Graph object.
@@ -19,10 +21,14 @@ class Graph:
         self.non_passing: set = set(non_passing)
 
         # Creates all nodes
-        for _, transistor in transistors:
+        for is_pmos, transistor in transistors:
             for node in transistor:
-                self.vertices[node] = {"name": node, "signal": None, "reaches": []}
-        
+                if not node in self.vertices.keys():
+                    self.vertices[node] = {"name": node, "signal": None, "reaches": [], "fall_valid": False, "rise_valid": False}
+                if is_pmos:
+                    self.vertices[node]["rise_valid"] = True
+                else: self.vertices[node]["fall_valid"] = True
+
         # Connects all existing arcs
         for invert, transistor in transistors:
             invert = invert == 1
@@ -209,14 +215,14 @@ class Graph:
             already_seen = set()
         
         # Stops if job has already been done
-        if node in already_seen:
+        if node in set(map(lambda e: e[0], already_seen)):
             return
         
         # No propagation should be done through non_passing nodes
         if node in self.non_passing:
             return
         
-        already_seen.add(node)
+        already_seen.add((node, self.vertices[node]["signal"]))
 
         # Iterates over arcs that go to node
         for arc in self.vertices[node]["to"]:
@@ -228,6 +234,61 @@ class Graph:
 
         return already_seen
 
+    def valid_orientation(self, node: str, orientation: str) -> bool:
+        """
+        Given a node and a fault orientation returns wether or not said orientation is possible
+
+        Args:
+            node (str): node faulted
+            orientation (str): orientation, either 'rise', 'fall,
+
+        Returns:
+            bool: if the orientation is valid
+        """
+
+        if orientation == "rise": return self.vertices[node]["rise_valid"]
+        return self.vertices[node]["fall_valid"]
+    
+    # def filter_lets(self, candidate_lets: list) -> list:
+    #     """
+    #     Given a list of candidate lets returns wich lets are valid for simulation
+
+    #     Args:
+    #         candidate_lets (list[dict]): candidate lets lits
+
+    #     Returns:
+    #         list: valid lets list for simulation
+    #     """
+
+    #     candidate_lets = filter(lambda let: self.valid_orientation(let))
+
+    # def generate_valid_lets(self, nodes: list, inputs: list, outputs: list) -> list:
+    #     """
+    #     Recieves a list of nodes, outputs and the number of inputs and returns all possible lets.
+
+    #     Args:    
+    #         nodes (list): List of Node objects (Includes output nodes).
+    #         outputs (list): List of Node objects interpreted as outputs.
+    #         input_num (list): List of circuit inputs.
+        
+    #     Returns:
+    #         list: A list of all possible lets.
+    #     """
+
+        # lets = []
+        # # Iterates over all input combinations 
+        # for signals in all_vector_n_bits(len(inputs)):
+        #     # Sets the inputs
+        #     logic_signals = [(inp.name, sig==1) for inp, sig in zip(inputs, signals)] + [("vdd", True), ("vcc", True), ("gnd", False), ("vss", False)]
+        #     self.set_logic(logic_signals)
+            
+        #     for output in outputs:
+        #         # Gets the nodes that affect it
+        #         effect_group = list(filter(lambda e: e in map(lambda e: e.name, nodes), self.is_affected_by(output.name)))
+        #         effect_group = list(filter(lambda e: e[0] not in {"f"}, effect_group))
+        #         lets += [[circuit.get_node(node), output, signals, None, None] for node in effect_group]
+        # return lets
+    
     def __repr__(self) -> str:
         ret = "Nodes:\n"
         for v, vi in self.vertices.items():
@@ -308,8 +369,8 @@ if __name__ == "__main__":
     assert list(map(lambda e: e["signal"], g.vertices.values())) == [1,1,0,0,0,1,1,1,1,None,None,0,0,0,0,1,0,0,1,1,0], "SET LOGIC FUNCTION FAILED"
     
     print("\tTesting is affected_by method...")
-    assert g.is_affected_by("sum") == {'i10', 'ta', 'tb', 'p2_n1', 'p6_p9', 'p9_n6', 'n4_n3', 'p1_p2', 'sum', 'tcin'}, "IS AFFECTED BY FUNCTION FAILED"
+    assert set(map(lambda e: e[0], g.is_affected_by("sum"))) == {'i10', 'ta', 'tb', 'p2_n1', 'p6_p9', 'p9_n6', 'n4_n3', 'p1_p2', 'sum', 'tcin'}, "IS AFFECTED BY FUNCTION FAILED"
     g.set_logic([("ta",0), ("tb",0), ("tcin",0),("vdd",1),("gnd",0)])
-    assert g.is_affected_by("sum") == {'ta', 'tcin', 'p9_n6', 'tb', 'p3_p4', 'p1_p2', 'p11_p12', 'n6_n7', 'p10_p11', 'sum', 'p2_n1'}, "IS AFFECTED BY FUNCTION FAILED"
+    assert set(map(lambda e: e[0], g.is_affected_by("sum"))) == {'ta', 'tcin', 'p9_n6', 'tb', 'p3_p4', 'p1_p2', 'p11_p12', 'n6_n7', 'p10_p11', 'sum', 'p2_n1'}, "IS AFFECTED BY FUNCTION FAILED"
     
     print("Logic Module OK")

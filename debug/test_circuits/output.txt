@@ -8,11 +8,11 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
   this software is strictly prohibited.
   Input File: nand.cir                                                          
   Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
-  Start time: Mon Mar 11 15:23:09 2024
+  Start time: Sun Apr 14 01:40:41 2024
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      1675360 
+ lic: HOSTID: d76153d              PID:      849770 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
@@ -30,12 +30,8 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
  circuit number to circuit name directory
    number circuitname                     definition         multiplier
         0 main circuit
-        1 xinva1.                         not                1.00 
-        2 xinva2.                         not                1.00 
-        3 xinvb1.                         not                1.00 
-        4 xinvb2.                         not                1.00 
-        5 xff1.                           dff                1.00 
-        6 xinv11.                         not                1.00 
+        1 xff1.                           dff                1.00 
+        2 xinv11.                         not                1.00 
  ******  
  nand parsing test
 
@@ -1898,260 +1894,260 @@ Random number generator is MCG            , and seed =      1, stream =   1
  nand parsing test
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
- minout= 697.0610m    at=   2.0239n
+ minout=  -2.7633m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 702.9309m    at=   1.0123n
+ maxout=   1.8296m    at=   2.0200n
              from=   1.0000n    to=   3.8000n
- minnod= 667.5155m    at=   2.0216n
+ minnod=  -1.3423m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 668.1751m    at=   1.0107n
+ maxnod= 896.4340u    at=   2.0204n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =            2 ***
 
- minout= 696.7426m    at=   2.0238n
+ minout=  -2.2621m    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxout= 702.9496m    at=   1.0116n
+ maxout=   1.5114m    at=   2.0200n
              from=   1.0000n    to=   3.8000n
- minnod= 672.2999m    at=   2.0227n
+ minnod=  -1.1142m    at=   1.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 673.0203m    at=   1.0107n
+ maxnod= 732.3435u    at=   2.0213n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =            3 ***
 
- minout= 697.0245m    at=   2.0226n
+ minout=  -2.5383m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 703.1855m    at=   1.0115n
+ maxout=   1.7813m    at=   2.0200n
              from=   1.0000n    to=   3.8000n
- minnod= 670.1099m    at=   2.0217n
+ minnod=  -1.2479m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 670.8459m    at=   3.0106n
+ maxnod= 858.7382u    at=   2.0204n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =            4 ***
 
- minout= 697.7113m    at=   2.0228n
+ minout=  -2.6210m    at=   1.0106n
              from=   1.0000n    to=   3.8000n
- maxout= 702.4883m    at=   1.0133n
+ maxout=   2.3761m    at=   2.0198n
              from=   1.0000n    to=   3.8000n
- minnod= 596.3932m    at=   2.0216n
+ minnod=  -1.2799m    at=   3.0114n
              from=   1.0000n    to=   3.8000n
- maxnod= 596.9646m    at=   3.0114n
+ maxnod=   1.1772m    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =            5 ***
 
- minout= 697.4866m    at=   2.0231n
+ minout=  -2.5009m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 703.2102m    at=   1.0115n
+ maxout=   1.8797m    at=   2.0187n
              from=   1.0000n    to=   3.8000n
- minnod= 664.3752m    at=   2.0220n
+ minnod=  -1.2023m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 664.9511m    at=   3.0114n
+ maxnod= 913.3968u    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =            6 ***
 
- minout= 696.8727m    at=   2.0220n
+ minout= 240.6044u    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxout= 702.5731m    at=   1.0112n
+ maxout=   3.6457m    at=   2.0183n
              from=   1.0000n    to=   3.8000n
- minnod= 673.3633m    at=   2.0200n
+ minnod= 167.9626u    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxnod= 673.8402m    at=   1.0100n
+ maxnod=   1.7827m    at=   2.0183n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =            7 ***
 
- minout= 696.6442m    at=   2.0258n
+ minout=  -3.3928m    at=   1.0103n
              from=   1.0000n    to=   3.8000n
- maxout= 702.8934m    at=   1.0133n
+ maxout=   1.9169m    at=   2.0217n
              from=   1.0000n    to=   3.8000n
- minnod= 651.0995m    at=   2.0239n
+ minnod=  -1.6754m    at=   1.0106n
              from=   1.0000n    to=   3.8000n
- maxnod= 651.8702m    at=   3.0114n
+ maxnod= 944.5967u    at=   2.0217n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =            8 ***
 
- minout= 697.1533m    at=   2.0225n
+ minout=  -2.2831m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 703.3621m    at=   1.0114n
+ maxout=   1.7378m    at=   2.0195n
              from=   1.0000n    to=   3.8000n
- minnod= 671.4031m    at=   2.0216n
+ minnod=  -1.1416m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 672.0745m    at=   3.0107n
+ maxnod= 853.6232u    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =            9 ***
 
- minout= 697.6375m    at=   2.0232n
+ minout=  -2.3875m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 703.2163m    at=   1.0115n
+ maxout=   1.8541m    at=   2.0180n
              from=   1.0000n    to=   3.8000n
- minnod= 661.8101m    at=   2.0221n
+ minnod=  -1.1322m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 662.3665m    at=   3.0114n
+ maxnod= 917.0937u    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           10 ***
 
- minout= 697.0227m    at=   2.0239n
+ minout=  -2.3617m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 703.0363m    at=   1.0116n
+ maxout=   1.6787m    at=   2.0200n
              from=   1.0000n    to=   3.8000n
- minnod= 671.4523m    at=   2.0228n
+ minnod=  -1.1944m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 672.1655m    at=   1.0107n
+ maxnod= 784.6166u    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           11 ***
 
- minout= 697.2668m    at=   2.0227n
+ minout=  -2.7834m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 702.7810m    at=   1.0121n
+ maxout=   1.9911m    at=   2.0200n
              from=   1.0000n    to=   3.8000n
- minnod= 654.9200m    at=   2.0217n
+ minnod=  -1.3112m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 655.6166m    at=   3.0114n
+ maxnod= 961.4212u    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           12 ***
 
- minout= 696.8646m    at=   2.0240n
+ minout=  -2.9371m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 702.7926m    at=   1.0132n
+ maxout=   1.9422m    at=   2.0204n
              from=   1.0000n    to=   3.8000n
- minnod= 662.4233m    at=   2.0225n
+ minnod=  -1.4047m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 663.0579m    at=   3.0115n
+ maxnod= 961.1790u    at=   2.0207n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           13 ***
 
- minout= 696.8986m    at=   2.0254n
+ minout=  -3.2184m    at=   1.0103n
              from=   1.0000n    to=   3.8000n
- maxout= 702.9456m    at=   1.0132n
+ maxout=   1.9860m    at=   2.0214n
              from=   1.0000n    to=   3.8000n
- minnod= 642.8367m    at=   2.0228n
+ minnod=  -1.5937m    at=   1.0106n
              from=   1.0000n    to=   3.8000n
- maxnod= 643.6081m    at=   3.0114n
+ maxnod= 975.5711u    at=   2.0217n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           14 ***
 
- minout= 697.1486m    at=   2.0227n
+ minout=  -2.1495m    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxout= 703.3500m    at=   1.0111n
+ maxout=   1.6044m    at=   2.0192n
              from=   1.0000n    to=   3.8000n
- minnod= 673.0980m    at=   2.0210n
+ minnod=  -1.0049m    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxnod= 673.6950m    at=   1.0105n
+ maxnod= 769.8267u    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           15 ***
 
- minout= 696.6025m    at=   2.0259n
+ minout=  -3.3151m    at=   1.0103n
              from=   1.0000n    to=   3.8000n
- maxout= 702.9724m    at=   1.0134n
+ maxout=   1.8993m    at=   2.0217n
              from=   1.0000n    to=   3.8000n
- minnod= 652.7389m    at=   2.0238n
+ minnod=  -1.6331m    at=   1.0106n
              from=   1.0000n    to=   3.8000n
- maxnod= 653.4706m    at=   3.0114n
+ maxnod= 945.9111u    at=   2.0217n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           16 ***
 
- minout= 697.3969m    at=   2.0231n
+ minout=  -2.5770m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 703.0043m    at=   1.0115n
+ maxout=   1.9301m    at=   2.0188n
              from=   1.0000n    to=   3.8000n
- minnod= 660.1468m    at=   2.0211n
+ minnod=  -1.2245m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 660.7903m    at=   3.0114n
+ maxnod= 945.9588u    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           17 ***
 
- minout= 697.0795m    at=   2.0225n
+ minout=  -2.2419m    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxout= 703.1737m    at=   1.0111n
+ maxout=   1.4950m    at=   2.0194n
              from=   1.0000n    to=   3.8000n
- minnod= 673.6724m    at=   2.0215n
+ minnod=  -1.0582m    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxnod= 674.2451m    at=   1.0100n
+ maxnod= 730.6122u    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           18 ***
 
- minout= 697.2537m    at=   2.0240n
+ minout=  -2.7710m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxout= 703.0015m    at=   1.0132n
+ maxout=   2.0704m    at=   2.0200n
              from=   1.0000n    to=   3.8000n
- minnod= 645.0333m    at=   2.0217n
+ minnod=  -1.2933m    at=   3.0100n
              from=   1.0000n    to=   3.8000n
- maxnod= 645.7276m    at=   3.0114n
+ maxnod=   1.0170m    at=   2.0204n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           19 ***
 
- minout= 697.2121m    at=   2.0218n
+ minout=  -2.1282m    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxout= 703.3062m    at=   1.0111n
+ maxout=   1.6041m    at=   2.0190n
              from=   1.0000n    to=   3.8000n
- minnod= 673.1788m    at=   2.0211n
+ minnod=-995.9771u    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxnod= 673.7704m    at=   1.0105n
+ maxnod= 760.9751u    at=   2.0200n
              from=   1.0000n    to=   3.8000n
 
           ***** job concluded
 
    *** monte carlo  index =           20 ***
 
- minout= 696.5670m    at=   2.0238n
+ minout=  -2.5610m    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxout= 702.8699m    at=   1.0114n
+ maxout=   2.0618m    at=   2.0263n
              from=   1.0000n    to=   3.8000n
- minnod= 673.8097m    at=   2.0228n
+ minnod=  -1.2229m    at=   1.0083n
              from=   1.0000n    to=   3.8000n
- maxnod= 674.4063m    at=   1.0100n
+ maxnod=   1.0798m    at=   2.0277n
              from=   1.0000n    to=   3.8000n
  
 
@@ -2160,31 +2156,31 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
     meas_variable = minout
-   mean  =  697.0835m  varian =  110.6114n
-   sigma =  332.5830u  avgdev =  264.8117u
-   max   =  697.7113m  min    =  696.5670m
-   1-sigma =  332.5830u  median =  697.0795m
+   mean  =   -2.4626m  varian =  571.9827n
+   sigma =  756.2954u  avgdev =  434.4668u
+   max   =  240.6044u  min    =   -3.3928m
+   1-sigma =  756.2954u  median =   -2.5383m
 
 
     meas_variable = maxout
-   mean  =  703.0059m  varian =   59.6250n
-   sigma =  244.1823u  avgdev =  188.7607u
-   max   =  703.3621m  min    =  702.4883m
-   1-sigma =  244.1823u  median =  703.0015m
+   mean  =    1.9456m  varian =  216.1314n
+   sigma =  464.8993u  avgdev =  258.7035u
+   max   =    3.6457m  min    =    1.4950m
+   1-sigma =  464.8993u  median =    1.8993m
 
 
     meas_variable = minnod
-   mean  =  660.2192m  varian =  342.5392u
-   sigma =   18.5078m  avgdev =   12.4596m
-   max   =  673.8097m  min    =  596.3932m
-   1-sigma =   18.5078m  median =  664.3752m
+   mean  =   -1.1875m  varian =  145.8314n
+   sigma =  381.8788u  avgdev =  214.0530u
+   max   =  167.9626u  min    =   -1.6754m
+   1-sigma =  381.8788u  median =   -1.2229m
 
 
     meas_variable = maxnod
-   mean  =  660.8677m  varian =  342.2067u
-   sigma =   18.4988m  avgdev =   12.4238m
-   max   =  674.4063m  min    =  596.9646m
-   1-sigma =   18.4988m  median =  664.9511m
+   mean  =  953.2876u  varian =   54.3419n
+   sigma =  233.1135u  avgdev =  134.9220u
+   max   =    1.7827m  min    =  730.6122u
+   1-sigma =  233.1135u  median =  944.5967u
 
 
 
@@ -2203,7 +2199,7 @@ Random number generator is MCG            , and seed =      1, stream =   1
  OS:
  Linux version 5.15.0-91-generic (buildd@lcy02-amd64-061) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #101~20.04.1-Ubuntu SMP Thu Nov 16 14:22:28 UTC 2023
 
- System loadavg : 2.10 1.58 2.04 2/692 1675430
+ System loadavg : 2.27 2.37 2.03 2/696 849840
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -2214,12 +2210,12 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
   ******  Circuit Statistics  ******
-  # nodes       =      30 # elements   =      49
+  # nodes       =      26 # elements   =      41
   # resistors   =       0 # capacitors =       0 # inductors   =       0
   # mutual_inds =       0 # vccs       =       0 # vcvs        =       0
   # cccs        =       0 # ccvs       =       0 # volt_srcs   =       6
   # curr_srcs   =       1 # diodes     =       0 # bjts        =       0
-  # jfets       =       0 # mosfets    =      42 # U elements  =       0
+  # jfets       =       0 # mosfets    =      34 # U elements  =       0
   # T elements  =       0 # W elements =       0 # B elements  =       0
   # S elements  =       0 # P elements =       0 # va device   =       0
   # vector_srcs =       0 # N elements =       0
@@ -2228,22 +2224,22 @@ Random number generator is MCG            , and seed =      1, stream =   1
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           0.03           1         151
-  transient          0.49        8020        5999        2233 rev=        72
+  op point           0.02           1         151
+  transient          0.39        8020        4812        1870 rev=        68
   readin             0.00
   errchk             0.01
   setup              0.00
   output             0.00
 
 
-           peak memory used        450.55 megabytes
-           total cpu time            4.44 seconds
-           total elapsed time        4.47 seconds
-           job started at     15:23:09 03/11/2024
-           job ended   at     15:23:13 03/11/2024
+           peak memory used        450.29 megabytes
+           total cpu time            4.34 seconds
+           total elapsed time        4.38 seconds
+           job started at     01:40:41 04/14/2024
+           job ended   at     01:40:46 04/14/2024
 
 >info:         ***** hspice job concluded
-           job total runtime         4.47 seconds
+           job total runtime         4.38 seconds
 
 
  lic: Release hspice token(s) 

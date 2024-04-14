@@ -1,0 +1,28 @@
+****** Advanced Variation Analysis ******
+Copyright (c) 2018 - 2024 by Synopsys, Inc. All Rights Reserved.
+
+This software and the associated documentation are proprietary
+to Synopsys, Inc. This software may only be used in accordance
+with the terms and conditions of a written license agreement with
+Synopsys, Inc. All other use, reproduction, or distribution of
+this software is strictly prohibited.
+
+AVA Version: T-2022.06-SP2, Build time: Wed Nov 23 00:57:55 2022, Application start time: Sun Apr 14 01:40:43 2024
+Hostname: aorus, Username: bborges, PID: 849826
+Working_Directory : /home/bborges/quasar/debug/test_circuits/nand
+Command_Line_Options : nand.hsp.json
+
+This file format and content are subject to change.
+================================================================
+
+
+*** This file format and content are subject to change ***
+
+#Annotation for local variation contributors
+#=============
+<<maxnod>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+<<maxout>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+<<minnod>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+<<minout>> # Global_Variation 100.0000% Local_Variation 0.0000% IRV_Variation 0% 
+#=============
+#Selective simulation for extreme corners: Monte= list(6, 7, 17)

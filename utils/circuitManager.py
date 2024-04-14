@@ -38,22 +38,29 @@ class CircuitManager:
             list: A list of all possible lets.
         """
         if self.circuit.graph is None:
-            lets = [[node, output, signals]\
+            lets = [[node, output, signals, None, None]\
                     for node in nodes\
                     for output in outputs\
                     for signals in all_vector_n_bits(len(inputs))]
         else:
             lets = []
-            #Iterates over all input combinations 
+            # Iterates over all input combinations 
             for signals in all_vector_n_bits(len(inputs)):
                 # Sets the inputs
                 logic_signals = [(inp.name, sig==1) for inp, sig in zip(inputs, signals)] + [("vdd", True), ("vcc", True), ("gnd", False), ("vss", False)]
                 self.circuit.graph.set_logic(logic_signals)
                 for output in outputs:
                     # Gets the nodes that affect it
-                    effect_group = list(filter(lambda e: e in map(lambda e: e.name, nodes), self.circuit.graph.is_affected_by(output.name)))
-                    effect_group = list(filter(lambda e: e[0] not in {"f"}, effect_group))
-                    lets += [[self.circuit.get_node(node), output, signals] for node in effect_group]
+                    effect_group = list(filter(lambda e: e[0] in map(lambda e: e.name, nodes), self.circuit.graph.is_affected_by(output.name)))
+                    effect_group = list(filter(lambda e: e[0][0] not in {"f"}, effect_group))
+                    for nodo in effect_group:
+                        if nodo[0] == output.name:
+                            output_dir = "rise" if nodo[1] else "fall" if nodo[1] == 0 else None
+                            break
+                    lets += [[self.circuit.get_node(node[0]), output, signals, "rise" if node[1] else "fall" if node[1] == 0 else None, output_dir] for node in effect_group]
+                
+            # Filters orientations that cannot happen due to no nmos or pmos contact
+            lets = list(filter(lambda let: self.circuit.graph.valid_orientation(let[0].name, let[3]), lets))
 
                 # lets = [[node, output, signals]\
                 #         for node in nodes\
@@ -123,6 +130,10 @@ class CircuitManager:
                     upperth = None if not only_lowest or self.circuit.LETth is None else self.circuit.LETth.corrente * 1.3
 
                     sim, current = self.let_manager.minimal_LET(let, let.validacoes[0], safe=True, delay=delay, upperth=None)
+
+                    # with open("Teste.txt", "a") as teste:
+                    #     teste.write(f"{let.}")
+
                     let.corrente = current
                     sim_num += sim
                     if let.corrente is None: continue
@@ -132,7 +143,7 @@ class CircuitManager:
                     elif let < self.circuit.LETth: 
                         self.circuit.LETth = let
 
-    def run_let_job(self, _, node, output, input_signals: list, delay: bool) -> tuple:
+    def run_let_job(self, _, node, output, input_signals: list, in_dir: str = None, out_dir: str = None, delay: bool = False) -> tuple:
         """
         Runs a single let job a returns the same let with its minimal current. 
         Method meant to be run cuncurrently.
@@ -142,12 +153,15 @@ class CircuitManager:
             node (Node): Node object where fault originates.
             output (Node): Output where fault propagates to.
             input_signals (list): Signal values of inputs.
+            in_dir (str): direction of fault. Either 'rise' or 'fall'.
+            out_dir (str): direction of propagated fault at output. Either 'rise' or 'fall'.
             delay (bool): Whether or not delay will be taken into consideration.
 
         Returns:    
             tuple: A tuple with the minimal let and the input signals run.
         """
-        let_analisado = LET(None, self.circuit.vdd, node.name, output.name, [None, None])
+        # print(f"in_dir: {in_dir}\toutdir:{out_dir}\tdelay: {delay}")
+        let_analisado = LET(None, self.circuit.vdd, node.name, output.name, [in_dir, out_dir])
         self.let_manager.minimal_LET(let_analisado, input_signals, delay = delay)
         return (let_analisado, input_signals)
     
@@ -168,8 +182,9 @@ class CircuitManager:
             [print(j) for j in jobs]
             print()
         
+        # print(jobs)
         manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuit.path_to_my_dir, progress_report=progress_report)
-        manager.work((delay,),)
+        manager.work((delay,))
 
         lets = manager.return_done()
 
@@ -202,10 +217,10 @@ if __name__ == "__main__":
     from .circuito import Circuito
     ptf = "debug/test_circuits"
 
-    print("\tTesting update of minimal LETs...")
-    nand_test = Circuito("nand", ptf, 0.7).from_json()
-    manager = CircuitManager(nand_test, report=False)
-    manager.update_LETs()
+    # print("\tTesting update of minimal LETs...")
+    # nand_test = Circuito("nand", ptf, 0.7).from_json()
+    # manager = CircuitManager(nand_test, report=False)
+    # manager.update_LETs()
     
     print("\tTesting determining minimal LETs...")
     with InDir("debug"):

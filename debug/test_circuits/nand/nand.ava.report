@@ -1,0 +1,162 @@
+****** Advanced Variation Analysis ******
+Copyright (c) 2018 - 2024 by Synopsys, Inc. All Rights Reserved.
+
+This software and the associated documentation are proprietary
+to Synopsys, Inc. This software may only be used in accordance
+with the terms and conditions of a written license agreement with
+Synopsys, Inc. All other use, reproduction, or distribution of
+this software is strictly prohibited.
+
+AVA Version: T-2022.06-SP2, Build time: Wed Nov 23 00:57:55 2022, Application start time: Sun Apr 14 01:40:43 2024
+Hostname: aorus, Username: bborges, PID: 849826
+Working_Directory : /home/bborges/quasar/debug/test_circuits/nand
+Command_Line_Options : nand.hsp.json
+
+This file format and content are subject to change.
+================================================================
+
+Measure Files:  nand.mt0.csv(20,4)
+Sample Files:  nand.mc0.csv(20,2)
+
+##Variation_Options
+#------------------
+option ignore_aging_variation = yes
+option ignore_global_variation = no
+option ignore_interconnect_variation = no
+option ignore_local_variation = no
+option ignore_spatial_variation = no
+option ignore_variation = no
+option measform = 3
+option normal_limit = 20.0000
+option output_sigma_value = 1
+option random_generator = mcg
+option replicates = 1
+option sampling_method = srs
+option screening_method = pearson
+option seed = 1
+option stream = 1
+option use_agauss_format = yes
+
+
+##Summary_Statistics
+#-------------------
+##sampling_method = SRS|LHS|OFAT|Sobol, the index 1 MC sample is nominal value and is excluded in Monte Carlo data mining
+Total number of independent random variables = 2
+Number of independent global random variables = 2
+Number of independent local random variables = 0
+Number of independent aging random variables = 0
+Number of Samples = 20
+Number of Meas failure = 0
+Number of Device out of bound = 0
+
+
+##Sample_Moments
+#---------------
+#95% Bootstrap confidence intervals for moments are based on 500 re-samples
+                         maxnod       maxout       minnod       minout
+Nominal             0.000896434   0.00182964 -0.001342296 -0.002763321
+Mean_CI(2.5%)      0.0008965893   0.00182136  -0.00132573 -0.002664272
+Mean               0.0009532876  0.001945592 -0.001187505 -0.002462608
+Mean_CI(97.5%)      0.001085382  0.002243886 -0.001060519 -0.002089383
+Median_CI(2.5%)    0.0008587382  0.001781322 -0.001279932 -0.002621013
+Median             0.0009445967  0.001899261 -0.001222927 -0.002538296
+Median_CI(97.5%)   0.0009614212  0.001986007 -0.001132168 -0.002262103
+StdDev_CI(2.5%)    0.0001007306 0.0001578545 0.0001701054 0.0003203034
+StdDev             0.0002331136 0.0004648993 0.0003818788 0.0007562954
+StdDev_CI(97.5%)   0.0003821415 0.0007714649 0.0005721113  0.001173653
+MAD_CI(2.5%)       4.077595e-05 5.520758e-05 0.0001020222  0.000168109
+MAD                0.0001272938 0.0002393791 0.0001345593  0.000378364
+MAD_CI(97.5%)       0.000212857 0.0004632621 0.0002323635   0.00053212
+Skewness_CI(2.5%)    -0.4843528   -0.5136713    -1.344882    -1.320887
+Skewness               2.657576     2.911026     2.475471     2.557112
+Skewness_CI(97.5%)     3.024218     3.443937     2.987892     2.628978
+Kurtosis_CI(2.5%)      2.202185     2.160487      2.43729     1.718162
+Kurtosis               12.15582     13.54984     12.21604     12.49784
+Kurtosis_CI(97.5%)     14.04349     17.07989     14.76645     12.91687
+
+##Quantiles
+#----------
+# Percentile row header example : 'Q99.99683  (     4)' means the 99.99683% percentile which is equivalent to 4 sigma
+# Row with (2.5%) and (97.5%) are lower/upper Confidence Intervals
+# Prefix with < or > indicate the confidence interval value is less or more than this boundary
+                       maxnod        maxout         minnod         minout
+Q5    (  2.5%)  <0.0007306122  <0.001494962   <-0.00167541  <-0.003392773
+Q5    (-1.645)   0.0007315773   0.001504118   -0.001651815    -0.00334949
+Q5    ( 97.5%)   0.0007719079   0.001614898   -0.001391524   -0.002915512
+Q15.9 (  2.5%)  <0.0007306122  <0.001494962   <-0.00167541  <-0.003392773
+Q15.9 (    -1)   0.0007657717   0.001604292   -0.001491284   -0.003065986
+Q15.9 ( 97.5%)   0.0008806107   0.001810463   -0.001267133   -0.002603406
+Q25   (  2.5%)   0.0007313099   0.001501581   -0.001658353   -0.003361484
+Q25   (-0.674)   0.0008025576   0.001694101   -0.001306572   -0.002780194
+Q25   ( 97.5%)   0.0009344994   0.001892069   -0.001223517   -0.002546625
+Q75   (  2.5%)   0.0009450793    0.00190574   -0.001215358   -0.002524579
+Q75   ( 0.674)   0.0009718923   0.001989792   -0.001118871    -0.00226756
+Q75   ( 97.5%)    0.001538678   0.003134077   -0.000301087  -0.0007139893
+Q84.1 (  2.5%)   0.0009550884   0.001937334   -0.001162734   -0.002372062
+Q84.1 (     1)    0.001045734   0.002065779   -0.001033771   -0.002199548
+Q84.1 ( 97.5%)   >0.001782683  >0.003645677  >0.0001679626  >0.0002406044
+Q95   (  2.5%)    0.001011137   0.002051888   -0.001066075   -0.002244738
+Q95   ( 1.645)    0.001445148   0.002937975  -0.0004808799   -0.001079898
+Q95   ( 97.5%)   >0.001782683  >0.003645677  >0.0001679626  >0.0002406044
+
+##Response_Correlation_Matrix
+#----------------------------
+           maxnod    maxout    minnod    minout
+ maxnod  1.000000  0.995917  0.607783  0.605762
+ maxout  0.995917  1.000000  0.638852  0.638081
+ minnod  0.607783  0.638852  1.000000  0.997165
+ minout  0.605762  0.638081  0.997165  1.000000
+
+##Extremes_and_Corners
+#----------------------------
+                  min           max minIndex maxIndex
+ maxnod  0.0007306122   0.001782683       17        6
+ maxout   0.001494962   0.003645677       17        6
+ minnod   -0.00167541  0.0001679626        7        6
+ minout  -0.003392773  0.0002406044        7        6
+
+##Selective_Simulation
+#----------------------------
+#To simulate corners only:
+Use: ... Monte = list(6, 7, 17)
+
+
+
+##Variables_Screened_by_Importance
+#---------------------------------
+Method: Pearson Correlation
+#Print threshold: 95%
+#(elements with EquivVar smaller than 0.05% will not be printed.)
+#(parameters with ParVar smaller than 0.01% will not be printed.)
+
+Response: maxnod
+Global Variation =  2.331e-04,  Local Variation =  0.000e+00
+Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  pmos_rvt   99.56%  99.56%        .                                 
+      .         .        .       .        .  phig_var_p  IGNC   0.46  99.56%
+
+Response: maxout
+Global Variation =  4.649e-04,  Local Variation =  4.899e-12
+Element     Model EquivVar  CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  pmos_rvt   99.81%  99.81%        .                                 
+      .         .        .       .        .  phig_var_p  IGNC   0.50  99.81%
+
+Response: minnod
+Global Variation =  3.819e-04,  Local Variation =  0.000e+00
+Element     Model EquivVar   CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  pmos_rvt   63.10%   63.10%        .                                 
+      .         .        .        .        .  phig_var_p  IGNC   0.77  63.10%
+      .  nmos_rvt   36.90%  100.00%        .                                 
+      .         .        .        .        .  phig_var_n  IGNC  -0.59  36.90%
+
+Response: minout
+Global Variation =  7.563e-04,  Local Variation =  0.000e+00
+Element     Model EquivVar   CumVar MatchGrp         Par    ID   Corr  ParVar
+      .  pmos_rvt   62.01%   62.01%        .                                 
+      .         .        .        .        .  phig_var_p  IGNC   0.75  62.01%
+      .  nmos_rvt   37.99%  100.00%        .                                 
+      .         .        .        .        .  phig_var_n  IGNC  -0.58  37.99%
+
+##Important_Elements_or_Models
+#------------------------------
+pmos_rvt, nmos_rvt
