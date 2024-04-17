@@ -126,12 +126,10 @@ class ProcessMaster:
         self.lock_jobs = mp.Lock()
         self.lock_done = mp.Lock()
         self.lock_inpg = mp.Lock() #inpg = in progress
-        self.lock_rawd = mp.Lock() #rawd = raw data
 
         self.jobs = mp.Queue()
         self.done = mp.Queue()
         self.inpg = mp.Queue()
-        self.rawd = mp.Queue()
 
         # Queue for smart sleep
         self.sleep_time = 10
@@ -260,16 +258,6 @@ class ProcessMaster:
         with self.lock_time:
             self.job_time.put(total_time)
     
-    def post_raw_data(self, data):
-        """
-        Channel for posting raw data. Currently allows duplicates
-
-        Args:
-            data: Data posted.
-        """
-        with self.lock_rawd:
-            self.rawd.put(data)
-    
     def return_done(self):
         """
         Returns all completed jobs.
@@ -383,15 +371,6 @@ class PersistentProcessMaster(ProcessMaster):
         json.dump(list(self.inpg_copy+self.jobs_copy), open(f"{self.prefix}_jobs.json", "w"))
         json.dump(list(self.done_copy), open(f"{self.prefix}_done.json", "w"))
     
-    def dump_raw_data(self):
-        """
-        Dumps all raw data into a csv file.
-        """
-        with open(f"{self.prefix}_Raw_Data.csv", "w") as rawdata:
-            for line in self.__read_queue(self.rawd):
-                rawdata.write(f"{','.join(line)}\n")
-            self.empty_queue(self.rawd)
-    
     def load_backup(self):
         """
         Loads jobs from backup.
@@ -460,7 +439,6 @@ class PersistentProcessMaster(ProcessMaster):
                 self.done_copy = self.__read_queue(self.done)
                 # Realiza o backup
                 self.dump_backup()
-                self.dump_raw_data()
 
                 # Updates progress through a callback
                 if not self.progress_report is None:

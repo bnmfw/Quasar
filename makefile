@@ -9,7 +9,7 @@ requirements:
 	@pip install -r .piprequirements
 
 test:
-	@for module in matematica graph concorrencia dataAnalysis spiceInterface circuito letFinder circuitManager mcManager; do \
+	@for module in matematica graph concorrencia predictor dataAnalysis spiceInterface circuito letFinder circuitManager mcManager; do \
 		python3 -m utils.$$module; \
 	done
 
@@ -32,7 +32,7 @@ clean:
 
 veryclean: clean
 	@for dir in circuitos debug/test_circuits; do \
-		for ext in *.csv MC_Context.json *_done.json *_jobs.json *.png; do \
+		for ext in *.csv MC_Context.json *_done.json *_jobs.json *.png Raw_data.csv; do \
 			find $$dir -name "$$ext" -type f -delete; \
 		done; \
 	done

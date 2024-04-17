@@ -8,11 +8,11 @@ Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice n
   this software is strictly prohibited.
   Input File: nand.cir                                                          
   Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice nand.cir
-  Start time: Sun Apr 14 01:40:41 2024
+  Start time: Wed Apr 17 01:02:06 2024
  lic:  
  lic: FLEXlm: SDK_12.11.3 
  lic: USER:   bborges              HOSTNAME: aorus 
- lic: HOSTID: d76153d              PID:      849770 
+ lic: HOSTID: d76153d              PID:      3919437 
  lic: Using FLEXlm license file: 
  lic: 27020@localhost 
  lic: Checkout 1 hspice 
@@ -2197,9 +2197,9 @@ Random number generator is MCG            , and seed =      1, stream =   1
  CPU(s)		: 12
   
  OS:
- Linux version 5.15.0-91-generic (buildd@lcy02-amd64-061) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #101~20.04.1-Ubuntu SMP Thu Nov 16 14:22:28 UTC 2023
+ Linux version 5.15.0-102-generic (buildd@lcy02-amd64-097) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #112~20.04.1-Ubuntu SMP Thu Mar 14 14:28:24 UTC 2024
 
- System loadavg : 2.27 2.37 2.03 2/696 849840
+ System loadavg : 1.61 0.84 0.91 2/690 3919504
 
 
   ******  PrimeSim HSPICE Threads Information  ******
@@ -2233,14 +2233,14 @@ Random number generator is MCG            , and seed =      1, stream =   1
 
 
            peak memory used        450.29 megabytes
-           total cpu time            4.34 seconds
-           total elapsed time        4.38 seconds
-           job started at     01:40:41 04/14/2024
-           job ended   at     01:40:46 04/14/2024
+           total cpu time            4.28 seconds
+           total elapsed time        4.32 seconds
+           job started at     01:02:06 04/17/2024
+           job ended   at     01:02:10 04/17/2024
 
 >info:         ***** hspice job concluded
-           job total runtime         4.38 seconds
+           job total runtime         4.32 seconds
 
 
  lic: Release hspice token(s) 
- lic: total license checkout elapse time:        0.02(s)
+ lic: total license checkout elapse time:        0.01(s)

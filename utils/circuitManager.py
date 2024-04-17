@@ -7,6 +7,8 @@ from .spiceInterface import HSRunner
 from .components import *
 from .letFinder import LetFinder
 from .concorrencia import ProcessMaster
+from .predictor import Predictor
+from os import getpid
 relatorio = False
 
 class CircuitManager:
@@ -24,6 +26,7 @@ class CircuitManager:
         self.circuit = circuit
         self.let_manager = LetFinder(circuit, circuit.path_to_circuits, report=report)
         self.report = report
+        self.min_let_predictor = Predictor(circuit.path_to_my_dir)
     
     def __possible_LETs(self, nodes: list, outputs: list, inputs: list) -> list:
         """
@@ -160,9 +163,15 @@ class CircuitManager:
         Returns:    
             tuple: A tuple with the minimal let and the input signals run.
         """
-        # print(f"in_dir: {in_dir}\toutdir:{out_dir}\tdelay: {delay}")
         let_analisado = LET(None, self.circuit.vdd, node.name, output.name, [in_dir, out_dir])
         self.let_manager.minimal_LET(let_analisado, input_signals, delay = delay)
+        if let_analisado.corrente is not None:
+            self.min_let_predictor.submit_data({"node": node.name, 
+                                                "output": output.name, 
+                                                "in_dir": in_dir, 
+                                                "out_dir": out_dir, 
+                                                "let": let_analisado.corrente, 
+                                                "input": "".join(map(lambda e: str(e), input_signals))})
         return (let_analisado, input_signals)
     
     def determine_LETs(self, delay: bool = False, progress_report = None):
@@ -182,9 +191,9 @@ class CircuitManager:
             [print(j) for j in jobs]
             print()
         
-        # print(jobs)
-        manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuit.path_to_my_dir, progress_report=progress_report)
-        manager.work((delay,))
+        with self.min_let_predictor:
+            manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuit.path_to_my_dir, progress_report=progress_report)
+            manager.work((delay,))
 
         lets = manager.return_done()
 

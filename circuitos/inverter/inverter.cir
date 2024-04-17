@@ -7,7 +7,7 @@ Nand 3
 ****** HGSPICE ******
 
 .option measform = 3
-.option post = 2
+.option post = 0
 
 ****** Circuito ******
 
