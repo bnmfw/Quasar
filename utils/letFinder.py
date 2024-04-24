@@ -71,9 +71,9 @@ class LetFinder:
             if self.__report: print("Invalid Let - Masked Fault\n")
             return (False, 1)
         
-        # Greater then 2* vdd, weird stuff
+        # Greater then 10*vdd, weird stuff
         if abs(node_peak/vdd) > 10:
-            print("Weird Masking, DIE!\n")
+            print(f"Let too great {node_peak/vdd} times! {let} {self.debug_signals}\n")
             return (False, 1)
 
         return (True, 1)
@@ -177,6 +177,7 @@ class LetFinder:
         inputs: list = self.circuito.inputs
 
         # Sets the input signals
+        self.debug_signals = input_signals
         for i in range(len(inputs)):
             inputs[i].signal = input_signals[i]
         

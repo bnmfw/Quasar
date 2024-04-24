@@ -58,10 +58,10 @@ class Circuito():
             inputs (list[str]): List of node names to be interpreted as inputs.
             outputs (list[str]): List of node names to be interpreted as outputs.
         """
-        self.saidas = [Node(output) for output in outputs]
         self.inputs = [Signal_Input(input) for input in inputs]
         nodes_set, self.graph = SpiceRunner(path_to_folder=self.path_to_circuits).get_nodes(self.name)
         self.nodes = [Node(nodo) for nodo in nodes_set]
+        self.saidas = [self.get_node(output) for output in outputs]
         return self
 
     def set_signals(self, sig_values: list):

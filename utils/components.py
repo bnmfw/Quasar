@@ -27,7 +27,7 @@ class Node:
         self.delay = {}
 
     def __repr__(self):
-        return f"{self.name}"
+        return f"<Node>{self.name}"
         return f"\nnome: {self.name}\tLETth: {self.LETth.corrente}\tQuantidade de LETs:{len(self.LETs)}"
 
     def codec(self):
@@ -78,8 +78,7 @@ class LET:
         return (self.node_nome == other.node_nome and self.saida_nome == other.saida_nome and self.orientacao == other.orientacao)
 
     def __repr__(self):
-        return ""
-        return f"\ncorrente: {self.corrente}, orientacao: {self.orientacao}, vdd: {self.vdd}, nodo: {self.node_nome}, saida: {self.saida_nome}"
+        return f"{self.node_nome} {self.saida_nome} {self.orientacao} {self.corrente}"
 
     def __len__(self):
         return len(self.validacoes)

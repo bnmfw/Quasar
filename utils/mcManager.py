@@ -8,6 +8,7 @@ from .components import *
 from .concorrencia import PersistentProcessMaster
 from .arquivos import CManager
 from .circuitManager import CircuitManager
+from .predictor import Predictor
 
 class MCManager:
     """
@@ -22,7 +23,9 @@ class MCManager:
             delay (bool): Whether or not delay will be taken into consideration.
         """
         self.circuito = circuit
-        self.circ_man = CircuitManager(circuit)
+        # TODO o processo do preditor é inicializado na instanciação, ent o componente circ_man n eh reutilizavel pra multiplas chamadas de analise MC
+        self.predictor = Predictor(circuit.path_to_my_dir)
+        self.circ_man = CircuitManager(circuit, self.predictor)
         self.delay = delay
 
         # Estado de simulacoes MC
@@ -63,7 +66,7 @@ class MCManager:
         pmos, nmos = point
         with SpiceRunner(self.circuito.path_to_circuits).MC_Instance(pmos, nmos):
             if delay: self.circ_man.get_atrasoCC()
-            self.circ_man.update_LETs(delay=delay, only_lowest=True)
+            self.circ_man.update_LETs(delay=delay, only_lowest=True, var={"pmos": pmos, "nmos": nmos})
             result = (round(pmos,4), round(nmos,4), self.circuito.LETth.node_nome, self.circuito.LETth.saida_nome, self.circuito.LETth.orientacao, self.circuito.LETth.corrente, self.circuito.LETth.valor, self.circuito.LETth.validacoes)
         return result
     
@@ -91,10 +94,11 @@ class MCManager:
             manager.load_jobs(jobs)
 
         # Concurrent execution, where the magic happens.
-        manager.work((delay,))
-
-        # Dumps data into a csv.
-        saida = manager.return_done()
+        
+        with self.predictor:
+            manager.work((delay,))
+            # Dumps data into a csv.
+            saida = manager.return_done()
         CManager.tup_to_csv(f"{self.circuito.path_to_my_dir}",f"{self.circuito.name}_mc_LET.csv", saida)
 
         # Deletes the backup files.

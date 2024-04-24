@@ -8,6 +8,8 @@ from .components import *
 from .letFinder import LetFinder
 from .concorrencia import ProcessMaster
 from .predictor import Predictor
+from .components import LET, Node
+from .circuito import Circuito
 from os import getpid
 relatorio = False
 
@@ -15,7 +17,7 @@ class CircuitManager:
     """
     Circuit level simulations manager.
     """
-    def __init__(self, circuit, report: bool = False):
+    def __init__(self, circuit: Circuito, predictor: Predictor = None, report: bool = False):
         """
         Constructor.
 
@@ -23,19 +25,19 @@ class CircuitManager:
             circuit (Circuit): Circuit subject to the simulations.
             report (bool, optional): Whether or not print reports will be done.
         """
-        self.circuit = circuit
+        self.circuit: Circuito = circuit
         self.let_manager = LetFinder(circuit, circuit.path_to_circuits, report=report)
-        self.report = report
-        self.min_let_predictor = Predictor(circuit.path_to_my_dir)
+        self.report: bool = report
+        self.min_let_predictor = Predictor(circuit.path_to_my_dir) if predictor is None else predictor
     
     def __possible_LETs(self, nodes: list, outputs: list, inputs: list) -> list:
         """
         Recieves a list of nodes, outputs and the number of inputs and returns all possible lets.
 
         Args:    
-            nodes (list): List of Node objects (Includes output nodes).
-            outputs (list): List of Node objects interpreted as outputs.
-            input_num (list): List of circuit inputs.
+            nodes (list[Node]): List of Node objects (Includes output nodes).
+            outputs (list[Node]): List of Node objects interpreted as outputs.
+            inputs (list): List of circuit inputs.
         
         Returns:
             list: A list of all possible lets.
@@ -46,32 +48,10 @@ class CircuitManager:
                     for output in outputs\
                     for signals in all_vector_n_bits(len(inputs))]
         else:
-            lets = []
-            # Iterates over all input combinations 
-            for signals in all_vector_n_bits(len(inputs)):
-                # Sets the inputs
-                logic_signals = [(inp.name, sig==1) for inp, sig in zip(inputs, signals)] + [("vdd", True), ("vcc", True), ("gnd", False), ("vss", False)]
-                self.circuit.graph.set_logic(logic_signals)
-                for output in outputs:
-                    # Gets the nodes that affect it
-                    effect_group = list(filter(lambda e: e[0] in map(lambda e: e.name, nodes), self.circuit.graph.is_affected_by(output.name)))
-                    effect_group = list(filter(lambda e: e[0][0] not in {"f"}, effect_group))
-                    for nodo in effect_group:
-                        if nodo[0] == output.name:
-                            output_dir = "rise" if nodo[1] else "fall" if nodo[1] == 0 else None
-                            break
-                    lets += [[self.circuit.get_node(node[0]), output, signals, "rise" if node[1] else "fall" if node[1] == 0 else None, output_dir] for node in effect_group]
-                
-            # Filters orientations that cannot happen due to no nmos or pmos contact
-            lets = list(filter(lambda let: self.circuit.graph.valid_orientation(let[0].name, let[3]), lets))
+            # Generates all valid lets from the circuit graph model
+            f = lambda l: list(map(lambda n: n.name, l))
+            lets = self.circuit.graph.generate_valid_let_configs(f(nodes), f(outputs), f(inputs), self.circuit.get_node)
 
-                # lets = [[node, output, signals]\
-                #         for node in nodes\
-                #         for output in outputs\
-                #         for signals in combinacoes_possiveis(input_num) if self.circuit.graph.sees(node.name, output.name)]
-        
-        # lets = list(filter(lambda e: e[0].name not in {"a", "b", "cin"}, lets))
-        
         # Enumerates lets
         for i, let in enumerate(lets):
             let.insert(0, i)
@@ -112,19 +92,22 @@ class CircuitManager:
         #     arq.write(f"entrada: {critical_input}\t saida: {critical_output}\n")
         print(f"Atraso CC do file: {self.circuit.SPdelay} simulacoes: {sim_num}")
 
-    def update_LETs(self, delay: bool = False, only_lowest: bool = False):
+    def update_LETs(self, delay: bool = False, only_lowest: bool = False, var: dict = None):
         """
         Updates the minimal LETs of the circuit.
 
         Args:    
             delay (bool, optional): Whether the delay will be considered in the simulations. Defaults to False.
             only_lowest (bool, optional): Whether LETs higher than the lowest should be ignored. Deafults to False
+            var (dict, optional): Dict containing variability
         """
         with HSRunner.Vdd(self.circuit.vdd):
             sim_num: int = 0
             self.circuit.LETth = None
             ##### BUSCA DO LETs DO CIRCUITO #####
+            nodo: Node
             for nodo in self.circuit.nodes:
+                let: LET
                 for let in nodo.LETs:
                     ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
                     if relatorio: print(let.node_nome, let.saida_nome, let.orientacao, let.validacoes[0])
@@ -134,19 +117,28 @@ class CircuitManager:
 
                     sim, current = self.let_manager.minimal_LET(let, let.validacoes[0], safe=True, delay=delay, upperth=None)
 
-                    # with open("Teste.txt", "a") as teste:
-                    #     teste.write(f"{let.}")
-
                     let.corrente = current
                     sim_num += sim
+
                     if let.corrente is None: continue
                     if relatorio: print(f"corrente: {let.corrente}\n")
+
+                    # submits raw data
+                    for input_sig in let.validacoes:
+                        data = {"node": let.node_nome, "output": let.saida_nome,
+                               "in_dir": let.orientacao[0], "out_dir": let.orientacao[1], 
+                               "let": let.corrente,
+                               "input": "".join(map(lambda e: str(e), input_sig))}
+                        if var is not None: data.update(var)
+
+                        self.min_let_predictor.submit_data(data)
+
                     if self.circuit.LETth is None and current is not None:
                         self.circuit.LETth = let
                     elif let < self.circuit.LETth: 
                         self.circuit.LETth = let
 
-    def run_let_job(self, _, node, output, input_signals: list, in_dir: str = None, out_dir: str = None, delay: bool = False) -> tuple:
+    def run_let_job(self, _, node: Node, output: Node, input_signals: list, in_dir: str = None, out_dir: str = None, delay: bool = False) -> tuple:
         """
         Runs a single let job a returns the same let with its minimal current. 
         Method meant to be run cuncurrently.
@@ -221,6 +213,10 @@ class CircuitManager:
                 node.LETs.append(let)
 
 if __name__ == "__main__":
+
+
+    import sys
+    sys.setrecursionlimit(50)
     print("Testing Circuit Manager...")
 
     from .circuito import Circuito
