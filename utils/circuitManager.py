@@ -156,7 +156,7 @@ class CircuitManager:
             tuple: A tuple with the minimal let and the input signals run.
         """
         let_analisado = LET(None, self.circuit.vdd, node.name, output.name, [in_dir, out_dir])
-        self.let_manager.minimal_LET(let_analisado, input_signals, delay = delay)
+        sim_num = self.let_manager.minimal_LET(let_analisado, input_signals, delay = delay, safe=True)[0]
         if let_analisado.corrente is not None:
             self.min_let_predictor.submit_data({"node": node.name, 
                                                 "output": output.name, 
@@ -164,7 +164,7 @@ class CircuitManager:
                                                 "out_dir": out_dir, 
                                                 "let": let_analisado.corrente, 
                                                 "input": "".join(map(lambda e: str(e), input_signals))})
-        return (let_analisado, input_signals)
+        return (let_analisado, input_signals, sim_num)
     
     def determine_LETs(self, delay: bool = False, progress_report = None):
         """
@@ -189,7 +189,10 @@ class CircuitManager:
 
         lets = manager.return_done()
 
-        for (let, validacao) in lets:
+        sim_num_acc = 0
+        for (let, validacao, sim_num) in lets:
+            sim_num_acc += sim_num
+
             # Ignora correntes invalidas
             if let.corrente is None or let.corrente > 10000: continue
 
@@ -211,6 +214,8 @@ class CircuitManager:
                     break
             else:
                 node.LETs.append(let)
+        
+        print(f"total simulations: {sim_num_acc}")
 
 if __name__ == "__main__":
 

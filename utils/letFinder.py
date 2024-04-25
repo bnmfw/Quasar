@@ -73,7 +73,7 @@ class LetFinder:
         
         # Greater then 10*vdd, weird stuff
         if abs(node_peak/vdd) > 10:
-            print(f"Let too great {node_peak/vdd} times! {let} {self.debug_signals}\n")
+            # print(f"Let too great {node_peak/vdd} times! {let} {self.debug_signals}\n")
             return (False, 1)
 
         return (True, 1)
@@ -317,17 +317,6 @@ class LetFinder:
             return sim_num, None
 
 if __name__ == "__main__":
-
-    # from .circuito import Circuito
-    # fadder = Circuito("fadder", "debug/test_circuits", 0.7).from_nodes(["a","b","cin"],["cout","sum"])
-    # let = LET(0, 0.7, "i10", "cout", ["fall", "fall"], [0,0,0])
-    # LetFinder(fadder, fadder.path_to_circuits, True).minimal_LET(let, [0,0,0])
-    # exit()
-   
-    # from .circuito import Circuito
-    # nand_test = Circuito("nand", "debug/test_circuits", 0.7).from_json()
-    # SpiceRunner(nand_test.path_to_circuits).default(0.7)
-    # exit()
 
     print("Testing LET finder...")
     from .circuito import Circuito
