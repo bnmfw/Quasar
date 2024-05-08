@@ -1,3 +1,5 @@
+.include dis/bulk.pm
+.include dis/7nm_FF.pm
 .include dis/logica.cir
 .include dis/DFF.cir
 .include include/all.cir

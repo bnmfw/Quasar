@@ -31,10 +31,11 @@ class CSVManager():
         with open(f"{path_to_folder}/{circuito.name}/{circuito.name}.csv", "w") as sets:
             sets.write("Node,Output,Pulse,Pulse,Current,LET,#Vector,Vectors->\n")
             for nodo in circuito.nodes:
+                nodo.LETs.sort()
                 for let in nodo.LETs:
                     c0, c1 = let.orientacao
-                    sets.write(f"{nodo.name},{let.saida_nome},{c0},{c1},{let.corrente:.2f},{let.valor:.2e},{len(let)}")
-                    for validacao in let.validacoes:
+                    sets.write(f"{nodo.name},{let.output_name},{c0},{c1},{let.current:.2f},{let.value:.2e},{len(let)}")
+                    for validacao in let.input_states:
                         sets.write(",'")
                         for num in validacao: sets.write(f"{num}")
                     sets.write("\n")
@@ -71,7 +72,7 @@ class JsonManager():
 
         circuito_codificado = {}
         circuito_codificado["name"] = circuito.name
-        circuito_codificado["vdd"] = circuito.vdd
+        # circuito_codificado["vdd"] = circuito.vdd
         circuito_codificado["SPdelay"] = circuito.SPdelay
         circuito_codificado["inputs"] = lista_de_entradas
         circuito_codificado["saidas"] = lista_de_saidas
@@ -100,7 +101,7 @@ class JsonManager():
         # Carregamento dos nodos
         for nodo_dict in lista_de_nodos:
             nodo = Node("name")
-            nodo.decodec(nodo_dict, circuito.vdd)
+            nodo.decodec(nodo_dict)
             circuito.nodes.append(nodo)
 
         # print("Leitura do Json realizada com sucesso")

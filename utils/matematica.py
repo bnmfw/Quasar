@@ -114,7 +114,7 @@ def current_to_let(current: float) -> float:
         float: The Let value.
     """
     if current is None: return None
-    return (current * 10 ** -6) * (0.000000000164 - (5 * 10 ** -11)) / ((1.08 * 10 ** -14) * 0.000000021)
+    return (current * 1e-6) * (164 * 1e-12 - (50 * 1e-12)) / ((1.08 * 1e-14) * 21* 1e-9)
 
 if __name__ == "__main__":
     print("Testing Math Module...")

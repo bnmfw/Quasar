@@ -1,4 +1,4 @@
 *Input signals to be altered by Quasar
-Va a gnd 0.7
-Vb b gnd 0.7
-Vcin cin gnd 0.7
+Va a gnd 0.0
+Vb b gnd 0.0
+Vcin cin gnd 0.0

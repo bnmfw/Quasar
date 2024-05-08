@@ -1,7 +1,3 @@
-**** Portas logicas usando finfet ****
-
-.include 7nm_FF.pm
-
 **** Subcircuito TRANSMISSION ****
 
 * 1 par finfet *

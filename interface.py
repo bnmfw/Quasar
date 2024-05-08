@@ -3,6 +3,7 @@ from utils.backend import Backend
 from utils.spiceInterface import HSRunner
 from utils.circuito import Circuito
 from utils.arquivos import CManager
+from utils.simulationConfig import sim_config
 # module_error = False
 try:
     from psgui import PSGUI, psgui_is_working, gui_error
@@ -41,36 +42,36 @@ class GUI:
 
                 # Inputs: vdd, circ, cadastro
                 current_screen, inputs = self.ui.tela_inicial()
-                vdd = inputs["vdd"]
+                vdd = sim_config.vdd
                 circ_nome = inputs["circ"]
                 cadastro = inputs["cadastro"]
                 if cadastro:
-                    self.circuito = Circuito(circ_nome, vdd=vdd).from_json()
-                    self.backend.set_circuit(self.circuito,vdd)
+                    self.circuito = Circuito(circ_nome).from_json()
+                    self.backend.set_circuit(self.circuito)
 
             # TELA DE CADASTRO
             elif current_screen == "cadastro":
                 
                 current_screen, inputs = self.ui.tela_cadastro(circ_nome)
-                self.circuito = Circuito(circ_nome, vdd=vdd).from_nodes(inputs["entradas"], inputs["saidas"])    
+                self.circuito = Circuito(circ_nome).from_nodes(inputs["entradas"], inputs["saidas"])    
                 print(self.circuito.nodes)
-                self.backend.set_circuit(self.circuito,vdd)
-                with HSRunner.Vdd(vdd):
+                self.backend.set_circuit(self.circuito)
+                with HSRunner.Vdd(sim_config.vdd):
                     self.backend.determine_LETs(progress_report=self.ui.progress)
 
             # TELA PRINCIPAL
             elif current_screen == "main":
                 current_screen, inputs = self.ui.tela_principal(self.circuito)
                 if inputs["acao"] == "atualizar":
-                    with HSRunner.Vdd(vdd):
-                        self.backend.update_lets()
+                    with HSRunner.Vdd(sim_config.vdd):
+                        self.backend.determine_LETs(progress_report=self.ui.progress)
                 elif inputs["acao"] == "csv":
                         CManager.write_full_csv(self.circuito, self.circuito.path_to_circuits)
 
             # TELA MONTE CARLO
             elif current_screen == "mc":
                 current_screen, inputs = self.ui.tela_mc(self.circuito)
-                with HSRunner.Vdd(vdd):
+                with HSRunner.Vdd(sim_config.vdd):
                     self.backend.mc_analysis(inputs["n_sim"], inputs["continue"], inputs["progress"], self.ui.progress)
                 if not inputs["window"] is None:
                     inputs["window"].close()
@@ -78,8 +79,15 @@ class GUI:
             # SINGLE LET SCREEN
             elif current_screen == "single_let":
                 current_screen, inputs = self.ui.tela_single_let(self.circuito)
-                with HSRunner.Vdd(vdd):
+                with HSRunner.Vdd(sim_config.vdd):
                     self.backend.find_single_let(inputs["node"], inputs["output"], inputs["input"], *inputs["pulses"], inputs["pmos"], inputs["nmos"], inputs["report"])
+            
+            elif current_screen == "config_sim":
+                current_screen, inputs = self.ui.tela_config_sim(sim_config.vdd, 
+                                                                 sim_config.fault_model.colect_time, 
+                                                                 sim_config.fault_model.track_estab, 
+                                                                 sim_config.transistor_model.charge_collection_depth_nano)
+                self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"])
             
             # EXIT
             elif current_screen is None:

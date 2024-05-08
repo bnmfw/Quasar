@@ -1,6 +1,7 @@
 from os import path
 from typing import Any
 from utils.spiceInterface import HSRunner
+from utils.simulationConfig import sim_config
 from progress.bar import Bar
 
 barra_comprida = "---------------------------"
@@ -54,9 +55,9 @@ class TXTUI:
             print("\nCadastro do circuito nao encontrado, tera de ser feito")
         
         # Requisita o vdd
-        default_voltage = 0.7
-        voltage = input(f"Vdd [V] ({default_voltage}): ")
-        inputs["vdd"] = default_voltage if voltage == "" else float(voltage)
+        # default_voltage = 0.7
+        # voltage = input(f"Vdd [V] ({default_voltage}): ")
+        # inputs["vdd"] = default_voltage if voltage == "" else float(voltage)
 
         # Retorna as informacoes pertinentes
         next_screen = "main" if inputs["cadastro"] else "cadastro"
@@ -71,18 +72,21 @@ class TXTUI:
         return "main", inputs
     
     def tela_principal(self, circuito):
-        acao = {0: "atualizar", 1: "csv", 2: "mc", 3: "single_let", 4: None}
+        acao = {0: "atualizar", 1: "csv", 2: "mc", 3: "single_let", 4: "config_sim", 5: None}
         inputs = {"acao": None}
         print(barra_comprida)
         inputs["acao"] = acao[int(input(f"{barra_comprida}\n"
-                    f"Trabalhando com o {circuito.name} em {circuito.vdd} volts\n"
-                     "O que deseja fazer?\n"
-                     "0. Atualizar LETs\n"
-                     "1. Gerar CSV de LETs\n"
-                     "2. Analise Monte Carlo\n"
-                     "3. Analisar LET unico\n"
-                     "4. Sair\n"
-                     "Resposta: "))]
+                    f"Trabalhando com o {circuito.name} em {sim_config.vdd} volts\n"
+                    f"Modelo de falhas: alpha={sim_config.fault_model.colect_time} beta={sim_config.fault_model.track_estab}\n"
+                    f"Transistor com profundidade em {sim_config.transistor_model.charge_collection_depth_nano}\n"
+                    "O que deseja fazer?\n"
+                    "0. Atualizar LETs\n"
+                    "1. Gerar CSV de LETs\n"
+                    "2. Analise Monte Carlo\n"
+                    "3. Analisar LET unico\n"
+                    "4. Configurar Simulacao\n"
+                    "5. Sair\n"
+                    "Resposta: "))]
 
         # Encerra o Quasar
         if inputs["acao"] is None:
@@ -102,6 +106,9 @@ class TXTUI:
         # Analise Monte Carlo
         if inputs["acao"] == "mc":
             return "mc", inputs
+        
+        if inputs["acao"] == "config_sim":
+            return "config_sim", inputs
     
     def tela_mc(self, circuito):
         inputs = {"progress": None, "n_sim": 2000, "continue": False, "window": None}
@@ -133,4 +140,16 @@ class TXTUI:
         var = input(f"Pmos e Nmos Var (4.8108, 4.372): ")
         if var != "": inputs["pmos"], inputs["nmos"] = [int(v) for v in var]
         print(barra_comprida + "\n")
+        return "main", inputs
+    
+    def tela_config_sim(self, vdd, colect_time, track_estab, depth):
+        inputs = {"vdd": vdd, "alpha": colect_time, "beta": track_estab, "depth": depth}
+        vdd = input(f"Vdd [V] ({vdd}): ")
+        if vdd != "": inputs["vdd"] = float(vdd)
+        colect_time = input(f"Charge Collect Time [ps] ({colect_time}): ")
+        if colect_time != "": inputs["alpha"] = float(colect_time)
+        track_estab = input(f"Track Establishment Time [ps] ({track_estab}): ")
+        if track_estab != "": inputs["beta"] = float(track_estab)
+        depth = input(f"Transistor Collection Depth [?] ({depth}): ")
+        if depth != "": inputs["depth"] = float(depth)
         return "main", inputs

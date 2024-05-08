@@ -3,7 +3,6 @@ Graph Module. Used to model wich nodes of a circuit can propagate a fault to and
 """
 
 from .matematica import all_vector_n_bits
-from .components import LET
 from typing import Callable
 
 class Graph:

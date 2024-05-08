@@ -2,6 +2,7 @@
 Module with LetFinder a Level 1 simulation responsible for calculating the minimal Let for a fault given some parameters.
 """
 from .spiceInterface import SpiceRunner
+from .simulationConfig import sim_config
 from .components import LET
 
 class LetFinder:
@@ -96,8 +97,8 @@ class LetFinder:
             _, output_peak = self.runner.run_SET(self.circuito.file, let, self.__upper_bound)
 
             # Fault effect on the output was found
-            if (output_inclination == "rise" and output_peak > self.circuito.vdd/2) or\
-                (output_inclination == "fall" and output_peak < self.circuito.vdd/2):
+            if (output_inclination == "rise" and output_peak > sim_config.vdd/2) or\
+                (output_inclination == "fall" and output_peak < sim_config.vdd/2):
                 if self.__report: print(f"Upper current bound: ({self.__upper_bound})")
                 return self.__upper_bound
 
@@ -169,8 +170,8 @@ class LetFinder:
             tuple: A tuple containing the simulation number and the current found, if any.
         """
         limite_sup = self.__upper_bound
-        precision: float = 0.001
-        vdd: float = self.circuito.vdd
+        precision: float = 0.1
+        vdd: float = sim_config.vdd
         lower_tolerance: float = (1 - precision) * vdd / 2
         upper_tolerance: float = (1 + precision) * vdd / 2
         sim_num: int = 0
@@ -185,16 +186,16 @@ class LetFinder:
             
             # Figures the inclination of the simulation
             if let.orientacao[0] is None or not safe:
-                let.orientacao[0] = self.__fault_inclination(let.node_nome, vdd, let)
+                let.orientacao[0] = self.__fault_inclination(let.node_name, vdd, let)
                 sim_num += 1
             if let.orientacao[1] is None or not safe:
-                let.orientacao[1] = self.__fault_inclination(let.saida_nome, vdd, let)
+                let.orientacao[1] = self.__fault_inclination(let.output_name, vdd, let)
                 sim_num += 1
               # debugging report
 
             if self.__report:
                 print("Starting a LET finding job\n"+
-                      f"node: {let.node_nome}\toutput: {let.saida_nome}\n"+
+                      f"node: {let.node_name}\toutput: {let.output_name}\n"+
                       f"vdd: {vdd}\tsafe: {safe}\n"+
                       f"inc1: {let.orientacao[0]}\tinc2: {let.orientacao[1]}\n"+
                       f"input vector: {' '.join([inp.name+':'+str(inp.signal) for inp in inputs])}")
@@ -203,7 +204,7 @@ class LetFinder:
             if not safe:
                 valid_let, sim_num = self.__verify_let_validity(vdd, let)
                 if not valid_let:
-                    let.corrente = None
+                    let.current = None
                     return sim_num, None
 
             # Binary search variables
@@ -257,25 +258,26 @@ class LetFinder:
                     print(f"{i}\tcurrent: {current:.1f}\tpeak_tension: {peak_tension:.3f}\tbottom: {cinf:.1f}\ttop: {csup:.1f}")
                 sim_num += 1
 
+                # print(f"csup: {csup} cinf: {cinf}")
                 ##### Precision Satisfied #####
-                if lower_tolerance < peak_tension < upper_tolerance:
-                    if self.__report: print("Minimal Let Found - Precision Satisfied\n")
-                    let.corrente = current
-                    let.append(input_signals)
-                    return sim_num, current
+                # if lower_tolerance < peak_tension < upper_tolerance:
+                #     if self.__report: print("Minimal Let Found - Precision Satisfied\n")
+                #     let.current = current
+                #     let.append(input_signals)
+                #     return sim_num, current
 
                 ##### Convergence #####
-                elif csup - cinf < 0.05:
+                if csup - cinf < precision:
                     # To an exact value #
                     if 1 < current < limite_sup-1 and peak_tension_upper - peak_tension_lower < 3 * (upper_tolerance - lower_tolerance):
                         if self.__report: print("Minimal Let Found - Convergence\n")
-                        let.corrente = current
+                        let.current = current
                         let.append(input_signals)
                         return sim_num, current
                     # To 0 #
                     elif current <= 1:
                         if self.__report: print("Minimal Let NOT Found - Lower Divergence\n")
-                        let.corrente = None
+                        let.current = None
                         return sim_num, current
                     # To the upper bound #
                     elif current >= limite_sup-1:
@@ -287,18 +289,18 @@ class LetFinder:
                 # Next current calculation #
                 if let.orientacao[1] == "fall":
                     # More intense current = lower peak tension
-                    if peak_tension <= lower_tolerance:
+                    if peak_tension < vdd/2:
                         csup = current
                         peak_tension_lower = peak_tension
-                    elif peak_tension >= upper_tolerance:
+                    else:
                         cinf = current
                         peak_tension_upper = peak_tension
                 else:
                     # More intense current = higher peak tension
-                    if peak_tension <= lower_tolerance:
+                    if peak_tension < vdd/2:
                         cinf = current
                         peak_tension_lower = peak_tension
-                    elif peak_tension >= upper_tolerance:
+                    else:
                         csup = current
                         peak_tension_upper = peak_tension
 
@@ -307,26 +309,26 @@ class LetFinder:
             # By chance converges to an exact value #
             if 1 < current < self.__upper_bound - 1:
                 if self.__report: print("Minimal Let Found - Maximum Simulation Number Reached\n")
-                let.corrente = current
+                let.current = current
                 let.append(input_signals)
             
             # Did not converge #
             else:
                 if self.__report: print("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
-                let.corrente = None
+                let.current = None
             return sim_num, None
 
 if __name__ == "__main__":
 
     print("Testing LET finder...")
     from .circuito import Circuito
-    nand = Circuito("nand", "debug/test_circuits", 0.7).from_json()
+    nand = Circuito("nand", "debug/test_circuits").from_json()
     
     print("\tTesting Finding Current of safe Let...")
     valid_input = [1,1]
-    let = LET(140.625, 0.7, "g1", "g1", [None, None], valid_input)
+    let = LET(111.2548828125, 0.7, "g1", "g1", [None, None], valid_input)
     measured = LetFinder(nand, "debug/test_circuits", False).minimal_LET(let, valid_input, safe=True)[1]
-    assert abs(measured-140.91796875) <= 10e-1, f"LET FINDING FAILED simulated:{measured} expected:{140.844726525}"
+    assert abs(measured-111.2548828125) <= 10e-1, f"LET FINDING FAILED simulated:{measured} expected:{111.2548828125}"
 
     # print("\tTesting Finding Current of invalid unsafe Let...")
     # invalid_let = LET(314.152, 0.7, "g1", "g1", [None, None], valid_input)
@@ -335,6 +337,6 @@ if __name__ == "__main__":
     print("\tTesting Finding Current of valid unsafe Let...")
     valid_input = [1,1]
     unsafe_valid_let = LET(140.625, 0.7, "i1", "g1", [None, None], valid_input)
-    assert abs(LetFinder(nand, "debug/test_circuits", False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] - 248) < 1
+    assert abs(LetFinder(nand, "debug/test_circuits", False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] - 195) < 1
     
     print("LET Finder OK")

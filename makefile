@@ -9,7 +9,7 @@ requirements:
 	@pip install -r .piprequirements
 
 test:
-	@for module in matematica graph concorrencia predictor dataAnalysis spiceInterface circuito letFinder circuitManager mcManager; do \
+	@for module in matematica graph faultModel concorrencia predictor dataAnalysis spiceInterface circuito letFinder circuitManager mcManager; do \
 		python3 -m utils.$$module; \
 	done
 

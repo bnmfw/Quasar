@@ -1,4 +1,4 @@
-Benchmark C17 V0
+Benchmark C17 V5 (C17_Nor)
 
 ****** Dispositivos Lógicos ******
 
@@ -7,7 +7,7 @@ Benchmark C17 V0
 ****** HGSPICE ******
 
 .option measform = 3
-.option post = 2
+.option post = 0
 
 ****** Circuito ******
 

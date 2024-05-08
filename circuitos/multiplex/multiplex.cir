@@ -1,0 +1,65 @@
+Multiplexador
+
+****** Dispositivos Lógicos ******
+
+.include ../include.cir
+
+****** HGSPICE ******
+
+.optionMeasform = 3
+.option post = 0
+
+****** Circuito ******
+
+* Declarando o circuito
+Mp0 vdd a n3 vdd PMOS_BULK w=140n l=32n
+Mn0 n3 a gnd gnd NMOS_BULK w=70n l=32n
+
+Mp1 vdd b n2 vdd PMOS_BULK w=140n l=32n
+Mn1 n2 b gnd gnd NMOS_BULK w=70n l=32n
+
+Mp2 vdd select n1 vdd PMOS_BULK w=140n l=32n
+Mn2 n1 select gnd gnd NMOS_BULK w=70n l=32n
+
+Mp3 vdd select n4 vdd PMOS_BULK w=280n l=32n
+Mp4 n4 n3 out vdd PMOS_BULK w=280n l=32n
+Mp5 vdd n1 n5 vdd PMOS_BULK w=280n l=32n
+Mp6 n5 n2 out vdd PMOS_BULK w=280n l=32n
+
+Mn3 out n3 n6 gnd NMOS_BULK w=140n l=32n
+Mn4 n6 n2 gnd gnd NMOS_BULK w=140n l=32n
+Mn5 out select n6 gnd NMOS_BULK w=140n l=32n
+Mn6 n6 n1 gnd gnd NMOS_BULK w=140n l=32n
+
+
+* CONECTANDO AS CARGAS DE ENTRADA
+* ENTRADA inA
+MpC1E1 vdd inA a2 vdd PMOS_BULK w=140n L=32n
+MnC1E1 a2 inA gnd gnd NMOS_BULK w=70n L=32n
+
+MpC2E1 vdd a2 a vdd PMOS_BULK w=140n L=32n
+MnC2E1 a a2 gnd gnd NMOS_BULK w=70n L=32n
+
+* ENTRADA inB
+MpC1E2 vdd inB b2 vdd PMOS_BULK w=140n L=32n
+MnC1E2 b2 inB gnd gnd NMOS_BULK w=70n L=32n
+
+MpC2E2 vdd b2 b vdd PMOS_BULK w=140n L=32n
+MnC2E2 b b2 gnd gnd NMOS_BULK w=70n L=32n
+
+* ENTRADA inSel
+MpC1E3 vdd inSel sel2 vdd PMOS_BULK w=140n L=32n
+MnC1E3 sel2 inSel gnd gnd NMOS_BULK w=70n L=32n
+
+MpC2E3 vdd sel2 select vdd PMOS_BULK w=140n L=32n
+MnC2E3 select sel2 gnd gnd NMOS_BULK w=70n L=32n
+
+* CONECTANDO AS CARGAS DE SAÍDA (SC1 E SC2)
+Mpcs1 vdd out sc1 vdd PMOS_BULK w=560n L=32n
+Mncs1 sc1 out gnd gnd NMOS_BULK w=280n L=32n
+
+Mpcs2 vdd sc1 sc2 vdd PMOS_BULK w=560n L=32n
+Mncs2 sc2 sc1 gnd gnd NMOS_BULK w=280n L=32n
+
+************
+.end

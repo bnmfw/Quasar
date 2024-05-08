@@ -9,6 +9,9 @@ from .arquivos import JManager, CManager
 from .letFinder import LetFinder
 from .spiceInterface import SpiceRunner
 from .dataAnalysis import DataAnalist
+from .simulationConfig import sim_config, SimulationConfig
+from .transistorModel import Transistor
+from .faultModel import DoubleExponential
 from collections.abc import Callable
 
 class Backend:
@@ -20,18 +23,29 @@ class Backend:
         Constructor object
         """
         self.circuit = None
-        self.vdd = None
 
-    def set_circuit(self, circuit: Circuito, vdd: float):
+    def set_sim_config(self, vdd: float, colection_time: float, track_establishment: float, transistor_depth: float) -> None:
+        """
+        Sets the simulation configuration
+
+        Args:
+            vdd (float): Vdd of the circuit in volts.
+            colection_time (float): Messenger's equation collection time constant in pico seconds.
+            track_establishment (float): Track_establishment_constant_pico (float): Messenger's equation track establishment contant in pico <unit>.
+            transistor_depth (float): Transistor's collection 
+        """
+        sim_config.vdd = vdd
+        sim_config.fault_model = DoubleExponential(colection_time, track_establishment)
+        sim_config.transistor_model = Transistor(transistor_depth)
+    
+    def set_circuit(self, circuit: Circuito):
         """
         Sets the simulated circuit
 
         Args:
             circuit (Circuito): circuit to be simulated.
-            vdd (float): vdd of the simulation
         """
         self.circuit = circuit
-        self.vdd = vdd
         return self
 
     def check_circuit(self):
@@ -52,18 +66,6 @@ class Backend:
         """
         self.check_circuit()
         CircuitManager(self.circuit, report=report).determine_LETs(delay=delay, progress_report=progress_report)
-        JManager.codify(self.circuit, self.circuit.path_to_circuits)
-    
-    def update_lets(self, delay: bool = False, report: bool = False):
-        """
-        Updates the LETs of a circuit. For this to be run LETs must already have been determined.
-
-        Args:
-            delay (bool, optional): Whether the delay of the circuit is to be taken into consideration. Defaults to False.
-            report (bool, optional): Whether work is to be print to terminal. Defaults to False.
-        """
-        self.check_circuit()
-        CircuitManager(self.circuit, report=report).update_LETs(delay=delay)
         JManager.codify(self.circuit, self.circuit.path_to_circuits)
 
     def save_let_data(self, path_to_folder: str):
@@ -127,7 +129,7 @@ class Backend:
         """
         self.check_circuit()
         with SpiceRunner(self.circuit.path_to_circuits).MC_Instance(pmos_var, nmos_var):
-            let_analisado = LET(None, self.circuit.vdd, node, output, [pulse_in, pulse_out])
+            let_analisado = LET(None, sim_config.vdd, node, output, [pulse_in, pulse_out])
             LetFinder(self.circuit, path_to_folder=self.circuit.path_to_circuits, report=report).minimal_LET(let_analisado, logical_input, safe=True)
 
 if __name__ == "__main__":
@@ -138,7 +140,7 @@ if __name__ == "__main__":
 
     # with InDir("debug"):
 
-    nand: Circuito = Circuito("nor", "circuitos", 0.7).from_json()
+    nand: Circuito = Circuito("nor", "circuitos").from_json()
     backend: Backend = Backend().set_circuit(nand, 0.7)
     backend.find_single_let("g1", "g1", [1, 1], "rise", "rise", 4.8108, 4.3720)
 

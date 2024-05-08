@@ -1,4 +1,4 @@
 *File with the vdd tension used by all circuits
-Vvdd vdd gnd 0.7
-Vvcc vcc gnd 0.7
-Vclk clk gnd PULSE(0 0.7 1n 0.01n 0.01n 1n 2n)
+Vvdd vdd gnd 0.9
+Vvcc vcc gnd 0.9
+Vclk clk gnd PULSE(0 0.9 1n 0.01n 0.01n 1n 2n)

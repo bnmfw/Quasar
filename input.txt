@@ -1,7 +1,0 @@
-nand6
-
-a b c d e f
-g1
-2
-
-3

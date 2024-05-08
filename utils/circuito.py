@@ -12,7 +12,7 @@ class Circuito():
     """
     Circuit object. Tracks its file, relevant nodes and LETs.
     """
-    def __init__(self, name: str, path_to_circuits: str = "circuitos", vdd: float = None):
+    def __init__(self, name: str, path_to_circuits: str = "circuitos"):
         """
         Constructor.
 
@@ -30,9 +30,10 @@ class Circuito():
         self.inputs: list[Signal_Input] = []
         self.saidas: list[Node] = []
         self.nodes: list[Node]= []
-        self.vdd: float = vdd
+        # self.vdd: float = vdd
         self.SPdelay: float = 0
         self.LETth: LET = None
+        self.loaded: bool = False
 
     def ha_cadastro(self) -> bool:
         """
@@ -48,6 +49,7 @@ class Circuito():
         Fills the circuit object data from the json file.
         """
         JManager.decodify(self, path_to_folder=self.path_to_circuits)
+        self.loaded = True
         return self
     
     def from_nodes(self, inputs: list, outputs: list):
@@ -90,7 +92,7 @@ if __name__ == "__main__":
     print("Testing Circuit Module...")
     # Decodification test of the circuit
     print("\tTesting decodification of circuit from json file...")
-    decodec_test = Circuito("decodec_test", path_to_circuits="debug/test_circuits", vdd=0.7).from_json()
+    decodec_test = Circuito("decodec_test", path_to_circuits="debug/test_circuits").from_json()
     assert decodec_test.ha_cadastro(), "CIRCUIT FAILED FOR CHECKING JSON FILE"
     assert decodec_test.name == "decodec_test", "CIRCUIT DECODE FAILED FOR NAME"
     assert decodec_test.path_to_my_dir == "debug/test_circuits/decodec_test", "CIRCUIT DECODE FAILED FOR PATH"
@@ -99,10 +101,9 @@ if __name__ == "__main__":
     assert list(map(lambda e: e.name, decodec_test.nodes)) == ["g1", "i1"], "CIRCUIT DECODE FAILED FOR NODES"
     assert list(map(lambda e: len(e.LETs), decodec_test.nodes)) == [2, 2], "CIRCUIT DECODE FAILED FOR NUMBER OS LETS"
     assert list(map(lambda e: e.name, decodec_test.saidas)) == ["g1"], "CIRCUIT DECODE FAILED FOR OUTPUTS"
-    assert decodec_test.vdd == 0.7, "CIRCUIT DECODE FAILED FOR VDD"
     
     print("\tTesting parsing of circuit file...")
-    parsing_test = Circuito("fadder", path_to_circuits="debug/test_circuits", vdd=0.7).from_nodes(["a","b", "cin"],["cout", "sum"])
+    parsing_test = Circuito("fadder", path_to_circuits="debug/test_circuits").from_nodes(["a","b", "cin"],["cout", "sum"])
     # assert {nodo.name for nodo in parsing_test.nodes} == {"cout", "sum"}, "CIRCUIT PARSING FAILED"
     # for vi in parsing_test.graph.vertices.values():
     #     print(vi["name"],end="\t")

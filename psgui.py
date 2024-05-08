@@ -1,6 +1,7 @@
 import PySimpleGUI as sg
 from tkinter import TclError, Tk
 from utils.spiceInterface import HSRunner
+from utils.simulationConfig import sim_config
 import os
 
 # Testa para ver se o tkinter esta funcionando
@@ -199,7 +200,7 @@ class PSGUI:
     # Tela principal
     def tela_principal(self, circuito):
         inputs = {"acao": None}
-        layout = [[sg.Text(f"Circuito {circuito.nome} operando em {circuito.vdd}V")],
+        layout = [[sg.Text(f"Circuito {circuito.nome} operando em {sim_config.vdd}V")],
                   [sg.Button("Atualizar LETs do circuito")],
                   [sg.Button("Gerar CSV com LETs do circuito")],
                   [sg.Button("Analise Monte Carlo do LETth")],

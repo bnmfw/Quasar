@@ -1,17 +1,32 @@
-from .matematica import current_to_let
+from .simulationConfig import sim_config
 
 class Signal_Input:
+    """
+    Object that represent an input signal, has a name and a logical signal
+    """
     def __init__(self, name: str):
         self.name = name
         self.signal = "setup"
 
-    def codec(self):
+    def codec(self) -> dict:
+        """
+        Codifies the object into a dict.
+
+        Returns:
+            dict: Codifies the object
+        """
         dic = {}
         dic["name"] = self.name
         dic["signal"] = self.signal
         return dic
 
-    def decodec(self, dic: dict):
+    def decodec(self, dic: dict) -> None:
+        """
+        Decodifies the object. Codec method reciprocal. 
+
+        Args:
+            dic (dict): Dictionary from wich the object will be decodified
+        """
         self.name = dic["name"]
         self.signal = dic["signal"]
 
@@ -19,130 +34,162 @@ class Signal_Input:
         return f"{self.name}:{self.signal}"
 
 class Node:
+    """
+    Represents a circuit node. Has the collection of valid LETs that originate from it.
+    """
     def __init__(self, name: str):
         self.name = name
         self.LETs = []
         # Eh um dicionario de dicionarios
-        self.LETth: LET = LET(None, None, self.name, "saida", "aa")
         self.delay = {}
 
-    def __repr__(self):
-        return f"<Node>{self.name}"
-        return f"\nnome: {self.name}\tLETth: {self.LETth.corrente}\tQuantidade de LETs:{len(self.LETs)}"
+    def add_let(self, let) -> None:
+        """
+        Args:
+            let (LET): Adds a let to the circuit's let list
+        """
+        for let_ in self.LETs:
+            # The exact same let, diferent inputs
+            if let_ == let and let_.current == let.current:
+                for input_state in let.input_states:
+                    let_.append(input_state)
+                return
+        self.LETs.append(let)
 
-    def codec(self):
+    def __repr__(self):
+        return f"<N>{self.name}"
+
+    def codec(self) -> dict:
+        """
+        Codifies the object into a dict.
+
+        Returns:
+            dict: Codifies the object
+        """
         dic = {}
         dic["name"] = self.name
-        dic["critico"] = self.LETth.codec()
         dic["delay"] = self.delay
-        lista_de_lets = []
+        let_list = []
+        let: LET
         for let in self.LETs:
-            lista_de_lets.append(let.codec())
-        dic["lets"] = lista_de_lets
+            let_list.append(let.codec())
+        dic["lets"] = let_list
         return dic
 
-    def decodec(self, dic:dict, vdd:float):
-        if not isinstance(dic, dict) or not isinstance(vdd,(int, float)): raise TypeError(f"dic (dict): {type(dic)}, vdd (float): {type(vdd)}")
+    def decodec(self, dic:dict):
+        """
+        Decodifies the object. Codec method reciprocal. 
+
+        Args:
+            dic (dict): Dictionary from wich the object will be decodified
+        """
+        if not isinstance(dic, dict) or not isinstance(sim_config.vdd,(int, float)): 
+            raise TypeError(f"dic (dict): {type(dic)}, vdd (float): {type(sim_config.vdd)}")
         self.name = dic["name"]
-        self.LETth = LET(None, vdd, "nodo", "saida", "orientacao")
-        self.LETth.decodec(dic["critico"])
         self.delay = dic["delay"]
         for dicionario_let in dic["lets"]:
-            let = LET(None, vdd, "nodo", "saida", "orientacao")
+            let = LET(None, sim_config.vdd, "node", "output", ["edge","edge"])
             let.decodec(dicionario_let)
             self.LETs.append(let)
 
 class LET:
-    def __init__(self, corrente:float, vdd:float, nodo_nome:str, saida_nome:list, orientacao:str, validacoes:list = None):
-        self.valor: float = None
-        self.__corrente: float = corrente
-        self.orientacao: list = orientacao
+    """
+    LET object. 
+    Has the current or value of the fault, node where the fault originated and output interface to wich the fault propagates.
+    Has all input states in wich the let is the same and the fault edge at the node struck and output.
+    """
+    def __init__(self, current: float, vdd: float, node_name: str, output_name: list, edges: list, input_states: list = None):
+        """_summary_
+        Args:
+            current (float): Let current in micro amps. Can be None
+            vdd (float): Voltage operation in volts.
+            node_name (str): Name of the node the particle struck.
+            output_name (list): Output interface the fault propagates to.
+            edges (list[str]): Two element list. Both elements must be either 'rise', 'fall' or None
+            input_states (list[bool], optional): Input states in witch the let is valid. Defaults to None.
+        """
+        self.value: float = None
+        self.__current: float = current
+        self.orientacao: list = edges
         self.vdd: float = vdd
-        self.node_nome: str = nodo_nome
-        self.saida_nome: str = saida_nome
-        if validacoes == None:
-            self.validacoes = []
+        self.node_name: str = node_name
+        self.output_name: str = output_name
+        if input_states is None:
+            self.input_states = []
         else:
-            self.validacoes = validacoes
+            self.input_states = input_states
 
     @property
-    def corrente(self) -> float:
-        return self.__corrente
+    def current(self) -> float:
+        return self.__current
 
-    @corrente.setter
-    def corrente(self, corrente):
-        self.__corrente = corrente
-        self.valor = current_to_let(corrente)
+    @current.setter
+    def current(self, current):
+        self.__current = current
+        self.value = sim_config.current_to_let(current)
 
     def __eq__(self, other):
-        return (self.node_nome == other.node_nome and self.saida_nome == other.saida_nome and self.orientacao == other.orientacao)
+        return (self.node_name == other.node_name and self.output_name == other.output_name and self.orientacao == other.orientacao)
 
     def __repr__(self):
-        return f"{self.node_nome} {self.saida_nome} {self.orientacao} {self.corrente}"
+        return f"{self.node_name} {self.output_name} {self.orientacao} {self.current}"
 
     def __len__(self):
-        return len(self.validacoes)
+        return len(self.input_states)
 
     def __lt__(self, other):
-        return self.corrente < other.corrente
+        return self.current < other.current
     
     def __le__(self, other):
-        return self.corrente <= other.corrente
+        return self.current <= other.current
     
     def __gt__(self, other):
-        return self.corrente > other.corrente
+        return self.current > other.current
 
     def __ge__(self, other):
-        return self.corrente >= other.corrente
+        return self.current >= other.current
 
-    def append(self, validacao: list):
-        if type(validacao) != list: raise TypeError("Validacao nao eh uma lista")
-        if not validacao in self.validacoes:
-            self.validacoes.append(validacao)  
+    def append(self, input_state: list):
+        """
+        Codifies the object into a dict.
 
-    def codec(self):
+        Returns:
+            dict: Codifies the object
+        """
+        if type(input_state) != list: raise TypeError("Validacao nao eh uma lista")
+        if not input_state in self.input_states:
+            self.input_states.append(input_state)  
+
+    def codec(self) -> dict:
+        """
+        Codifies the object into a dict.
+
+        Returns:
+            dict: Codifies the object
+        """
         dic = {}
-        dic["corr"] = self.corrente
+        dic["corr"] = self.current
         dic["orie"] = self.orientacao
-        dic["nodo"] = self.node_nome
-        dic["said"] = self.saida_nome
-        dic["val"] = self.validacoes
+        dic["nodo"] = self.node_name
+        dic["said"] = self.output_name
+        dic["val"] = self.input_states
         return dic
 
-    def decodec(self, dic: dict):
+    def decodec(self, dic: dict) -> None:
+        """
+        Decodifies the object. Codec method reciprocal. 
+
+        Args:
+            dic (dict): Dictionary from wich the object will be decodified
+        """
         if type(dic) != dict: raise TypeError(f"Nao recebi um dicionario, recebi {type(dic)}: {dic}")
-        self.corrente = dic["corr"]
+        self.current = dic["corr"]
         self.orientacao = dic["orie"]
-        self.node_nome = dic["nodo"]
-        self.saida_nome = dic["said"]
-        self.validacoes = dic["val"]
+        self.node_name = dic["nodo"]
+        self.output_name = dic["said"]
+        self.input_states = dic["val"]
 
 if __name__ == "__main__":
 
     objeto_codificado = vars(LET(154.3, 0.7, "nodo1", "saida1", ["fall", "rise"]))
     print(objeto_codificado.values())
-
-    #TESTES DE ENTRADA
-    # e1 = Signal_Input("ent1", "t")
-    # e2 = Signal_Input("ent2", "t")
-    # print(e1.codec())
-    # e2.decodec(e1.codec())
-    # assert e1.name == e2.name and e1.signal == e2.signal, "Signal_Input FALHOU"
-
-    # # TESTE DE NODO
-    # n1 = Node("nodo1")
-    # n2 = Node("nodo2")
-    # n2.decodec(n1.codec(),0.7)
-    # assert n1.name == n2.name and n1.delay == n2.delay and \
-    #         n1.LETs == n2.LETs and\
-    #        n1.LETth == n2.LETth, "Node FALHOU"
-
-    # # TESTE DE LET
-    # let1 = LET(154.3, 0.7, "nodo1", "saida1", ["fall", "rise"])
-    # let2 = LET(300, 0.7, "nodo1", "saida1", ["rise","fall"])
-    # let2.decodec(let1.codec())
-    # assert let1 == let2, "LET FALHOU no teste de Overloading e Codificacao"
-
-    # entrada = [0,0,1,0,1]
-    # let1.append(entrada)
-    # assert entrada in let1.validacoes, "LET FALHOU no teste de Append"

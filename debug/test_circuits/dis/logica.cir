@@ -1,9 +1,3 @@
-**** Portas logicas usando finfet ****
-
-.include 7nm_FF.pm
-
-**** Subcircuito TRANSMISSION ****
-
 * 1 par finfet *
 .subckt TRAN vp vm a s e ne
 Mp1 a e s e PMOS_RVT nfin=3

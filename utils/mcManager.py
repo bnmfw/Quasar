@@ -67,7 +67,7 @@ class MCManager:
         with SpiceRunner(self.circuito.path_to_circuits).MC_Instance(pmos, nmos):
             if delay: self.circ_man.get_atrasoCC()
             self.circ_man.update_LETs(delay=delay, only_lowest=True, var={"pmos": pmos, "nmos": nmos})
-            result = (round(pmos,4), round(nmos,4), self.circuito.LETth.node_nome, self.circuito.LETth.saida_nome, self.circuito.LETth.orientacao, self.circuito.LETth.corrente, self.circuito.LETth.valor, self.circuito.LETth.validacoes)
+            result = (round(pmos,4), round(nmos,4), self.circuito.LETth.node_name, self.circuito.LETth.output_name, self.circuito.LETth.orientacao, self.circuito.LETth.current, self.circuito.LETth.value, self.circuito.LETth.input_states)
         return result
     
     def full_mc_analysis(self, n_analysis: int, continue_backup: bool = False, delay: bool = False, progress_report = None):
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     print("\tTesting MC simulation...")
     with InDir("debug"):
-        nand = Circuito("nand", "test_circuits", 0.7).from_json()
+        nand = Circuito("nand", "test_circuits").from_json()
         n = 4
         MCManager(nand).full_mc_analysis(20)
         with open("test_circuits/nand/nand_mc_LET.csv", "r") as file:

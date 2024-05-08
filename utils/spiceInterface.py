@@ -8,9 +8,10 @@ Both classes in this file are stateless, therefore the classes are instantiated 
 from .matematica import spice_to_float
 from .components import LET
 from .graph import Graph
+from .simulationConfig import sim_config
 from dataclasses import dataclass
 import os
-from time import sleep
+from typing import TextIO
 
 # Defines the start and end of the measuring window, must have only 2 elements
 measure_window = (1.0, 3.8)
@@ -19,7 +20,6 @@ class SpiceFileManager():
     """
     Responsible for altering the .cir files used by Spice and reading its output.
     """
-
     def __init__(self, path_to_folder: str = "circuitos") -> None:
         """
         Constructor.
@@ -29,13 +29,15 @@ class SpiceFileManager():
         """
         self.path_to_folder = path_to_folder
         self.output: dict = None
-
-    def __write_peak_meas(self, file, label: str, peak: str, quantity: str, node: str, start: float, finish: float) -> None:
+    
+    ################### ^ META | SETS v ###################
+    
+    def __write_peak_meas(self, file: TextIO, label: str, peak: str, quantity: str, node: str, start: float, finish: float) -> None:
         """
         Writes a peak measurement line in the measurement .cir file.
 
         Args:    
-            file: File object that is to be written to.
+            file (TextIO): File object that is to be written to.
             label (str): Label of the measurement.
             peak (str): Type of peak to be measured. Either 'min' or 'max'.
             quantity (str): Physical quantity. Either 'V' or 'i'.
@@ -50,13 +52,13 @@ class SpiceFileManager():
          
         file.write(f".meas tran {label} {peak} {quantity}({node}) from={start}n to={finish}n\n")
 
-    def __write_trig_meas(self, file, label: str, trig: str, trig_value: float, trig_inclin: str, targ: str, targ_value: float, targ_inclin: str) -> None:
+    def __write_trig_meas(self, file: TextIO, label: str, trig: str, trig_value: float, trig_inclin: str, targ: str, targ_value: float, targ_inclin: str) -> None:
         """
         Writes a trig measurement line in the measurement .cir file.
 
         Args:    
-            file: File object that is to be written to.
-            label (str): Label of the measurement.
+            file (TextIO): File object that is to be written to.
+            label (str):s Label of the measurement.
             trig (str): Name of the monitored triggering node.
             trig_value (float): Value to trigger the measurement.
             trig_inclin (str): Inclination of trigger. Must be 'rise' or 'fall'.
@@ -171,16 +173,13 @@ class SpiceFileManager():
         """
 
         if not let.orientacao[0] in {"fall", "rise", None}:
-            raise ValueError(f"Recieved: {let.orientacao[0]} instead of a inclination")
+            raise ValueError(f"Recieved: {let.orientacao[0]} instead of a edge")
         if current == None:
-            current = let.corrente
+            current = let.current
 
         with open(f"{self.path_to_folder}/include/SETs.cir", "w") as sets:
             sets.write("*SET faults\n")
-            if not let.orientacao[0] == "rise": sets.write("*")
-            sets.write(f"Iseu gnd {let.node_nome} EXP(0 {current}u 2n 50p 164p 200p) //rise\n")
-            if not let.orientacao[0] == "fall": sets.write("*")
-            sets.write(f"Iseu {let.node_nome} gnd EXP(0 {current}u 2n 50p 164p 200p) //fall\n")
+            sets.write(sim_config.fault_model.spice_string(let.node_name, current, let.orientacao[0])+"\n")
 
     def measure_delay(self, input: str, out: str, vdd: float) -> None:
         """
@@ -212,7 +211,7 @@ class SpiceFileManager():
         with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
             file.write("*File with the fault width to be measured\n")
             tensao = str(let.vdd * 0.5)
-            self.__write_trig_meas(file, "larg", let.node_nome, tensao, "rise", let.node_nome, tensao, "fall")
+            self.__write_trig_meas(file, "larg", let.node_name, tensao, "rise", let.node_name, tensao, "fall")
 
     def set_monte_carlo(self, simulations: int = 0) -> None:
         """
@@ -245,7 +244,7 @@ class SpiceFileManager():
                 f".param phig_var_p = {pvar}\n"
                 f".param phig_var_n = {nvar}")
 
-    ################### ^ SETS | GETS v ################################
+    ################### ^ SETS | GETS v ###################
 
     @dataclass
     class Meas_from:
@@ -334,23 +333,15 @@ class SpiceFileManager():
         # critical_region = False
         with open(f"{self.path_to_folder}/{circuit_name}/{circuit_name}.cir", "r") as file:
             transistor_list: list = []
-            for line in file:
-
-                # Identifies the quasar region of the circuit file
-                # if "START QUASAR" in line:
-                #     critical_region = True
-                #     continue
-                # elif "END QUASAR" in line:
-                #     critical_region = False
-                #     continue
-                # if not critical_region:
-                #     continue
+            for i, line in enumerate(file):
+                line = line.strip()
+                if not i or not len(line): continue
 
                 # A line starting with M identifies a transistor, wich means its connected to availabel nodes
                 if "M" in line[0]:
                     # Im not sure if those are actually source and drain, but doesent matter to identifing them
-                    ttype, source, gate, drain, *_ = line.split()
-                    transistor_list.append((ttype[1] == "p", [source, gate, drain]))
+                    trantype, source, gate, drain, *_ = line.split()
+                    transistor_list.append((trantype[1] == "p", [source, gate, drain]))
                     for node in [source, gate, drain]:
                         nodes.add(node)
         return {node for node in nodes if node not in tension_sources}, Graph(transistor_list, tension_sources)
@@ -474,7 +465,7 @@ class SpiceFileManager():
         inclination_tens = "minout" if inclination == "fall" else "maxout"
 
         for i in range(sim_num):
-            # corrente_pico = dados[inclinacao_corr][i]
+            # current_pico = dados[inclinacao_corr][i]
             peak_tension = data[inclination_tens][i]
 
             if inclination == "fall" and peak_tension < vdd / 2 or inclination == "rise" and peak_tension > vdd / 2:
@@ -535,7 +526,7 @@ class SpiceRunner():
     # Must know path_to_folder of the SpiceRunner instance, wich seems to be very hard to do
     file_manager = None
 
-    def __init__(self, path_to_folder = "circuitos") -> None:
+    def __init__(self, path_to_folder: str = "circuitos") -> None:
         """
         Constructor
 
@@ -578,19 +569,20 @@ class SpiceRunner():
         """
         Context Mangers that sets the number a single fault.
         """
-        def __init__ (self, let: LET, corrente: float = None):
+        def __init__ (self, let: LET, current: float = None):
             self.let = let
-            if corrente == None:
-                self.corrente = let.corrente
+            if current == None:
+                self.current = let.current
             else:
-                self.corrente = corrente
+                self.current = current
 
         def __enter__(self):
-            SpiceRunner.file_manager.set_pulse(self.let, self.corrente)
-            SpiceRunner.file_manager.measure_pulse(self.let.node_nome, self.let.saida_nome)
+            SpiceRunner.file_manager.set_pulse(self.let, self.current)
+            SpiceRunner.file_manager.measure_pulse(self.let.node_name, self.let.output_name)
 
         def __exit__(self, type, value, traceback):
-            SpiceRunner.file_manager.set_pulse(self.let, 0)
+            pass
+            # SpiceRunner.file_manager.set_pulse(self.let, 0)
 
     class Vss():
         """
@@ -688,7 +680,7 @@ class SpiceRunner():
         """
         return SpiceRunner.file_manager.get_nodes(circ_name, tension_sources)
 
-    def run_delay(self, filename: str, input_name: str, output_name: str, vdd: float, inputs: list) -> float:
+    def run_delay(self, filename: str, input_name: str, output_name: str, inputs: list) -> float:
         """
         Returns the delay of shortest path from a input to and output.
 
@@ -696,7 +688,6 @@ class SpiceRunner():
             filename (str): Name of the file.
             input_name (str): Name of the input node from where the delay is propagated.
             output_name (str): Name of the output node where the delay propagates to.
-            vdd (float): Vdd of the simulation.
             inputs (list[Signal_Input]): A list of Signal_Input objects.
 
         Returns:    
@@ -704,14 +695,14 @@ class SpiceRunner():
         """
         
         # Set the signals to be simualted
-        SpiceRunner.file_manager.measure_delay(input_name, output_name, vdd)
-        SpiceRunner.file_manager.set_signals({input.name: input.signal for input in inputs}, vdd)
+        SpiceRunner.file_manager.measure_delay(input_name, output_name, sim_config.vdd)
+        SpiceRunner.file_manager.set_signals({input.name: input.signal for input in inputs}, sim_config.vdd)
         # Runs the simulation in the respective folder
         self.__run_spice(filename, ["atraso_rr", "atraso_rf", "atraso_fr", "atraso_ff"])
         # Gets and returns the results
         delay = SpiceRunner.file_manager.get_delay()
         return delay
-
+    
     def run_SET(self, filename: str, let: LET, current: float = None, path_to_root = "../../../..") -> tuple:
         """
         Returns the peak voltage output for a given let.
@@ -830,6 +821,7 @@ if __name__ == "__main__":
     TestManager = SpiceFileManager(path_to_folder=ptf)
     TestRunner.default(0.7)
 
+    TestRunner.test_spice()
     
     # igl = ["a","b","cin","na","nb","ncin","ncout","nsum","gate_p15", "drain_p15", "gate_p16", "drain_p16", "gate_q15", "drain_q15", "gate_q16", "drain_q16"]
     # fadder = Circuito("fadder", ptf, 0.7).from_nodes(["a1","b1","cin1"],["sum","cout"], igl)
@@ -839,17 +831,17 @@ if __name__ == "__main__":
     # exit()
 
     print("\tTesting node tensions...")
-    nand_test = Circuito("nand", ptf, 0.7).from_json()
+    nand_test = Circuito("nand", ptf).from_json()
     for vi, entrada in zip([0,0], nand_test.inputs): entrada.signal = vi
     with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.inputs, 0.7):
         assert TestRunner.run_nodes_value(nand_test.file, ["i1", "g1"])["i1"][0] - 0.0275015 < 10e-3, "TENSIONS RUN FAILED"
 
     print("\tTesting circuit parsing...")
-    nor_test = Circuito("nor", ptf, 0.7).from_nodes(["a","b"],["g1"])
+    nor_test = Circuito("nor", ptf).from_nodes(["a","b"],["g1"])
     assert {nodo.name for nodo in nor_test.nodes} == {"g1", "i1", "a", "b", "ng1"}, "CIRCUIT PARSING FAILED"
 
     print("\tTesting SET simulation with known SET value...")
-    nand_test = Circuito("nand", ptf, 0.7).from_json()
+    nand_test = Circuito("nand", ptf).from_json()
     valid_input = [0, 1] 
     valid_let = LET(156.25, 0.7, "g1", "g1", ["fall", "fall"], valid_input)
     expected_let_value = 0.36585829999999997
@@ -863,7 +855,7 @@ if __name__ == "__main__":
     expected_delay_value = 9.1557e-12
     for vi, entrada in zip(delay_input, nand_test.inputs): entrada.signal = vi
     with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.inputs, 0.7):
-        delay = TestRunner.run_delay(nand_test.file, "b", "g1", 0.7, nand_test.inputs)
+        delay = TestRunner.run_delay(nand_test.file, "b", "g1", nand_test.inputs)
         assert abs(delay - expected_delay_value) <= 10e-6, "DELAY SIMULATION FAILED"
 
     print("\tTesting MC points generation...")
