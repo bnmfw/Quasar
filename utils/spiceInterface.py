@@ -719,16 +719,10 @@ class SpiceRunner():
         # Sets the SET
         with self.SET(let, current):
             # Runs the simulation
-            try:
-                self.__run_spice(filename, ["minout", "maxout", "minnod", "maxnod"])
-                # Gets the peak tensions in the node and output
-                peak_node = SpiceRunner.file_manager.get_peak_tension(let.orientacao[0], True)
-                peak_output = SpiceRunner.file_manager.get_peak_tension(let.orientacao[1])
-            except Exception as error:
-                print(f"*** ERROR IN SET SIMULATION! FULL REPORT GENERATED AT DEBUG/CRASH_REPORT/{os.getpid()}_REPORT.TXT ***")
-                print(f"*** ERROR: {error}")
-                os.system(f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} > ~/github/debug/crash_report/{os.getpid()}_report.txt")
-                exit()
+            self.__run_spice(filename, ["minout", "maxout", "minnod", "maxnod"])
+            # Gets the peak tensions in the node and output
+            peak_node = SpiceRunner.file_manager.get_peak_tension(let.orientacao[0], True)
+            peak_output = SpiceRunner.file_manager.get_peak_tension(let.orientacao[1])
         return (peak_node, peak_output)
     
     def run_pulse_width(self, filename: str, let: LET, current: float = None) -> float:

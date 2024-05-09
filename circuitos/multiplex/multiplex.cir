@@ -6,30 +6,30 @@ Multiplexador
 
 ****** HGSPICE ******
 
-.optionMeasform = 3
+.option measform = 3
 .option post = 0
 
 ****** Circuito ******
 
 * Declarando o circuito
-Mp0 vdd a n3 vdd PMOS_BULK w=140n l=32n
-Mn0 n3 a gnd gnd NMOS_BULK w=70n l=32n
+Mp0 vdd a na vdd PMOS_BULK w=140n l=32n
+Mn0 na a gnd gnd NMOS_BULK w=70n l=32n
 
-Mp1 vdd b n2 vdd PMOS_BULK w=140n l=32n
-Mn1 n2 b gnd gnd NMOS_BULK w=70n l=32n
+Mp1 vdd b nb vdd PMOS_BULK w=140n l=32n
+Mn1 nb b gnd gnd NMOS_BULK w=70n l=32n
 
-Mp2 vdd select n1 vdd PMOS_BULK w=140n l=32n
-Mn2 n1 select gnd gnd NMOS_BULK w=70n l=32n
+Mp2 vdd select nsel vdd PMOS_BULK w=140n l=32n
+Mn2 nsel select gnd gnd NMOS_BULK w=70n l=32n
 
 Mp3 vdd select n4 vdd PMOS_BULK w=280n l=32n
-Mp4 n4 n3 out vdd PMOS_BULK w=280n l=32n
-Mp5 vdd n1 n5 vdd PMOS_BULK w=280n l=32n
-Mp6 n5 n2 out vdd PMOS_BULK w=280n l=32n
+Mp4 n4 na out vdd PMOS_BULK w=280n l=32n
+Mp5 vdd nsel n5 vdd PMOS_BULK w=280n l=32n
+Mp6 n5 nb out vdd PMOS_BULK w=280n l=32n
 
-Mn3 out n3 n6 gnd NMOS_BULK w=140n l=32n
-Mn4 n6 n2 gnd gnd NMOS_BULK w=140n l=32n
+Mn3 out na n6 gnd NMOS_BULK w=140n l=32n
+Mn4 n6 nb gnd gnd NMOS_BULK w=140n l=32n
 Mn5 out select n6 gnd NMOS_BULK w=140n l=32n
-Mn6 n6 n1 gnd gnd NMOS_BULK w=140n l=32n
+Mn6 n6 nsel gnd gnd NMOS_BULK w=140n l=32n
 
 
 * CONECTANDO AS CARGAS DE ENTRADA
