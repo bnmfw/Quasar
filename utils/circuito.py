@@ -3,7 +3,7 @@ Circuit object module. The Circuit object only tracks its nodes, delay, inputs, 
 The actual circuit is fully described in the .cir file and simulated by Spice.
 """
 from .arquivos import JManager
-from .spiceInterface import SpiceRunner
+from .simulationConfig import sim_config
 from .graph import Graph
 from .components import Node, Signal_Input, LET
 import os
@@ -61,7 +61,7 @@ class Circuito():
             outputs (list[str]): List of node names to be interpreted as outputs.
         """
         self.inputs = [Signal_Input(input) for input in inputs]
-        nodes_set, self.graph = SpiceRunner(path_to_folder=self.path_to_circuits).get_nodes(self.name)
+        nodes_set, self.graph = sim_config.runner(path_to_folder=self.path_to_circuits).get_nodes(self.name)
         self.nodes = [Node(nodo) for nodo in nodes_set]
         self.saidas = [self.get_node(output) for output in outputs]
         return self

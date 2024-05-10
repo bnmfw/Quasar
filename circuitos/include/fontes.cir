@@ -1,4 +1,4 @@
 *Input signals to be altered by Quasar
-VinSel inSel gnd 0.9
-VinA inA gnd 0.0
-VinB inB gnd 0.9
+Vselect select gnd 0.7
+Va a gnd 0.7
+Vb b gnd 0.7

@@ -9,7 +9,7 @@ from .arquivos import JManager, CManager
 from .letFinder import LetFinder
 from .spiceInterface import SpiceRunner
 from .dataAnalysis import DataAnalist
-from .simulationConfig import sim_config, SimulationConfig
+from .simulationConfig import sim_config
 from .transistorModel import Transistor
 from .faultModel import DoubleExponential
 from collections.abc import Callable
@@ -128,7 +128,7 @@ class Backend:
             report (bool, optional): Whether a report is to be printed. Defaults to True.
         """
         self.check_circuit()
-        with SpiceRunner(self.circuit.path_to_circuits).MC_Instance(pmos_var, nmos_var):
+        with sim_config.runner(self.circuit.path_to_circuits).MC_Instance(pmos_var, nmos_var):
             let_analisado = LET(None, sim_config.vdd, node, output, [pulse_in, pulse_out])
             LetFinder(self.circuit, path_to_folder=self.circuit.path_to_circuits, report=report).minimal_LET(let_analisado, logical_input, safe=True)
 

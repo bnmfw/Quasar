@@ -4,6 +4,8 @@ Configurations of the simulation, such as the modeled fault, transistor model an
 
 from .transistorModel import Transistor, FinFET
 from .faultModel import FaultModel, FinFETMessengerStandard
+from .spiceInterface import SpiceRunner, NGSpiceRunner, HSpiceRunner
+from typing import Type
 
 class SimulationConfig:
     """
@@ -11,7 +13,8 @@ class SimulationConfig:
     """
     def __init__(self, vdd: float = 0.7, 
                  fault_model: FaultModel = FinFETMessengerStandard(), 
-                 transistor_model: Transistor = FinFET()) -> None:
+                 transistor_model: Transistor = FinFET(),
+                 runner: Type[SpiceRunner]) -> None:
         """
         Main simulation parameters
 
@@ -23,6 +26,7 @@ class SimulationConfig:
         self.vdd: float = vdd
         self.fault_model: FaultModel = fault_model
         self.transistor_model: Transistor = transistor_model
+        self.runner = runner
     
     def current_to_let(self, current_micro: float) -> float:
         """

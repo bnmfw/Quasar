@@ -6,8 +6,8 @@ Multiplexador
 
 ****** HGSPICE ******
 
-.option measform = 3
-.option post = 0
+* .option measform = 3
+* .option post = 0
 
 ****** Circuito ******
 

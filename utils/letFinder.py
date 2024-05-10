@@ -19,7 +19,7 @@ class LetFinder:
             report (bool): Whether or not the run will report to terminal with prints.
         """
         self.circuito = circuit
-        self.runner = SpiceRunner(path_to_folder=path_to_folder)
+        self.runner = sim_config.runner(path_to_folder=path_to_folder)
         self.__report = report
         self.__upper_bound: float = 300 # Valor maximo considerado da falha
         # 200 é um numero bem razoavel de quanto é uma falha real

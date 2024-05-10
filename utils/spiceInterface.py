@@ -10,6 +10,7 @@ from .components import LET
 from .graph import Graph
 from .simulationConfig import sim_config
 from dataclasses import dataclass
+from abc import ABC
 import os
 from typing import TextIO
 
@@ -516,7 +517,7 @@ class SpiceFileManager():
             instances[int(float(i))] = [float(pmos), float(nmos)]
         return instances
 
-class SpiceRunner():
+class SpiceRunner(ABC):
     """ 
     Responsible for running spice. Used as a Interface for spice to the rest of the system.
     """
@@ -634,7 +635,7 @@ class SpiceRunner():
         def __exit__(self, type, value, traceback):
             pass
 
-    def __run_spice(self, filename: str, labels: list) -> None:
+    def _run_spice(self, filename: str, labels: list = None) -> None:
         """
         Runs spice and dumps labels into output.txt.
 
@@ -642,18 +643,7 @@ class SpiceRunner():
             filename (str): Name of the file.
             labels (list[str]): labels to be dumped
         """
-        f = "\|"
-        os.system(f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} | grep \"{f.join(labels)}\" > ../output.txt")
-    
-    def test_spice(self) -> None:
-        """
-        Testes if spice is working. If not will exit as nothing can be done without spice.
-        """
-        os.system(f"hspice debug/empty.cir > output.txt")
-        with open("output.txt", "r") as file:
-            for linha in file:
-                if "Cannot connect to license server system" in linha:
-                    exit("HSPICE LicenseError: Cannot connect to license server system")
+        pass
     
     def default(self, vdd: float) -> None:
         """
@@ -698,7 +688,7 @@ class SpiceRunner():
         SpiceRunner.file_manager.measure_delay(input_name, output_name, sim_config.vdd)
         SpiceRunner.file_manager.set_signals({input.name: input.signal for input in inputs}, sim_config.vdd)
         # Runs the simulation in the respective folder
-        self.__run_spice(filename, ["atraso_rr", "atraso_rf", "atraso_fr", "atraso_ff"])
+        self._run_spice(filename, ["atraso_rr", "atraso_rf", "atraso_fr", "atraso_ff"])
         # Gets and returns the results
         delay = SpiceRunner.file_manager.get_delay()
         return delay
@@ -719,7 +709,7 @@ class SpiceRunner():
         # Sets the SET
         with self.SET(let, current):
             # Runs the simulation
-            self.__run_spice(filename, ["minout", "maxout", "minnod", "maxnod"])
+            self._run_spice(filename, ["minout", "maxout", "minnod", "maxnod"])
             # Gets the peak tensions in the node and output
             peak_node = SpiceRunner.file_manager.get_peak_tension(let.orientacao[0], True)
             peak_output = SpiceRunner.file_manager.get_peak_tension(let.orientacao[1])
@@ -739,7 +729,7 @@ class SpiceRunner():
         """
         with self.SET(let, current):
             SpiceRunner.file_manager.measure_pulse_width(let)
-            self.__run_spice(filename, ["larg"])
+            self._run_spice(filename, ["larg"])
             output = SpiceRunner.file_manager.get_output()
         
         try:
@@ -764,7 +754,7 @@ class SpiceRunner():
         """
         measure_labels = [f"max{node}" for node in nodes] + [f"min{node}" for node in nodes]
         self.file_manager.measure_nodes(nodes)
-        self.__run_spice(filename, measure_labels)
+        self._run_spice(filename, measure_labels)
         return self.file_manager.get_nodes_tension(nodes)
 
     def run_simple_MC(self, circuit_name: str, name_name: str, output_name: str, sim_num: int, output_incl: str, vdd: float) -> int:
@@ -784,7 +774,7 @@ class SpiceRunner():
         """
         SpiceRunner.file_manager.measure_pulse(name_name, output_name)
         with self.Monte_Carlo(sim_num):
-            self.__run_spice(f"{self.path_to_folder}/{circuit_name}", f"{circuit_name}.cir", ["minout", "maxout"])
+            self._run_spice(f"{self.path_to_folder}/{circuit_name}", f"{circuit_name}.cir", ["minout", "maxout"])
         return SpiceRunner.file_manager.get_mc_faults(circuit_name, sim_num, output_incl, vdd)
 
     def run_MC_var(self, filename: str, circuit_name: str, sim_num: int) -> dict:
@@ -800,10 +790,49 @@ class SpiceRunner():
             dict: MC variability instances.
         """
         with self.Monte_Carlo(sim_num):
-            os.system(f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} > ../output.txt")
+            self._run_spice(filename)
         return SpiceRunner.file_manager.get_mc_instances(circuit_name)
 
-HSRunner = SpiceRunner()
+class NGSpiceRunner(SpiceRunner):
+    def _run_spice(self, filename: str, labels: list = None) -> None:
+        """
+        Runs spice and dumps labels into output.txt.
+
+        Args:    
+            filename (str): Name of the file.
+            labels (list[str]): labels to be dumped
+        """
+        command = f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; ngspice -b < {filename} 2>&1 "
+        if labels is not None: command += f"| grep \"{'\|'.join(labels)}\" "
+        command += "> ../output.txt"
+        os.system(command)
+
+class HSpiceRunner(SpiceRunner):
+    def _run_spice(self, filename: str, labels: list = None) -> None:
+        """
+        Runs spice and dumps labels into output.txt.
+
+        Args:    
+            filename (str): Name of the file.
+            labels (list[str]): labels to be dumped
+        """
+        command = f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} "
+        if labels is not None: command += f"| grep \"{'\|'.join(labels)}\" "
+        command += "> ../output.txt"
+        os.system(command)
+
+    def test_spice(self) -> bool:
+        """
+        Testes if spice is working. If not will exit as nothing can be done without spice.
+        """
+        os.system(f"hspice debug/empty.cir > output.txt")
+        with open("output.txt", "r") as file:
+            for linha in file:
+                if "Cannot connect to license server system" in linha:
+                    return True
+        return False
+
+HSRunner = HSpiceRunner()
 
 # Runs a bunch of routine checks to see if the Spice Interface is running accordingly
 if __name__ == "__main__":
@@ -811,7 +840,7 @@ if __name__ == "__main__":
     print("Testing Spice Interface...")
     ptf = "debug/test_circuits"
     from .circuito import Circuito
-    TestRunner = SpiceRunner(path_to_folder=ptf)
+    TestRunner = HSpiceRunner(path_to_folder=ptf)
     TestManager = SpiceFileManager(path_to_folder=ptf)
     TestRunner.default(0.7)
 
