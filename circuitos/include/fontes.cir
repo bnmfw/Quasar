@@ -1,4 +1,2 @@
 *Input signals to be altered by Quasar
-Vselect select gnd 0.7
 Va a gnd 0.7
-Vb b gnd 0.7

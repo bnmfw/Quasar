@@ -1,6 +1,6 @@
 from os import path
 from typing import Any
-from utils.spiceInterface import HSRunner
+from utils.spiceInterface import HSRunner, HSpiceRunner, NGSpiceRunner
 from utils.simulationConfig import sim_config
 from progress.bar import Bar
 
@@ -53,6 +53,7 @@ class TXTUI:
             print("\nCadastro do circuito encontrado")
         else:
             print("\nCadastro do circuito nao encontrado, tera de ser feito")
+            print("Configure simulation before determining SETs:")
         
         # Requisita o vdd
         # default_voltage = 0.7
@@ -75,7 +76,10 @@ class TXTUI:
         acao = {0: "atualizar", 1: "csv", 2: "mc", 3: "single_let", 4: "config_sim", 5: None}
         inputs = {"acao": None}
         print(barra_comprida)
-        inputs["acao"] = acao[int(input(f"{barra_comprida}\n"
+        if sim_config.runner == NGSpiceRunner: print("Using NGSPICE")
+        elif sim_config.runner == HSpiceRunner and not sim_config.runner().test_spice(): print("Using HSPICE")
+        else: print("HSPICE NOT WORKING, SIMULATOR MUST BE CHANGED")
+        inputs["acao"] = acao[int(input(
                     f"Trabalhando com o {circuito.name} em {sim_config.vdd} volts\n"
                     f"Modelo de falhas: alpha={sim_config.fault_model.colect_time} beta={sim_config.fault_model.track_estab}\n"
                     f"Transistor com profundidade em {sim_config.transistor_model.charge_collection_depth_nano}\n"
@@ -142,8 +146,8 @@ class TXTUI:
         print(barra_comprida + "\n")
         return "main", inputs
     
-    def tela_config_sim(self, vdd, colect_time, track_estab, depth):
-        inputs = {"vdd": vdd, "alpha": colect_time, "beta": track_estab, "depth": depth}
+    def tela_config_sim(self, vdd, colect_time, track_estab, depth, spice):
+        inputs = {"vdd": vdd, "alpha": colect_time, "beta": track_estab, "depth": depth, "spice": spice}
         vdd = input(f"Vdd [V] ({vdd}): ")
         if vdd != "": inputs["vdd"] = float(vdd)
         colect_time = input(f"Charge Collect Time [ps] ({colect_time}): ")
@@ -152,4 +156,6 @@ class TXTUI:
         if track_estab != "": inputs["beta"] = float(track_estab)
         depth = input(f"Transistor Collection Depth [?] ({depth}): ")
         if depth != "": inputs["depth"] = float(depth)
+        spice = input(f"Simulator to be used ({'NGSPICE' if sim_config.runner == NGSpiceRunner else 'HSPICE'}): ")
+        if spice != "": inputs["spice"] = NGSpiceRunner if spice == "NGSPICE" else HSpiceRunner
         return "main", inputs

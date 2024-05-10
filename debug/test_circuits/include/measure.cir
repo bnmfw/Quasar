@@ -1,3 +1,5 @@
-*File with measured of lowest and highest values in list of nodes
-.meas tran ming1 min V(g1) from=1.0n to=3.8n
-.meas tran maxg1 max V(g1) from=1.0n to=3.8n
+*File with measures of lowest and highest values in node and output
+.meas tran minout min V(g1) from=1.0n to=3.8n
+.meas tran maxout max V(g1) from=1.0n to=3.8n
+.meas tran minnod min V(i1) from=1.0n to=3.8n
+.meas tran maxnod max V(i1) from=1.0n to=3.8n

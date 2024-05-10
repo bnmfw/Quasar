@@ -802,8 +802,9 @@ class NGSpiceRunner(SpiceRunner):
             filename (str): Name of the file.
             labels (list[str]): labels to be dumped
         """
+        f = '\|'
         command = f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; ngspice -b < {filename} 2>&1 "
-        if labels is not None: command += f"| grep \"{'\|'.join(labels)}\" "
+        if labels is not None: command += f"| grep \"{f.join(labels)}\" "
         command += "> ../output.txt"
         os.system(command)
 
@@ -816,8 +817,9 @@ class HSpiceRunner(SpiceRunner):
             filename (str): Name of the file.
             labels (list[str]): labels to be dumped
         """
+        f = '\|'
         command = f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} "
-        if labels is not None: command += f"| grep \"{'\|'.join(labels)}\" "
+        if labels is not None: command += f"| grep \"{f.join(labels)}\" "
         command += "> ../output.txt"
         os.system(command)
 
@@ -833,6 +835,7 @@ class HSpiceRunner(SpiceRunner):
         return False
 
 HSRunner = HSpiceRunner()
+sim_config.runner = HSpiceRunner
 
 # Runs a bunch of routine checks to see if the Spice Interface is running accordingly
 if __name__ == "__main__":

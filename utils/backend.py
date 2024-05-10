@@ -12,7 +12,7 @@ from .dataAnalysis import DataAnalist
 from .simulationConfig import sim_config
 from .transistorModel import Transistor
 from .faultModel import DoubleExponential
-from collections.abc import Callable
+from typing import Callable, Type
 
 class Backend:
     """
@@ -24,7 +24,7 @@ class Backend:
         """
         self.circuit = None
 
-    def set_sim_config(self, vdd: float, colection_time: float, track_establishment: float, transistor_depth: float) -> None:
+    def set_sim_config(self, vdd: float, colection_time: float, track_establishment: float, transistor_depth: float, spice: Type[SpiceRunner]) -> None:
         """
         Sets the simulation configuration
 
@@ -32,11 +32,13 @@ class Backend:
             vdd (float): Vdd of the circuit in volts.
             colection_time (float): Messenger's equation collection time constant in pico seconds.
             track_establishment (float): Track_establishment_constant_pico (float): Messenger's equation track establishment contant in pico <unit>.
-            transistor_depth (float): Transistor's collection 
+            transistor_depth (float): Transistor's collection.
+            spice (Type[SpiceRunner]): Simulator Runner used.
         """
         sim_config.vdd = vdd
         sim_config.fault_model = DoubleExponential(colection_time, track_establishment)
         sim_config.transistor_model = Transistor(transistor_depth)
+        sim_config.runner = spice
     
     def set_circuit(self, circuit: Circuito):
         """

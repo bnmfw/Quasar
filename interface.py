@@ -42,12 +42,19 @@ class GUI:
 
                 # Inputs: vdd, circ, cadastro
                 current_screen, inputs = self.ui.tela_inicial()
-                vdd = sim_config.vdd
                 circ_nome = inputs["circ"]
                 cadastro = inputs["cadastro"]
                 if cadastro:
                     self.circuito = Circuito(circ_nome).from_json()
                     self.backend.set_circuit(self.circuito)
+                else:
+                    _, inputs = self.ui.tela_config_sim(sim_config.vdd, 
+                                                        sim_config.fault_model.colect_time, 
+                                                        sim_config.fault_model.track_estab, 
+                                                        sim_config.transistor_model.charge_collection_depth_nano,
+                                                        sim_config.runner)
+                    self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"], inputs["spice"])
+ 
 
             # TELA DE CADASTRO
             elif current_screen == "cadastro":
@@ -86,8 +93,9 @@ class GUI:
                 current_screen, inputs = self.ui.tela_config_sim(sim_config.vdd, 
                                                                  sim_config.fault_model.colect_time, 
                                                                  sim_config.fault_model.track_estab, 
-                                                                 sim_config.transistor_model.charge_collection_depth_nano)
-                self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"])
+                                                                 sim_config.transistor_model.charge_collection_depth_nano,
+                                                                 sim_config.runner)
+                self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"], inputs["spice"])
             
             # EXIT
             elif current_screen is None:

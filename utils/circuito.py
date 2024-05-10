@@ -3,6 +3,7 @@ Circuit object module. The Circuit object only tracks its nodes, delay, inputs, 
 The actual circuit is fully described in the .cir file and simulated by Spice.
 """
 from .arquivos import JManager
+from .spiceInterface import SpiceRunner
 from .simulationConfig import sim_config
 from .graph import Graph
 from .components import Node, Signal_Input, LET
