@@ -1,0 +1,53 @@
+* Simulação V9
+
+****** Dispositivos Lógicos ******
+
+.include ../include.cir
+
+****** HSPICE ******
+
+.option measform = 3
+.option post = 0
+
+* DECLARANDO O CIRCUITO
+	Mp0	vdd	SELECT	n1	vdd	PMOS w=105n l=32n
+	Mn0 	n1 	SELECT 	gnd 	gnd	NMOS w=70n  l=32n
+
+	Mp1 	vdd 	clk 	n2 	vdd	PMOS w=105n l=32n
+	Mp2 	vdd 	n6 	n2 	vdd 	PMOS w=105n l=32n
+	Mp3 	n7 	out 	out 	vdd 	PMOS w=105n l=32n
+	Mp4 	vdd 	n2 	out 	vdd 	PMOS w=105n l=32n
+
+	Mn1 	n2 	n1 	n3 	gnd	NMOS w=210n l=32n
+	Mn2	n3	A	n5	gnd	NMOS w=210n l=32n
+	Mn3	n2	SELECT	n4	gnd	NMOS w=210n l=32n
+	Mn4	n4	B	n5	gnd	NMOS w=210n l=32n
+	Mn5	n5	clk	gnd	gnd	NMOS w=210n l=32n
+
+	Mn6	n6	n7	n2	gnd	NMOS w=70n l=32n
+	Mn7	out	n2	gnd	gnd	NMOS w=70n l=32n	
+	MpC1E1	vdd	inA	a2	vdd	PMOS  w=105n  l=32n
+	MnC1E1	a2	inA	gnd	gnd	NMOS  w=70n   l=32n
+
+	MpC2E1	vdd	a2	A	vdd	PMOS  w=105n  l=32n
+	MnC2E1	A	a2	gnd	gnd	NMOS  w=70n   l=32n
+
+	MpC1E2	vdd	inB	b2	vdd	PMOS  w=105n  l=32n
+	MnC1E2	b2	inB	gnd	gnd	NMOS  w=70n   l=32n
+
+	MpC2E2	vdd	b2	B	vdd	PMOS  w=105n  l=32n
+	MnC2E2	B	b2	gnd	gnd	NMOS  w=70n   l=32n
+
+	MpC1E3	vdd	inSel	sel2	vdd	PMOS  w=105n  l=32n
+	MnC1E3	sel2	inSel	gnd	gnd	NMOS  w=70n   l=32n
+
+	MpC2E3	vdd	sel2	SELECT	vdd	PMOS  w=105n  l=32n
+	MnC2E3	SELECT	sel2	gnd	gnd	NMOS  w=280n  l=32n
+
+	Mpcs1	vdd	OUT	sc1	vdd	PMOS  w=420n  l=32n
+	Mncs1	sc1	OUT	gnd	gnd	NMOS  w=280n  l=32n
+
+	Mpcs2	vdd	sc1	sc2	vdd	PMOS  w=420n  l=32n
+	Mncs2	sc2	sc1	gnd	gnd	NMOS  w=280n  l=32n
+
+	.end

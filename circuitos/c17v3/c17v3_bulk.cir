@@ -1,0 +1,45 @@
+Benchmark C17 V3 (C17_Nand)
+
+****** Dispositivos Logicos ******
+
+.include ../include.cir
+
+****** HSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+Mp11 vdd a e1 a PMOS_BULK w=140n l=32n
+Mp12 vdd b e1 b PMOS_BULK w=140n l=32n
+Mn11 e1 a i1 a NMOS_BULK w=70n l=32n
+Mn12 i1 b gnd b NMOS_BULK w=70n l=32n
+
+Mp21 vdd d e2 d PMOS_BULK w=140n l=32n
+Mp22 vdd b e2 b PMOS_BULK w=140n l=32n
+Mn21 e2 d i2 d NMOS_BULK w=70n l=32n
+Mn22 i2 b gnd b NMOS_BULK w=70n l=32n
+
+Mp31 vdd c e3 c PMOS_BULK w=140n l=32n
+Mp32 vdd e2 e3 e2 PMOS_BULK w=140n l=32n
+Mn31 e3 c i3 c NMOS_BULK w=70n l=32n
+Mn32 i3 e2 gnd e2 NMOS_BULK w=70n l=32n
+
+Mp41 vdd e e4 e PMOS_BULK w=140n l=32n
+Mp42 vdd e2 e4 e2 PMOS_BULK w=140n l=32n
+Mn41 e4 e i4 e NMOS_BULK w=70n l=32n
+Mn42 i4 e2 gnd e2 NMOS_BULK w=70n l=32n
+
+Mp51 vdd e1 g1 e1 PMOS_BULK w=140n l=32n
+Mp52 vdd e3 g1 e3 PMOS_BULK w=140n l=32n
+Mn51 g1 e1 i5 e1 NMOS_BULK w=70n l=32n
+Mn52 i5 e3 gnd e3 NMOS_BULK w=70n l=32n
+
+Mp61 vdd e4 g2 e4 PMOS_BULK w=140n l=32n
+Mp62 vdd e3 g2 e3 PMOS_BULK w=140n l=32n
+Mn61 g2 e4 i6 e4 NMOS_BULK w=70n l=32n
+Mn62 i6 e3 gnd e3 NMOS_BULK  w=70n l=32n
+
+************
+.end

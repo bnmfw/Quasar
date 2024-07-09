@@ -5,7 +5,7 @@ class DataAnalist:
     def __init__(self) -> None:
         plt.style.use('ggplot')
 
-    def quantitative_scatter(self, data: dict, x: str, y: str, target: str, directory: str, cmap: str = "inferno"):
+    def quantitative_scatter(self, data: dict, x: str, y: str, target: str, directory: str, cmap: str = "winter"):
         """
         Draws a quantitative Scatter plot of the given data.
 
@@ -19,12 +19,29 @@ class DataAnalist:
         """
         data = pd.DataFrame(data)
         plt.figure(figsize=(10,7))
-        plt.scatter(data[x], data[y], marker='o', c=data[target], cmap=cmap)
+
+        # plt.scatter(data[x], data[y], marker='o', c=data[target], cmap=cmap)
+
+        # Separate positive and negative values
+        data[target] = data[target] * 1e-6
+        positive_data = data[data[target] >= 0]
+        negative_data = data[data[target] < 0]
+
+        vmin = data[target].min()
+        vmax = data[target].max()
+
+        # Plot positive values with 'X' marker
+        scatter1 = plt.scatter(positive_data[x], positive_data[y], marker='1', c=positive_data[target], cmap=cmap, label='TG', vmin=vmin, vmax=vmax)
+        
+        # Plot negative values with 'O' marker
+        scatter2 = plt.scatter(negative_data[x], negative_data[y], marker='o', c=negative_data[target], cmap=cmap, label='CMOS', vmin=vmin, vmax=vmax)
+    
+
         plt.xlabel(x)
         plt.ylabel(y)
         plt.legend(loc='lower right', fontsize="x-large")
         plt.title(target)
-        plt.colorbar()
+        plt.colorbar(scatter1)
         plt.savefig(f'{directory}/{target}_scatter.png', format='png', dpi=300)
     
     def qualitative_scatter(self, data: dict, x: str, y: str, target: str, directory: str):
@@ -96,6 +113,25 @@ class DataAnalist:
             file.writelines(csv)
 
 if __name__ == "__main__":
+    # scatter_data = {"PMOS": [], "NMOS": [], "Best Version":[]}
+    # with open("graph.csv", "r") as file:
+    #     for i, linha in enumerate(file):
+    #         if not i: continue
+    #         best, pmos, nmos = linha.split(",")
+    #         scatter_data["PMOS"].append(float(pmos))
+    #         scatter_data["NMOS"].append(float(nmos))
+    #         scatter_data["Best Version"].append(best)
+    # DataAnalist().qualitative_scatter(scatter_data, "PMOS", "NMOS", "Best Version", ".")
+    title = "LETth Difference (MeVcm²mg⁻¹)"
+    scatter_data = {"PMOS": [], "NMOS": [], title:[]}
+    with open("xorcomp.csv", "r") as file:
+        for i, linha in enumerate(file):
+            if not i: continue
+            pmos, nmos, best = linha.split(",")
+            scatter_data["PMOS"].append(float(pmos))
+            scatter_data["NMOS"].append(float(nmos))
+            scatter_data[title].append(-float(best))
+    DataAnalist().quantitative_scatter(scatter_data, "PMOS", "NMOS", title, ".")
     exit()
     scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[],"pulse_in":[],"pulse_out":[]}
     with open(f"utils/nand_mc_LET.csv") as file:

@@ -52,8 +52,6 @@ class CircuitManager:
             lets = self.circuit.graph.generate_valid_let_configs(f(nodes), f(outputs), f(inputs), self.circuit.get_node)
 
         # Enumerates lets
-        for i, let in enumerate(lets):
-            let.insert(0, i)
         return lets
     
     def get_atrasoCC(self):
@@ -173,39 +171,39 @@ class CircuitManager:
             progress_report (Callable): Optional function that progress can be reported to.
         """
         if self.circuit.loaded:
-            print("Gathering LET list from memory")
             # Gathers all jobs
             jobs = []
             for node in self.circuit.nodes:
                 for let in node.LETs:
                     for input_config in let.input_states:
                         jobs.append([node, self.circuit.get_node(let.output_name), input_config, let.orientacao[0], let.orientacao[1]])
-            
-            for i, job in enumerate(jobs):
-                job.insert(0, i)
 
         else:
-            print("Gathering LET list from logic simulation")
             self.circuit.loaded = True
-        
             jobs = self.__possible_LETs(self.circuit.nodes, self.circuit.saidas, self.circuit.inputs)
+
+        for i, job in enumerate(jobs):
+            job.insert(0, i)
 
         for node in self.circuit.nodes:
                 node.LETs = []
 
-        if self.report:
+        if self.report or True:
             [print(j) for j in jobs]
             print()
         
         with self.min_let_predictor:
             manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuit.path_to_my_dir, progress_report=progress_report)
-            manager.work((delay,))
+            manager.work((delay,),1)
 
         lets = manager.return_done()
 
+        # for let in lets:
+        #     print(let)
+
         sim_num_acc = 0
         let: LET
-        for (let, validacao, sim_num) in lets:
+        for (let, _, sim_num) in lets:
             sim_num_acc += sim_num
 
             # Ignora currents invalidas
@@ -217,10 +215,9 @@ class CircuitManager:
             if self.circuit.LETth is None or let < self.circuit.LETth:
                 self.circuit.LETth = let
             
-            let_possivel: LET
             node.add_let(let)
         
-        print(f"total simulations: {sim_num_acc}")
+        # print(f"total simulations: {sim_num_acc}")
 
 if __name__ == "__main__":
 
@@ -241,8 +238,15 @@ if __name__ == "__main__":
     with InDir("debug"):
         ptf = "test_circuits"
         nor_test = Circuito("nor", ptf).from_nodes(["a", "b"], ["g1"])
-        # fadder_test = Circuito("fadder", ptf, 0.7).from_nodes(["a", "b", "cin"], ["sum", "cout"])
         manager = CircuitManager(nor_test, report=False)
         manager.determine_LETs()
+        with open(f"{ptf}/nor/Raw_data.csv", "r") as file:
+            data = sorted(list(map(lambda e: e.split(","), file.read().split()[1:])))
+            for line in data: line[4] = int(float(line[4]))
+            assert data == [['g1', 'g1', 'fall', 'fall', 65, '00'],
+                            ['g1', 'g1', 'rise', 'rise', 112, '01'], 
+                            ['g1', 'g1', 'rise', 'rise', 113, '10'], 
+                            ['g1', 'g1', 'rise', 'rise', 223, '11'], 
+                            ['i1', 'g1', 'rise', 'rise', 113, '10']], "LET DETERMINING FAILED"
 
     print("Circuit Manager OK.")

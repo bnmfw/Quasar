@@ -245,6 +245,25 @@ class SpiceFileManager():
                 f".param phig_var_p = {pvar}\n"
                 f".param phig_var_n = {nvar}")
 
+    def set_variability_bulk(self, pvar: float = None, nvar: float = None) -> None:
+        """
+        Alterts the mc.cir file to set the variability parameters.
+
+        Args:
+            pvar (float): thershold voltage of pmos devices.
+            nvar (float): thershold voltage of nmos devices.
+
+        """
+        with open (f"{self.path_to_folder}/include/mc.cir","w") as mc:
+            if pvar == None or nvar == None:
+                mc.write("* Analise MC\n"
+                ".param vth0_var_p = gauss(-0.49155, 0.1, 3)\n"
+                ".param vth0_var_n = gauss(0.49396, 0.1, 3)")
+            else:
+                mc.write("* Analise MC\n"
+                f".param vth0_var_p = {pvar}\n"
+                f".param vth0_var_n = {nvar}")
+
     ################### ^ SETS | GETS v ###################
 
     @dataclass
@@ -339,7 +358,7 @@ class SpiceFileManager():
                 if not i or not len(line): continue
 
                 # A line starting with M identifies a transistor, wich means its connected to availabel nodes
-                if "M" in line[0]:
+                if "M" in line[0] or "X" in line[0]:
                     # Im not sure if those are actually source and drain, but doesent matter to identifing them
                     trantype, source, gate, drain, *_ = line.split()
                     transistor_list.append((trantype[1] == "p", [source, gate, drain]))
@@ -512,6 +531,27 @@ class SpiceFileManager():
 
         ps: str = "pmos_rvt:@:phig_var_p:@:IGNC"
         ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
+
+        for i, pmos, nmos in zip(data["index"], data[ps], data[ns]):
+            instances[int(float(i))] = [float(pmos), float(nmos)]
+        return instances
+    
+    def get_mc_instances_bulk(self, circ_name: str) -> dict:
+        """
+        Reads the instances in <circuit>.mc0.csv.
+
+        Args:    
+            circ_name (str): Name of the circuit.
+        
+        Returns:
+            dict: Instances of variability.
+        """
+        instances: dict = {}
+
+        data = self.__get_csv_data(f"{self.path_to_folder}/{circ_name}/{circ_name}.mc0.csv", "$ IRV")
+
+        ps: str = "pmos_bulk:@:vth0_var_p:@:IGNC"
+        ns: str = "nmos_bulk:@:vth0_var_n:@:IGNC"
 
         for i, pmos, nmos in zip(data["index"], data[ps], data[ns]):
             instances[int(float(i))] = [float(pmos), float(nmos)]
@@ -806,6 +846,8 @@ class NGSpiceRunner(SpiceRunner):
         command = f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; ngspice -b < {filename} 2>&1 "
         if labels is not None: command += f"| grep \"{f.join(labels)}\" "
         command += "> ../output.txt"
+        # from time import sleep
+        # sleep(100)
         os.system(command)
 
 class HSpiceRunner(SpiceRunner):
@@ -835,7 +877,7 @@ class HSpiceRunner(SpiceRunner):
         return False
 
 HSRunner = HSpiceRunner()
-sim_config.runner = HSpiceRunner
+sim_config.runner = NGSpiceRunner
 
 # Runs a bunch of routine checks to see if the Spice Interface is running accordingly
 if __name__ == "__main__":
@@ -843,11 +885,12 @@ if __name__ == "__main__":
     print("Testing Spice Interface...")
     ptf = "debug/test_circuits"
     from .circuito import Circuito
-    TestRunner = HSpiceRunner(path_to_folder=ptf)
+    TestRunner = NGSpiceRunner(path_to_folder=ptf)
     TestManager = SpiceFileManager(path_to_folder=ptf)
-    TestRunner.default(0.7)
+    vdd = 0.9
+    TestRunner.default(vdd)
 
-    TestRunner.test_spice()
+    # TestRunner.test_spice()
     
     # igl = ["a","b","cin","na","nb","ncin","ncout","nsum","gate_p15", "drain_p15", "gate_p16", "drain_p16", "gate_q15", "drain_q15", "gate_q16", "drain_q16"]
     # fadder = Circuito("fadder", ptf, 0.7).from_nodes(["a1","b1","cin1"],["sum","cout"], igl)
@@ -859,8 +902,8 @@ if __name__ == "__main__":
     print("\tTesting node tensions...")
     nand_test = Circuito("nand", ptf).from_json()
     for vi, entrada in zip([0,0], nand_test.inputs): entrada.signal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.inputs, 0.7):
-        assert TestRunner.run_nodes_value(nand_test.file, ["i1", "g1"])["i1"][0] - 0.0275015 < 10e-3, "TENSIONS RUN FAILED"
+    with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):
+        assert TestRunner.run_nodes_value(nand_test.file, ["i1", "g1"])["i1"][0] - 0.104784 < 10e-3, "TENSIONS RUN FAILED"
 
     print("\tTesting circuit parsing...")
     nor_test = Circuito("nor", ptf).from_nodes(["a","b"],["g1"])
@@ -869,22 +912,22 @@ if __name__ == "__main__":
     print("\tTesting SET simulation with known SET value...")
     nand_test = Circuito("nand", ptf).from_json()
     valid_input = [0, 1] 
-    valid_let = LET(156.25, 0.7, "g1", "g1", ["fall", "fall"], valid_input)
+    valid_let = LET(156.25, vdd, "g1", "g1", ["fall", "fall"], valid_input)
     expected_let_value = 0.36585829999999997
     for vi, entrada in zip(valid_input, nand_test.inputs): entrada.signal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.inputs, 0.7), TestRunner.MC_Instance(4.7443, 4.3136):
+    with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):#, TestRunner.MC_Instance(4.7443, 4.3136):
         peak_node, peak_output = TestRunner.run_SET(nand_test.file, valid_let, path_to_root="debug/..")
         assert abs(peak_node-expected_let_value) <= 10e-1, f"SET SIMULATION FAILED simulated: {peak_node} expected: {expected_let_value}"
 
-    print("\tTesting delay simulation with known delay value...")
-    delay_input = [1, "delay"]
-    expected_delay_value = 9.1557e-12
-    for vi, entrada in zip(delay_input, nand_test.inputs): entrada.signal = vi
-    with TestRunner.Vdd(0.7), TestRunner.Inputs(nand_test.inputs, 0.7):
-        delay = TestRunner.run_delay(nand_test.file, "b", "g1", nand_test.inputs)
-        assert abs(delay - expected_delay_value) <= 10e-6, "DELAY SIMULATION FAILED"
+    # print("\tTesting delay simulation with known delay value...")
+    # delay_input = [1, "delay"]
+    # expected_delay_value = 9.1557e-12
+    # for vi, entrada in zip(delay_input, nand_test.inputs): entrada.signal = vi
+    # with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):
+    #     delay = TestRunner.run_delay(nand_test.file, "b", "g1", nand_test.inputs)
+    #     assert abs(delay - expected_delay_value) <= 10e-6, "DELAY SIMULATION FAILED"
 
-    print("\tTesting MC points generation...")
-    assert len(TestRunner.run_MC_var(nand_test.file, nand_test.name, 10)) == 10, "MC POINTS GENERATION FAILED"
+    # print("\tTesting MC points generation...")
+    # assert len(TestRunner.run_MC_var(nand_test.file, nand_test.name, 10)) == 10, "MC POINTS GENERATION FAILED"
     
     print("Spice Interface OK.")

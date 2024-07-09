@@ -14,5 +14,10 @@ class FinFET(Transistor):
     """ FinFET Standard Model """
     def __init__(self) -> None: super().__init__(charge_collection_depth_nano=21)
 
+@dataclass
+class Bulk32(Transistor):
+    """ Bulk 32 Standard Model """
+    def __init__(self) -> None: super().__init__(charge_collection_depth_nano=1000)
+
 if __name__ == "__main__":
     pass

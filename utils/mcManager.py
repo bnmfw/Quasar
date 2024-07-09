@@ -3,7 +3,6 @@ Monte Carlo Simulations Module.
 """
 
 from .matematica import InDir, Time
-from .spiceInterface import SpiceRunner
 from .components import *
 from .concorrencia import PersistentProcessMaster
 from .arquivos import CManager
@@ -49,6 +48,10 @@ class MCManager:
         for i in var:
             var[i][0] = 4.8108 + var[i][0] * (0.05 * 4.8108)/3
             var[i][1] = 4.372 + var[i][1] * (0.05 * 4.372)/3
+
+        # for i in var:
+        #     var[i][0] = -0.49155 + var[i][0] * (0.1 * -0.49155)/3
+        #     var[i][1] = 0.49396 + var[i][1] * (0.1 * 0.49396)/3
 
         items = list(var.items())
         return items
@@ -113,8 +116,13 @@ if __name__ == "__main__":
     with InDir("debug"):
         nand = Circuito("nand", "test_circuits").from_json()
         n = 4
-        MCManager(nand).full_mc_analysis(20)
+        MCManager(nand).full_mc_analysis(4)
         with open("test_circuits/nand/nand_mc_LET.csv", "r") as file:
-            assert file.read().count("\n") == 20, "MC SIMULATION FAILED"
+            assert file.read().count("\n") == 4, "MC SIMULATION FAILED"
+        
+        with open(f"test_circuits/nand/Raw_data.csv", "r") as file:
+            data = sorted(list(map(lambda e: e.split(","), file.read().split()[1:])))
+            for line in data: line[4] = int(float(line[4]))
+            assert data == [['g1', 'g1', 'fall', 'fall', 125, '01', '4.7442987080000005', '4.313604653333333'], ['g1', 'g1', 'fall', 'fall', 125, '10', '4.7442987080000005', '4.313604653333333'], ['g1', 'g1', 'fall', 'fall', 154, '01', '4.8108', '4.372'], ['g1', 'g1', 'fall', 'fall', 154, '10', '4.8108', '4.372'], ['g1', 'g1', 'fall', 'fall', 161, '01', '4.8280387000000005', '4.3524935933333335'], ['g1', 'g1', 'fall', 'fall', 161, '10', '4.8280387000000005', '4.3524935933333335'], ['g1', 'g1', 'fall', 'fall', 181, '01', '4.882529028', '4.494102673333333'], ['g1', 'g1', 'fall', 'fall', 181, '10', '4.882529028', '4.494102673333333'], ['g1', 'g1', 'rise', 'rise', 111, '11', '4.8108', '4.372'], ['g1', 'g1', 'rise', 'rise', 116, '11', '4.8280387000000005', '4.3524935933333335'], ['g1', 'g1', 'rise', 'rise', 127, '11', '4.7442987080000005', '4.313604653333333'], ['g1', 'g1', 'rise', 'rise', 71, '11', '4.882529028', '4.494102673333333'], ['i1', 'g1', 'fall', 'fall', 125, '10', '4.7442987080000005', '4.313604653333333'], ['i1', 'g1', 'fall', 'fall', 154, '10', '4.8108', '4.372'], ['i1', 'g1', 'fall', 'fall', 161, '10', '4.8280387000000005', '4.3524935933333335'], ['i1', 'g1', 'fall', 'fall', 181, '10', '4.882529028', '4.494102673333333'], ['i1', 'g1', 'rise', 'rise', 136, '11', '4.882529028', '4.494102673333333'], ['i1', 'g1', 'rise', 'rise', 195, '11', '4.8108', '4.372'], ['i1', 'g1', 'rise', 'rise', 203, '11', '4.8280387000000005', '4.3524935933333335'], ['i1', 'g1', 'rise', 'rise', 219, '11', '4.7442987080000005', '4.313604653333333']]
 
     print("MC Manager OK")

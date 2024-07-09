@@ -1,10 +1,10 @@
-Nand 3
+Inverter
 
 ****** Dispositivos Lógicos ******
 
 .include ../include.cir
 
-****** HGSPICE ******
+****** HSPICE ******
 
 .option measform = 3
 .option post = 0

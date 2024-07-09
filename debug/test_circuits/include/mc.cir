@@ -1,3 +1,5 @@
 * Analise MC
-.param phig_var_p = gauss(4.8108, 0.05, 3)
-.param phig_var_n = gauss(4.372, 0.05, 3)
+.param phig_var_p = 4.8108
+.param phig_var_n = 4.372
+.param vth0_var_p = -0.49155
+.param vth0_var_n = 0.49396

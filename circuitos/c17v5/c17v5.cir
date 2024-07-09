@@ -11,17 +11,6 @@ Benchmark C17 V5 (C17_Nor)
 
 ****** Circuito ******
 
-Xinva1 vcc gnd a fa NOT
-Xinva2 vcc gnd fa ta NOT
-Xinvb1 vcc gnd b fb NOT
-Xinvb2 vcc gnd fb tb NOT
-Xinvc1 vcc gnd c fc NOT
-Xinvc2 vcc gnd fc tc NOT
-Xinvd1 vcc gnd d fd NOT
-Xinvd2 vcc gnd fd td NOT
-Xinve1 vcc gnd e fe NOT
-Xinve2 vcc gnd fe te NOT
-
 // INV
 Mp11 vdd td ntd td PMOS_RVT nfin=3
 Mn11 ntd td gnd td NMOS_RVT nfin=3

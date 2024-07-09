@@ -2,7 +2,7 @@
 Configurations of the simulation, such as the modeled fault, transistor model and vdd of the simulation
 """
 
-from .transistorModel import Transistor, FinFET
+from .transistorModel import Transistor, FinFET, Bulk32
 from .faultModel import FaultModel, FinFETMessengerStandard
 # from .spiceInterface import SpiceRunner, NGSpiceRunner, HSpiceRunner
 from typing import Type
@@ -11,9 +11,9 @@ class SimulationConfig:
     """
     Simulation data
     """
-    def __init__(self, vdd: float = 0.7, 
+    def __init__(self, vdd: float = 0.9,
                  fault_model: FaultModel = FinFETMessengerStandard(), 
-                 transistor_model: Transistor = FinFET(),
+                 transistor_model: Transistor = Bulk32(),
                  runner = None) -> None:
         """
         Main simulation parameters

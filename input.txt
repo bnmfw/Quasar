@@ -1,0 +1,10 @@
+V25
+
+
+
+
+
+inSel inA inB
+out
+1
+5

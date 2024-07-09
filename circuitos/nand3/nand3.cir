@@ -11,15 +11,12 @@ NAND3
 
 ****** Circuito ******
 
-Mp1 vdd a g1 vdd PMOS_RVT nfin=3
-Mp2 vdd b g1 vdd PMOS_RVT nfin=3
-Mp3 vdd c g1 vdd PMOS_RVT nfin=3
-Mn1 g1 a i1 gnd NMOS_RVT nfin=3
-Mn2 i1 b i2 gnd NMOS_RVT nfin=3
-Mn3 i2 c gnd gnd NMOS_RVT nfin=3
-
-Mp4 vdd g1 ng1 vdd PMOS_RVT nfin=4
-Mn4 ng1 g1 gnd gnd NMOS_RVT nfin=4
+Mp1 vdd a g1 vdd PMOS_BULK w=140n l=32n
+Mp2 vdd b g1 vdd PMOS_BULK w=140n l=32n
+Mp3 vdd c g1 vdd PMOS_BULK w=140n l=32n
+Mn1 g1 a i1 gnd NMOS_BULK w=70n l=32n
+Mn2 i1 b i2 gnd NMOS_BULK w=70n l=32n
+Mn3 i2 c gnd gnd NMOS_BULK w=70n l=32n
 
 ************
 .end

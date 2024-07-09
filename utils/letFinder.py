@@ -1,7 +1,6 @@
 """
 Module with LetFinder a Level 1 simulation responsible for calculating the minimal Let for a fault given some parameters.
 """
-from .spiceInterface import SpiceRunner
 from .simulationConfig import sim_config
 from .components import LET
 
@@ -24,7 +23,7 @@ class LetFinder:
         self.__upper_bound: float = 300 # Valor maximo considerado da falha
         # 200 é um numero bem razoavel de quanto é uma falha real
         # Pede pro rafael o tga ou tfa ?
-        self.__limite_sim: int = 80
+        self.__limite_sim: int = 50
 
     def __fault_inclination(self, node_name: str, vdd: float, let: LET) -> str:
         """
@@ -169,11 +168,13 @@ class LetFinder:
         Returns:
             tuple: A tuple containing the simulation number and the current found, if any.
         """
+        # self.__report = True
         limite_sup = self.__upper_bound
         precision: float = 0.1
         vdd: float = sim_config.vdd
         lower_tolerance: float = (1 - precision) * vdd / 2
         upper_tolerance: float = (1 + precision) * vdd / 2
+        step_up = 100
         sim_num: int = 0
         inputs: list = self.circuito.inputs
 
@@ -253,7 +254,10 @@ class LetFinder:
 
                 current = float((csup + cinf) / 2)
 
-                _, peak_tension = self.runner.run_SET(self.circuito.file, let, current)
+                try:
+                    _, peak_tension = self.runner.run_SET(self.circuito.file, let, current)
+                except KeyError:
+                    print(let, current, input_signals)
                 if self.__report:
                     print(f"{i}\tcurrent: {current:.1f}\tpeak_tension: {peak_tension:.3f}\tbottom: {cinf:.1f}\ttop: {csup:.1f}")
                 sim_num += 1
@@ -282,8 +286,9 @@ class LetFinder:
                     # To the upper bound #
                     elif current >= limite_sup-1:
                         if self.__report: print("Upper Divergence - Upper Bound Increased\n")
-                        csup += 100
-                        limite_sup += 100
+                        csup += step_up
+                        limite_sup += step_up
+                        step_up += 100
                         sup_flag = True
 
                 # Next current calculation #
@@ -322,13 +327,17 @@ if __name__ == "__main__":
 
     print("Testing LET finder...")
     from .circuito import Circuito
+    from .spiceInterface import NGSpiceRunner
+    sim_config.runner = NGSpiceRunner
     nand = Circuito("nand", "debug/test_circuits").from_json()
     
     print("\tTesting Finding Current of safe Let...")
     valid_input = [1,1]
-    let = LET(111.2548828125, 0.7, "g1", "g1", [None, None], valid_input)
+    # target = 111.2548828125
+    target = 59.7290039062
+    let = LET(target, 0.9, "g1", "g1", [None, None], valid_input)
     measured = LetFinder(nand, "debug/test_circuits", False).minimal_LET(let, valid_input, safe=True)[1]
-    assert abs(measured-111.2548828125) <= 10e-1, f"LET FINDING FAILED simulated:{measured} expected:{111.2548828125}"
+    assert abs(measured-target) <= 10e-1, f"LET FINDING FAILED simulated:{measured} expected:{target}"
 
     # print("\tTesting Finding Current of invalid unsafe Let...")
     # invalid_let = LET(314.152, 0.7, "g1", "g1", [None, None], valid_input)
@@ -336,7 +345,9 @@ if __name__ == "__main__":
 
     print("\tTesting Finding Current of valid unsafe Let...")
     valid_input = [1,1]
-    unsafe_valid_let = LET(140.625, 0.7, "i1", "g1", [None, None], valid_input)
-    assert abs(LetFinder(nand, "debug/test_circuits", False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] - 195) < 1
+    # target = 140.625
+    target = 115.2
+    unsafe_valid_let = LET(target, 0.9, "i1", "g1", [None, None], valid_input)
+    assert abs(LetFinder(nand, "debug/test_circuits", False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] - target) < 1
     
     print("LET Finder OK")

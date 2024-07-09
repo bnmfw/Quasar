@@ -279,18 +279,26 @@ class Graph:
         # Flips the node
         self.vertices[faulted_node]["signal"] = not self.vertices[faulted_node]["signal"]
 
+        # Seen nodes in a control loop
+        control_seen = set()
+
         # Recursivelly propagates logic
         def recursive_propagation(node: str) -> None:
+            # print(node, [f'{v}: {self.vertices[v]["signal"]} {1 if can_flip[v] else 0}' for v in self.vertices])
             
             # Propagates signal to all nodes in region
             # Iterates over arcs starting from the node
+            # print(self.vertices[node]["from"])
             for arc in self.vertices[node]["from"]:
+                # print(1,faulted_node,arc["to"])
                 # Arc doesnt conduct logic signal
                 if not arc["conduct"]: continue
+                if arc["control"] is None: continue
                 # Arc's controller doesnt allow passing
                 if arc["control"] and (self.vertices[arc["control"]]["signal"] is None or self.vertices[arc["control"]]["signal"]==arc["invert"]): continue
                 # Node reached actually cant flip so nothing to update
                 if not can_flip[arc["to"]]: continue
+                # print("can")
                 # No fault actually propagated
                 if self.vertices[arc["to"]]["signal"] == self.vertices[node]["signal"]: continue
                 self.vertices[arc["to"]]["signal"] = self.vertices[node]["signal"]
@@ -298,14 +306,18 @@ class Graph:
                 recursive_propagation(arc["to"])
             
             # Propagates signal to controlled nodes
+            if node in control_seen: return
+            control_seen.add(node)
             for arc in self.vertices[node]["control"]:
                 # I dont allow passing through this arc
                 if arc["invert"] == self.vertices[node]["signal"]: continue
                 # This arc cant propagate signal
                 if self.vertices[arc["from"]]["signal"] is None: continue
                 recursive_propagation(arc["from"])
+            control_seen.remove(node)
 
         # Propagates the fault from the faulted node
+        # print(faulted_node)
         recursive_propagation(faulted_node)
 
         return old_output != self.vertices[output]["signal"]
@@ -343,13 +355,18 @@ class Graph:
         lets_f2 = list(filter(lambda let: self.valid_orientation(let[0].name, let[3]), lets_f1))
 
         # Filter lets that only actually propagate a fault to output
+        # print(lets_f2)
         lets_f3 = []
         for let in lets_f2:
              # let[2] => signals
             logic_signals = [(inp, sig==1) for inp, sig in zip(inputs, let[2])] + [("vdd", True), ("vcc", True), ("gnd", False), ("vss", False)]
+            # print(logic_signals, let[0].name, let[1].name)
             self.set_logic(logic_signals)
             if self.simulate_fault(let[0].name, let[1].name):
                 lets_f3 += [let]
+
+        print(lets_f3)
+        # print(self)
 
         return lets_f3
 

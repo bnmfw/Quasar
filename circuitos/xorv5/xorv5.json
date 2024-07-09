@@ -1,1 +1,156 @@
-{"name": "xorv5", "vdd": 0.7, "SPdelay": 0, "inputs": ["a", "b"], "saidas": ["axorb"], "nodos": [{"name": "axorb", "critico": {"corr": null, "orie": "aa", "nodo": "axorb", "said": "saida", "val": []}, "delay": {}, "lets": [{"corr": 111.328125, "orie": ["fall", "fall"], "nodo": "axorb", "said": "axorb", "val": [[0, 1]]}, {"corr": 146.484375, "orie": ["rise", "rise"], "nodo": "axorb", "said": "axorb", "val": [[1, 1]]}]}, {"name": "a", "critico": {"corr": null, "orie": "aa", "nodo": "a", "said": "saida", "val": []}, "delay": {}, "lets": []}, {"name": "na", "critico": {"corr": null, "orie": "aa", "nodo": "na", "said": "saida", "val": []}, "delay": {}, "lets": [{"corr": 194.53125, "orie": ["fall", "fall"], "nodo": "na", "said": "axorb", "val": [[0, 1]]}, {"corr": 248.4375, "orie": ["rise", "rise"], "nodo": "na", "said": "axorb", "val": [[1, 1]]}]}, {"name": "nb", "critico": {"corr": null, "orie": "aa", "nodo": "nb", "said": "saida", "val": []}, "delay": {}, "lets": [{"corr": 250.1953125, "orie": ["rise", "fall"], "nodo": "nb", "said": "axorb", "val": [[0, 1]]}, {"corr": 205.6640625, "orie": ["fall", "rise"], "nodo": "nb", "said": "axorb", "val": [[0, 0]]}, {"corr": 293.84765625, "orie": ["rise", "rise"], "nodo": "nb", "said": "axorb", "val": [[1, 1]]}]}, {"name": "b", "critico": {"corr": null, "orie": "aa", "nodo": "b", "said": "saida", "val": []}, "delay": {}, "lets": []}]}
+{
+    "name": "xorv5",
+    "SPdelay": 0,
+    "inputs": [
+        "ta",
+        "tb"
+    ],
+    "saidas": [
+        "axorb"
+    ],
+    "nodos": [
+        {
+            "name": "nb",
+            "delay": {},
+            "lets": [
+                {
+                    "corr": 198.96240234375,
+                    "orie": [
+                        "rise",
+                        "fall"
+                    ],
+                    "nodo": "nb",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            0,
+                            1
+                        ]
+                    ]
+                },
+                {
+                    "corr": 234.11865234375,
+                    "orie": [
+                        "rise",
+                        "rise"
+                    ],
+                    "nodo": "nb",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            1,
+                            1
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "na",
+            "delay": {},
+            "lets": [
+                {
+                    "corr": 155.09033203125,
+                    "orie": [
+                        "fall",
+                        "fall"
+                    ],
+                    "nodo": "na",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            0,
+                            1
+                        ]
+                    ]
+                },
+                {
+                    "corr": 196.17919921875,
+                    "orie": [
+                        "rise",
+                        "rise"
+                    ],
+                    "nodo": "na",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            1,
+                            1
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "tb",
+            "delay": {},
+            "lets": []
+        },
+        {
+            "name": "axorb",
+            "delay": {},
+            "lets": [
+                {
+                    "corr": 116.05224609375,
+                    "orie": [
+                        "rise",
+                        "rise"
+                    ],
+                    "nodo": "axorb",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "corr": 88.22021484375,
+                    "orie": [
+                        "fall",
+                        "fall"
+                    ],
+                    "nodo": "axorb",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            1,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "corr": 88.07373046875,
+                    "orie": [
+                        "fall",
+                        "fall"
+                    ],
+                    "nodo": "axorb",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            0,
+                            1
+                        ]
+                    ]
+                },
+                {
+                    "corr": 116.12548828125,
+                    "orie": [
+                        "rise",
+                        "rise"
+                    ],
+                    "nodo": "axorb",
+                    "said": "axorb",
+                    "val": [
+                        [
+                            1,
+                            1
+                        ]
+                    ]
+                }
+            ]
+        }
+    ]
+}

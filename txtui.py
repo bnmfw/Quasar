@@ -142,7 +142,7 @@ class TXTUI:
         if pulse != "": inputs["pulses"] = pulse.split()
         # Pmos e Nmos
         var = input(f"Pmos e Nmos Var (4.8108, 4.372): ")
-        if var != "": inputs["pmos"], inputs["nmos"] = [int(v) for v in var]
+        if var != "": inputs["pmos"], inputs["nmos"] = [float(v) for v in var.split()]
         print(barra_comprida + "\n")
         return "main", inputs
     
@@ -154,7 +154,7 @@ class TXTUI:
         if colect_time != "": inputs["alpha"] = float(colect_time)
         track_estab = input(f"Track Establishment Time [ps] ({track_estab}): ")
         if track_estab != "": inputs["beta"] = float(track_estab)
-        depth = input(f"Transistor Collection Depth [?] ({depth}): ")
+        depth = input(f"Transistor Collection Depth [nm] ({depth}): ")
         if depth != "": inputs["depth"] = float(depth)
         spice = input(f"Simulator to be used ({'NGSPICE' if sim_config.runner == NGSpiceRunner else 'HSPICE'}): ")
         if spice != "": inputs["spice"] = NGSpiceRunner if spice == "NGSPICE" else HSpiceRunner

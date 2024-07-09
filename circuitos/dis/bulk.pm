@@ -1,7 +1,8 @@
 * PTM High Performance 32nm Metal Gate / High-K / Strained-Si
 * nominal Vdd = 0.9V
 
-.model  nmos_bulk  nmos  level = 54
+
+.model  nmos  nmos  level = 54
 
 +version = 4.0             binunit = 1               paramchk= 1               mobmod  = 0             
 +capmod  = 2               igcmod  = 1               igbmod  = 1               geomod  = 1             
@@ -15,7 +16,7 @@
 +lwl     = 0               wwl     = 0               xpart   = 0               toxref  = 1.15e-009     
 +xl	   = -14e-9
 
-+vth0    = 0.49396         k1      = 0.4             k2      = 0               k3      = 0             
++vth0    = vth0_var_n      k1      = 0.4             k2      = 0               k3      = 0             
 +k3b     = 0               w0      = 2.5e-006        dvt0    = 1               dvt1    = 2             
 +dvt2    = 0               dvt0w   = 0               dvt1w   = 0               dvt2w   = 0             
 +dsub    = 0.1             minv    = 0.05            voffl   = 0               dvtp0   = 1e-011        
@@ -70,7 +71,7 @@
 +rbps    = 15              rbdb    = 15              rbsb    = 15              ngcon   = 1             
 
 
-.model  pmos_bulk  pmos  level = 54
+.model  pmos  pmos  level = 54
 
 +version = 4.0             binunit = 1               paramchk= 1               mobmod  = 0             
 +capmod  = 2               igcmod  = 1               igbmod  = 1               geomod  = 1             
@@ -84,7 +85,7 @@
 +lwl     = 0               wwl     = 0               xpart   = 0               toxref  = 1.2e-009      
 +xl	   = -14e-9
 
-+vth0    = -0.49155        k1      = 0.4             k2      = -0.01           k3      = 0             
++vth0    = vth0_var_p      k1      = 0.4             k2      = -0.01           k3      = 0             
 +k3b     = 0               w0      = 2.5e-006        dvt0    = 1               dvt1    = 2             
 +dvt2    = -0.032          dvt0w   = 0               dvt1w   = 0               dvt2w   = 0             
 +dsub    = 0.1             minv    = 0.05            voffl   = 0               dvtp0   = 1e-011        

@@ -1,0 +1,79 @@
+Full Adder do Rafael Neves
+
+****** Includes ******
+
+.include ../include.cir
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 0
+
+***** FAN IN ******
+* Mp1inva4 vdd a na vdd          		pmos_rvt w=27.0n l=20n nfin=3
+* Mn1inva4 na a vss gnd   			nmos_rvt w=27.0n l=20n nfin=3 
+* Mp1invb4 vdd b nb vdd          		pmos_rvt w=27.0n l=20n nfin=3
+* Mn1invb4 nb b vss gnd   			nmos_rvt w=27.0n l=20n nfin=3 
+* Mp1invcin4 vdd cin ncin vdd         pmos_rvt w=27.0n l=20n nfin=3
+* Mn1invcin4 ncin cin gnd gnd   	nmos_rvt w=27.0n l=20n nfin=3 
+
+* Mp2inva4 vcc na a vdd          		pmos_rvt w=27.0n l=20n nfin=3
+* Mn2inva4 a na vss gnd   			nmos_rvt w=27.0n l=20n nfin=3 
+* Mp2invb4 vcc nb b vdd          		pmos_rvt w=27.0n l=20n nfin=3
+* Mn2invb4 b nb vss gnd   			nmos_rvt w=27.0n l=20n nfin=3 
+* Mp2invcin4 vdd ncin cin vdd         pmos_rvt w=27.0n l=20n nfin=3
+* Mn2invcin4 cin ncin vss gnd   	nmos_rvt w=27.0n l=20n nfin=3 
+
+****** SaRT QUASAR ******
+Mp1 vdd a p1_p2 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp2 p1_p2 b p2_n1 vdd 						pmos_rvt w=27.0n l=20n nfin=3
+Mp3 vdd a p3_p4 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp4 p3_p4 cin p2_n1 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp5 vdd b p3_p4 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp6 vdd cin p6_p9 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp7 vdd a p6_p9 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp8 vdd b p6_p9 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp9 p6_p9 p2_n1 p9_n6 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp10 vdd a p10_p11 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp11 p10_p11 b p11_p12 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mp12 p11_p12 cin p9_n6 vdd 					pmos_rvt w=27.0n l=20n nfin=3
+
+Mn1 p2_n1 b n1_n2 gnd 					nmos_rvt w=27.0n l=20n nfin=3 
+Mn2 n1_n2 a vss gnd 					nmos_rvt w=27.0n l=20n nfin=3 
+Mn3 n4_n3 a vss gnd 					nmos_rvt w=27.0n l=20n nfin=3 
+Mn4 p2_n1 cin n4_n3 gnd 					nmos_rvt w=27.0n l=20n nfin=3
+Mn5 n4_n3 b vss gnd 					nmos_rvt w=27.0n l=20n nfin=3
+Mn6 p9_n6 p2_n1 n6_n7 gnd 					nmos_rvt w=27.0n l=20n nfin=3
+Mn7 n6_n7 cin vss gnd 					nmos_rvt w=27.0n l=20n nfin=3
+Mn8 n6_n7 a vss gnd 					nmos_rvt w=27.0n l=20n nfin=3
+Mn9 n6_n7 b vss gnd 					nmos_rvt w=27.0n l=20n nfin=3
+Mn10 p9_n6 cin i10 gnd					nmos_rvt w=27.0n l=20n nfin=3
+Mn11 i10 b i11 gnd 					nmos_rvt w=27.0n l=20n nfin=3
+Mn12 i11 a vss gnd 				nmos_rvt w=27.0n l=20n nfin=3
+
+Mp13 vdd p9_n6 sum vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mn13 sum p9_n6 vss gnd 					nmos_rvt w=27.0n l=20n nfin=3
+Mp14 vdd p2_n1 cout vdd 					pmos_rvt w=27.0n l=20n nfin=3
+Mn14 cout p2_n1 vss gnd 				nmos_rvt w=27.0n l=20n nfin=3
+
+* Mp1fout4S vdd sum nsum vdd          	pmos_rvt w=27.0n l=20n nfin=4
+* Mn1fout4S nsum sum vss gnd   		nmos_rvt w=27.0n l=20n nfin=4 
+
+* Mp1fout4C vdd cout ncout vdd         pmos_rvt w=27.0n l=20n nfin=4
+* Mn1fout4C ncout cout vss gnd   	nmos_rvt w=27.0n l=20n nfin=4
+
+**** END QUASAR ****
+
+*dcell node cout
+* Mp15 vdd gate_p15 drain_p15 vdd 				pmos_rvt w=27.0n l=20n nfin=3
+* Mn15 gate_p15 drain_p15 cout gnd				nmos_rvt w=27.0n l=20n nfin=3
+* Mp16 cout gate_p16 drain_p16 vdd					pmos_rvt w=27.0n l=20n nfin=3
+* Mn16 gate_p16 drain_p16 gnd gnd				nmos_rvt w=27.0n l=20n nfin=3
+
+* *dcell node cout
+* Mp25 vdd gate_q15 drain_q15 vdd 				pmos_rvt w=27.0n l=20n nfin=3
+* Mn25 gate_q15 drain_q15 sum gnd				nmos_rvt w=27.0n l=20n nfin=3
+* Mp26 sum gate_q16 drain_q16 vdd					pmos_rvt w=27.0n l=20n nfin=3
+* Mn26 gate_q16 drain_q16 gnd gnd				nmos_rvt w=27.0n l=20n nfin=3
+
+.end

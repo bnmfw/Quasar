@@ -11,19 +11,15 @@ Nor
 
 ****** Circuito ******
 
-Mp1 vdd a i1 vdd PMOS_RVT nfin=3
-Mp2 i1 b g1 vdd PMOS_RVT nfin=3
-Mn1 g1 a gnd gnd NMOS_RVT nfin=3
-Mn2 g1 b gnd gnd NMOS_RVT nfin=3
+Mp1 vdd a i1 vdd PMOS W=140n L=32n
+Mp2 i1 b g1 vdd PMOS W=140n L=32n
+Mn1 g1 a gnd gnd NMOS W=70n L=32n
+Mn2 g1 b gnd gnd NMOS W=70n L=32n
 
-Mp3 vdd g1 ng1 vdd PMOS_RVT nfin=4
-Mn3 ng1 g1 gnd gnd NMOS_RVT nfin=4
+Mp3 vdd g1 ng1 vdd PMOS W=140n L=32n    
+Mn3 ng1 g1 gnd gnd NMOS W=70n L=32n
 
 ****** END QUASAR ******
-
-//Representação de um circuito pós benchmark
-xff1 clk g1 q1 nq1 vcc gnd DFF
-xinv11 vcc gnd q1 nnq1 NOT
 
 ************
 .end

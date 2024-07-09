@@ -7,20 +7,16 @@ Nand Parsing Test
 ****** HGSPICE ******
 
 .option measform = 3
-.option post = 2
+.option post = 0
 
 ****** START QUASAR ******
 
-Mp11 vdd a g1 vdd PMOS_RVT nfin=3
-Mp12 vdd b g1 vdd PMOS_RVT nfin=3
-Mn11 g1 a i1 vss NMOS_RVT nfin=3
-Mn12 i1 b vss vss NMOS_RVT nfin=3
+Mp11 vdd a g1 vdd PMOS W=140n L=32n
+Mp12 vdd b g1 vdd PMOS W=140n L=32n
+Mn11 g1 a i1 gnd NMOS W=70n L=32n
+Mn12 i1 b gnd gnd NMOS W=70n L=32n
 
 ****** END QUASAR ******
-
-//Representação de um circuito pós benchmark
-xff1 clk g1 q1 nq1 vcc vss DFF
-xinv11 vcc vss q1 nnq1 NOT
 
 ************
 .end

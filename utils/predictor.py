@@ -5,7 +5,6 @@ Each class is responsible for its own synchronization as
 """
 
 import multiprocessing as mp
-from time import sleep
 
 class Predictor:
     """

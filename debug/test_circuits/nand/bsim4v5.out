@@ -1,0 +1,7 @@
+BSIM4v5: Berkeley Short Channel IGFET Model-4
+Developed by Xuemei (Jane) Xi, Mohan Dunga, Prof. Ali Niknejad and Prof. Chenming Hu in 2003.
+
+++++++++++ BSIM4v5 PARAMETER CHECKING BELOW ++++++++++
+Warning: This model is BSIM4.5.0; you specified a wrong version number '4.0'.
+Model = pmos
+Warning: Ngate = 1e+17 is less than 1.E18cm^-3.

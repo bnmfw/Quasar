@@ -3,7 +3,6 @@ Circuit object module. The Circuit object only tracks its nodes, delay, inputs, 
 The actual circuit is fully described in the .cir file and simulated by Spice.
 """
 from .arquivos import JManager
-from .spiceInterface import SpiceRunner
 from .simulationConfig import sim_config
 from .graph import Graph
 from .components import Node, Signal_Input, LET
@@ -91,6 +90,8 @@ class Circuito():
 
 if __name__ == "__main__":
     print("Testing Circuit Module...")
+    from .spiceInterface import HSpiceRunner
+    sim_config.runner = HSpiceRunner
     # Decodification test of the circuit
     print("\tTesting decodification of circuit from json file...")
     decodec_test = Circuito("decodec_test", path_to_circuits="debug/test_circuits").from_json()

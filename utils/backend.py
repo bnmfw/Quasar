@@ -12,6 +12,7 @@ from .dataAnalysis import DataAnalist
 from .simulationConfig import sim_config
 from .transistorModel import Transistor
 from .faultModel import DoubleExponential
+from .matematica import Time
 from typing import Callable, Type
 
 class Backend:
@@ -67,7 +68,8 @@ class Backend:
             progress_report (Callable, optional): _description_. Defaults to None.
         """
         self.check_circuit()
-        CircuitManager(self.circuit, report=report).determine_LETs(delay=delay, progress_report=progress_report)
+        with Time():
+            CircuitManager(self.circuit, report=report).determine_LETs(delay=delay, progress_report=progress_report)
         JManager.codify(self.circuit, self.circuit.path_to_circuits)
 
     def save_let_data(self, path_to_folder: str):
@@ -91,7 +93,8 @@ class Backend:
             progress_report (Callable, optional): _description_. Defaults to None.
         """
         self.check_circuit()
-        MCManager(self.circuit).full_mc_analysis(n_simu, continue_backup=continue_backup, delay=delay, progress_report=progress_report)
+        with Time():
+            MCManager(self.circuit).full_mc_analysis(n_simu, continue_backup=continue_backup, delay=delay, progress_report=progress_report)
         scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[],"pulse_in":[],"pulse_out":[],"input":[]}
         with open(f"{self.circuit.path_to_my_dir}/{self.circuit.name}_mc_LET.csv") as file:
             for linha in file:
@@ -130,9 +133,9 @@ class Backend:
             report (bool, optional): Whether a report is to be printed. Defaults to True.
         """
         self.check_circuit()
-        with sim_config.runner(self.circuit.path_to_circuits).MC_Instance(pmos_var, nmos_var):
-            let_analisado = LET(None, sim_config.vdd, node, output, [pulse_in, pulse_out])
-            LetFinder(self.circuit, path_to_folder=self.circuit.path_to_circuits, report=report).minimal_LET(let_analisado, logical_input, safe=True)
+        # with sim_config.runner(self.circuit.path_to_circuits).MC_Instance(pmos_var, nmos_var):
+        let_analisado = LET(None, sim_config.vdd, node, output, [pulse_in, pulse_out])
+        LetFinder(self.circuit, path_to_folder=self.circuit.path_to_circuits, report=report).minimal_LET(let_analisado, logical_input, safe=True)
 
 if __name__ == "__main__":
 

@@ -1,0 +1,4 @@
+$DATA1 SOURCE='PrimeSim HSPICE' VERSION='T-2022.06-SP2 linux6' PARAM_COUNT=0
+.TITLE 'inverter'
+ minout           maxout           temper           alter#          
+    0.               0.              25.0000        1               

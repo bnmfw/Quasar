@@ -1,0 +1,24 @@
+INVERTER
+
+****** Dispositivos Lógicos ******
+
+.include ../dis/sg13g2_moslv_mod.lib
+
+Vvdd vdd gnd 1.2
+Va a gnd 0.0
+.tran 0.01n 4n
+.meas tran minout min V(s) from=1.0n to=3.8n
+.meas tran maxout max V(s) from=1.0n to=3.8n
+
+****** Circuito ******
+
+.subckt meu A VDD VSS Y
+XX1 Y A VSS VSS sg13_lv_nmos w=740.00n l=130.00n ng=1 ad=0 as=0 pd=0 ps=0 m=1
+XX0 Y A VDD VDD sg13_lv_pmos w=1.12u l=130.00n ng=1 ad=0 as=0 pd=0 ps=0 m=1
+.ends
+
+Xinv a vdd gnd s meu
+C1 s gnd 1f
+
+************
+.end
