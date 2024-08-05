@@ -9,9 +9,18 @@ requirements:
 	@pip install -r .piprequirements
 
 test:
-	@for module in matematica graph faultModel concorrencia predictor dataAnalysis spiceInterface circuito letFinder circuitManager; do \
-		python3 -m utils.$$module; \
-	done
+	@python3 -m src.utils.matematica
+	@python3 -m src.utils.arquivos
+	@python3 -m src.utils.concorrencia
+	@python3 -m src.spiceInterface.spiceInterface
+	@python3 -m src.simconfig.faultModel
+	@python3 -m src.simconfig.simulationConfig
+	@python3 -m src.simconfig.transistorModel
+	@python3 -m src.letSearch.letFinder
+	@python3 -m src.circuit.graph
+	@python3 -m src.circuit.components
+	@python3 -m src.circuit.circuito
+	@python3 -m src.circuit.circuitManager
 
 license:
 	@cd /backup_and_restore_scripts/setup_machine; ./synopsys_start_licenses.sh

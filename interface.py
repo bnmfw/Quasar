@@ -1,9 +1,10 @@
 # O python acha que tem um erro nesses imports, mas nao tem, deixa quieto
-from utils.backend import Backend
-from utils.spiceInterface import HSRunner
-from utils.circuito import Circuito
-from utils.arquivos import CManager
-from utils.simulationConfig import sim_config
+from src.backend import Backend
+from src.spiceInterface.spiceInterface import HSRunner
+from src.circuit.circuito import Circuito
+from src.utils.arquivos import CManager
+from src.simconfig.simulationConfig import sim_config
+from os import sep, path
 # module_error = False
 try:
     from psgui import PSGUI, psgui_is_working, gui_error
@@ -44,16 +45,17 @@ class GUI:
                 current_screen, inputs = self.ui.tela_inicial()
                 circ_nome = inputs["circ"]
                 cadastro = inputs["cadastro"]
+                config_log = sim_config.load(f"circuitos{sep}{circ_nome}")
                 if cadastro:
                     self.circuito = Circuito(circ_nome).from_json()
                     self.backend.set_circuit(self.circuito)
-                else:
+                elif not config_log:
                     _, inputs = self.ui.tela_config_sim(sim_config.vdd, 
                                                         sim_config.fault_model.colect_time, 
                                                         sim_config.fault_model.track_estab, 
                                                         sim_config.transistor_model.charge_collection_depth_nano,
                                                         sim_config.runner)
-                    self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"], inputs["spice"])
+                    self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"], inputs["spice"], f"circuitos{sep}{circ_nome}")
  
 
             # TELA DE CADASTRO
@@ -64,7 +66,7 @@ class GUI:
                 print(self.circuito.nodes)
                 self.backend.set_circuit(self.circuito)
                 with HSRunner.Vdd(sim_config.vdd):
-                    self.backend.determine_LETs(progress_report=self.ui.progress)
+                    self.backend.determine_LETs(progress_report=self.ui.progress, log_circuit=True)
 
             # TELA PRINCIPAL
             elif current_screen == "main":
@@ -95,7 +97,7 @@ class GUI:
                                                                  sim_config.fault_model.track_estab, 
                                                                  sim_config.transistor_model.charge_collection_depth_nano,
                                                                  sim_config.runner)
-                self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"], inputs["spice"])
+                self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"], inputs["spice"], self.circuito.path_to_my_dir)
             
             # EXIT
             elif current_screen is None:

@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 from tkinter import TclError, Tk
-from utils.spiceInterface import HSRunner
-from utils.simulationConfig import sim_config
+from src.spiceInterface.spiceInterface import HSRunner
+from src.simconfig.simulationConfig import sim_config
 import os
 
 # Testa para ver se o tkinter esta funcionando

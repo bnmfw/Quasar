@@ -1,7 +1,7 @@
 from os import path
 from typing import Any
-from utils.spiceInterface import HSRunner, HSpiceRunner, NGSpiceRunner
-from utils.simulationConfig import sim_config
+from src.spiceInterface.spiceInterface import HSRunner, HSpiceRunner, NGSpiceRunner
+from src.simconfig.simulationConfig import sim_config
 from progress.bar import Bar
 
 barra_comprida = "---------------------------"
@@ -67,8 +67,8 @@ class TXTUI:
     def tela_cadastro(self, circ_nome):
         inputs = {"nodos": None, "entradas": None, "saidas": None}
         print(barra_comprida)
-        inputs["entradas"] = [entrada for entrada in input("Entradas de sinal: ").split()]
-        inputs["saidas"] = [entrada for entrada in input("Saidas analisadas: ").split()]
+        inputs["entradas"] = [entrada.lower() for entrada in input("Entradas de sinal: ").split()]
+        inputs["saidas"] = [entrada.lower() for entrada in input("Saidas analisadas: ").split()]
         inputs["nodos"] = [nodo for nodo in HSRunner.get_nodes(circ_nome)[0]]
         return "main", inputs
     
