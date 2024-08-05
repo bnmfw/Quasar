@@ -26,11 +26,9 @@ license:
 	@cd /backup_and_restore_scripts/setup_machine; ./synopsys_start_licenses.sh
 
 clean:
-	@rm -rf __pycache__
-	@rm -rf utils/__pycache__
-	@rm -rf work/
+	@find . -type d -name '__pycache__' -exec rm -r {} +
+	@find . -type d -name 'work' -exec rm -r {} +
 	@mkdir work
-	@rm -rf debug/work
 	@mkdir debug/work
 	@find . -name "scope.log*" -type f -delete
 	@for dir in circuitos debug/test_circuits; do \
