@@ -275,9 +275,9 @@ class Graph:
         
         old_output = self.vertices[output]["signal"]
         
-        # Determines nodes that can flip
-        can_flip = {v: v not in self.non_passing for v in self.vertices}
-        can_flip[faulted_node] = False
+        # Determines if node had its signal updated
+        updated = {v: v in self.non_passing for v in self.vertices}
+        updated[faulted_node] = True
 
         # Flips the node
         self.vertices[faulted_node]["signal"] = not self.vertices[faulted_node]["signal"]
@@ -287,24 +287,21 @@ class Graph:
 
         # Recursivelly propagates logic
         def recursive_propagation(node: str) -> None:
-            # print(node, [f'{v}: {self.vertices[v]["signal"]} {1 if can_flip[v] else 0}' for v in self.vertices])
-            
+            if not updated[node]: return
+
             # Propagates signal to all nodes in region
             # Iterates over arcs starting from the node
-            # print(self.vertices[node]["from"])
             for arc in self.vertices[node]["from"]:
-                # print(1,faulted_node,arc["to"])
-                # Arc doesnt conduct logic signal
-                if arc["control"] is None: continue
                 # Arc's controller doesnt allow passing
-                if arc["control"] and (self.vertices[arc["control"]]["signal"] is None or self.vertices[arc["control"]]["signal"]==arc["invert"]): continue
-                # Node reached actually cant flip so nothing to update
-                if not can_flip[arc["to"]]: continue
-                # print("can")
+                if self.vertices[arc["control"]]["signal"] is None or self.vertices[arc["control"]]["signal"]==arc["invert"]: continue
+                # Node reached already updated
+                if updated[arc["to"]]: continue
                 # No fault actually propagated
-                if self.vertices[arc["to"]]["signal"] == self.vertices[node]["signal"]: continue
+                if self.vertices[arc["to"]]["signal"] == self.vertices[node]["signal"]: 
+                    updated[arc["to"]] = True
+                    continue
                 self.vertices[arc["to"]]["signal"] = self.vertices[node]["signal"]
-                can_flip[arc["to"]] = False
+                updated[arc["to"]] = True
                 recursive_propagation(arc["to"])
             
             # Propagates signal to controlled nodes
@@ -319,7 +316,6 @@ class Graph:
             control_seen.remove(node)
 
         # Propagates the fault from the faulted node
-        # print(faulted_node)
         recursive_propagation(faulted_node)
 
         return old_output != self.vertices[output]["signal"]
@@ -449,6 +445,39 @@ if __name__ == "__main__":
     nots = [(1, "vdd a b".split()), (0, "b a gnd".split()),
             (1, "vdd b c".split()), (0, "c b gnd".split())]
 
+    mux_v1 = [
+        (1, "vdd select n1".split()), 
+        (0, "n1 select gnd".split()), 
+        (1, "vdd n1 x1".split()), 
+        (1, "vdd a x1".split()), 
+        (0, "x1 n1 n2".split()), 
+        (0, "n2 a gnd".split()), 
+        (1, "vdd select x2".split()), 
+        (1, "vdd b x2".split()), 
+        (0, "x2 select n3".split()), 
+        (0, "n3 b gnd".split()), 
+        (1, "vdd x2 out".split()), 
+        (1, "vdd x1 out".split()), 
+        (0, "out x1 n4".split()), 
+        (0, "n4 x2 gnd".split()), 
+        (1, "vdd ina a2".split()), 
+        (0, "a2 ina gnd".split()), 
+        (1, "vdd a2 a".split()), 
+        (0, "a a2 gnd".split()), 
+        (1, "vdd inb b2".split()), 
+        (0, "b2 inb gnd".split()), 
+        (1, "vdd b2 b".split()), 
+        (0, "b b2 gnd".split()), 
+        (1, "vdd insel sel2".split()), 
+        (0, "sel2 insel gnd".split()), 
+        (1, "vdd sel2 select".split()), 
+        (0, "select sel2 gnd".split()), 
+        (1, "vdd out sc1".split()), 
+        (0, "sc1 out gnd".split()),
+        (1, "vdd sc1 sc2".split()),
+        (0, "sc2 sc1 gnd".split()), 
+    ]
+    
     g = Graph(fadder, ["vdd", "gnd"])
     print("\tTesting sees method...")
     assert g.sees("p1_p2","cout"), "SEES FUNCTION FAILED"
@@ -469,7 +498,7 @@ if __name__ == "__main__":
     print("\tTesting valid_orientation method...")
     assert not g.valid_orientation("p6_p9", "fall") and g.valid_orientation("sum", "rise"), "ORIENTATION VALIDATION FAILED"
 
-    print("\tTesting simlate_fault method...")
+    print("\tTesting simulate_fault method...")
     propag_test = Graph(nor, ["vdd", "gnd"])
     propag_test.set_logic([("vdd", 1), ("gnd", 0), ("a", 1), ("b", 0)])
     assert propag_test.simulate_fault("i", "s"), "FAULT SIMULATION FAILED"
@@ -479,5 +508,8 @@ if __name__ == "__main__":
     assert propag_test.simulate_fault("a", "s"), "FAULT SIMULATION FAILED"
     propag_test.set_logic([("vdd", 1), ("gnd", 0), ("a", 1), ("b", 1)])
     assert not propag_test.simulate_fault("a", "s"), "FAULT SIMULATION FAILED"
+    propag_test2 = Graph(mux_v1, ["vdd","gnd"])
+    propag_test2.set_logic([("vdd",1), ("gnd",0), ("a",0), ("b",1), ("select",1)])
+    assert propag_test2.simulate_fault("n4","sc2"), "FAULT SIMULATION FAILED"
 
     print("Logic Module OK")
