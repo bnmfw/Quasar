@@ -9,6 +9,7 @@ from ..utils.arquivos import CManager
 from ..simconfig.simulationConfig import sim_config
 from ..circuit.circuitManager import CircuitManager
 from .predictor import Predictor
+from os import path
 
 class MCManager:
     """
@@ -88,7 +89,7 @@ class MCManager:
             None: Nothing, puts data in <path>/<circuit_name>_mc_LET.csv.
         """
 
-        manager = PersistentProcessMaster(self.run_mc_iteration, None, f"{self.circuito.path_to_my_dir}/MC", progress_report=progress_report, work_dir=self.circuito.path_to_my_dir)        
+        manager = PersistentProcessMaster(self.run_mc_iteration, None, path.join(self.circuito.path_to_my_dir,"MC"), progress_report=progress_report, work_dir=self.circuito.path_to_my_dir)        
 
         # If there is a backup continues from where it stopped.
         if continue_backup and manager.check_backup():
@@ -117,10 +118,10 @@ if __name__ == "__main__":
         nand = Circuito("nand", "test_circuits").from_json()
         n = 4
         MCManager(nand).full_mc_analysis(4)
-        with open("test_circuits/nand/nand_mc_LET.csv", "r") as file:
+        with open(path.join("project","circuits","nand","nand_mc_LET.csv"), "r") as file:
             assert file.read().count("\n") == 4, "MC SIMULATION FAILED"
         
-        with open(f"test_circuits/nand/Raw_data.csv", "r") as file:
+        with open(path.join("project","circuits","nand","Raw_data.csv"), "r") as file:
             data = sorted(list(map(lambda e: e.split(","), file.read().split()[1:])))
             for line in data: line[4] = int(float(line[4]))
             assert data == [['g1', 'g1', 'fall', 'fall', 125, '01', '4.7442987080000005', '4.313604653333333'], ['g1', 'g1', 'fall', 'fall', 125, '10', '4.7442987080000005', '4.313604653333333'], ['g1', 'g1', 'fall', 'fall', 154, '01', '4.8108', '4.372'], ['g1', 'g1', 'fall', 'fall', 154, '10', '4.8108', '4.372'], ['g1', 'g1', 'fall', 'fall', 161, '01', '4.8280387000000005', '4.3524935933333335'], ['g1', 'g1', 'fall', 'fall', 161, '10', '4.8280387000000005', '4.3524935933333335'], ['g1', 'g1', 'fall', 'fall', 181, '01', '4.882529028', '4.494102673333333'], ['g1', 'g1', 'fall', 'fall', 181, '10', '4.882529028', '4.494102673333333'], ['g1', 'g1', 'rise', 'rise', 111, '11', '4.8108', '4.372'], ['g1', 'g1', 'rise', 'rise', 116, '11', '4.8280387000000005', '4.3524935933333335'], ['g1', 'g1', 'rise', 'rise', 127, '11', '4.7442987080000005', '4.313604653333333'], ['g1', 'g1', 'rise', 'rise', 71, '11', '4.882529028', '4.494102673333333'], ['i1', 'g1', 'fall', 'fall', 125, '10', '4.7442987080000005', '4.313604653333333'], ['i1', 'g1', 'fall', 'fall', 154, '10', '4.8108', '4.372'], ['i1', 'g1', 'fall', 'fall', 161, '10', '4.8280387000000005', '4.3524935933333335'], ['i1', 'g1', 'fall', 'fall', 181, '10', '4.882529028', '4.494102673333333'], ['i1', 'g1', 'rise', 'rise', 136, '11', '4.882529028', '4.494102673333333'], ['i1', 'g1', 'rise', 'rise', 195, '11', '4.8108', '4.372'], ['i1', 'g1', 'rise', 'rise', 203, '11', '4.8280387000000005', '4.3524935933333335'], ['i1', 'g1', 'rise', 'rise', 219, '11', '4.7442987080000005', '4.313604653333333']]

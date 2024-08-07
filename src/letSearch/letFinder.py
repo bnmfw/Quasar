@@ -8,7 +8,7 @@ class LetFinder:
     """
     Responsible for finding the minimal LET value from a faulted node to an output.
     """
-    def __init__(self, circuit, path_to_folder: str = "circuitos", report: bool = False):
+    def __init__(self, circuit, path_to_folder: str = "project", report: bool = False):
         """
         Constructor.
 
@@ -329,14 +329,14 @@ if __name__ == "__main__":
     from ..circuit.circuito import Circuito
     from ..spiceInterface.spiceInterface import NGSpiceRunner
     sim_config.runner = NGSpiceRunner
-    nand = Circuito("nand", "debug/test_circuits").from_json()
+    nand = Circuito("nand").from_json()
     
     print("\tTesting Finding Current of safe Let...")
     valid_input = [1,1]
     # target = 111.2548828125
     target = 59.7290039062
     let = LET(target, 0.9, "g1", "g1", [None, None], valid_input)
-    measured = LetFinder(nand, "debug/test_circuits", False).minimal_LET(let, valid_input, safe=True)[1]
+    measured = LetFinder(nand, report=False).minimal_LET(let, valid_input, safe=True)[1]
     assert abs(measured-target) <= 10e-1, f"LET FINDING FAILED simulated:{measured} expected:{target}"
 
     # print("\tTesting Finding Current of invalid unsafe Let...")
@@ -348,6 +348,6 @@ if __name__ == "__main__":
     # target = 140.625
     target = 115.2
     unsafe_valid_let = LET(target, 0.9, "i1", "g1", [None, None], valid_input)
-    assert abs(LetFinder(nand, "debug/test_circuits", False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] - target) < 1
+    assert abs(LetFinder(nand, report=False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] - target) < 1
     
     print("LET Finder OK")

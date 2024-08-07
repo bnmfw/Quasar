@@ -5,6 +5,7 @@ Each class is responsible for its own synchronization as
 """
 
 import multiprocessing as mp
+from os import path
 
 class Predictor:
     """
@@ -20,7 +21,7 @@ class Predictor:
 
         self.process = mp.Process(target=self.work, args = ())
 
-        with open(f"{file_dir}/Raw_data.csv", "w"):
+        with open(path.join(file_dir,"Raw_data.csv"), "w"):
             pass
     
     def start(self) -> None:
@@ -50,7 +51,7 @@ class Predictor:
     
     def work(self):
         header: bool = False
-        with open(f"{self.file_dir}/Raw_data.csv", "a") as file:
+        with open(path.join(self.file_dir,"Raw_data.csv"), "a") as file:
             while True:
                 data: dict = self.submit_queue.get()
                 if data == -1: return

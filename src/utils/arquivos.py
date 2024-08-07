@@ -5,6 +5,7 @@ Auxillary files manager. Responsible for saving simulation data.
 from ..circuit.components import Node, Signal_Input
 import json
 import os
+from os import path
 
 class CSVManager():
     """
@@ -12,7 +13,7 @@ class CSVManager():
     """
     @staticmethod
     def tup_dict_to_csv(path: str, filename: str, dicionario: dict):
-        with open(f"{path}/{filename}", "w") as table:
+        with open(path.join(path,filename), "w") as table:
             for chave, tupla in dicionario.items():
                 table.write(f"{chave}")
                 for value in tupla:
@@ -21,14 +22,14 @@ class CSVManager():
 
     @staticmethod
     def tup_to_csv(path: str, filename: str, lista: list):
-        with open(f"{path}/{filename}", "w") as tabela:
+        with open(path.join(path,filename), "w") as tabela:
             for linha in lista:
                 tabela.write(f'{",".join([str(e) for e in linha])}')
                 tabela.write("\n")
 
     @staticmethod
-    def write_full_csv(circuito, path_to_folder: str):
-        with open(f"{path_to_folder}/{circuito.name}/{circuito.name}.csv", "w") as sets:
+    def write_full_csv(circuito, path_to_circuits: str):
+        with open(path.join(path_to_circuits,circuito.name,f"{circuito.name}.csv"), "w") as sets:
             sets.write("Node,Output,Pulse,Pulse,Current,LET,#Vector,Vectors->\n")
             for nodo in circuito.nodes:
                 nodo.LETs.sort()
@@ -41,19 +42,11 @@ class CSVManager():
                     sets.write("\n")
         print(f"\nTabela {circuito.name}.csv gerada com sucesso\n")
 
-    @staticmethod
-    def write_comparative_csv(circuito, lista_comparativa):
-        with open(f"circuitos/{circuito.name}/{circuito.name}_compara.csv", "w") as tabela:
-            for chave in lista_comparativa:
-                tabela.write(chave + "," + "{:.2f}".format(lista_comparativa[chave]) + "\n")
-
-        print(f"\nTabela {circuito.name}_compara.csv" + " gerada com sucesso\n")
-
 class JsonManager():
     def __init__(self):
         pass
 
-    def codify(self, circuito, path_to_folder="circuitos"):
+    def codify(self, circuito, path_to_circuits=path.join("project","circuits")):
         # Codificacao dos nodos
         dicionario_de_nodos = {}  # criacao do dicionario que tera o dicionario de todos os nodos
         lista_de_nodos = []
@@ -78,13 +71,13 @@ class JsonManager():
         circuito_codificado["saidas"] = lista_de_saidas
         circuito_codificado["nodos"] = lista_de_nodos
 
-        if not os.path.exists(f"{path_to_folder}/{circuito.name}/{circuito.name}.json"):
-            json.dump(circuito_codificado, open(f"{path_to_folder}/{circuito.name}/{circuito.name}.json", "w"))
+        if not os.path.exists(path.join(path_to_circuits,circuito.name,f"{circuito.name}.json")):
+            json.dump(circuito_codificado, open(path.join(path_to_circuits,circuito.name,f"{circuito.name}.json"), "w"))
 
         print("Carregamento do Json realizado com sucesso")
 
-    def decodify(self, circuito, path_to_folder="circuitos"):
-        circuito_codificado: dict = json.load(open(f"{path_to_folder}/{circuito.name}/{circuito.name}.json", "r"))
+    def decodify(self, circuito, path_to_circuits=path.join("project","circuits")):
+        circuito_codificado: dict = json.load(open(path.join(path_to_circuits,circuito.name,f"{circuito.name}.json"), "r"))
 
         # Desempacotamento dos dados
         circuito.SPdelay = circuito_codificado["SPdelay"]

@@ -1,0 +1,30 @@
+Nand5
+
+****** Dispositivos Lógicos ******
+
+.include ../../include.cir
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+Mp1 vdd a g1 vdd PMOS_RVT nfin=3
+Mp2 vdd b g1 vdd PMOS_RVT nfin=3
+Mp3 vdd c g1 vdd PMOS_RVT nfin=3
+Mp4 vdd d g1 vdd PMOS_RVT nfin=3
+Mp5 vdd e g1 vdd PMOS_RVT nfin=3
+
+Mn1 g1 a i1 gnd NMOS_RVT nfin=3
+Mn2 i1 b i2 gnd NMOS_RVT nfin=3
+Mn3 i2 c i3 gnd NMOS_RVT nfin=3
+Mn4 i3 d i4 gnd NMOS_RVT nfin=3
+Mn5 i4 e gnd gnd NMOS_RVT nfin=3
+
+Mp6 vdd g1 ng1 vdd PMOS_RVT nfin=4
+Mn6 ng1 g1 gnd gnd NMOS_RVT nfin=4
+
+************
+.end

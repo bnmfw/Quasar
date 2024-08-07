@@ -3,7 +3,6 @@ Circuit level simulation (Lvl 2) manager.
 """
 
 from ..utils.matematica import all_vector_n_bits, InDir, Time
-from ..spiceInterface.spiceInterface import HSRunner
 from .components import *
 from ..letSearch.letFinder import LetFinder
 from ..utils.concorrencia import ProcessMaster
@@ -25,7 +24,7 @@ class CircuitManager:
             report (bool, optional): Whether or not print reports will be done.
         """
         self.circuit: Circuito = circuit
-        self.let_manager = LetFinder(circuit, circuit.path_to_circuits, report=report)
+        self.let_manager = LetFinder(circuit, circuit.path_to_folder, report=report)
         self.report: bool = report
         self.min_let_predictor = Predictor(circuit.path_to_my_dir) if predictor is None else predictor
     
@@ -77,7 +76,7 @@ class CircuitManager:
                     entrada_analisada.signal = "delay"
 
                     # Etapa de medicao de delay
-                    delay: float = HSRunner.run_delay(self.circuit.file, entrada_analisada.name, output.name, self.circuit.inputs)
+                    delay: float = sim_config.runner().run_delay(self.circuit.file, entrada_analisada.name, output.name, self.circuit.inputs)
 
                     sim_num += 1
 
@@ -223,11 +222,11 @@ if __name__ == "__main__":
 
 
     import sys
+    from os import path
     sys.setrecursionlimit(50)
     print("Testing Circuit Manager...")
 
     from .circuito import Circuito
-    ptf = "debug/test_circuits"
 
     # print("\tTesting update of minimal LETs...")
     # nand_test = Circuito("nand", ptf, 0.7).from_json()
@@ -236,11 +235,12 @@ if __name__ == "__main__":
     
     print("\tTesting determining minimal LETs...")
     with InDir("debug"):
-        ptf = "test_circuits"
-        nor_test = Circuito("nor", ptf).from_nodes(["a", "b"], ["g1"])
+        from ..spiceInterface.spiceInterface import NGSpiceRunner
+        sim_config.runner = NGSpiceRunner
+        nor_test = Circuito("nor").from_nodes(["a", "b"], ["g1"])
         manager = CircuitManager(nor_test, report=False)
         manager.determine_LETs()
-        with open(f"{ptf}/nor/Raw_data.csv", "r") as file:
+        with open(path.join("project","circuits","nor","Raw_data.csv"), "r") as file:
             data = sorted(list(map(lambda e: e.split(","), file.read().split()[1:])))
             for line in data: line[4] = int(float(line[4]))
             assert data == [['g1', 'g1', 'fall', 'fall', 65, '00'],

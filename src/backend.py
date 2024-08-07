@@ -14,6 +14,7 @@ from .simconfig.transistorModel import Transistor
 from .simconfig.faultModel import DoubleExponential
 from .utils.matematica import Time
 from typing import Callable, Type
+from os import path
 
 class Backend:
     """
@@ -97,7 +98,7 @@ class Backend:
         with Time():
             MCManager(self.circuit).full_mc_analysis(n_simu, continue_backup=continue_backup, delay=delay, progress_report=progress_report)
         scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[],"pulse_in":[],"pulse_out":[],"input":[]}
-        with open(f"{self.circuit.path_to_my_dir}/{self.circuit.name}_mc_LET.csv") as file:
+        with open(path.join(self.circuit.path_to_my_dir,f"{self.circuit.name}_mc_LET.csv")) as file:
             for linha in file:
                 pmos, nmos, node, output, pulse_in, pulse_out, current, let, *inputs = linha.split(",")
                 scatter_data["PMOS"].append(float(pmos))
@@ -136,7 +137,7 @@ class Backend:
         self.check_circuit()
         # with sim_config.runner(self.circuit.path_to_circuits).MC_Instance(pmos_var, nmos_var):
         let_analisado = LET(None, sim_config.vdd, node, output, [pulse_in, pulse_out])
-        LetFinder(self.circuit, path_to_folder=self.circuit.path_to_circuits, report=report).minimal_LET(let_analisado, logical_input, safe=True)
+        LetFinder(self.circuit, path_to_folder=self.circuit.path_to_folder, report=report).minimal_LET(let_analisado, logical_input, safe=True)
 
 if __name__ == "__main__":
 
@@ -146,7 +147,7 @@ if __name__ == "__main__":
 
     # with InDir("debug"):
 
-    nand: Circuito = Circuito("nor", "circuitos").from_json()
+    nand: Circuito = Circuito("nor").from_json()
     backend: Backend = Backend().set_circuit(nand, 0.7)
     backend.find_single_let("g1", "g1", [1, 1], "rise", "rise", 4.8108, 4.3720)
 

@@ -1,0 +1,4 @@
+*Input signals to be altered by Quasar
+Vinsel insel gnd 0.9
+Vina ina gnd 0.0
+Vinb inb gnd 0.9

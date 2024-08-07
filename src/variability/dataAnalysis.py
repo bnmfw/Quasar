@@ -1,5 +1,6 @@
 import pandas as pd
 from matplotlib import pyplot as plt
+from os import path
 
 class DataAnalist:
     def __init__(self) -> None:
@@ -42,7 +43,7 @@ class DataAnalist:
         plt.legend(loc='lower right', fontsize="x-large")
         plt.title(target)
         plt.colorbar(scatter1)
-        plt.savefig(f'{directory}/{target}_scatter.png', format='png', dpi=300)
+        plt.savefig(path.join(directory,f'{target}_scatter.png'), format='png', dpi=300)
     
     def qualitative_scatter(self, data: dict, x: str, y: str, target: str, directory: str):
         """
@@ -75,7 +76,7 @@ class DataAnalist:
         plt.ylabel(y)
         plt.legend(loc='lower right', fontsize="x-large")
         plt.title(target)
-        plt.savefig(f'{directory}/{target}_scatter.png', format='png', dpi=300)
+        plt.savefig(path.join(directory,f'{target}_scatter.png'), format='png', dpi=300)
 
     def describe(self, data: dict, directory: str):
         """
@@ -87,7 +88,7 @@ class DataAnalist:
         """
         
         data = pd.DataFrame(data)
-        data.describe().to_csv(f"{directory}/description.csv")
+        data.describe().to_csv(path.join(directory,"description.csv"))
 
     def count_unique(self, data: dict, target: str, directory: str):
         """
@@ -109,7 +110,7 @@ class DataAnalist:
         for value, count in unique.items():
             csv += f"{value},{count},{count/len(data[target])}\n"
             
-        with open(f"{directory}/{target}_count.csv","w") as file:
+        with open(path.join(directory,f"{target}_count.csv"),"w") as file:
             file.writelines(csv)
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ from .transistorModel import Transistor, FinFET, Bulk32
 from .faultModel import FaultModel, FinFETMessengerStandard, DoubleExponential
 # from .spiceInterface import SpiceRunner, NGSpiceRunner, HSpiceRunner
 from typing import Type
-from os import sep, path
+from os import path
 
 class SimulationConfig:
     """
@@ -42,7 +42,7 @@ class SimulationConfig:
         return self.fault_model.current_to_let(current_micro, self.transistor_model)
 
     def dump(self, path_to_folder: str) -> None:
-        with open(f"{path_to_folder}{sep}config", "w") as file:
+        with open(path.join(path_to_folder,"config"), "w") as file:
             print(self.runner)
             file.write(f"vdd={self.vdd}\n"
                        f"colection_time={self.fault_model.colect_time}\n"
@@ -51,9 +51,9 @@ class SimulationConfig:
                        f"runner={self.runner.__name__}")
 
     def load(self, path_to_folder: str) -> bool:
-        if not path.exists(f"{path_to_folder}{sep}config"):
+        if not path.exists(path.join(path_to_folder,"config")):
             return False
-        with open(f"{path_to_folder}{sep}config") as file:
+        with open(path.join(path_to_folder,"config")) as file:
             tokens: dict = {}
             for line in file:
                 a, b = line.split("=")

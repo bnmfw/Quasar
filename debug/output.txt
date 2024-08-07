@@ -1,6 +1,0 @@
-Using: /usr/synopsys/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice debug/empty.cir
-  Start time: Sun Jul 16 21:28:03 2023
-           job total runtime         0.00 seconds
-
-
- lic: total license checkout elapse time:        0.00(s)

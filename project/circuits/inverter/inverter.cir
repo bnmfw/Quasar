@@ -1,0 +1,21 @@
+Inverter
+
+****** Dispositivos Lógicos ******
+
+.include ../../include.cir
+
+****** HSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+Mp1 vdd a g1 vdd PMOS_RVT nfin=3
+Mn1 g1 a gnd gnd NMOS_RVT nfin=3
+
+Mp2 vdd g1 ng1 vdd PMOS_RVT nfin=4
+Mn2 ng1 g1 gnd gnd NMOS_RVT nfin=4
+
+************
+.end

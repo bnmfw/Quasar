@@ -4,7 +4,7 @@ from src.spiceInterface.spiceInterface import HSRunner
 from src.circuit.circuito import Circuito
 from src.utils.arquivos import CManager
 from src.simconfig.simulationConfig import sim_config
-from os import sep, path
+from os import path
 # module_error = False
 try:
     from psgui import PSGUI, psgui_is_working, gui_error
@@ -45,7 +45,7 @@ class GUI:
                 current_screen, inputs = self.ui.tela_inicial()
                 circ_nome = inputs["circ"]
                 cadastro = inputs["cadastro"]
-                config_log = sim_config.load(f"circuitos{sep}{circ_nome}")
+                config_log = sim_config.load(path.join("project","circuits",f"{circ_nome}"))
                 if cadastro:
                     self.circuito = Circuito(circ_nome).from_json()
                     self.backend.set_circuit(self.circuito)
@@ -55,7 +55,7 @@ class GUI:
                                                         sim_config.fault_model.track_estab, 
                                                         sim_config.transistor_model.charge_collection_depth_nano,
                                                         sim_config.runner)
-                    self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"], inputs["spice"], f"circuitos{sep}{circ_nome}")
+                    self.backend.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"], inputs["spice"], path.join("project","circuits",f"{circ_nome}"))
  
 
             # TELA DE CADASTRO

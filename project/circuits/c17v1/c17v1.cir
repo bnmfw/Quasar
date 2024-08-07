@@ -1,0 +1,80 @@
+Benchmark C17 V1
+
+****** Dispositivos Lógicos ******
+
+.include ../../include.cir
+
+****** HSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+Xinva1 vcc gnd a fa NOT
+Xinva2 vcc gnd fa ta NOT
+Xinvb1 vcc gnd b fb NOT
+Xinvb2 vcc gnd fb tb NOT
+Xinvc1 vcc gnd c fc NOT
+Xinvc2 vcc gnd fc tc NOT
+Xinvd1 vcc gnd d fd NOT
+Xinvd2 vcc gnd fd td NOT
+Xinve1 vcc gnd e fe NOT
+Xinve2 vcc gnd fe te NOT
+
+****** START QUASAR ******
+
+Mp11 vdd ta e1 ta PMOS_RVT nfin=3
+Mp12 vdd tb e1 tb PMOS_RVT nfin=3
+Mn11 e1 ta i1 ta NMOS_RVT nfin=3
+Mn12 i1 tb gnd tb NMOS_RVT nfin=3
+
+Mp21 vdd td e2 td PMOS_RVT nfin=3
+Mp22 vdd tb e2 tb PMOS_RVT nfin=3
+Mn21 e2 td i2 td NMOS_RVT nfin=3
+Mn22 i2 tb gnd tb NMOS_RVT nfin=3
+
+Mp31 vdd e2 e3 e2 PMOS_RVT nfin=3
+Mp32 vdd tc e3 tc PMOS_RVT nfin=3
+Mn31 e3 e2 i3 e2 NMOS_RVT nfin=3
+Mn32 i3 tc gnd tc NMOS_RVT nfin=3
+
+Mp41 vdd e1 g1 e1 PMOS_RVT nfin=3
+Mp42 vdd e3 g1 e3 PMOS_RVT nfin=3
+Mn41 g1 e1 i4 e1 NMOS_RVT nfin=3
+Mn42 i4 e3 gnd e3 NMOS_RVT nfin=3
+
+MpI1 vdd td nd td PMOS_RVT nfin=3
+MnI1 nd td gnd td NMOS_RVT nfin=3
+
+MpI2 vdd tb nb tb PMOS_RVT nfin=3
+MnI2 nb tb gnd tb NMOS_RVT nfin=3
+
+Mp51 vdd tc i5 tc PMOS_RVT nfin=3
+Mp52 i5 te e4 te PMOS_RVT nfin=3
+Mn51 e4 tc gnd tc NMOS_RVT nfin=3
+Mn52 e4 te gnd te NMOS_RVT nfin=3
+
+Mp61 vdd nb i6 nb PMOS_RVT nfin=3
+Mp62 i6 nd e5 nd PMOS_RVT nfin=3
+Mn61 e5 nb gnd nb NMOS_RVT nfin=3
+Mn62 e5 nd gnd nd NMOS_RVT nfin=3
+
+Mp71 vdd e4 i7 e4 PMOS_RVT nfin=3
+Mp72 i7 e5 g2 e5 PMOS_RVT nfin=3
+Mn71 g2 e4 gnd e4 NMOS_RVT nfin=3
+Mn72 g2 e5 gnd e5 NMOS_RVT nfin=3
+
+****** END QUASAR ******
+
+Vmeasg1 g1 m1 0
+Vmeasg2 g2 m2 0
+
+//Representação de um circuitoos benchmark
+xff1 clk m1 q1 nq1 vcc gnd DFF
+xff2 clk m2 q2 nq2 vcc gnd DFF
+xinv11 vcc gnd q1 nnq1 NOT
+xinv12 vcc gnd q2 nnq2 NOT  
+
+************
+.end

@@ -1,8 +1,6 @@
 *__pycache__*
 venv/
-debug/crash_report/
-debug/backup_test/
-debug/test_circuits/output.txt
+*circuits/*
 *output.txt
 *work/
 invisible/

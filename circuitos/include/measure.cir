@@ -1,5 +1,0 @@
-*File with measures of lowest and highest values in node and output
-.meas tran minout min V(out) from=1.0n to=3.8n
-.meas tran maxout max V(out) from=1.0n to=3.8n
-.meas tran minnod min V(out) from=1.0n to=3.8n
-.meas tran maxnod max V(out) from=1.0n to=3.8n

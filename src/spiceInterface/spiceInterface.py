@@ -5,13 +5,14 @@ No other file in the Project should know how to interact with Spice.
 Both classes in this file are stateless, therefore the classes are instantiated and its instances are accessed 
 """
 
-from ..utils.matematica import spice_to_float
+from ..utils.matematica import spice_to_float, InDir
 from ..circuit.components import LET
 from ..circuit.graph import Graph
 from ..simconfig.simulationConfig import sim_config
 from dataclasses import dataclass
 from abc import ABC
 import os
+from os import path
 from typing import TextIO
 
 # Defines the start and end of the measuring window, must have only 2 elements
@@ -21,7 +22,7 @@ class SpiceFileManager():
     """
     Responsible for altering the .cir files used by Spice and reading its output.
     """
-    def __init__(self, path_to_folder: str = "circuitos") -> None:
+    def __init__(self, path_to_folder: str = path.join("project")) -> None:
         """
         Constructor.
 
@@ -78,7 +79,7 @@ class SpiceFileManager():
             node (str): Node with to have min and max tensions measured
             output (str): Output to have min and max tensions measured
         """
-        with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
+        with open(path.join(self.path_to_folder,"include","measure.cir"), "w") as file:
             file.write("*File with measures of lowest and highest values in node and output\n")
             self.__write_peak_meas(file, "minout", "min", "V", output, *measure_window)
             self.__write_peak_meas(file, "maxout", "max", "V", output, *measure_window)
@@ -92,7 +93,7 @@ class SpiceFileManager():
         Args:
             node (str): Node with to have min and max tensions measured.
         """
-        with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
+        with open(path.join(self.path_to_folder,"include","measure.cir"), "w") as file:
             file.write("*File with measures of lowest and highest values in node\n")
             self.__write_peak_meas(file, "minnod", "min", "V", node, *measure_window)
             self.__write_peak_meas(file, "maxnod", "max", "V", node, *measure_window) 
@@ -104,7 +105,7 @@ class SpiceFileManager():
         Args:
             nodes (list[str]): List of node names to be measured.
         """
-        with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
+        with open(path.join(self.path_to_folder,"include","measure.cir"), "w") as file:
             file.write("*File with measured of lowest and highest values in list of nodes\n")
             for node in nodes:
                 self.__write_peak_meas(file, f"min{node}", "min", "V", node, *measure_window)
@@ -117,7 +118,7 @@ class SpiceFileManager():
         Args:
             vdd (float): Defines the vdd of the simulation.
         """
-        with open(f"{self.path_to_folder}/include/vdd.cir", "w") as file:
+        with open(path.join(self.path_to_folder,"include","vdd.cir"), "w") as file:
             file.write("*File with the vdd tension used by all circuits\n")
             file.write(f"Vvdd vdd gnd {vdd}\n")
             file.write(f"Vvcc vcc gnd {vdd}\n")
@@ -130,7 +131,7 @@ class SpiceFileManager():
         Args:
             vss (float): defines the vss of the simulation
         """
-        with open(f"{self.path_to_folder}/include/vss.cir", "w") as file:
+        with open(path.join(self.path_to_folder,"include","vss.cir"), "w") as file:
             file.write("*File with the vss tension used by all circuits\n")
             file.write(f"Vvss vss gnd {vss}\n")
 
@@ -143,7 +144,7 @@ class SpiceFileManager():
             inputs (dict): dict with input values in the form {input_name: input_value}
         """
 
-        with open(f"{self.path_to_folder}/include/fontes.cir", "w") as file:
+        with open(path.join(self.path_to_folder,"include","fontes.cir"), "w") as file:
             file.write("*Input signals to be altered by Quasar\n")
 
             # Writes the signal from the signal dict
@@ -178,7 +179,7 @@ class SpiceFileManager():
         if current == None:
             current = let.current
 
-        with open(f"{self.path_to_folder}/include/SETs.cir", "w") as sets:
+        with open(path.join(self.path_to_folder,"include","SETs.cir"), "w") as sets:
             sets.write("*SET faults\n")
             sets.write(sim_config.fault_model.spice_string(let.node_name, current, let.orientacao[0])+"\n")
 
@@ -192,7 +193,7 @@ class SpiceFileManager():
             vdd (float): value of the vdd of the simulation.
         """
 
-        with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
+        with open(path.join(self.path_to_folder,"include","measure.cir"), "w") as file:
             file.write("*File with the dealys to be measured\n")
             half_vdd = str(vdd / 2)
             self.__write_trig_meas(file, "atraso_rr", input, half_vdd, "rise", out, half_vdd, "rise")
@@ -209,7 +210,7 @@ class SpiceFileManager():
         Args:
             let (LET): let modeled.
         """
-        with open(f"{self.path_to_folder}/include/measure.cir", "w") as file:
+        with open(path.join(self.path_to_folder,"include","measure.cir"), "w") as file:
             file.write("*File with the fault width to be measured\n")
             tensao = str(let.vdd * 0.5)
             self.__write_trig_meas(file, "larg", let.node_name, tensao, "rise", let.node_name, tensao, "fall")
@@ -221,7 +222,7 @@ class SpiceFileManager():
         Args:
             simulations (int): number o Monte Carlo simulations.
         """
-        with open(f"{self.path_to_folder}/include/monte_carlo.cir", "w") as mc:
+        with open(path.join(self.path_to_folder,"include","monte_carlo.cir"), "w") as mc:
             mc.write("*Arquivo Analise Monte Carlo\n")
             mc.write(".tran 0.01n 4n")
             if simulations: mc.write(f" sweep monte={simulations}")
@@ -235,7 +236,7 @@ class SpiceFileManager():
             nvar (float): work function of nfer devices.
 
         """
-        with open (f"{self.path_to_folder}/include/mc.cir","w") as mc:
+        with open (path.join(self.path_to_folder,"include","mc.cir"),"w") as mc:
             if pvar == None or nvar == None:
                 mc.write("* Analise MC\n"
                 ".param phig_var_p = gauss(4.8108, 0.05, 3)\n"
@@ -254,7 +255,7 @@ class SpiceFileManager():
             nvar (float): thershold voltage of nmos devices.
 
         """
-        with open (f"{self.path_to_folder}/include/mc.cir","w") as mc:
+        with open (path.join(self.path_to_folder,"include","mc.cir"),"w") as mc:
             if pvar == None or nvar == None:
                 mc.write("* Analise MC\n"
                 ".param vth0_var_p = gauss(-0.49155, 0.1, 3)\n"
@@ -350,8 +351,7 @@ class SpiceFileManager():
         """
         nodes = {"vdd", "gnd"}
         if tension_sources is None: tension_sources = ["vcc", "vdd", "gnd", "vss"]
-        # critical_region = False
-        with open(f"{self.path_to_folder}/{circuit_name}/{circuit_name}.cir", "r") as file:
+        with open(path.join(self.path_to_folder,'circuits',circuit_name,f"{circuit_name}.cir"), "r") as file:
             transistor_list: list = []
             for i, line in enumerate(file):
                 line = line.strip()
@@ -374,7 +374,7 @@ class SpiceFileManager():
             dict: a dict containing all data formatted as {'label': data}
         """
         data: dict = {}
-        with open(f"{self.path_to_folder}/output.txt", "r") as output:
+        with open(path.join(self.path_to_folder,"output.txt"), "r") as output:
             for linha in output:
                 data.update(self.__format_output_line(linha))
         self.output = data
@@ -479,7 +479,7 @@ class SpiceFileManager():
 
         faults: int = 0
 
-        data: dict = self.__get_csv_data(f"{self.path_to_folder}/{circuit_name}/{circuit_name}.mt0.csv", ".TITLE")
+        data: dict = self.__get_csv_data(path.join(self.path_to_folder,'circuits',circuit_name,f"{circuit_name}.mt0.csv"), ".TITLE")
 
         inclination_corr = "mincor" if inclination == "fall" else "maxcor"
         inclination_tens = "minout" if inclination == "fall" else "maxout"
@@ -527,7 +527,8 @@ class SpiceFileManager():
         """
         instances: dict = {}
 
-        data = self.__get_csv_data(f"{self.path_to_folder}/{circ_name}/{circ_name}.mc0.csv", "$ IRV")
+        
+        data: dict = self.__get_csv_data(path.join(self.path_to_folder,'circuits',circ_name,f"{circ_name}.mc0.csv"), "$ IRV")
 
         ps: str = "pmos_rvt:@:phig_var_p:@:IGNC"
         ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
@@ -548,7 +549,8 @@ class SpiceFileManager():
         """
         instances: dict = {}
 
-        data = self.__get_csv_data(f"{self.path_to_folder}/{circ_name}/{circ_name}.mc0.csv", "$ IRV")
+        
+        data: dict = self.__get_csv_data(path.join(self.path_to_folder,'circuits',circ_name,f"{circ_name}.mc0.csv"), "$ IRV")
 
         ps: str = "pmos_bulk:@:vth0_var_p:@:IGNC"
         ns: str = "nmos_bulk:@:vth0_var_n:@:IGNC"
@@ -567,7 +569,7 @@ class SpiceRunner(ABC):
     # Must know path_to_folder of the SpiceRunner instance, wich seems to be very hard to do
     file_manager = None
 
-    def __init__(self, path_to_folder: str = "circuitos") -> None:
+    def __init__(self, path_to_folder: str = "project") -> None:
         """
         Constructor
 
@@ -733,7 +735,7 @@ class SpiceRunner(ABC):
         delay = SpiceRunner.file_manager.get_delay()
         return delay
     
-    def run_SET(self, filename: str, let: LET, current: float = None, path_to_root = "../../../..") -> tuple:
+    def run_SET(self, filename: str, let: LET, current: float = None) -> tuple:
         """
         Returns the peak voltage output for a given let.
 
@@ -741,7 +743,6 @@ class SpiceRunner(ABC):
             filename (str): Name of the file.
             let (LET): let simulated.
             current (float): current of the fault. If left as None let.current will be used.
-            path_to_root (str): path to root directory of the project.
 
         Returns:    
             tuple: A tuple containing the peak tension at the node where the fault originated and output.
@@ -814,7 +815,7 @@ class SpiceRunner(ABC):
         """
         SpiceRunner.file_manager.measure_pulse(name_name, output_name)
         with self.Monte_Carlo(sim_num):
-            self._run_spice(f"{self.path_to_folder}/{circuit_name}", f"{circuit_name}.cir", ["minout", "maxout"])
+            self._run_spice(path.join(self.path_to_folder,"circuits",circuit_name), f"{circuit_name}.cir", ["minout", "maxout"])
         return SpiceRunner.file_manager.get_mc_faults(circuit_name, sim_num, output_incl, vdd)
 
     def run_MC_var(self, filename: str, circuit_name: str, sim_num: int) -> dict:
@@ -843,11 +844,9 @@ class NGSpiceRunner(SpiceRunner):
             labels (list[str]): labels to be dumped
         """
         f = '\|'
-        command = f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; ngspice -b < {filename} 2>&1 "
+        command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ; ngspice -b < {filename} 2>&1 "
         if labels is not None: command += f"| grep \"{f.join(labels)}\" "
-        command += "> ../output.txt"
-        # from time import sleep
-        # sleep(100)
+        command += f"> {path.join('..','..','output.txt')}"
         os.system(command)
 
 class HSpiceRunner(SpiceRunner):
@@ -860,16 +859,16 @@ class HSpiceRunner(SpiceRunner):
             labels (list[str]): labels to be dumped
         """
         f = '\|'
-        command = f"cd {self.path_to_folder}/{filename.replace('.cir','')} ; hspice {filename} "
+        command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ; hspice {filename} "
         if labels is not None: command += f"| grep \"{f.join(labels)}\" "
-        command += "> ../output.txt"
+        command += f"> {path.join('..','..','output.txt')}"
         os.system(command)
 
     def test_spice(self) -> bool:
         """
         Testes if spice is working. If not will exit as nothing can be done without spice.
         """
-        os.system(f"hspice debug/empty.cir > output.txt")
+        os.system(f"hspice {path.join('debug','empty.cir')} > {path.join('debug','output.txt')}")
         with open("output.txt", "r") as file:
             for linha in file:
                 if "Cannot connect to license server system" in linha:
@@ -882,52 +881,53 @@ sim_config.runner = NGSpiceRunner
 # Runs a bunch of routine checks to see if the Spice Interface is running accordingly
 if __name__ == "__main__":
 
-    print("Testing Spice Interface...")
-    ptf = "debug/test_circuits"
-    from ..circuit.circuito import Circuito
-    TestRunner = NGSpiceRunner(path_to_folder=ptf)
-    TestManager = SpiceFileManager(path_to_folder=ptf)
-    vdd = 0.9
-    TestRunner.default(vdd)
+    with InDir("debug"):
+        print("Testing Spice Interface...")
+        ptf = path.join("project")
+        from ..circuit.circuito import Circuito
+        TestRunner = NGSpiceRunner(path_to_folder=ptf)
+        TestManager = SpiceFileManager(path_to_folder=ptf)
+        vdd = 0.9
+        TestRunner.default(vdd)
 
-    # TestRunner.test_spice()
-    
-    # igl = ["a","b","cin","na","nb","ncin","ncout","nsum","gate_p15", "drain_p15", "gate_p16", "drain_p16", "gate_q15", "drain_q15", "gate_q16", "drain_q16"]
-    # fadder = Circuito("fadder", ptf, 0.7).from_nodes(["a1","b1","cin1"],["sum","cout"], igl)
-    # fadder.graph.set_logic([("a1",0), ("b1",0), ("cin1",0),("vdd",1),("gnd",0),("vss",0),("vcc",1)])
-    # assert fadder.graph.is_affected_by("sum") == {'a1', 'cin1', 'p9_n6', 'b1', 'p3_p4', 'p1_p2', 'p11_p12', 'n6_n7', 'p10_p11', 'sum', 'p2_n1'}, "IS AFFECTED BY FUNCTION FAILED"
-    
-    # exit()
+        # TestRunner.test_spice()
+        
+        # igl = ["a","b","cin","na","nb","ncin","ncout","nsum","gate_p15", "drain_p15", "gate_p16", "drain_p16", "gate_q15", "drain_q15", "gate_q16", "drain_q16"]
+        # fadder = Circuito("fadder", ptf, 0.7).from_nodes(["a1","b1","cin1"],["sum","cout"], igl)
+        # fadder.graph.set_logic([("a1",0), ("b1",0), ("cin1",0),("vdd",1),("gnd",0),("vss",0),("vcc",1)])
+        # assert fadder.graph.is_affected_by("sum") == {'a1', 'cin1', 'p9_n6', 'b1', 'p3_p4', 'p1_p2', 'p11_p12', 'n6_n7', 'p10_p11', 'sum', 'p2_n1'}, "IS AFFECTED BY FUNCTION FAILED"
+        
+        # exit()
 
-    print("\tTesting node tensions...")
-    nand_test = Circuito("nand", ptf).from_json()
-    for vi, entrada in zip([0,0], nand_test.inputs): entrada.signal = vi
-    with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):
-        assert TestRunner.run_nodes_value(nand_test.file, ["i1", "g1"])["i1"][0] - 0.104784 < 10e-3, "TENSIONS RUN FAILED"
+        print("\tTesting node tensions...")
+        nand_test = Circuito("nand").from_json()
+        for vi, entrada in zip([0,0], nand_test.inputs): entrada.signal = vi
+        with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):
+            assert TestRunner.run_nodes_value(nand_test.file, ["i1", "g1"])["i1"][0] - 0.104784 < 10e-3, "TENSIONS RUN FAILED"
 
-    print("\tTesting circuit parsing...")
-    nor_test = Circuito("nor", ptf).from_nodes(["a","b"],["g1"])
-    assert {nodo.name for nodo in nor_test.nodes} == {"g1", "i1", "a", "b", "ng1"}, "CIRCUIT PARSING FAILED"
+        print("\tTesting circuit parsing...")
+        nor_test = Circuito("nor").from_nodes(["a","b"],["g1"])
+        assert {nodo.name for nodo in nor_test.nodes} == {"g1", "i1", "a", "b", "ng1"}, "CIRCUIT PARSING FAILED"
 
-    print("\tTesting SET simulation with known SET value...")
-    nand_test = Circuito("nand", ptf).from_json()
-    valid_input = [0, 1] 
-    valid_let = LET(156.25, vdd, "g1", "g1", ["fall", "fall"], valid_input)
-    expected_let_value = 0.36585829999999997
-    for vi, entrada in zip(valid_input, nand_test.inputs): entrada.signal = vi
-    with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):#, TestRunner.MC_Instance(4.7443, 4.3136):
-        peak_node, peak_output = TestRunner.run_SET(nand_test.file, valid_let, path_to_root="debug/..")
-        assert abs(peak_node-expected_let_value) <= 10e-1, f"SET SIMULATION FAILED simulated: {peak_node} expected: {expected_let_value}"
+        print("\tTesting SET simulation with known SET value...")
+        nand_test = Circuito("nand").from_json()
+        valid_input = [0, 1] 
+        valid_let = LET(156.25, vdd, "g1", "g1", ["fall", "fall"], valid_input)
+        expected_let_value = 0.36585829999999997
+        for vi, entrada in zip(valid_input, nand_test.inputs): entrada.signal = vi
+        with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):#, TestRunner.MC_Instance(4.7443, 4.3136):
+            peak_node, peak_output = TestRunner.run_SET(nand_test.file, valid_let)
+            assert abs(peak_node-expected_let_value) <= 10e-1, f"SET SIMULATION FAILED simulated: {peak_node} expected: {expected_let_value}"
 
-    # print("\tTesting delay simulation with known delay value...")
-    # delay_input = [1, "delay"]
-    # expected_delay_value = 9.1557e-12
-    # for vi, entrada in zip(delay_input, nand_test.inputs): entrada.signal = vi
-    # with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):
-    #     delay = TestRunner.run_delay(nand_test.file, "b", "g1", nand_test.inputs)
-    #     assert abs(delay - expected_delay_value) <= 10e-6, "DELAY SIMULATION FAILED"
+        # print("\tTesting delay simulation with known delay value...")
+        # delay_input = [1, "delay"]
+        # expected_delay_value = 9.1557e-12
+        # for vi, entrada in zip(delay_input, nand_test.inputs): entrada.signal = vi
+        # with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):
+        #     delay = TestRunner.run_delay(nand_test.file, "b", "g1", nand_test.inputs)
+        #     assert abs(delay - expected_delay_value) <= 10e-6, "DELAY SIMULATION FAILED"
 
-    # print("\tTesting MC points generation...")
-    # assert len(TestRunner.run_MC_var(nand_test.file, nand_test.name, 10)) == 10, "MC POINTS GENERATION FAILED"
-    
-    print("Spice Interface OK.")
+        # print("\tTesting MC points generation...")
+        # assert len(TestRunner.run_MC_var(nand_test.file, nand_test.name, 10)) == 10, "MC POINTS GENERATION FAILED"
+        
+        print("Spice Interface OK.")

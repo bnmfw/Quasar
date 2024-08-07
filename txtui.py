@@ -44,11 +44,11 @@ class TXTUI:
         # Circuito a ser analisado
         print(barra_comprida)
         inputs["circ"] = input("Circuito a ser analisado: ")
-        while not path.exists(f"circuitos/{inputs['circ']}"):
+        while not path.exists(path.join("project","circuits",f"{inputs['circ']}")):
             inputs["circ"] = input("Circuito nao encontrado na pasta 'circuitos' por favor insira um circuito valido:\n")
 
         # Informacao sobre o cadastro
-        inputs["cadastro"] = path.exists(f"circuitos/{inputs['circ']}/{inputs['circ']}.json")
+        inputs["cadastro"] = path.exists(path.join("project","circuits",f"{inputs['circ']}",f"{inputs['circ']}.json"))
         if inputs["cadastro"]:    
             print("\nCadastro do circuito encontrado")
         else:
@@ -118,7 +118,7 @@ class TXTUI:
         inputs = {"progress": None, "n_sim": 2000, "continue": False, "window": None}
 
         # Continua simulacao onde parou se ha backup
-        if path.exists(f"circuitos/{circuito.name}/MC_jobs.json"): 
+        if path.exists(path.join("project","circuits",f"{circuito.name}","MC_jobs.json")): 
             print("\nSimulacao em andamento encontrada, continuando de onde parou...\n")
             inputs["continue"] = True
             return "main", inputs

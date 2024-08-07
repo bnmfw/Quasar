@@ -1,0 +1,22 @@
+NAND3
+
+****** Dispositivos Lógicos ******
+
+.include ../../include.cir
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+Mp1 vdd a g1 vdd PMOS_RVT NFIN=3
+Mp2 vdd b g1 vdd PMOS_RVT NFIN=3
+Mp3 vdd c g1 vdd PMOS_RVT NFIN=3
+Mn1 g1 a i1 gnd NMOS_RVT NFIN=3
+Mn2 i1 b i2 gnd NMOS_RVT NFIN=3
+Mn3 i2 c gnd gnd NMOS_RVT NFIN=3
+
+************
+.end

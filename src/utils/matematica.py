@@ -3,6 +3,7 @@ Miscellanious auxilary functions.
 """
 from time import perf_counter
 import os
+from os import sep
 
 class Time():
     """
@@ -36,13 +37,13 @@ class InDir():
             :param str dir: Directory to be changed to.
         """
         self.dir = dir
-        self.depth = dir.count("/")+1
+        self.depth = dir.count(sep)+1
 
     def __enter__(self):
         os.chdir(self.dir)
     
     def __exit__(self, a, b, c):
-        os.chdir("/".join([".."] * self.depth))
+        os.chdir(sep.join([".."] * self.depth))
 
 def all_vector_n_bits(bits: int) -> int:
     """

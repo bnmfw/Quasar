@@ -1,0 +1,43 @@
+Xor v1
+
+****** Dispositivos Lógicos ******
+
+.include ../../include.cir
+
+****** HGSPICE ******
+
+.option measform = 3
+.option post = 0
+
+****** Circuito ******
+
+Mp11 vdd ta fa vdd PMOS_RVT nfin=3
+Mn11 fa ta gnd gnd NMOS_RVT nfin=3
+Mp12 vdd fa a vdd PMOS_RVT nfin=3
+Mn12 a fa gnd gnd NMOS_RVT nfin=3
+
+Mp13 vdd tb fb vdd PMOS_RVT nfin=3
+Mn13 fb tb gnd gnd NMOS_RVT nfin=3
+Mp14 vdd fb b vdd PMOS_RVT nfin=3
+Mn14 b fb gnd gnd NMOS_RVT nfin=3
+
+Mp1 vdd a na vdd PMOS_RVT nfin=3
+Mn1 na a gnd gnd NMOS_RVT nfin=3
+
+Mp2 vdd b nb vdd PMOS_RVT nfin=3
+Mn2 nb b gnd gnd NMOS_RVT nfin=3
+
+Mp3 vdd na i1 vdd PMOS_RVT nfin=3
+Mp4 i1 b axorb vdd PMOS_RVT nfin=3
+Mp5 vdd a i2 vdd PMOS_RVT nfin=3
+Mp6 i2 nb axorb vdd PMOS_RVT nfin=3
+
+Mn3 axorb nb i3 gnd NMOS_RVT nfin=3
+Mn4 i3 na gnd gnd NMOS_RVT nfin=3
+Mn5 axorb b i4 gnd NMOS_RVT nfin=3
+Mn6 i4 a gnd gnd NMOS_RVT nfin=3
+
+Mp15 vdd axorb g1 vdd PMOS_RVT nfin=3
+Mn15 g1 axorb gnd gnd NMOS_RVT nfin=3
+************
+.end

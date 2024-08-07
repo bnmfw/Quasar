@@ -10,6 +10,7 @@ import signal
 import sys
 import json
 from time import sleep, perf_counter
+from os import path, sep
 
 class ProcessFolder:
     """
@@ -19,23 +20,20 @@ class ProcessFolder:
     def __init__(self, dir: str, circuit: str = None):
         self.pid = None
         self.dir = dir
-        self.first_dir = self.dir.split('/')[0]
-        self.depth = self.dir.count("/")+1
+        self.first_dir = self.dir.split(sep)[0]
+        self.depth = self.dir.count(sep)+1
         self.circuit_name = circuit
 
     def __enter__(self):
         self.pid = os.getpid()
-        os.mkdir(f"work/{self.pid}")
-        # print(f"work/{self.pid}/{self.first_dir}")
-        os.mkdir(f"work/{self.pid}/{self.first_dir}")
+        os.mkdir(path.join("work",str(self.pid)))
+        os.mkdir(path.join("work",str(self.pid),self.first_dir))
         if self.circuit_name:
             for target in {"dis", "include.cir", "include", self.circuit_name}:
-                os.system(f"cp -R {self.first_dir}/{target} work/{self.pid}/{self.first_dir}/{target}")
+                os.system(f"cp -R {path.join(self.first_dir,target)} {path.join('work',str(self.pid),self.first_dir,target)}")
         else:
-            os.system(f"cp -R {self.first_dir} work/{self.pid}/{self.first_dir}")
-        # sleep(10)
-        # print(f"work/{self.pid}/{self.dir}/..")
-        os.chdir(f"work/{self.pid}/{self.dir}/..")
+            os.system(f"cp -R {self.first_dir} {path.join('work',str(self.pid),self.first_dir)}")
+        os.chdir(path.join("work",str(self.pid),self.dir,".."))
 
     def __exit__(self, type, value, traceback):
         for _ in range(self.depth):
@@ -47,7 +45,7 @@ class ProcessWorker:
     """
     Executes some function multiple times with different inputs. The static_args+job define the inputs.
     """
-    def __init__(self, work_func: Callable, static_args: list, max_work: int, work_dir: str = "circuitos",  target_circuit: str = None) -> None:
+    def __init__(self, work_func: Callable, static_args: list, max_work: int, work_dir: str = path.join("project","circuits"),  target_circuit: str = None) -> None:
         """
         Constructor.
 
@@ -55,7 +53,7 @@ class ProcessWorker:
             work_func (Callable): Function to be executed multiple times.
             static_args (list): Arguments in function input that do not change over different jobs. Static args must be the last part of the input.
             max_work (int): Maximum number of functions a worker can run (used to not loop indefinatly in very edge cases).
-            workdir (str, optional): Main circuits directory. Defaults to 'circuitos'
+            workdir (str, optional): Main circuits directory. Defaults to 'project/circuits'
             target_circuit (str, optional): Specific Circuit directory. Defaults to None
         """
         self.func = work_func
@@ -104,7 +102,7 @@ class ProcessMaster:
     """
     Handles the multiple workers, jobs and sync.
     """
-    def __init__(self, func: Callable, jobs: list or None, work_dir: str = "circuitos", progress_report: Callable = None) -> None:
+    def __init__(self, func: Callable, jobs: list or None, work_dir: str = path.join("project","circuits"), progress_report: Callable = None) -> None:
         """
         Constructor.
 
@@ -115,8 +113,8 @@ class ProcessMaster:
             progress_report (Callable): Function that the progress is to be reported to.
         """
         self.func = func # Function to be executed
-        self.work_dir =  work_dir.split("/")[0]
-        self.target_circuit = None if not work_dir.count("/") else work_dir.split("/")[1]
+        self.work_dir =  work_dir.split(sep)[0]
+        self.target_circuit = None if not work_dir.count(sep) else work_dir.split(sep)[1]
         self.done_copy = []
         self.progress_report = progress_report # Function that Master should report its progress to
         if jobs is not None: self.total_jobs = len(jobs)
@@ -316,7 +314,7 @@ class PersistentProcessMaster(ProcessMaster):
     """
     Specialization of ProcessMaster that also backups jobs in its routine.
     """
-    def __init__(self, func: Callable, jobs: list or None, backup_prefix: str, work_dir: str = "circuitos", progress_report: Callable = None) -> None:
+    def __init__(self, func: Callable, jobs: list or None, backup_prefix: str, work_dir: str = path.join("project","circuits"), progress_report: Callable = None) -> None:
         """
         Constructor.
 
@@ -479,7 +477,7 @@ if __name__ == "__main__":
         sleep(2)
         return x * a
     
-    backuper = PersistentProcessMaster(sleeper, test_jobs, "debug/backup_test/test")
+    backuper = PersistentProcessMaster(sleeper, test_jobs, path.join("debug","backup_test","test"))
     backuper.work((10,))
     assert set(backuper.return_done()) == {i*10  for i in range(10)}, "BACKUPING PARALLEL MANAGER FAILED"
 
