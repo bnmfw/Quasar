@@ -1,8 +1,10 @@
 *__pycache__*
 venv/
 *circuits/*
+!*circuits/.gitkeep
 *output.txt
-*work/
+*work/*
+!*work/.gitkeep
 invisible/
 .idea/
 *.png
