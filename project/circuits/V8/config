@@ -1,5 +1,0 @@
-vdd=0.9
-colection_time=164.0
-track_establishment=50.0
-transistor_depth=1000.0
-runner=NGSpiceRunner
