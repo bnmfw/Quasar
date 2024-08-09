@@ -342,8 +342,6 @@ class Graph:
             for output in outputs:
                 # Gets the nodes that affect it. effect_group is a list of format (node, signal)
                 effect_group = list(filter(lambda e: e[0] in nodes, self.is_affected_by(output)))
-                # print(logic_signals)
-                # print(effect_group)
                 for nodo in effect_group:
                     if nodo[0] == output:
                         output_dir = "fall" if nodo[1] else "rise" if nodo[1] == 0 else None
@@ -351,19 +349,9 @@ class Graph:
                 lets_f1 += [[get_node_callback(node[0]), get_node_callback(output), signals, "fall" if node[1] else "rise" if node[1] == 0 else None, output_dir] for node in effect_group]
             
         # Filters orientations that cannot happen due to no nmos or pmos contact
-        # print("LETS1")
-        # for let in lets_f1:
-        #     print(let)
-        # print("END")
         lets_f2 = list(filter(lambda let: self.valid_orientation(let[0].name, let[3]), lets_f1))
 
-        # print("LETS2")
-        # for let in lets_f2:
-        #     print(let)
-        # print("END")
-
         # Filter lets that only actually propagate a fault to output
-        # print(lets_f2)
         lets_f3 = []
         for let in lets_f2:
              # let[2] => signals
@@ -372,9 +360,6 @@ class Graph:
             self.set_logic(logic_signals)
             if self.simulate_fault(let[0].name, let[1].name):
                 lets_f3 += [let]
-
-        # print(lets_f3)
-        # print(self)
 
         return lets_f3
 

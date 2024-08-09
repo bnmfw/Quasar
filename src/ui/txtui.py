@@ -1,7 +1,7 @@
 from os import path
 from typing import Any
-from src.spiceInterface.spiceInterface import HSRunner, HSpiceRunner, NGSpiceRunner
-from src.simconfig.simulationConfig import sim_config
+from ..spiceInterface.spiceInterface import HSRunner, HSpiceRunner, NGSpiceRunner
+from ..simconfig.simulationConfig import sim_config
 from progress.bar import Bar
 
 barra_comprida = "---------------------------"

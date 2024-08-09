@@ -327,7 +327,6 @@ if __name__ == "__main__":
 
     from ..circuit.circuito import Circuito
     from ..spiceInterface.spiceInterface import NGSpiceRunner
-    from ..spiceInterface.spiceModelManager import SpiceModelManager
     from os import path
 
     print("Testing LET finder...")

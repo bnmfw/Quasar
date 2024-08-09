@@ -1,5 +1,5 @@
 """
-Backend module, responsible for acting as an interface to the other files in the package
+API module, responsible for acting as an interface to the other files in the package
 """
 from .circuit.components import LET
 from .circuit.circuito import Circuito
@@ -8,7 +8,6 @@ from .variability.mcManager import MCManager
 from .utils.arquivos import JManager, CManager
 from .letSearch.letFinder import LetFinder
 from .spiceInterface.spiceInterface import SpiceRunner
-from .spiceInterface.spiceModelManager import SpiceModelManager
 from .variability.dataAnalysis import DataAnalist
 from .simconfig.simulationConfig import sim_config
 from .simconfig.transistorModel import Transistor
@@ -17,9 +16,9 @@ from .utils.matematica import Time
 from typing import Callable, Type
 from os import path
 
-class Backend:
+class API:
     """
-    Backend object, this is the only object of the project the interface should interact with
+    API object, this is the only object of the project the interface should interact with
     """
     def __init__(self) -> None:
         """
@@ -146,13 +145,13 @@ if __name__ == "__main__":
 
     from utils.matematica import InDir
 
-    print("Testing Backend...")
+    print("Testing API...")
 
     # with InDir("debug"):
 
     nand: Circuito = Circuito("nor").from_json()
-    backend: Backend = Backend().set_circuit(nand, 0.7)
-    backend.find_single_let("g1", "g1", [1, 1], "rise", "rise", 4.8108, 4.3720)
+    quasarAPI: API = API().set_circuit(nand, 0.7)
+    quasarAPI.find_single_let("g1", "g1", [1, 1], "rise", "rise", 4.8108, 4.3720)
 
 
         # fadder: Circuito = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"])
@@ -161,16 +160,16 @@ if __name__ == "__main__":
 
         # {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"}
 
-        # backend: Backend = Backend().set_circuit(xor5, 0.7)
+        # quasarAPI: API = API().set_circuit(xor5, 0.7)
 
         # print("\tTesting LETth determination...")
-        # backend.determine_LETs(report=True)
-        # backend.save_let_data("test_circuits")
+        # quasarAPI.determine_LETs(report=True)
+        # quasarAPI.save_let_data("test_circuits")
 
-        # backend.mc_analysis(1000)
+        # quasarAPI.mc_analysis(1000)
 
         # fadder = Circuito("fadder", "test_circuits", 0.7).from_nodes(["a", "b", "cin"], ["cout", "sum"], {"na", "nb", "ncin", "gate_p16", "gate_p15", "gate_q16", "gate_q15", "drain_p16", "drain_p15", "drain_q16", "drain_q15", "ncout", "nsum", "a1", "b1", "cin1"})
         # fadder = Circuito("fadder", "test_circuits", 0.7).from_json()
         # fadder.nodes.sort(key=lambda e: e.name)
-        # backend = Backend().set(fadder, 0.7)
-        # backend.analise_mc(1000)
+        # quasarAPI = API().set(fadder, 0.7)
+        # quasarAPI.analise_mc(1000)

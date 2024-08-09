@@ -112,7 +112,6 @@ class MCManager:
 if __name__ == "__main__":
     print("Testing MC Manager...")
     from ..circuit.circuito import Circuito
-    from ..spiceInterface.spiceModelManager import SpiceModelManager
 
     print("\tTesting MC simulation...")
     with InDir("debug"):

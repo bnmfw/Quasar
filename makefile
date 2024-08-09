@@ -1,5 +1,5 @@
 run: clean
-	@python3 Quasar.py
+	@python3 quasar.py
 
 requirements:
 	@pip install -r .piprequirements

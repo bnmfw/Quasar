@@ -907,7 +907,6 @@ if __name__ == "__main__":
         print("Testing Spice Interface...")
         ptf = path.join("project")
         from ..circuit.circuito import Circuito
-        from .spiceModelManager import SpiceModelManager
         TestRunner = NGSpiceRunner(path_to_folder=ptf)
         TestManager = SpiceFileManager(path_to_folder=ptf)
         vdd = 0.9
