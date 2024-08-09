@@ -1,0 +1,6 @@
+
+Circuit: nand parsing test
+
+Error on line 14 :
+  mp11 vdd a g1 vdd pmos w=140nl=32n
+ unknown parameter (32n) 

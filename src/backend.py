@@ -8,6 +8,7 @@ from .variability.mcManager import MCManager
 from .utils.arquivos import JManager, CManager
 from .letSearch.letFinder import LetFinder
 from .spiceInterface.spiceInterface import SpiceRunner
+from .spiceInterface.spiceModelManager import SpiceModelManager
 from .variability.dataAnalysis import DataAnalist
 from .simconfig.simulationConfig import sim_config
 from .simconfig.transistorModel import Transistor
@@ -51,6 +52,8 @@ class Backend:
             circuit (Circuito): circuit to be simulated.
         """
         self.circuit = circuit
+        sim_config.circuit = circuit
+        sim_config.model_manager.writeModelFile()
         return self
 
     def check_circuit(self):

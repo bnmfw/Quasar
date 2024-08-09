@@ -5,6 +5,8 @@ Configurations of the simulation, such as the modeled fault, transistor model an
 from .transistorModel import Transistor, FinFET, Bulk32
 from .faultModel import FaultModel, FinFETMessengerStandard, DoubleExponential
 # from .spiceInterface import SpiceRunner, NGSpiceRunner, HSpiceRunner
+from ..spiceInterface.spiceModelManager import SpiceModelManager
+# from ..circuit.circuito import Circuito
 from typing import Type
 from os import path
 
@@ -15,7 +17,8 @@ class SimulationConfig:
     def __init__(self, vdd: float = 0.9,
                  fault_model: FaultModel = FinFETMessengerStandard(), 
                  transistor_model: Transistor = Bulk32(),
-                 runner = None) -> None:
+                 runner = None,
+                 circuit = None) -> None:
         """
         Main simulation parameters
 
@@ -27,8 +30,19 @@ class SimulationConfig:
         self.vdd: float = vdd
         self.fault_model: FaultModel = fault_model
         self.transistor_model: Transistor = transistor_model
+        self.__circuit = circuit
         self.runner = runner
+        self.model_manager = None
+
+    @property
+    def circuit(self):
+        return self.__circuit
     
+    @circuit.setter
+    def circuit(self, mm):
+        self.__circuit = mm
+        self.model_manager = SpiceModelManager(path.join(self.circuit.path_to_my_dir, self.circuit.file))
+
     def current_to_let(self, current_micro: float) -> float:
         """
         Calculates the LET in MeVcm²/mg

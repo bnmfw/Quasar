@@ -112,10 +112,12 @@ class MCManager:
 if __name__ == "__main__":
     print("Testing MC Manager...")
     from ..circuit.circuito import Circuito
+    from ..spiceInterface.spiceModelManager import SpiceModelManager
 
     print("\tTesting MC simulation...")
     with InDir("debug"):
         nand = Circuito("nand", "test_circuits").from_json()
+        sim_config.circuit = nand
         n = 4
         MCManager(nand).full_mc_analysis(4)
         with open(path.join("project","circuits","nand","nand_mc_LET.csv"), "r") as file:

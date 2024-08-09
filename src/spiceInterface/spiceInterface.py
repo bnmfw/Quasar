@@ -18,6 +18,9 @@ from typing import TextIO
 # Defines the start and end of the measuring window, must have only 2 elements
 measure_window = (1.0, 3.8)
 
+class SpiceError(Exception):
+    pass
+
 class SpiceFileManager():
     """
     Responsible for altering the .cir files used by Spice and reading its output.
@@ -336,6 +339,13 @@ class SpiceFileManager():
             measure = self.__format_measure_trig(line)
         elif "**warning**" in line:
             return []
+        elif "Error" in line:
+            import sys
+            print(f"An error was raised during Spice Simulation!\nFull Spice Error Log:")
+            sim_config.runner().log_error(sim_config.circuit.file)
+            with open(path.join(self.path_to_folder, 'error_log.txt')) as file:
+                print(file.read())
+            sys.exit(1)
         return {measure.label: measure}
 
     def get_nodes(self, circuit_name: str, tension_sources: list = None) -> set:
@@ -845,10 +855,22 @@ class NGSpiceRunner(SpiceRunner):
         """
         f = '\|'
         command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ; ngspice -b < {filename} 2>&1 "
-        if labels is not None: command += f"| grep \"{f.join(labels)}\" "
+        if labels is not None: command += f"| grep \"{f.join(labels+['Error'])}\" "
         command += f"> {path.join('..','..','output.txt')}"
         os.system(command)
+    
+    def log_error(self, filename: str) -> None:
+        """
+        Runs spice and dumps the full report into error_log.txt.
 
+        Args:
+            filename (str): Name of the file.
+        """
+        command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ; ngspice -b < {filename} 2>&1 "
+        command += f"> {path.join('..','..','error_log.txt')}"
+        os.system(command)
+
+# TODO: Log HSpice Errors
 class HSpiceRunner(SpiceRunner):
     def _run_spice(self, filename: str, labels: list = None) -> None:
         """
@@ -885,6 +907,7 @@ if __name__ == "__main__":
         print("Testing Spice Interface...")
         ptf = path.join("project")
         from ..circuit.circuito import Circuito
+        from .spiceModelManager import SpiceModelManager
         TestRunner = NGSpiceRunner(path_to_folder=ptf)
         TestManager = SpiceFileManager(path_to_folder=ptf)
         vdd = 0.9
@@ -901,16 +924,19 @@ if __name__ == "__main__":
 
         print("\tTesting node tensions...")
         nand_test = Circuito("nand").from_json()
+        sim_config.circuit = nand_test
         for vi, entrada in zip([0,0], nand_test.inputs): entrada.signal = vi
         with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):
             assert TestRunner.run_nodes_value(nand_test.file, ["i1", "g1"])["i1"][0] - 0.104784 < 10e-3, "TENSIONS RUN FAILED"
 
         print("\tTesting circuit parsing...")
         nor_test = Circuito("nor").from_nodes(["a","b"],["g1"])
+        sim_config.circuit = nor_test
         assert {nodo.name for nodo in nor_test.nodes} == {"g1", "i1", "a", "b", "ng1"}, "CIRCUIT PARSING FAILED"
 
         print("\tTesting SET simulation with known SET value...")
         nand_test = Circuito("nand").from_json()
+        sim_config.circuit = nand_test
         valid_input = [0, 1] 
         valid_let = LET(156.25, vdd, "g1", "g1", ["fall", "fall"], valid_input)
         expected_let_value = 0.36585829999999997

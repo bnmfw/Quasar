@@ -105,7 +105,7 @@
 +rgatemod= 0               rgeomod = 0               shmod   = 0               nqsmod  = 0             
 +coremod = 0               cgeomod = 0               capmod  = 0               tnom    = 25            
 +eot     = 7.5e-010        eotbox  = 1.4e-007        eotacc  = 1e-010          tfin    = 7e-009        
-+toxp    = 2.1e-009        nbody   = 1e+022          phig    = phig_var_n      epsrox  = 3.9           
++toxp    = 2.1e-009        nbody   = 1e+022          phig    = 4.372           epsrox  = 3.9           
 +epsrsub = 11.9            easub   = 4.05            ni0sub  = 1.1e+016        bg0sub  = 1.17          
 +nc0sub  = 2.86e+025       nsd     = 2e+026          ngate   = 0               nseg    = 5             
 +l       = 2.1e-008        xl      = -5e-010         lint    = -2e-009         dlc     = 0             
@@ -362,7 +362,7 @@
 +rgatemod= 0               rgeomod = 0               shmod   = 0               nqsmod  = 0             
 +coremod = 0               cgeomod = 0               capmod  = 0               tnom    = 25            
 +eot     = 7.5e-010        eotbox  = 1.4e-007        eotacc  = 3e-010          tfin    = 7e-009        
-+toxp    = 2.1e-009        nbody   = 1e+022          phig    = phig_var_p      epsrox  = 3.9           
++toxp    = 2.1e-009        nbody   = 1e+022          phig    = 4.8108          epsrox  = 3.9           
 +epsrsub = 11.9            easub   = 4.05            ni0sub  = 1.1e+016        bg0sub  = 1.17          
 +nc0sub  = 2.86e+025       nsd     = 2e+026          ngate   = 0               nseg    = 5             
 +l       = 2.1e-008        xl      = -5e-010         lint    = -2.5e-009       dlc     = 0             

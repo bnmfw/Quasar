@@ -236,8 +236,10 @@ if __name__ == "__main__":
     print("\tTesting determining minimal LETs...")
     with InDir("debug"):
         from ..spiceInterface.spiceInterface import NGSpiceRunner
+        from ..spiceInterface.spiceModelManager import SpiceModelManager
         sim_config.runner = NGSpiceRunner
         nor_test = Circuito("nor").from_nodes(["a", "b"], ["g1"])
+        sim_config.circuit = nor_test
         manager = CircuitManager(nor_test, report=False)
         manager.determine_LETs()
         with open(path.join("project","circuits","nor","Raw_data.csv"), "r") as file:

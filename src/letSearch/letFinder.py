@@ -325,11 +325,15 @@ class LetFinder:
 
 if __name__ == "__main__":
 
-    print("Testing LET finder...")
     from ..circuit.circuito import Circuito
     from ..spiceInterface.spiceInterface import NGSpiceRunner
+    from ..spiceInterface.spiceModelManager import SpiceModelManager
+    from os import path
+
+    print("Testing LET finder...")
     sim_config.runner = NGSpiceRunner
     nand = Circuito("nand").from_json()
+    sim_config.circuit = nand
     
     print("\tTesting Finding Current of safe Let...")
     valid_input = [1,1]

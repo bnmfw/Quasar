@@ -16,7 +16,7 @@
 +lwl     = 0               wwl     = 0               xpart   = 0               toxref  = 1.15e-009     
 +xl	   = -14e-9
 
-+vth0    = vth0_var_n      k1      = 0.4             k2      = 0               k3      = 0             
++vth0    = 0.49396         k1      = 0.4             k2      = 0               k3      = 0             
 +k3b     = 0               w0      = 2.5e-006        dvt0    = 1               dvt1    = 2             
 +dvt2    = 0               dvt0w   = 0               dvt1w   = 0               dvt2w   = 0             
 +dsub    = 0.1             minv    = 0.05            voffl   = 0               dvtp0   = 1e-011        
@@ -85,7 +85,7 @@
 +lwl     = 0               wwl     = 0               xpart   = 0               toxref  = 1.2e-009      
 +xl	   = -14e-9
 
-+vth0    = vth0_var_p      k1      = 0.4             k2      = -0.01           k3      = 0             
++vth0    = -0.49155        k1      = 0.4             k2      = -0.01           k3      = 0             
 +k3b     = 0               w0      = 2.5e-006        dvt0    = 1               dvt1    = 2             
 +dvt2    = -0.032          dvt0w   = 0               dvt1w   = 0               dvt2w   = 0             
 +dsub    = 0.1             minv    = 0.05            voffl   = 0               dvtp0   = 1e-011        
