@@ -1,9 +1,5 @@
 run: clean
 	@python3 Quasar.py
-	
-setup:
-	@mkdir work
-	@mkdir debug/work
 
 requirements:
 	@pip install -r .piprequirements
