@@ -579,16 +579,3 @@ class SpiceFileManager():
         for i, pmos, nmos in zip(data["index"], data[ps], data[ns]):
             instances[int(float(i))] = [float(pmos), float(nmos)]
         return instances
-
-# Runs a bunch of routine checks to see if the Spice Interface is running accordingly
-if __name__ == "__main__":
-    print("Testing Spice File Manager...")
-    from ..circuit.circuito import Circuito
-    from os import path
-    vdd = 0.9
-
-    with InDir("debug"):
-        ptf = path.join("project")
-        TestManager = SpiceFileManager(path_to_folder=ptf)
-
-        print("Spice Interface OK.")

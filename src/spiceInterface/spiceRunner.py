@@ -9,26 +9,29 @@ from ..circuit.components import LET
 from ..simconfig.simulationConfig import sim_config
 from ..utils.matematica import InDir
 from os import path, system
+from typing import Callable
+from abc import ABC
 
-class SpiceRunner():
+class SpiceRunner(ABC):
     """ 
     Responsible for running spice. Used as a Interface for spice to the rest of the system.
     """
 
-    # This is a huge problem, this variable is a class variable not a object variable
+    # TODO This is a huge problem, this variable is a class variable not a object variable
     # I want you to be able to call with SpiceRunner().Vdd(0.5) for example but for that the Vdd context manager
     # Must know path_to_folder of the SpiceRunner instance, wich seems to be very hard to do
     file_manager = None
 
-    def __init__(self, path_to_folder: str = "project") -> None:
+    def __init__(self, spice_run_line: Callable, path_to_folder: str = "project") -> None:
         """
         Constructor
 
         Args:
+            spice_run_line (Callable): a function that gets a filename and returns the run spice file
             path_to_folder (str): relative path into the folder that contain spice files.
         """
         self.path_to_folder = path_to_folder
-        # self.default(0.7)
+        self.spice_run_line: Callable = spice_run_line
         SpiceRunner.file_manager = SpiceFileManager(path_to_folder=path_to_folder)
 
     class Monte_Carlo():
@@ -136,8 +139,25 @@ class SpiceRunner():
             filename (str): Name of the file.
             labels (list[str]): labels to be dumped
         """
-        pass
-    
+        f = '\|'
+        command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ;"
+        command += self.spice_run_line(filename)
+        if labels is not None: command += f"| grep \"{f.join(labels)}\" "
+        command += f"> {path.join('..','..','output.txt')}"
+        system(command)
+
+    def log_error(self, filename: str) -> None:
+        """
+        Runs spice and dumps the full report into error_log.txt.
+
+        Args:
+            filename (str): Name of the file.
+        """
+        command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ;" 
+        command += self.spice_run_line(filename)
+        command += f"> {path.join('..','..','error_log.txt')}"
+        system(command)
+
     def default(self, vdd: float) -> None:
         """
         Sets circuit to default configuration, includind vdd, no fault and no MC.
@@ -286,53 +306,26 @@ class SpiceRunner():
         return SpiceRunner.file_manager.get_mc_instances(circuit_name)
 
 class NGSpiceRunner(SpiceRunner):
-    def _run_spice(self, filename: str, labels: list = None) -> None:
-        """
-        Runs spice and dumps labels into output.txt.
+    def __init__(self, path_to_folder: str = "project") -> None:
+        f = lambda filename: f" ngspice -b < {filename} 2>&1 " 
+        super().__init__(f, path_to_folder)
 
-        Args:    
-            filename (str): Name of the file.
-            labels (list[str]): labels to be dumped
-        """
-        f = '\|'
-        command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ; ngspice -b < {filename} 2>&1 "
-        if labels is not None: command += f"| grep \"{f.join(labels+['Error'])}\" "
-        command += f"> {path.join('..','..','output.txt')}"
-        system(command)
-    
-    def log_error(self, filename: str) -> None:
-        """
-        Runs spice and dumps the full report into error_log.txt.
-
-        Args:
-            filename (str): Name of the file.
-        """
-        command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ; ngspice -b < {filename} 2>&1 "
-        command += f"> {path.join('..','..','error_log.txt')}"
-        system(command)
-
-# TODO: Log HSpice Errors
 class HSpiceRunner(SpiceRunner):
-    def _run_spice(self, filename: str, labels: list = None) -> None:
-        """
-        Runs spice and dumps labels into output.txt.
-
-        Args:    
-            filename (str): Name of the file.
-            labels (list[str]): labels to be dumped
-        """
-        f = '\|'
-        command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ; hspice {filename} "
-        if labels is not None: command += f"| grep \"{f.join(labels)}\" "
-        command += f"> {path.join('..','..','output.txt')}"
-        system(command)
+    def __init__(self, path_to_folder: str = "project") -> None:
+        f = lambda filename: f" hspice {filename} "
+        super().__init__(f, path_to_folder)
+        if self.test_spice():
+            raise RuntimeError("HSPICE NOT WORKING!")
 
     def test_spice(self) -> bool:
         """
         Testes if spice is working. If not will exit as nothing can be done without spice.
+
+        Returns: True if not working
         """
+        print("testing spice")
         system(f"hspice {path.join('debug','empty.cir')} > {path.join('debug','output.txt')}")
-        with open("output.txt", "r") as file:
+        with open(path.join("debug", "output.txt"), "r") as file:
             for linha in file:
                 if "Cannot connect to license server system" in linha:
                     return True
