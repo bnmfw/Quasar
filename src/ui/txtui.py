@@ -1,6 +1,6 @@
 from os import path
 from typing import Any
-from ..spiceInterface.spiceInterface import HSRunner, HSpiceRunner, NGSpiceRunner
+from ..spiceInterface.spiceRunner import HSRunner, HSpiceRunner, NGSpiceRunner
 from ..simconfig.simulationConfig import sim_config
 from progress.bar import Bar
 

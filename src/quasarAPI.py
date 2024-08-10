@@ -7,7 +7,7 @@ from .circuit.circuitManager import CircuitManager
 from .variability.mcManager import MCManager
 from .utils.arquivos import JManager, CManager
 from .letSearch.letFinder import LetFinder
-from .spiceInterface.spiceInterface import SpiceRunner
+from .spiceInterface.spiceRunner import SpiceRunner
 from .variability.dataAnalysis import DataAnalist
 from .simconfig.simulationConfig import sim_config
 from .simconfig.transistorModel import Transistor

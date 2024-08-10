@@ -93,7 +93,7 @@ class Circuito():
 if __name__ == "__main__":
     with InDir('debug'):
         print("Testing Circuit Module...")
-        from ..spiceInterface.spiceInterface import HSpiceRunner
+        from ..spiceInterface.spiceRunner import HSpiceRunner
         sim_config.runner = HSpiceRunner
         # Decodification test of the circuit
         print("\tTesting decodification of circuit from json file...")

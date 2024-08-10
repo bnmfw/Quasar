@@ -2,13 +2,16 @@ run: clean
 	@python3 quasar.py
 
 requirements:
+	@mkdir work
+	@mkdir debug/work
 	@pip install -r .piprequirements
 
 test:
 	@python3 -m src.utils.matematica
 	@python3 -m src.utils.arquivos
 	@python3 -m src.utils.concorrencia
-	@python3 -m src.spiceInterface.spiceInterface
+	@python3 -m src.spiceInterface.spiceRunner
+	@python3 -m src.spiceInterface.spiceFileManager
 	@python3 -m src.simconfig.faultModel
 	@python3 -m src.simconfig.simulationConfig
 	@python3 -m src.simconfig.transistorModel

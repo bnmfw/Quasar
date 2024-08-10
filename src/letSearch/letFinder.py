@@ -73,7 +73,7 @@ class LetFinder:
         
         # Greater then 10*vdd, weird stuff
         if abs(node_peak/vdd) > 10:
-            # print(f"Let too great {node_peak/vdd} times! {let} {self.debug_signals}\n")
+            print(f"Let too great {node_peak/vdd} times! {let} {self.debug_signals}\n")
             return (False, 1)
 
         return (True, 1)
@@ -326,7 +326,7 @@ class LetFinder:
 if __name__ == "__main__":
 
     from ..circuit.circuito import Circuito
-    from ..spiceInterface.spiceInterface import NGSpiceRunner
+    from ..spiceInterface.spiceRunner import NGSpiceRunner
     from os import path
 
     print("Testing LET finder...")

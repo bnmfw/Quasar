@@ -75,7 +75,7 @@ class SimulationConfig:
         self.vdd = float(tokens["vdd"])
         self.fault_model = DoubleExponential(float(tokens["colection_time"]), float(tokens["track_establishment"]))
         self.transistor_model = Transistor(float(tokens["transistor_depth"]))
-        from ..spiceInterface.spiceInterface import NGSpiceRunner, HSpiceRunner
+        from ..spiceInterface.spiceRunner import NGSpiceRunner, HSpiceRunner
         runners = {classe.__name__: classe for classe in [NGSpiceRunner, HSpiceRunner]}
         self.runner = runners[tokens["runner"]]
         return True

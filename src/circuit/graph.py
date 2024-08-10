@@ -5,6 +5,8 @@ Graph Module. Used to model wich nodes of a circuit can propagate a fault to and
 from ..utils.matematica import all_vector_n_bits
 from typing import Callable
 
+class LogicSimulationError(Exception): pass
+
 class Graph:
     """
     Graph object.
@@ -195,7 +197,7 @@ class Graph:
                 # This arc conducting SHOULD not change anything
                 if not origin_sig is None and not destiny_sig is None:
                     if origin_sig != destiny_sig:
-                        raise RuntimeError("Origin and destiny signal are different and they connect")
+                        raise LogicSimulationError("Origin and destiny signal are different and they connect")
                     continue
                 recursive_propagation(arc["from"])
         

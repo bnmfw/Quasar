@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 from tkinter import TclError, Tk
-from ..spiceInterface.spiceInterface import HSRunner
+from ..spiceInterface.spiceRunner import HSRunner
 from ..simconfig.simulationConfig import sim_config
 import os
 
