@@ -338,8 +338,7 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Checks whether of not a backup exists.
 
-        Args:
-
+        Return:
             bool: A boolean informing whether or not said backup exists.
         """
         return os.path.exists(f"{self.prefix}_jobs.json")
@@ -372,7 +371,11 @@ class PersistentProcessMaster(ProcessMaster):
     def load_backup(self):
         """
         Loads jobs from backup.
+
+        Return:
+            bool: A boolean informing whether or not backups were read
         """
+        if not self.check_backup(): return False
         self.jobs_copy = json.load(open(f"{self.prefix}_jobs.json", "r"))
         self.done_copy = json.load(open(f"{self.prefix}_done.json", "r"))
         self.total_jobs = len(self.jobs_copy) + len(self.done_copy)
@@ -381,6 +384,7 @@ class PersistentProcessMaster(ProcessMaster):
             self.jobs.put(job)
         for job in self.done_copy:
             self.done.put(job)
+        return True
 
     def load_jobs(self, jobs: list):
         """

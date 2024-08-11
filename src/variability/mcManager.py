@@ -8,7 +8,7 @@ from ..utils.concorrencia import PersistentProcessMaster
 from ..utils.arquivos import CManager
 from ..simconfig.simulationConfig import sim_config
 from ..circuit.circuitManager import CircuitManager
-from .distribution.spiceDistribution import SpiceDistribution
+from .distribution.spiceDistribution import SpiceDistributor, SpiceGaussianDist
 from .predictor import Predictor
 from os import path
 
@@ -35,20 +35,29 @@ class MCManager:
         self.total_jobs: int = None
         self.done_jobs: int = 0   
 
-    def determine_variability(self, n_analysis: int, model_params: list) -> list:
+    def determine_variability(self, n_analysis: int, distributions: list) -> list:
         """
         Generates variability points for MC simulation.
 
         Args:    
             n_analysis (int): Number of total simulations points.
-            model_params (list[tuple[str]]) A list of tuples on the format (model, param).
+            distributions (list[Distribution]): List of random distributions.
 
         Returns:
             Returns: A list of items on the format ([pmos, nmos])
         """
 
-        items = SpiceDistribution().random_distribution(n_analysis, model_params)
-        return list(map(lambda i: [i], items))
+        # TODO Isso aqui vai ordenar mal os pontos... Tem que garantir que a ordem dos pontos seja mantida
+        # Provavelmente so pode rodar spice distribuions adjacentes
+
+        points = [[] for _ in range(n_analysis)]
+
+        spice_dists = list(filter(lambda d: type(d) == SpiceGaussianDist, distributions))
+        if len(spice_dists):
+            spice_points = SpiceDistributor().random_distribution(n_analysis, spice_dists)
+            for i, p in enumerate(spice_points):
+                points[i] += p
+        return list(map(lambda i: [i], points))
 
     def run_mc_iteration(self, point: list, delay: bool = False):
         """
@@ -77,12 +86,13 @@ class MCManager:
                   LETth.input_states]
         return tuple(result)
     
-    def full_mc_analysis(self, n_analysis: int, continue_backup: bool = False, delay: bool = False, progress_report = None):
+    def full_mc_analysis(self, n_analysis: int, distributions: list, continue_backup: bool = False, delay: bool = False, progress_report = None):
         """
         Runs the full Monte Carlo simulation and puts the results in <path>/<circuit_name>_mc_LET.csv.
 
         Args:    
             n_analysis (int): Number of MC analysis.
+            distributions (list[Distribution]): List random distributions.
             continue_backup (bool): Whether or not the simulation should continue from a backup if one exists.
             delay (bool): Whether or not delay should be taken into consideration.
             progress_report (Callable): Optional function that progress can be reported to.
@@ -94,14 +104,11 @@ class MCManager:
         manager = PersistentProcessMaster(self.run_mc_iteration, None, path.join(self.circuito.path_to_my_dir,"MC"), progress_report=progress_report, work_dir=self.circuito.path_to_my_dir)        
 
         # If there is a backup continues from where it stopped.
-        if continue_backup and manager.check_backup():
-            manager.load_backup()
-        else:
-            jobs = self.determine_variability(n_analysis, [('pmos_rvt','phig'), ('nmos_rvt','phig')])
+        if not continue_backup or not manager.load_backup():
+            jobs = self.determine_variability(n_analysis, distributions)
             manager.load_jobs(jobs)
 
         # Concurrent execution, where the magic happens.
-
         with self.predictor:
             manager.work((delay,))
             # Dumps data into a csv.
@@ -127,7 +134,9 @@ if __name__ == "__main__":
         nand = Circuito("nand_fin").from_json()
         sim_config.circuit = nand
         n = 4
-        MCManager(nand).full_mc_analysis(4)
+        pvar = SpiceGaussianDist('pmos_rvt', 'phig', sim_config.model_manager['pmos_rvt']['phig'], 3, 0.05)
+        nvar = SpiceGaussianDist('nmos_rvt', 'phig', sim_config.model_manager['nmos_rvt']['phig'], 3, 0.05)
+        MCManager(nand).full_mc_analysis(4, [pvar, nvar])
         with open(path.join("project","circuits","nand_fin","nand_fin_mc_LET.csv"), "r") as file:
             assert file.read().count("\n") == 4, "MC SIMULATION FAILED"
         

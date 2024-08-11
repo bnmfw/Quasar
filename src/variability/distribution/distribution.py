@@ -5,7 +5,7 @@ Generate a Random distribution of points
 from abc import ABC
 from dataclasses import dataclass
 
-class RandomDistribuition(ABC):
+class RandomDistributor(ABC):
     
     def random_distribution(self, n_points: int, *args) -> dict:
         """
@@ -20,13 +20,4 @@ class RandomDistribuition(ABC):
         """
 
 @dataclass
-class DistRules:
-    None
-
-@dataclass
-class GaussianDist(DistRules):
-    model: str
-    var: str
-    mean: float
-    sigmas: int
-    std_dev: float
+class Distribution(ABC): None
