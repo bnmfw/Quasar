@@ -131,7 +131,7 @@ class SpiceRunner(ABC):
         f = '\|'
         command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ;"
         command += self.spice_run_line(filename)
-        labels += ["Error"]
+        labels += ["Error", "error"]
         command += f"| grep \"{f.join(labels)}\" "
         command += f"> {path.join('..','..','output.txt')}"
         sim_config.update()

@@ -136,15 +136,15 @@ if __name__ == "__main__":
         n = 4
         pvar = SpiceGaussianDist('pmos_rvt', 'phig', sim_config.model_manager['pmos_rvt']['phig'], 3, 0.05)
         nvar = SpiceGaussianDist('nmos_rvt', 'phig', sim_config.model_manager['nmos_rvt']['phig'], 3, 0.05)
-        MCManager(nand).full_mc_analysis(4, [pvar, nvar])
+        MCManager(nand).full_mc_analysis(n, [pvar, nvar])
         with open(path.join("project","circuits","nand_fin","nand_fin_mc_LET.csv"), "r") as file:
-            assert file.read().count("\n") == 4, "MC SIMULATION FAILED"
+            assert file.read().count("\n") == n, "MC SIMULATION FAILED"
         
         with open(path.join("project","circuits","nand_fin","Raw_data.csv"), "r") as file:
             data = sorted(list(map(lambda e: e.split(","), file.read().split()[1:])))
-            for line in data: 
+            for line in data:
                 line[4] = int(float(line[4]))
-            assert sorted(data) == sorted([['g1', 'g1', 'fall', 'fall', 225, '01', '4.7442987080000005', '4.313604653333333'], 
+            assert data == [['g1', 'g1', 'fall', 'fall', 225, '01', '4.7442987080000005', '4.313604653333333'], 
                             ['g1', 'g1', 'fall', 'fall', 225, '10', '4.7442987080000005', '4.313604653333333'], 
                             ['g1', 'g1', 'fall', 'fall', 247, '01', '4.8108', '4.372'], 
                             ['g1', 'g1', 'fall', 'fall', 247, '10', '4.8108', '4.372'], 
@@ -163,7 +163,39 @@ if __name__ == "__main__":
                             ['i1', 'g1', 'rise', 'rise', 246, '11', '4.882529028', '4.494102673333333'], 
                             ['i1', 'g1', 'rise', 'rise', 286, '11', '4.8108', '4.372'], 
                             ['i1', 'g1', 'rise', 'rise', 291, '11', '4.8280387000000005', '4.3524935933333335'], 
-                            ['i1', 'g1', 'rise', 'rise', 299, '11', '4.7442987080000005', '4.313604653333333']])
+                            ['i1', 'g1', 'rise', 'rise', 299, '11', '4.7442987080000005', '4.313604653333333']]
 
+        sim_config.vdd = 0.9
+        nand = Circuito("nand").from_json()
+        sim_config.circuit = nand
+        n = 4
+        pvar = SpiceGaussianDist('pmos', 'vth0', sim_config.model_manager['pmos']['vth0'], 3, 0.1)
+        nvar = SpiceGaussianDist('nmos', 'vth0', sim_config.model_manager['nmos']['vth0'], 3, 0.01)
+        MCManager(nand).full_mc_analysis(n, [pvar, nvar])
+        with open(path.join("project","circuits","nand","Raw_data.csv"), "r") as file:
+            data = sorted(list(map(lambda e: e.split(","), file.read().split()[1:])))
+            for line in data:
+                line[4] = int(float(line[4]))
+            assert data == [['g1', 'g1', 'fall', 'fall', 136, '01', '-0.506208021', '0.4967190959066667'], 
+                            ['g1', 'g1', 'fall', 'fall', 136, '10', '-0.506208021', '0.4967190959066667'], 
+                            ['g1', 'g1', 'fall', 'fall', 141, '01', '-0.49507277499999996', '0.4935192230266667'], 
+                            ['g1', 'g1', 'fall', 'fall', 141, '10', '-0.49507277499999996', '0.4935192230266667'], 
+                            ['g1', 'g1', 'fall', 'fall', 142, '01', '-0.49155', '0.49396'], 
+                            ['g1', 'g1', 'fall', 'fall', 142, '10', '-0.49155', '0.49396'], 
+                            ['g1', 'g1', 'fall', 'fall', 148, '01', '-0.477960281', '0.4926404681866667'], 
+                            ['g1', 'g1', 'fall', 'fall', 148, '10', '-0.477960281', '0.4926404681866667'], 
+                            ['g1', 'g1', 'rise', 'rise', 60, '11', '-0.506208021', '0.4967190959066667'], 
+                            ['g1', 'g1', 'rise', 'rise', 60, '11', '-0.49155', '0.49396'], 
+                            ['g1', 'g1', 'rise', 'rise', 60, '11', '-0.49507277499999996', '0.4935192230266667'], 
+                            ['g1', 'g1', 'rise', 'rise', 60, '11', '-0.477960281', '0.4926404681866667'], 
+                            ['i1', 'g1', 'fall', 'fall', 136, '10', '-0.506208021', '0.4967190959066667'], 
+                            ['i1', 'g1', 'fall', 'fall', 140, '10', '-0.49507277499999996', '0.4935192230266667'], 
+                            ['i1', 'g1', 'fall', 'fall', 142, '10', '-0.49155', '0.49396'], 
+                            ['i1', 'g1', 'fall', 'fall', 147, '10', '-0.477960281', '0.4926404681866667'], 
+                            ['i1', 'g1', 'rise', 'rise', 116, '11', '-0.506208021', '0.4967190959066667'], 
+                            ['i1', 'g1', 'rise', 'rise', 116, '11', '-0.49155', '0.49396'], 
+                            ['i1', 'g1', 'rise', 'rise', 116, '11', '-0.49507277499999996', '0.4935192230266667'], 
+                            ['i1', 'g1', 'rise', 'rise', 116, '11', '-0.477960281', '0.4926404681866667']]
+            
 
     print("MC Manager OK")

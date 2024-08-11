@@ -5,10 +5,11 @@ from .circuit.components import LET
 from .circuit.circuito import Circuito
 from .circuit.circuitManager import CircuitManager
 from .variability.mcManager import MCManager
+from .variability.dataAnalysis import DataAnalist
+from .variability.distribution.distribution import Distribution
 from .utils.arquivos import JManager, CManager
 from .letSearch.letFinder import LetFinder
 from .spiceInterface.spiceRunner import SpiceRunner
-from .variability.dataAnalysis import DataAnalist
 from .simconfig.simulationConfig import sim_config
 from .simconfig.transistorModel import Transistor
 from .simconfig.faultModel import DoubleExponential
@@ -86,20 +87,22 @@ class API:
         self.check_circuit()
         CManager.write_full_csv(self.circuit, path_to_folder)
     
-    def mc_analysis(self, n_simu: int, continue_backup:bool = False, delay:bool = False, progress_report: Callable = None):
+    def mc_analysis(self, n_simu: int, distribution: list ,continue_backup:bool = False, delay:bool = False, progress_report: Callable = None):
         """
         Runs a full Monte Carlo analysis of the circuit
 
         Args:
             n_simu (int): number of MC points
+            distribution (list[Distribution]): list of distribution objects. 
             continue_backup (bool, optional): Whether the MC work should continue from a backup file. Defaults to False.
             delay (bool, optional): Whether delay should be taken into consideration. Defaults to False.
             progress_report (Callable, optional): _description_. Defaults to None.
         """
         self.check_circuit()
         with Time():
-            MCManager(self.circuit).full_mc_analysis(n_simu, continue_backup=continue_backup, delay=delay, progress_report=progress_report)
+            MCManager(self.circuit).full_mc_analysis(n_simu, distribution, continue_backup=continue_backup, delay=delay, progress_report=progress_report)
         scatter_data = {"PMOS": [],"NMOS":[],"node":[],"output":[],"current":[],"LETth":[],"pulse_in":[],"pulse_out":[],"input":[]}
+        
         with open(path.join(self.circuit.path_to_my_dir,f"{self.circuit.name}_mc_LET.csv")) as file:
             for linha in file:
                 pmos, nmos, node, output, pulse_in, pulse_out, current, let, *inputs = linha.split(",")

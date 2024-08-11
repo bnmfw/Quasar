@@ -310,9 +310,7 @@ class SpiceFileManager():
             measure = self.__format_measure_from(line)
         elif "trig=" in line:
             measure = self.__format_measure_trig(line)
-        elif "**warning**" in line:
-            return []
-        elif "Error" in line:
+        elif "Error" or "error" in line:
             import sys
             print(f"An error was raised during Spice Simulation!\nFull Spice Error Log:")
             sim_config.runner.log_error(sim_config.circuit.file)

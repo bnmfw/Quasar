@@ -1,0 +1,26 @@
+Using: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice debug.cir
+ ****** PrimeSim HSPICE -- T-2022.06-SP2 linux64 (Nov 22 2022 7905465) ******
+  Copyright (c) 1986 - 2024 by Synopsys, Inc. All Rights Reserved.
+  This software and the associated documentation are proprietary
+  to Synopsys, Inc. This software may only be used in accordance
+  with the terms and conditions of a written license agreement with
+  Synopsys, Inc. All other use, reproduction, or distribution of
+  this software is strictly prohibited.
+  Input File: debug.cir                                                         
+  Command line options: /home/synopsys_tools/hspice/hspice_vT-2022.06-SP2/hspice/linux64/hspice debug.cir
+  Start time: Sun Aug 11 18:19:50 2024
+ lic:  
+ lic: FLEXlm: SDK_12.11.3 
+ lic: USER:   bborges              HOSTNAME: aorus 
+ lic: HOSTID: d76153d              PID:      64184 
+ lic: Using FLEXlm license file: 
+ lic: 27020@localhost 
+ lic: Checkout 1 hspice 
+ lic: License/Maintenance for hspice will expire on 30-jun-2026/2023.12 
+ lic: 1(in_use)/50(total) FLOATING license(s) on SERVER 27020@localhost 
+ lic:   
+  **error** (debug.cir:3) unable to open file "../../incluide.cir" . Either the file doesn't exist or the path is wrong. Please enter the correct file location. 
+
+               ***** job aborted
+ lic: Release hspice token(s) 
+ lic: total license checkout elapse time:        0.02(s)

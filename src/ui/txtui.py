@@ -1,6 +1,6 @@
 from os import path
-from typing import Any
 from ..spiceInterface.spiceRunner import HSRunner, HSpiceRunner, NGSpiceRunner
+from ..variability.distribution.spiceDistribution import SpiceGaussianDist
 from ..simconfig.simulationConfig import sim_config
 from progress.bar import Bar
 
@@ -115,16 +115,52 @@ class TXTUI:
             return "config_sim", inputs
     
     def tela_mc(self, circuito):
-        inputs = {"progress": None, "n_sim": 2000, "continue": False, "window": None}
+        inputs = {"progress": None, "n_sim": 2000, "distribution": [],"continue": False, "window": None}
 
-        # Continua simulacao onde parou se ha backup
+        # Allows to continue from backup
         if path.exists(path.join("project","circuits",f"{circuito.name}","MC_jobs.json")): 
             print("\nSimulacao em andamento encontrada, continuando de onde parou...\n")
             inputs["continue"] = True
             return "main", inputs
         
-        n_sim = input(f"Numero de simulacoes ({inputs['n_sim']} recomendado): ")
+        # Number of points
+        n_sim = input(f"Simulation Number ({inputs['n_sim']} Recomended): ")
         if n_sim != "": inputs["n_sim"] = int(n_sim)
+
+        while True:
+            this_dist: SpiceGaussianDist = None
+            model = input(f"Model {[m for m in sim_config.model_manager.models]}: ").strip().lower()
+            available_params = list(map(lambda line: list(map(lambda a: a['name'], line)), sim_config.model_manager[model].model_atributes))
+            available_params = sorted([item for sublist in available_params for item in sublist])
+            
+            param = input(f"Parameter: ").strip().lower()
+            if param not in available_params:
+                print("Invalid Parameter! These are the valid paremeters:")
+                for i, var in enumerate(available_params):
+                    print(var.ljust(10), end='' if i%7 else '\n')
+                print()
+            while param not in available_params:
+                param = input(f"Parameter: ").strip().lower()
+            
+            mean = input(f"Distribution Mean ({sim_config.model_manager[model][param]}): ").strip()
+            if mean == "": mean = sim_config.model_manager[model][param]
+            mean = float(mean)
+
+            std_dev = 0.05
+            std_dev_in = input(f"Distribution StdDev ({std_dev}): ").strip()
+            if std_dev_in != "": std_dev = float(std_dev_in)
+
+            sigmas = 3
+            sigmas_in = input(f"Distribution Sigmas ({sigmas}): ").strip()
+            if sigmas_in != "": sigmas = int(sigmas_in)
+
+            inputs["distribution"].append(SpiceGaussianDist(model, param, mean, sigmas, std_dev))
+
+            if input("New Distribution? [Y/n]: ").strip().lower() in {"Y", ""}:
+                continue
+            else:
+                break
+
         return "main", inputs
 
     def tela_single_let(self, circuit):

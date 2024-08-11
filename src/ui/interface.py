@@ -81,7 +81,7 @@ class GUI:
             elif current_screen == "mc":
                 current_screen, inputs = self.ui.tela_mc(self.circuito)
                 with HSRunner.Vdd(sim_config.vdd):
-                    self.quasarAPI.mc_analysis(inputs["n_sim"], inputs["continue"], inputs["progress"], self.ui.progress)
+                    self.quasarAPI.mc_analysis(inputs["n_sim"], inputs["distribution"], inputs["continue"], inputs["progress"], self.ui.progress)
                 if not inputs["window"] is None:
                     inputs["window"].close()
 
@@ -91,6 +91,7 @@ class GUI:
                 with HSRunner.Vdd(sim_config.vdd):
                     self.quasarAPI.find_single_let(inputs["node"], inputs["output"], inputs["input"], *inputs["pulses"], inputs["pmos"], inputs["nmos"], inputs["report"])
             
+            # SIMULATION CONFIGURATION SCREEN 
             elif current_screen == "config_sim":
                 current_screen, inputs = self.ui.tela_config_sim(sim_config.vdd, 
                                                                  sim_config.fault_model.colect_time, 
