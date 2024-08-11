@@ -96,7 +96,7 @@ class GUI:
                                                                  sim_config.fault_model.colect_time, 
                                                                  sim_config.fault_model.track_estab, 
                                                                  sim_config.transistor_model.charge_collection_depth_nano,
-                                                                 sim_config.runner)
+                                                                 sim_config.runner_type)
                 self.quasarAPI.set_sim_config(inputs["vdd"], inputs["alpha"], inputs["beta"], inputs["depth"], inputs["spice"], self.circuito.path_to_my_dir)
             
             # EXIT

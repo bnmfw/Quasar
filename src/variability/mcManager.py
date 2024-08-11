@@ -8,6 +8,7 @@ from ..utils.concorrencia import PersistentProcessMaster
 from ..utils.arquivos import CManager
 from ..simconfig.simulationConfig import sim_config
 from ..circuit.circuitManager import CircuitManager
+from .distribution.spiceDistribution import SpiceDistribution
 from .predictor import Predictor
 from os import path
 
@@ -20,7 +21,7 @@ class MCManager:
         Constructor.
 
         Args:    
-            circuit Circuito): Circuit to be simulated.
+            circuit (Circuito): Circuit to be simulated.
             delay (bool): Whether or not delay will be taken into consideration.
         """
         self.circuito = circuit
@@ -34,46 +35,47 @@ class MCManager:
         self.total_jobs: int = None
         self.done_jobs: int = 0   
 
-    def __determine_variability(self, n_analysis: int) -> list:
+    def determine_variability(self, n_analysis: int, model_params: list) -> list:
         """
         Generates variability points for MC simulation.
 
         Args:    
             n_analysis (int): Number of total simulations points.
+            model_params (list[tuple[str]]) A list of tuples on the format (model, param).
 
         Returns:
-            Returns: A list of items on the format (id, [pmos, nmos])
+            Returns: A list of items on the format ([pmos, nmos])
         """
-        var: dict = sim_config.runner.run_MC_var(self.circuito.name, n_analysis)
 
-        for i in var:
-            var[i][0] = 4.8108 + var[i][0] * (0.05 * 4.8108)/3
-            var[i][1] = 4.372 + var[i][1] * (0.05 * 4.372)/3
+        items = SpiceDistribution().random_distribution(n_analysis, model_params)
+        return list(map(lambda i: [i], items))
 
-        # for i in var:
-        #     var[i][0] = -0.49155 + var[i][0] * (0.1 * -0.49155)/3
-        #     var[i][1] = 0.49396 + var[i][1] * (0.1 * 0.49396)/3
-
-        items = list(var.items())
-        return items
-
-    def run_mc_iteration(self, index: int, point: tuple, delay: bool = False):
+    def run_mc_iteration(self, point: list, delay: bool = False):
         """
         Runs a single Monte Carlo simulation.
 
         Args:
-            index (int): Id of the simulation.
-            point (tuple): A tuple of floats in the format (pmos, nmos)
+            point (list): A list of tuples in the format (model_name, param, value)
 
         Returns:
             tuple: Data regarding the LETth fault
         """
-        pmos, nmos = point
-        with sim_config.runner.MC_Instance(pmos, nmos):
-            if delay: self.circ_man.get_atrasoCC()
-            self.circ_man.update_LETs(delay=delay, only_lowest=True, var={"pmos": pmos, "nmos": nmos})
-            result = (round(pmos,4), round(nmos,4), self.circuito.LETth.node_name, self.circuito.LETth.output_name, self.circuito.LETth.orientacao, self.circuito.LETth.current, self.circuito.LETth.value, self.circuito.LETth.input_states)
-        return result
+        result = []
+        for model, param, value in point:
+            sim_config.model_manager[model][param] = value
+            result += [round(value, 4)]
+
+        if delay: self.circ_man.get_atrasoCC()
+        
+        self.circ_man.update_LETs(delay=delay, var={f"{model}_{param}_param": value for model, param, value in point})
+        LETth = self.circuito.LETth
+        result += [LETth.node_name, 
+                  LETth.output_name, 
+                  LETth.orientacao, 
+                  LETth.current, 
+                  LETth.value, 
+                  LETth.input_states]
+        return tuple(result)
     
     def full_mc_analysis(self, n_analysis: int, continue_backup: bool = False, delay: bool = False, progress_report = None):
         """
@@ -95,11 +97,11 @@ class MCManager:
         if continue_backup and manager.check_backup():
             manager.load_backup()
         else:
-            jobs = self.__determine_variability(n_analysis)
+            jobs = self.determine_variability(n_analysis, [('pmos_rvt','phig'), ('nmos_rvt','phig')])
             manager.load_jobs(jobs)
 
         # Concurrent execution, where the magic happens.
-        
+
         with self.predictor:
             manager.work((delay,))
             # Dumps data into a csv.
@@ -110,21 +112,49 @@ class MCManager:
         manager.delete_backup()
 
 if __name__ == "__main__":
-    print("Testing MC Manager...")
+    
+    from ..spiceInterface.spiceRunner import HSpiceRunner
     from ..circuit.circuito import Circuito
+    sim_config.runner_type = HSpiceRunner
+    if sim_config.runner.test_spice():
+        exit(1)
+    sim_config.vdd = 0.9
+
+    print("Testing MC Manager...")
 
     print("\tTesting MC simulation...")
     with InDir("debug"):
-        nand = Circuito("nand", "test_circuits").from_json()
+        nand = Circuito("nand_fin").from_json()
         sim_config.circuit = nand
         n = 4
         MCManager(nand).full_mc_analysis(4)
-        with open(path.join("project","circuits","nand","nand_mc_LET.csv"), "r") as file:
+        with open(path.join("project","circuits","nand_fin","nand_fin_mc_LET.csv"), "r") as file:
             assert file.read().count("\n") == 4, "MC SIMULATION FAILED"
         
-        with open(path.join("project","circuits","nand","Raw_data.csv"), "r") as file:
+        with open(path.join("project","circuits","nand_fin","Raw_data.csv"), "r") as file:
             data = sorted(list(map(lambda e: e.split(","), file.read().split()[1:])))
-            for line in data: line[4] = int(float(line[4]))
-            assert data == [['g1', 'g1', 'fall', 'fall', 125, '01', '4.7442987080000005', '4.313604653333333'], ['g1', 'g1', 'fall', 'fall', 125, '10', '4.7442987080000005', '4.313604653333333'], ['g1', 'g1', 'fall', 'fall', 154, '01', '4.8108', '4.372'], ['g1', 'g1', 'fall', 'fall', 154, '10', '4.8108', '4.372'], ['g1', 'g1', 'fall', 'fall', 161, '01', '4.8280387000000005', '4.3524935933333335'], ['g1', 'g1', 'fall', 'fall', 161, '10', '4.8280387000000005', '4.3524935933333335'], ['g1', 'g1', 'fall', 'fall', 181, '01', '4.882529028', '4.494102673333333'], ['g1', 'g1', 'fall', 'fall', 181, '10', '4.882529028', '4.494102673333333'], ['g1', 'g1', 'rise', 'rise', 111, '11', '4.8108', '4.372'], ['g1', 'g1', 'rise', 'rise', 116, '11', '4.8280387000000005', '4.3524935933333335'], ['g1', 'g1', 'rise', 'rise', 127, '11', '4.7442987080000005', '4.313604653333333'], ['g1', 'g1', 'rise', 'rise', 71, '11', '4.882529028', '4.494102673333333'], ['i1', 'g1', 'fall', 'fall', 125, '10', '4.7442987080000005', '4.313604653333333'], ['i1', 'g1', 'fall', 'fall', 154, '10', '4.8108', '4.372'], ['i1', 'g1', 'fall', 'fall', 161, '10', '4.8280387000000005', '4.3524935933333335'], ['i1', 'g1', 'fall', 'fall', 181, '10', '4.882529028', '4.494102673333333'], ['i1', 'g1', 'rise', 'rise', 136, '11', '4.882529028', '4.494102673333333'], ['i1', 'g1', 'rise', 'rise', 195, '11', '4.8108', '4.372'], ['i1', 'g1', 'rise', 'rise', 203, '11', '4.8280387000000005', '4.3524935933333335'], ['i1', 'g1', 'rise', 'rise', 219, '11', '4.7442987080000005', '4.313604653333333']]
+            for line in data: 
+                line[4] = int(float(line[4]))
+            assert sorted(data) == sorted([['g1', 'g1', 'fall', 'fall', 225, '01', '4.7442987080000005', '4.313604653333333'], 
+                            ['g1', 'g1', 'fall', 'fall', 225, '10', '4.7442987080000005', '4.313604653333333'], 
+                            ['g1', 'g1', 'fall', 'fall', 247, '01', '4.8108', '4.372'], 
+                            ['g1', 'g1', 'fall', 'fall', 247, '10', '4.8108', '4.372'], 
+                            ['g1', 'g1', 'fall', 'fall', 251, '01', '4.8280387000000005', '4.3524935933333335'], 
+                            ['g1', 'g1', 'fall', 'fall', 251, '10', '4.8280387000000005', '4.3524935933333335'], 
+                            ['g1', 'g1', 'fall', 'fall', 265, '01', '4.882529028', '4.494102673333333'], 
+                            ['g1', 'g1', 'fall', 'fall', 265, '10', '4.882529028', '4.494102673333333'], 
+                            ['g1', 'g1', 'rise', 'rise', 144, '11', '4.882529028', '4.494102673333333'], 
+                            ['g1', 'g1', 'rise', 'rise', 176, '11', '4.8108', '4.372'], 
+                            ['g1', 'g1', 'rise', 'rise', 180, '11', '4.8280387000000005', '4.3524935933333335'], 
+                            ['g1', 'g1', 'rise', 'rise', 188, '11', '4.7442987080000005', '4.313604653333333'], 
+                            ['i1', 'g1', 'fall', 'fall', 226, '10', '4.7442987080000005', '4.313604653333333'], 
+                            ['i1', 'g1', 'fall', 'fall', 247, '10', '4.8108', '4.372'], 
+                            ['i1', 'g1', 'fall', 'fall', 252, '10', '4.8280387000000005', '4.3524935933333335'], 
+                            ['i1', 'g1', 'fall', 'fall', 265, '10', '4.882529028', '4.494102673333333'], 
+                            ['i1', 'g1', 'rise', 'rise', 246, '11', '4.882529028', '4.494102673333333'], 
+                            ['i1', 'g1', 'rise', 'rise', 286, '11', '4.8108', '4.372'], 
+                            ['i1', 'g1', 'rise', 'rise', 291, '11', '4.8280387000000005', '4.3524935933333335'], 
+                            ['i1', 'g1', 'rise', 'rise', 299, '11', '4.7442987080000005', '4.313604653333333']])
+
 
     print("MC Manager OK")

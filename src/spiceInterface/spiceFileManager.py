@@ -440,7 +440,7 @@ class SpiceFileManager():
         """
         output = self.get_output()
         return {node: (output[f"min{node}"].value, output[f"max{node}"].value) for node in nodes}
-    
+
     def get_tension(self) -> tuple:
         """
         Reads the max and min tension of a node.
@@ -550,7 +550,7 @@ class SpiceFileManager():
         
         data: dict = self.__get_csv_data(path.join(self.path_to_folder,'circuits',circ_name,f"{circ_name}.mc0.csv"), "$ IRV")
 
-        point_headers = [f"{model}:@:{var}:@:IGNC" for (model, var) in model_vars]
+        point_headers = [f"{model}:@:{var}_{model}_param:@:IGNC" for (model, var) in model_vars]
 
         return [list(map(lambda v: float(v), data[header])) for header in point_headers]
     

@@ -20,6 +20,7 @@ test:
 	@python3 -m src.circuit.components
 	@python3 -m src.circuit.circuito
 	@python3 -m src.circuit.circuitManager
+	@python3 -m src.variability.mcManager
 
 license:
 	@cd /backup_and_restore_scripts/setup_machine; ./synopsys_start_licenses.sh

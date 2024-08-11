@@ -23,6 +23,7 @@ class SpiceModel:
         self.model_type = model_type
         self.extra = extra
         self.model_atributes = []
+        self.params = {}
     
     def append(self, atribute_line: list) -> None:
         """
@@ -44,8 +45,22 @@ class SpiceModel:
         for line in self.model_atributes:
             for model_atribute in line:
                 if model_atribute["name"] != key.lower(): continue
-                model_atribute["value"] = value
-                return
+                numeric: bool = True
+                try:
+                    value = float(value)
+                except ValueError:
+                    numeric = False
+                
+                if numeric:
+                    model_atribute["value"] = value
+                    if key in self.params:
+                        self.params.pop(key)
+                    return
+
+                model_atribute["value"] = f"{key}_{self.name}_param"
+                self.params[key] = value
+                return 
+        
         raise ValueError(f"Model {self.name} does not contain the attribute {key.lower()}")
 
     def __getitem__(self, key: str) -> float:
@@ -120,13 +135,19 @@ class SpiceModelManager:
     
     def writeModelFile(self) -> None:
         """
-        Genrates the compiled model file
+        Genrates the compiled model file and param file
         """
         with open(path.join(self.path_to_folder, "include", "models.pm"), "w") as model_file:
             model_file.write("*Quasar compiled model file\n\n")
             model: SpiceModel
             for model in self.models.values():
-                model_file.write(model.compiled() + "\n") 
+                model_file.write(model.compiled() + "\n")
+        
+        with open(path.join(self.path_to_folder, "include", "params.cir"), "w") as params_file:
+            params_file.write("*Quasar compiled params file\n\n")
+            for model in self.models.values():
+                for param, value in model.params.items():
+                    params_file.write(f".param {param}_{model.name}_param = {value}\n")
 
     def __getitem__(self, key: str) -> SpiceModel:
         """

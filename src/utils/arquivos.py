@@ -4,7 +4,6 @@ Auxillary files manager. Responsible for saving simulation data.
 
 from ..circuit.components import Node, Signal_Input
 import json
-import os
 from os import path
 
 class CSVManager():
@@ -12,8 +11,8 @@ class CSVManager():
     CSV Manager class.
     """
     @staticmethod
-    def tup_dict_to_csv(path: str, filename: str, dicionario: dict):
-        with open(path.join(path,filename), "w") as table:
+    def tup_dict_to_csv(path_to_file: str, filename: str, dicionario: dict):
+        with open(path.join(path_to_file,filename), "w") as table:
             for chave, tupla in dicionario.items():
                 table.write(f"{chave}")
                 for value in tupla:
@@ -21,8 +20,8 @@ class CSVManager():
                 table.write("\n")
 
     @staticmethod
-    def tup_to_csv(path: str, filename: str, lista: list):
-        with open(path.join(path,filename), "w") as tabela:
+    def tup_to_csv(path_to_file: str, filename: str, lista: list):
+        with open(path.join(path_to_file,filename), "w") as tabela:
             for linha in lista:
                 tabela.write(f'{",".join([str(e) for e in linha])}')
                 tabela.write("\n")
@@ -71,7 +70,7 @@ class JsonManager():
         circuito_codificado["saidas"] = lista_de_saidas
         circuito_codificado["nodos"] = lista_de_nodos
 
-        if not os.path.exists(path.join(path_to_circuits,circuito.name,f"{circuito.name}.json")):
+        if not path.exists(path.join(path_to_circuits,circuito.name,f"{circuito.name}.json")):
             json.dump(circuito_codificado, open(path.join(path_to_circuits,circuito.name,f"{circuito.name}.json"), "w"))
 
         print("Carregamento do Json realizado com sucesso")

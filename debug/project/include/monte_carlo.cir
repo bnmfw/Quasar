@@ -1,2 +1,2 @@
-*Arquivo Analise Monte Carlo
+*mc sweep file
 .tran 0.01n 4n

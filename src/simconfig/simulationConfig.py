@@ -34,8 +34,8 @@ class SimulationConfig:
         self.__runner_type = runner_type
         if runner_type is not None:
             self.runner__ = runner_type()
-        self.model_manager = None
-
+        self.__model_manager = None
+        self.model_obsolete = False
 
     @property
     def runner_type(self):
@@ -53,7 +53,18 @@ class SimulationConfig:
     @circuit.setter
     def circuit(self, mm):
         self.__circuit = mm
-        self.model_manager = SpiceModelManager(path.join(self.circuit.path_to_my_dir, self.circuit.file))
+        self.__model_manager = SpiceModelManager(path.join(self.circuit.path_to_my_dir, self.circuit.file))
+        self.model_obsolete = True
+
+    @property
+    def model_manager(self):
+        self.model_obsolete = True
+        return self.__model_manager
+
+    def update(self) -> None:
+        if self.model_obsolete:
+            self.__model_manager.writeModelFile()
+        self.model_obsolete = False
 
     def current_to_let(self, current_micro: float) -> float:
         """
