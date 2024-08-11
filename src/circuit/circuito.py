@@ -63,7 +63,7 @@ class Circuito():
             outputs (list[str]): List of node names to be interpreted as outputs.
         """
         self.inputs = [Signal_Input(input) for input in inputs]
-        nodes_set, self.graph = sim_config.runner(path_to_folder=self.path_to_folder).get_nodes(self.name)
+        nodes_set, self.graph = sim_config.runner.get_nodes(self.name)
         self.nodes = [Node(nodo) for nodo in nodes_set]
         self.saidas = [self.get_node(output) for output in outputs]
         return self
@@ -91,10 +91,11 @@ class Circuito():
         return None
 
 if __name__ == "__main__":
+    from ..spiceInterface.spiceRunner import HSpiceRunner
+    sim_config.runner_type = HSpiceRunner
+    
     with InDir('debug'):
         print("Testing Circuit Module...")
-        from ..spiceInterface.spiceRunner import HSpiceRunner
-        sim_config.runner = HSpiceRunner
         # Decodification test of the circuit
         print("\tTesting decodification of circuit from json file...")
         decodec_test = Circuito("decodec_test").from_json()

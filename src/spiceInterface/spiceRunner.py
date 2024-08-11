@@ -33,6 +33,7 @@ class SpiceRunner(ABC):
         self.path_to_folder = path_to_folder
         self.spice_run_line: Callable = spice_run_line
         SpiceRunner.file_manager = SpiceFileManager(path_to_folder=path_to_folder)
+        self.file_manager = SpiceRunner.file_manager
 
     class Monte_Carlo():
         """
@@ -47,20 +48,6 @@ class SpiceRunner(ABC):
 
         def __exit__(self, type, value, traceback):
             SpiceRunner.file_manager.set_monte_carlo(0)
-
-    class MC_Instance():
-        """
-        Context Mangers that sets the variability instance of the circuit.
-        """
-        def __init__ (self, pmos = None, nmos = None):
-            self.pmos = pmos
-            self.nmos = nmos
-
-        def __enter__(self):
-            SpiceRunner.file_manager.set_variability(self.pmos, self.nmos)
-
-        def __exit__(self, type, value, traceback):
-            SpiceRunner.file_manager.set_variability(None, None)
 
     class SET():
         """
@@ -131,7 +118,7 @@ class SpiceRunner(ABC):
         def __exit__(self, type, value, traceback):
             pass
 
-    def _run_spice(self, filename: str, labels: list = None) -> None:
+    def _run_spice(self, labels: list = None) -> None:
         """
         Runs spice and dumps labels into output.txt.
 
@@ -139,6 +126,7 @@ class SpiceRunner(ABC):
             filename (str): Name of the file.
             labels (list[str]): labels to be dumped
         """
+        filename = sim_config.circuit.file
         f = '\|'
         command = f"cd {path.join(self.path_to_folder,'circuits',filename.replace('.cir',''))} ;"
         command += self.spice_run_line(filename)
@@ -183,12 +171,11 @@ class SpiceRunner(ABC):
         """
         return SpiceRunner.file_manager.get_nodes(circ_name, tension_sources)
 
-    def run_delay(self, filename: str, input_name: str, output_name: str, inputs: list) -> float:
+    def run_delay(self, input_name: str, output_name: str, inputs: list) -> float:
         """
         Returns the delay of shortest path from a input to and output.
 
         Args:
-            filename (str): Name of the file.
             input_name (str): Name of the input node from where the delay is propagated.
             output_name (str): Name of the output node where the delay propagates to.
             inputs (list[Signal_Input]): A list of Signal_Input objects.
@@ -201,17 +188,16 @@ class SpiceRunner(ABC):
         SpiceRunner.file_manager.measure_delay(input_name, output_name, sim_config.vdd)
         SpiceRunner.file_manager.set_signals({input.name: input.signal for input in inputs}, sim_config.vdd)
         # Runs the simulation in the respective folder
-        self._run_spice(filename, ["atraso_rr", "atraso_rf", "atraso_fr", "atraso_ff"])
+        self._run_spice(["atraso_rr", "atraso_rf", "atraso_fr", "atraso_ff"])
         # Gets and returns the results
         delay = SpiceRunner.file_manager.get_delay()
         return delay
     
-    def run_SET(self, filename: str, let: LET, current: float = None) -> tuple:
+    def run_SET(self, let: LET, current: float = None) -> tuple:
         """
         Returns the peak voltage output for a given let.
 
-        Args:    
-            filename (str): Name of the file.
+        Args:
             let (LET): let simulated.
             current (float): current of the fault. If left as None let.current will be used.
 
@@ -221,18 +207,17 @@ class SpiceRunner(ABC):
         # Sets the SET
         with self.SET(let, current):
             # Runs the simulation
-            self._run_spice(filename, ["minout", "maxout", "minnod", "maxnod"])
+            self._run_spice(["minout", "maxout", "minnod", "maxnod"])
             # Gets the peak tensions in the node and output
             peak_node = SpiceRunner.file_manager.get_peak_tension(let.orientacao[0], True)
             peak_output = SpiceRunner.file_manager.get_peak_tension(let.orientacao[1])
         return (peak_node, peak_output)
     
-    def run_pulse_width(self, filename: str, let: LET, current: float = None) -> float:
+    def run_pulse_width(self, let: LET, current: float = None) -> float:
         """
         Returns the pulse width of the propagated fault.
 
         Args:    
-            filename (str): Name of the file.
             let (LET): Let to be simulated.
             current (float): current to be simulated. If None then let.current will be used.
 
@@ -241,7 +226,7 @@ class SpiceRunner(ABC):
         """
         with self.SET(let, current):
             SpiceRunner.file_manager.measure_pulse_width(let)
-            self._run_spice(filename, ["larg"])
+            self._run_spice(["larg"])
             output = SpiceRunner.file_manager.get_output()
         
         try:
@@ -252,12 +237,11 @@ class SpiceRunner(ABC):
         except KeyError:
             return None
 
-    def run_nodes_value(self, filename: str, nodes: list) -> dict:
+    def run_nodes_value(self, nodes: list) -> dict:
         """
         Runs the standard circuit and retrieves all the nodes min and max tensions
 
         Args:    
-            filename (str): Name of the file.
             vdd (float): Vdd of the simulation.
             nodes (list[str]): A list of node names to be measured.
 
@@ -266,7 +250,7 @@ class SpiceRunner(ABC):
         """
         measure_labels = [f"max{node}" for node in nodes] + [f"min{node}" for node in nodes]
         self.file_manager.measure_nodes(nodes)
-        self._run_spice(filename, measure_labels)
+        self._run_spice(measure_labels)
         return self.file_manager.get_nodes_tension(nodes)
 
     def run_simple_MC(self, circuit_name: str, name_name: str, output_name: str, sim_num: int, output_incl: str, vdd: float) -> int:
@@ -289,21 +273,32 @@ class SpiceRunner(ABC):
             self._run_spice(path.join(self.path_to_folder,"circuits",circuit_name), f"{circuit_name}.cir", ["minout", "maxout"])
         return SpiceRunner.file_manager.get_mc_faults(circuit_name, sim_num, output_incl, vdd)
 
-    def run_MC_var(self, filename: str, circuit_name: str, sim_num: int) -> dict:
+    def run_MC_var(self, circuit_name: str, sim_num: int, distributions: list) -> dict:
         """
         Returns the MC variability points.
 
         Args:
-            filename (str): Name of the file
             circuit_name (str): Name of the circuit.
             sim_num (int): Number of simulations.
+            dist (list[DistRules]): A list of different distribution templates
 
         Returns:    
             dict: MC variability instances.
         """
+        params = []
+        model_vars = []
+        for dist in distributions:
+            model_vars.append(dist.model, dist.var)
+            params.append(sim_config.model_manager[dist.model][dist])
+            sim_config.model_manager[dist.model][dist] = f"gauss({dist.mean}, {dist.std_dev}, {dist.sigma})"
+        
         with self.Monte_Carlo(sim_num):
-            self._run_spice(filename)
-        return SpiceRunner.file_manager.get_mc_instances(circuit_name)
+            self._run_spice()
+        
+        for dist, param in zip(distributions, params):
+            sim_config.model_manager[dist.model][dist] = param
+        
+        return SpiceRunner.file_manager.get_mc_instances(circuit_name, model_vars)
 
 class NGSpiceRunner(SpiceRunner):
     def __init__(self, path_to_folder: str = "project") -> None:
@@ -332,7 +327,7 @@ class HSpiceRunner(SpiceRunner):
         return False
 
 HSRunner = HSpiceRunner()
-sim_config.runner = NGSpiceRunner
+sim_config.runner_type = NGSpiceRunner
 
 if __name__ == "__main__":
     print("Testing Spice Runner")
@@ -349,7 +344,7 @@ if __name__ == "__main__":
         sim_config.circuit = nand_test
         for vi, entrada in zip([0,0], nand_test.inputs): entrada.signal = vi
         with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):
-            assert TestRunner.run_nodes_value(nand_test.file, ["i1", "g1"])["i1"][0] - 0.104784 < 10e-3, "TENSIONS RUN FAILED"
+            assert TestRunner.run_nodes_value(["i1", "g1"])["i1"][0] - 0.104784 < 10e-3, "TENSIONS RUN FAILED"
     
         print("\tTesting circuit parsing...")
         nor_test = Circuito("nor").from_nodes(["a","b"],["g1"])
@@ -364,7 +359,7 @@ if __name__ == "__main__":
         expected_let_value = 0.36585829999999997
         for vi, entrada in zip(valid_input, nand_test.inputs): entrada.signal = vi
         with TestRunner.Vdd(vdd), TestRunner.Inputs(nand_test.inputs, vdd):#, TestRunner.MC_Instance(4.7443, 4.3136):
-            peak_node, peak_output = TestRunner.run_SET(nand_test.file, valid_let)
+            peak_node, peak_output = TestRunner.run_SET(valid_let)
             assert abs(peak_node-expected_let_value) <= 10e-1, f"SET SIMULATION FAILED simulated: {peak_node} expected: {expected_let_value}"
     
         print("Spice Runner OK.")

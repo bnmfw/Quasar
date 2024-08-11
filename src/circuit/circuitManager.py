@@ -76,7 +76,7 @@ class CircuitManager:
                     entrada_analisada.signal = "delay"
 
                     # Etapa de medicao de delay
-                    delay: float = sim_config.runner().run_delay(self.circuit.file, entrada_analisada.name, output.name, self.circuit.inputs)
+                    delay: float = sim_config.runner.run_delay(entrada_analisada.name, output.name, self.circuit.inputs)
 
                     sim_num += 1
 
@@ -219,11 +219,9 @@ class CircuitManager:
         # print(f"total simulations: {sim_num_acc}")
 
 if __name__ == "__main__":
-
-
-    import sys
     from os import path
-    sys.setrecursionlimit(50)
+    from ..spiceInterface.spiceRunner import NGSpiceRunner
+    sim_config.runner_type = NGSpiceRunner
     print("Testing Circuit Manager...")
 
     from .circuito import Circuito
@@ -235,8 +233,6 @@ if __name__ == "__main__":
     
     print("\tTesting determining minimal LETs...")
     with InDir("debug"):
-        from ..spiceInterface.spiceRunner import NGSpiceRunner
-        sim_config.runner = NGSpiceRunner
         nor_test = Circuito("nor").from_nodes(["a", "b"], ["g1"])
         sim_config.circuit = nor_test
         manager = CircuitManager(nor_test, report=False)

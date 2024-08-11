@@ -18,7 +18,6 @@ class LetFinder:
             report (bool): Whether or not the run will report to terminal with prints.
         """
         self.circuito = circuit
-        self.runner = sim_config.runner(path_to_folder=path_to_folder)
         self.__report = report
         self.__upper_bound: float = 300 # Valor maximo considerado da falha
         # 200 é um numero bem razoavel de quanto é uma falha real
@@ -37,8 +36,8 @@ class LetFinder:
         Returns:    
             str: A string representing the inclination, either 'rise' or 'fall'
         """
-        with self.runner.SET(let, 0):
-            min_ten, max_ten = self.runner.run_nodes_value(self.circuito.file, [node_name])[node_name]
+        with sim_config.runner.SET(let, 0):
+            min_ten, max_ten = sim_config.runner.run_nodes_value([node_name])[node_name]
         if (max_ten - min_ten) > 0.1 * vdd:
             raise RuntimeError(f"Max and Min vdd have too much variation max: {max_ten} min: {min_ten}")
         return "rise" if max_ten < 0.5 * vdd else "fall"
@@ -60,7 +59,7 @@ class LetFinder:
         lower_tolerance: float = 0.2
         upper_tolerance: float = 0.8
 
-        node_peak, output_peak = self.runner.run_SET(self.circuito.file, let,self.__upper_bound)
+        node_peak, output_peak = sim_config.runner.run_SET(let,self.__upper_bound)
 
         if self.__report:
             print(f"masking\tnode: {node_peak:.3f} ({int(100*node_peak/vdd)}%)\t output: {output_peak:.3f}")
@@ -93,7 +92,7 @@ class LetFinder:
         output_inclination = let.orientacao[1]
 
         for _ in range(10):
-            _, output_peak = self.runner.run_SET(self.circuito.file, let, self.__upper_bound)
+            _, output_peak = sim_config.runner.run_SET(let, self.__upper_bound)
 
             # Fault effect on the output was found
             if (output_inclination == "rise" and output_peak > sim_config.vdd/2) or\
@@ -130,7 +129,7 @@ class LetFinder:
         # Binary search for minimal current
         for _ in range(self.__limite_sim):
             # Encontra a largura minima de pulso pra vencer o delay
-            largura = self.runner.run_pulse_width(self.circuito.file, let, current)
+            largura = sim_config.runner.run_pulse_width(let, current)
             diferenca_largura: float = None if largura is None else largura - self.circuito.SPdelay
 
             # checks if minimal width is satisfied
@@ -183,7 +182,7 @@ class LetFinder:
         for i in range(len(inputs)):
             inputs[i].signal = input_signals[i]
         
-        with self.runner.Inputs(inputs, vdd):
+        with sim_config.runner.Inputs(inputs, vdd):
             
             # Figures the inclination of the simulation
             if let.orientacao[0] is None or not safe:
@@ -220,7 +219,7 @@ class LetFinder:
             # Rejects a circuit with a LETth higher than upperth
             if upperth is not None:
                 csup = upperth
-                _, peak_tension = self.runner.run_SET(self.circuito.file, let, csup)
+                _, peak_tension = sim_config.runner.run_SET(let, csup)
                 peak_tension_upper = peak_tension
                 if let.orientacao[1] == "fall":
                     if peak_tension <= lower_tolerance:
@@ -232,7 +231,7 @@ class LetFinder:
             # Rejects a circuit with a LETth lower than lowerth
             if lowerth is not None:
                 cinf = lowerth
-                _, peak_tension = self.runner.run_SET(self.circuito.file, let, cinf)
+                _, peak_tension = sim_config.runner.run_SET(let, cinf)
                 peak_tension_lower = peak_tension
                 if let.orientacao[1] == "fall":
                     if peak_tension >= upper_tolerance:
@@ -243,10 +242,10 @@ class LetFinder:
 
             # Figures tolerances if not defined
             if peak_tension_lower is None:
-                _, peak_tension_lower = self.runner.run_SET(self.circuito.file, let, cinf)
+                _, peak_tension_lower = sim_config.runner.run_SET(let, cinf)
                 sim_num += 1
             if peak_tension_upper is None:
-                _, peak_tension_upper = self.runner.run_SET(self.circuito.file, let, csup)
+                _, peak_tension_upper = sim_config.runner.run_SET(let, csup)
                 sim_num += 1
 
             # Binary Search
@@ -255,7 +254,7 @@ class LetFinder:
                 current = float((csup + cinf) / 2)
 
                 try:
-                    _, peak_tension = self.runner.run_SET(self.circuito.file, let, current)
+                    _, peak_tension = sim_config.runner.run_SET(let, current)
                 except KeyError:
                     print(let, current, input_signals)
                 if self.__report:
@@ -330,7 +329,7 @@ if __name__ == "__main__":
     from os import path
 
     print("Testing LET finder...")
-    sim_config.runner = NGSpiceRunner
+    sim_config.runner_type = NGSpiceRunner
     nand = Circuito("nand").from_json()
     sim_config.circuit = nand
     

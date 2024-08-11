@@ -44,7 +44,7 @@ class MCManager:
         Returns:
             Returns: A list of items on the format (id, [pmos, nmos])
         """
-        var: dict = sim_config.runner(self.circuito.path_to_circuits).run_MC_var(self.circuito.file, self.circuito.name, n_analysis)
+        var: dict = sim_config.runner.run_MC_var(self.circuito.name, n_analysis)
 
         for i in var:
             var[i][0] = 4.8108 + var[i][0] * (0.05 * 4.8108)/3
@@ -69,7 +69,7 @@ class MCManager:
             tuple: Data regarding the LETth fault
         """
         pmos, nmos = point
-        with sim_config.runner(self.circuito.path_to_circuits).MC_Instance(pmos, nmos):
+        with sim_config.runner.MC_Instance(pmos, nmos):
             if delay: self.circ_man.get_atrasoCC()
             self.circ_man.update_LETs(delay=delay, only_lowest=True, var={"pmos": pmos, "nmos": nmos})
             result = (round(pmos,4), round(nmos,4), self.circuito.LETth.node_name, self.circuito.LETth.output_name, self.circuito.LETth.orientacao, self.circuito.LETth.current, self.circuito.LETth.value, self.circuito.LETth.input_states)

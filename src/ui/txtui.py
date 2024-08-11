@@ -76,8 +76,8 @@ class TXTUI:
         acao = {0: "atualizar", 1: "csv", 2: "mc", 3: "single_let", 4: "config_sim", 5: None}
         inputs = {"acao": None}
         print(barra_comprida)
-        if sim_config.runner == NGSpiceRunner: print("Using NGSPICE")
-        elif sim_config.runner == HSpiceRunner and not sim_config.runner().test_spice(): print("Using HSPICE")
+        if sim_config.runner_type == NGSpiceRunner: print("Using NGSPICE")
+        elif sim_config.runner_type == HSpiceRunner and not sim_config.runner.test_spice(): print("Using HSPICE")
         else: print("HSPICE NOT WORKING, SIMULATOR MUST BE CHANGED")
         inputs["acao"] = acao[int(input(
                     f"Trabalhando com o {circuito.name} em {sim_config.vdd} volts\n"
@@ -156,6 +156,6 @@ class TXTUI:
         if track_estab != "": inputs["beta"] = float(track_estab)
         depth = input(f"Transistor Collection Depth [nm] ({depth}): ")
         if depth != "": inputs["depth"] = float(depth)
-        spice = input(f"Simulator to be used ({'NGSPICE' if sim_config.runner == NGSpiceRunner else 'HSPICE'}): ")
+        spice = input(f"Simulator to be used ({'NGSPICE' if sim_config.runner_type == NGSpiceRunner else 'HSPICE'}): ")
         if spice != "": inputs["spice"] = NGSpiceRunner if spice == "NGSPICE" else HSpiceRunner
         return "main", inputs

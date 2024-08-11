@@ -40,7 +40,7 @@ class API:
         sim_config.vdd = vdd
         sim_config.fault_model = DoubleExponential(colection_time, track_establishment)
         sim_config.transistor_model = Transistor(transistor_depth)
-        sim_config.runner = spice
+        sim_config.runner_type = spice
         sim_config.dump(path_to_folder=path_to_dir)
     
     def set_circuit(self, circuit: Circuito):
@@ -137,7 +137,7 @@ class API:
             report (bool, optional): Whether a report is to be printed. Defaults to True.
         """
         self.check_circuit()
-        # with sim_config.runner(self.circuit.path_to_circuits).MC_Instance(pmos_var, nmos_var):
+        # with sim_config.runner.MC_Instance(pmos_var, nmos_var):
         let_analisado = LET(None, sim_config.vdd, node, output, [pulse_in, pulse_out])
         LetFinder(self.circuit, path_to_folder=self.circuit.path_to_folder, report=report).minimal_LET(let_analisado, logical_input, safe=True)
 

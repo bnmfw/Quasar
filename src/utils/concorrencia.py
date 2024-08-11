@@ -474,7 +474,7 @@ if __name__ == "__main__":
 
     print("\tTesting Backuping Parallel execution...")
     def sleeper(a, x):
-        sleep(2)
+        sleep(1)
         return x * a
     
     backuper = PersistentProcessMaster(sleeper, test_jobs, path.join("debug","backup_test","test"))

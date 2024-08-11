@@ -237,7 +237,7 @@ class SpiceFileManager():
             simulations (int): number o Monte Carlo simulations.
         """
         with self.write("monte_carlo.cir") as mc:
-            mc.write("*Arquivo Analise Monte Carlo\n")
+            mc.write("*mc sweep file\n")
             mc.write(".tran 0.01n 4n")
             if simulations: mc.write(f" sweep monte={simulations}")
 
@@ -353,7 +353,7 @@ class SpiceFileManager():
         elif "Error" in line:
             import sys
             print(f"An error was raised during Spice Simulation!\nFull Spice Error Log:")
-            sim_config.runner().log_error(sim_config.circuit.file)
+            sim_config.runner.log_error(sim_config.circuit.file)
             with open(path.join(self.path_to_folder, 'error_log.txt')) as file:
                 print(file.read())
             sys.exit(1)
@@ -536,27 +536,23 @@ class SpiceFileManager():
 
         return delays[1]
     
-    def get_mc_instances(self, circ_name: str) -> dict:
+    def get_mc_instances(self, circ_name: str, model_vars: list) -> dict:
         """
         Reads the instances in <circuit>.mc0.csv.
 
         Args:    
             circ_name (str): Name of the circuit.
+            model_vars (list[tuple[str]]): A list of tuples of the type (model, var).
         
         Returns:
-            dict: Instances of variability.
+            list: A list of os lists, each list is the value of that variable in that point.
         """
-        instances: dict = {}
-
         
         data: dict = self.__get_csv_data(path.join(self.path_to_folder,'circuits',circ_name,f"{circ_name}.mc0.csv"), "$ IRV")
 
-        ps: str = "pmos_rvt:@:phig_var_p:@:IGNC"
-        ns: str = "nmos_rvt:@:phig_var_n:@:IGNC"
+        point_headers = [f"{model}:@:{var}:@:IGNC" for (model, var) in model_vars]
 
-        for i, pmos, nmos in zip(data["index"], data[ps], data[ns]):
-            instances[int(float(i))] = [float(pmos), float(nmos)]
-        return instances
+        return [list(map(lambda v: float(v), data[header])) for header in point_headers]
     
     def get_mc_instances_bulk(self, circ_name: str) -> dict:
         """
