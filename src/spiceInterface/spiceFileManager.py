@@ -241,44 +241,6 @@ class SpiceFileManager():
             mc.write(".tran 0.01n 4n")
             if simulations: mc.write(f" sweep monte={simulations}")
 
-    def set_variability(self, pvar: float = None, nvar: float = None) -> None:
-        """
-        Alterts the mc.cir file to set the variability parameters.
-
-        Args:
-            pvar (float): work function of pfet devices.
-            nvar (float): work function of nfer devices.
-
-        """
-        with self.write("mc.cir") as mc:
-            if pvar == None or nvar == None:
-                mc.write("* Analise MC\n"
-                ".param phig_var_p = gauss(4.8108, 0.05, 3)\n"
-                ".param phig_var_n = gauss(4.372, 0.05, 3)")
-            else:
-                mc.write("* Analise MC\n"
-                f".param phig_var_p = {pvar}\n"
-                f".param phig_var_n = {nvar}")
-
-    def set_variability_bulk(self, pvar: float = None, nvar: float = None) -> None:
-        """
-        Alterts the mc.cir file to set the variability parameters.
-
-        Args:
-            pvar (float): thershold voltage of pmos devices.
-            nvar (float): thershold voltage of nmos devices.
-
-        """
-        with self.write("mc.cir") as mc:
-            if pvar == None or nvar == None:
-                mc.write("* Analise MC\n"
-                ".param vth0_var_p = gauss(-0.49155, 0.1, 3)\n"
-                ".param vth0_var_n = gauss(0.49396, 0.1, 3)")
-            else:
-                mc.write("* Analise MC\n"
-                f".param vth0_var_p = {pvar}\n"
-                f".param vth0_var_n = {nvar}")
-
     ################### ^ SETS | GETS v ###################
 
     @dataclass
@@ -553,25 +515,3 @@ class SpiceFileManager():
         point_headers = [f"{model}:@:{var}_{model}_param:@:IGNC" for (model, var) in model_vars]
 
         return [list(map(lambda v: float(v), data[header])) for header in point_headers]
-    
-    def get_mc_instances_bulk(self, circ_name: str) -> dict:
-        """
-        Reads the instances in <circuit>.mc0.csv.
-
-        Args:    
-            circ_name (str): Name of the circuit.
-        
-        Returns:
-            dict: Instances of variability.
-        """
-        instances: dict = {}
-
-        
-        data: dict = self.__get_csv_data(path.join(self.path_to_folder,'circuits',circ_name,f"{circ_name}.mc0.csv"), "$ IRV")
-
-        ps: str = "pmos_bulk:@:vth0_var_p:@:IGNC"
-        ns: str = "nmos_bulk:@:vth0_var_n:@:IGNC"
-
-        for i, pmos, nmos in zip(data["index"], data[ps], data[ns]):
-            instances[int(float(i))] = [float(pmos), float(nmos)]
-        return instances

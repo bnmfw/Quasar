@@ -256,26 +256,6 @@ class SpiceRunner(ABC):
         self._run_spice(measure_labels)
         return self.file_manager.get_nodes_tension(nodes)
 
-    def run_simple_MC(self, circuit_name: str, name_name: str, output_name: str, sim_num: int, output_incl: str, vdd: float) -> int:
-        """
-        Returns the number of MC simulation that faulted.
-
-        Args:    
-            circuit_name (str): Name of the circuit.
-            name_name (str): Name of the node.
-            output_name (str): Name of the output.
-            sim_num (int): Number of simulations.
-            output_incl (str): Inclination of fault at the output.
-            vdd (float): Vdd of the simulation.
-
-        Returns:    
-            int: The number of simulations that faulted.
-        """
-        SpiceRunner.file_manager.measure_pulse(name_name, output_name)
-        with self.Monte_Carlo(sim_num):
-            self._run_spice(path.join(self.path_to_folder,"circuits",circuit_name), f"{circuit_name}.cir", ["minout", "maxout"])
-        return SpiceRunner.file_manager.get_mc_faults(circuit_name, sim_num, output_incl, vdd)
-
     def run_MC_var(self, sim_num: int, distributions: list) -> dict:
         """
         Returns the MC variability points.
