@@ -3,6 +3,8 @@ Module with LetFinder a Level 1 simulation responsible for calculating the minim
 """
 from ..simconfig.simulationConfig import sim_config
 from ..circuit.components import LET
+from .rootSearch.bissection import Bissection
+from typing import Callable
 
 class LetFinder:
     """
@@ -152,6 +154,14 @@ class LetFinder:
         if self.__report: print(f"PULSO MINIMO NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO")
         return None
 
+    def __root_function(self, let, target: float = sim_config.vdd/2) -> Callable:
+
+        def f(current) -> float:
+            _, peak_tension = sim_config.runner.run_SET(let, current)
+            return peak_tension-target
+        
+        return f
+
     def minimal_LET(self, let: LET, input_signals: list, safe: bool = False, delay: bool = False, lowerth: float = None, upperth: float = None) -> tuple:
         """
         Returns the minimal current of a modeled Set to propagate a fault from the node to the output.
@@ -167,15 +177,9 @@ class LetFinder:
         Returns:
             tuple: A tuple containing the simulation number and the current found, if any.
         """
-        # self.__report = True
-        limite_sup = self.__upper_bound
-        precision: float = 0.1
         vdd: float = sim_config.vdd
-        lower_tolerance: float = (1 - precision) * vdd / 2
-        upper_tolerance: float = (1 + precision) * vdd / 2
-        step_up = 100
-        sim_num: int = 0
         inputs: list = self.circuito.inputs
+        sim_num = 0
 
         # Sets the input signals
         self.debug_signals = input_signals
@@ -208,119 +212,19 @@ class LetFinder:
                     return sim_num, None
 
             # Binary search variables
-            csup: float = limite_sup
-            cinf: float = 0 if not delay else self.__find_minimal_current(let)
-            current: float = cinf
-            sup_flag: bool = False
-            peak_tension: float = None
-            peak_tension_lower: float = None
-            peak_tension_upper: float = None    
+            # cinf: float = 0 if not delay else self.__find_minimal_current(let)    
 
-            # Rejects a circuit with a LETth higher than upperth
-            if upperth is not None:
-                csup = upperth
-                _, peak_tension = sim_config.runner.run_SET(let, csup)
-                peak_tension_upper = peak_tension
-                if let.orientacao[1] == "fall":
-                    if peak_tension <= lower_tolerance:
-                        return sim_num, None
-                else:
-                    if peak_tension >= upper_tolerance:
-                        return sim_num, None
 
-            # Rejects a circuit with a LETth lower than lowerth
-            if lowerth is not None:
-                cinf = lowerth
-                _, peak_tension = sim_config.runner.run_SET(let, cinf)
-                peak_tension_lower = peak_tension
-                if let.orientacao[1] == "fall":
-                    if peak_tension >= upper_tolerance:
-                        return sim_num, None
-                else:
-                    if peak_tension <= lower_tolerance:
-                        return sim_num, None
-
-            # Figures tolerances if not defined
-            if peak_tension_lower is None:
-                _, peak_tension_lower = sim_config.runner.run_SET(let, cinf)
-                sim_num += 1
-            if peak_tension_upper is None:
-                _, peak_tension_upper = sim_config.runner.run_SET(let, csup)
-                sim_num += 1
-
-            # Binary Search
-            for i in range(self.__limite_sim):
-
-                current = float((csup + cinf) / 2)
-
-                try:
-                    _, peak_tension = sim_config.runner.run_SET(let, current)
-                except KeyError:
-                    print(let, current, input_signals)
-                if self.__report:
-                    print(f"{i}\tcurrent: {current:.1f}\tpeak_tension: {peak_tension:.3f}\tbottom: {cinf:.1f}\ttop: {csup:.1f}")
-                sim_num += 1
-
-                # print(f"csup: {csup} cinf: {cinf}")
-                ##### Precision Satisfied #####
-                # if lower_tolerance < peak_tension < upper_tolerance:
-                #     if self.__report: print("Minimal Let Found - Precision Satisfied\n")
-                #     let.current = current
-                #     let.append(input_signals)
-                #     return sim_num, current
-
-                ##### Convergence #####
-                if csup - cinf < precision:
-                    # To an exact value #
-                    if 1 < current < limite_sup-1 and peak_tension_upper - peak_tension_lower < 3 * (upper_tolerance - lower_tolerance):
-                        if self.__report: print("Minimal Let Found - Convergence\n")
-                        let.current = current
-                        let.append(input_signals)
-                        return sim_num, current
-                    # To 0 #
-                    elif current <= 1:
-                        if self.__report: print("Minimal Let NOT Found - Lower Divergence\n")
-                        let.current = None
-                        return sim_num, current
-                    # To the upper bound #
-                    elif current >= limite_sup-1:
-                        if self.__report: print("Upper Divergence - Upper Bound Increased\n")
-                        csup += step_up
-                        limite_sup += step_up
-                        step_up += 100
-                        sup_flag = True
-
-                # Next current calculation #
-                if let.orientacao[1] == "fall":
-                    # More intense current = lower peak tension
-                    if peak_tension < vdd/2:
-                        csup = current
-                        peak_tension_lower = peak_tension
-                    else:
-                        cinf = current
-                        peak_tension_upper = peak_tension
-                else:
-                    # More intense current = higher peak tension
-                    if peak_tension < vdd/2:
-                        cinf = current
-                        peak_tension_lower = peak_tension
-                    else:
-                        csup = current
-                        peak_tension_upper = peak_tension
-
-            # simulation number limit reached (Very rare) #
-
-            # By chance converges to an exact value #
-            if 1 < current < self.__upper_bound - 1:
-                if self.__report: print("Minimal Let Found - Maximum Simulation Number Reached\n")
-                let.current = current
+            f: Callable = self.__root_function(let)
+            lower: float = 0
+            upper: float = self.__upper_bound
+            root_finder = Bissection(f, lower, upper, report=self.__report)
+            n_sim, current = root_finder.root()
+            sim_num += n_sim
+            let.current = current
+            if current is not None:
                 let.append(input_signals)
-            
-            # Did not converge #
-            else:
-                if self.__report: print("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
-                let.current = None
-            return sim_num, None
+            return n_sim, current
 
 if __name__ == "__main__":
 
@@ -350,6 +254,7 @@ if __name__ == "__main__":
     # target = 140.625
     target = 115.2
     unsafe_valid_let = LET(target, 0.9, "i1", "g1", [None, None], valid_input)
-    assert abs(LetFinder(nand, report=False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1] - target) < 1
+    measured = LetFinder(nand, report=False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1]
+    assert abs(measured- target) < 1,  f"LET FINDING FAILED simulated:{measured} expected:{target}"
     
     print("LET Finder OK")
