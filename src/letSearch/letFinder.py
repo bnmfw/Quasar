@@ -220,6 +220,8 @@ class LetFinder:
             upper: float = self.__upper_bound
             root_finder = Bissection(f, lower, upper, report=self.__report)
             n_sim, current = root_finder.root()
+            if current is None:
+                print(let)
             sim_num += n_sim
             let.current = current
             if current is not None:

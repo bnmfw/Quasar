@@ -35,6 +35,18 @@ class Bissection(RootSearch):
         f_out_lw = self.__f(lower)
         f_calls += 2
 
+        # Guarantees the upper and lower bound are in different sides
+        it = 0
+        while f_out_up/f_out_lw > 0:
+            self.__upper_bound += step_up
+            step_up += 100
+            upper = self.__upper_bound
+            f_out_up = self.__f(upper)
+            f_calls += 1
+            it += 1
+            if it > 5:
+                raise RuntimeError(f"Current higher than {upper}")
+
         # Actual binary search
         for i in range(self.__iteration_limit):
             
@@ -56,7 +68,6 @@ class Bissection(RootSearch):
                 # To the lower bound
                 if f_in <= self.__lower_bound+1:
                     if self.__report: print("Minimal Let NOT Found - Lower Divergence\n")
-                    print(f_in, self.__lower_bound)
                     return f_calls, None
                 
                 # To the upper bound (Increase)
@@ -66,14 +77,14 @@ class Bissection(RootSearch):
                     step_up += 100
                     upper = self.__upper_bound
             
+            if f_out_up/f_out_lw > 0:
+                raise RuntimeError(f"Both bounds of binary search in the same side {f_out_up} and {f_out_lw}")
             if f_out_up/f_out > 0:
                 f_out_up = f_out
                 upper = f_in
             elif f_out_lw/f_out > 0:
                 f_out_lw = f_out
                 lower = f_in
-            else:
-                raise RuntimeError(f"Both bounds of binary search in the same side {f_out_up} and {f_out_lw}")
         
         if self.__report: print("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
         return f_calls, None
