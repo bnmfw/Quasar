@@ -15,17 +15,27 @@ class Bissection(RootSearch):
         Args:
             f (Callable): function to be minimized
             lower_bound (float): lower bound of the binary search
-            upper_bound (float): uppder bound of the binary search
+            upper_bound (float): upper bound of the binary search
+            x_precision (float): tolerance for final upper-lower
+            y_precision (float): tolerance for f(root) value
+            report (bool): Whether report should be printed
+            iteration_limit (float): A limit of function iterations
         """
+        super().__init__(f, report)
         self.__f: Callable = f
         self.__lower_bound: float = lower_bound
         self.__upper_bound: float = upper_bound
         self.__x_precision: float = x_precision
         self.__y_precision: float = y_precision
-        self.__report: bool = report
         self.__iteration_limit: int = iteration_limit
 
     def root(self) -> float:
+        """
+        Finds the approximation for the root
+        
+        Returns:
+            float: the root
+        """
         lower = self.__lower_bound
         upper = self.__upper_bound
         f_calls = 0
@@ -55,24 +65,23 @@ class Bissection(RootSearch):
             # Function call
             f_out = self.__f(f_in)
             f_calls += 1
-            if self.__report:
-                print(f"{i}\tcurrent: {f_in:.1f}\tpeak_tension: {f_out:.3f}\tbottom: {lower:.1f}\ttop: {upper:.1f}")
+            self._log(f"{i}\tcurrent: {f_in:.1f}\tpeak_tension: {f_out:.3f}\tbottom: {lower:.1f}\ttop: {upper:.1f}")
 
             # Precision satisfied
             if abs(f_out) < self.__y_precision:
-                    if self.__report: print("Minimal Let Found - Convergence\n")
+                    self._log("Minimal Let Found - Convergence\n")
                     return f_calls, f_in
 
             # Upper and Lower convergence
             if abs(upper-lower) < self.__x_precision:
                 # To the lower bound
                 if f_in <= self.__lower_bound+1:
-                    if self.__report: print("Minimal Let NOT Found - Lower Divergence\n")
+                    self._log("Minimal Let NOT Found - Lower Divergence\n")
                     return f_calls, None
                 
                 # To the upper bound (Increase)
                 elif f_in >= self.__upper_bound-1:
-                    if self.__report: print("Upper Divergence - Upper Bound Increased\n")
+                    self._log("Upper Divergence - Upper Bound Increased\n")
                     self.__upper_bound += step_up
                     step_up += 100
                     upper = self.__upper_bound
@@ -86,5 +95,5 @@ class Bissection(RootSearch):
                 f_out_lw = f_out
                 lower = f_in
         
-        if self.__report: print("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
+        self._log("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
         return f_calls, None

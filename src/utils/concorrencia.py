@@ -161,11 +161,11 @@ class ProcessMaster:
         # Maintanance of sleep_time
         with self.lock_time:
 
-            # If no job_time was reported no job has ended yet, so we just add 20 seconds because
+            # If no job_time was reported no job has ended yet, so we just add 5 seconds because
             if not self.job_time.empty():
                 self.__starting_sleep_time = False
             if self.__starting_sleep_time:
-                self.sleep_time += 20
+                self.sleep_time += 5
 
             # New sleep_time is the longest job time yet
             times = [self.sleep_time]

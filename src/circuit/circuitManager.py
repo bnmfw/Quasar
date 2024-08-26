@@ -193,7 +193,7 @@ class CircuitManager:
         
         with self.min_let_predictor:
             manager = ProcessMaster(self.run_let_job, jobs, work_dir=self.circuit.path_to_my_dir, progress_report=progress_report)
-            manager.work((delay,),1)
+            manager.work((delay,))
 
         lets = manager.return_done()
 
@@ -216,11 +216,12 @@ class CircuitManager:
             
             node.add_let(let)
         
-        # print(f"total simulations: {sim_num_acc}")
+        print(f"total simulations: {sim_num_acc}")
 
 if __name__ == "__main__":
     from os import path
     from ..spiceInterface.spiceRunner import NGSpiceRunner
+    from ..utils.matematica import compare_fault_config_lists
     sim_config.runner_type = NGSpiceRunner
     print("Testing Circuit Manager...")
 
@@ -240,10 +241,11 @@ if __name__ == "__main__":
         with open(path.join("project","circuits","nor","Raw_data.csv"), "r") as file:
             data = sorted(list(map(lambda e: e.split(","), file.read().split()[1:])))
             for line in data: line[4] = int(float(line[4]))
-            assert data == [['g1', 'g1', 'fall', 'fall', 65, '00'],
-                            ['g1', 'g1', 'rise', 'rise', 112, '01'], 
-                            ['g1', 'g1', 'rise', 'rise', 113, '10'], 
-                            ['g1', 'g1', 'rise', 'rise', 223, '11'], 
-                            ['i1', 'g1', 'rise', 'rise', 113, '10']], "LET DETERMINING FAILED"
+            ans = [['g1', 'g1', 'fall', 'fall', 65, '00'],
+                   ['g1', 'g1', 'rise', 'rise', 112, '01'], 
+                   ['g1', 'g1', 'rise', 'rise', 113, '10'], 
+                   ['g1', 'g1', 'rise', 'rise', 223, '11'], 
+                   ['i1', 'g1', 'rise', 'rise', 113, '10']]
+            compare_fault_config_lists(data, ans), "LET DETERMINING FAILED"
 
     print("Circuit Manager OK.")

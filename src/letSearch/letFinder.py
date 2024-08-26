@@ -4,6 +4,8 @@ Module with LetFinder a Level 1 simulation responsible for calculating the minim
 from ..simconfig.simulationConfig import sim_config
 from ..circuit.components import LET
 from .rootSearch.bissection import Bissection
+from .rootSearch.secant import Secant
+from .rootSearch.hybrid import Hybrid
 from typing import Callable
 
 class LetFinder:
@@ -214,15 +216,24 @@ class LetFinder:
             # Binary search variables
             # cinf: float = 0 if not delay else self.__find_minimal_current(let)    
 
-
             f: Callable = self.__root_function(let)
             lower: float = 0
             upper: float = self.__upper_bound
-            root_finder = Bissection(f, lower, upper, report=self.__report)
+
+            # root_finder = Bissection(f, lower, upper, report=self.__report)
+            # root_finder = Secant(f, 110, report=self.__report)
+            
+            if self.__report: print(f"f_calls={sim_num}")
+            root_finder = Hybrid(f, 150, let.orientacao[1] == "rise", vdd/2, -vdd/2, report=self.__report)
             n_sim, current = root_finder.root()
-            if current is None:
-                print(let)
             sim_num += n_sim
+            if current is None:
+                root_finder = Bissection(f, lower, upper, let.orientacao[1] == "rise", report=self.__report)    
+                n_sim, current = root_finder.root()
+                sim_num += n_sim
+
+            if self.__report: print(f"f_calls={sim_num}")
+
             let.current = current
             if current is not None:
                 let.append(input_signals)

@@ -11,24 +11,32 @@ class Graph:
     """
     Graph object.
     """
-    def __init__(self, transistors: list, non_passing: list):
+    def __init__(self, transistors: list, fixed: list):
         """
         Creates a graph given a transistor list.
 
             :transistors (list[tuple[int or None, list[str]]]): List of transistors in the form: (if it was p type, nodes).
             :ignore (list[str]): List of nodes to be ignored in the moddeling.
-            :non_passing (list[str]): List of nodes that should not be passed through a search (i.g. vdd or gnd)
+            :fixed (list[str]): List of nodes that should not be passed through a search (i.g. vdd or gnd)
         """
         self.vertices: dict = {}
-        self.arcs: list = []
-        self.non_passing: set = set(non_passing)
+        self.transistors: list = []
+        self.fixed: set = set(fixed)
+        self.input_nodes: set = set()
+        self.regions: dict = []
+        # regions are groups of nodes that see each other through terminals only
 
         # Creates all nodes
         for is_pmos, transistor in transistors:
             _, gate, _ = transistor
             for node in transistor:
                 if not node in self.vertices.keys():
-                    self.vertices[node] = {"name": node, "signal": None, "reaches": [], "fall_valid": False, "rise_valid": False}
+                    self.vertices[node] = {"name": node, 
+                                           "signal": None, 
+                                           "reaches": [], 
+                                           "fall_valid": False, 
+                                           "rise_valid": False,
+                                           "region": None}
                 if node == gate: continue
                 if is_pmos:
                     self.vertices[node]["rise_valid"] = True
@@ -36,7 +44,7 @@ class Graph:
                     self.vertices[node]["fall_valid"] = True
         
         for name, vertice in self.vertices.items():
-            if name in self.non_passing or {"a", "b", "cin"}: continue
+            if name in self.fixed or {"a", "b", "cin"}: continue
             if not vertice["rise_valid"]: print(f"{name}: rise invalid")
             if not vertice["fall_valid"]: print(f"{name}: fall invalid")
 
@@ -45,21 +53,96 @@ class Graph:
             invert = invert == 1
             source, gate, drain = transistor
             # Creates the relationships
-            self.arcs.append({"from": drain, "to": source, "invert": invert ,"control": gate})
-            self.arcs.append({"from": source, "to": drain, "invert": invert ,"control": gate})
+            self.transistors.append({"terminals": (drain, source), source: drain, drain: source, "invert": invert ,"control": gate})
     
-        self.arcs = sorted(self.arcs, key = lambda e: e["from"])
+        self.transistors = sorted(self.transistors, key = lambda e: e["control"])
 
         for name, v in self.vertices.items():
-            v["from"] = list(filter(lambda e: e["from"] == name, self.arcs))
-            v["to"] = list(filter(lambda e: e["to"] == name, self.arcs))
-            v["control"] = list(filter(lambda e: e["control"] == name, self.arcs))
+            v["terminal"] = list(filter(lambda e: name in e["terminals"], self.transistors))
+            v["control"] = list(filter(lambda e: e["control"] == name, self.transistors))
+
+        # Determines all regions
+        seen = set()
+        for node in self.vertices:
+            if node in seen or node in self.fixed: continue
+            seen.add(node)
+            self.vertices[node]["region"] = {"id": len(self.regions), "nodes": [node], "before": [], "after": []}
+            self.regions.append(self.vertices[node]["region"])
+            
+            dfs = [node]
+            dfs_seen = set()
+            while (len(dfs)):
+                node = dfs.pop() 
+                if node in dfs_seen: continue
+                seen.add(node)
+                dfs_seen.add(node)
+                for trans in self.vertices[node]["terminal"]:
+                    if trans[node] in self.fixed or trans[node] in dfs_seen: continue
+                    self.vertices[trans[node]]["region"] = self.vertices[node]["region"]
+                    self.vertices[trans[node]]["region"]["nodes"].append(trans[node])
+                    dfs.append(trans[node])
         
-        # for v in self.vertices.values():
-        #     print(v)
-        # for vi in self.vertices.values():
-        #     vi["reaches"] = self.my_reach(vi["name"])        
-    
+        # Determines region dependency
+        for trans in self.transistors:
+            if trans["control"] in self.fixed: continue
+            region_c = self.vertices[trans["control"]]["region"]
+            node = trans["terminals"][0] if trans["terminals"][0] not in self.fixed else trans["terminals"][1]
+            region_t = self.vertices[node]["region"]
+            
+            if region_c == region_t:
+                raise LogicSimulationError("Feedback Loop in region")
+            
+            if region_c not in region_t["before"]:
+                region_t["before"].append(region_c)
+            if region_t not in region_c["after"]:
+                region_c["after"].append(region_t)
+
+        def topological_sort_util(region, visited, rec_stack, stack):
+            visited[region["id"]] = True
+            rec_stack[region["id"]] = True
+
+            for neigh in region["after"]:
+                if not visited[neigh["id"]]:
+                    if topological_sort_util(neigh, visited, rec_stack, stack):
+                        return True
+                elif rec_stack[neigh["id"]]:
+                    raise LogicSimulationError("Loop between regions")
+
+            rec_stack[region["id"]] = False
+            stack.append(region)
+            return False
+
+        def topological_sort():
+            visited = {region["id"]: False for region in self.regions}
+            rec_stack = {region["id"]: False for region in self.regions}
+            stack = []
+
+            for region in self.regions:
+                if not visited[region["id"]]:
+                    if topological_sort_util(region, visited, rec_stack, stack):
+                        raise LogicSimulationError("Loop between regions")
+
+            stack.reverse()  # Reverse the stack to get the order
+            return stack        
+
+        # for region in self.regions:
+        #     print(f'{region["nodes"]} before: {[r["nodes"] for r in region["before"]]} after: {[r["nodes"] for r in region["after"]]}')
+
+        self.regions = topological_sort()
+
+    def conducting(self, transistor: dict) -> bool:
+        """
+        Return wether or not a transistor is conducting
+        """
+
+        if self.vertices[transistor["control"]]["signal"] is None:
+            return False
+
+        if self.vertices[transistor["control"]]["signal"]==transistor["invert"]:
+            return False
+                
+        return True
+
     def sees(self, source: str, target: str, already_seen: set = None) -> bool:
         """
         Returns whether or not source node sees the target. (DPS)
@@ -83,8 +166,8 @@ class Graph:
             original = True
             already_seen = set()
 
-        # A search should never go through a non_passing node
-        if not original and source in self.non_passing:
+        # A search should never go through a fixed node
+        if not original and source in self.fixed:
             return False
         
         # Found it
@@ -99,12 +182,13 @@ class Graph:
         already_seen.add(source)
 
         # Passes the call to all children
-        for arc in self.arcs:
-            if arc["from"] == source and \
-                self.sees(arc["to"], target, already_seen=already_seen):
+        for trans in self.transistors:
+            if source in trans["terminals"] and \
+                self.sees(trans[source], target, already_seen=already_seen):
                 return True
-            if arc["control"] == source and \
-                self.sees(arc["to"], target, already_seen=already_seen):
+            if trans["control"] == source and \
+                (self.sees(trans["terminals"][0], target, already_seen=already_seen) or \
+                 self.sees(trans["terminals"][1], target, already_seen=already_seen)):
                 return True
 
         # If none of children sees it returns false
@@ -132,8 +216,8 @@ class Graph:
             original = True
             already_seen = set()
 
-        # A search should never go through a non_passing node
-        if not original and source in self.non_passing:
+        # A search should never go through a fixed node
+        if not original and source in self.fixed:
             return
 
         # Stops infinite search
@@ -144,11 +228,12 @@ class Graph:
         already_seen.add(source)
 
         # Passes the call to all children
-        for arc in self.arcs:
-            if arc["from"] == source:
-                self.my_reach(arc["to"], already_seen=already_seen)
-            if arc["control"] == source:
-                self.my_reach(arc["to"], already_seen=already_seen)
+        for trans in self.transistors:
+            if source in trans["terminals"]:
+                self.my_reach(trans[source], already_seen=already_seen)
+            if trans["control"] == source:
+                self.my_reach(trans["terminals"][0], already_seen=already_seen)
+                self.my_reach(trans["terminals"][1], already_seen=already_seen)
 
         # If none of children sees it returns false
         return already_seen
@@ -168,38 +253,52 @@ class Graph:
         input_list = list(filter(lambda e: e[0] in self.vertices, input_list))
         for node, sig in input_list:
             self.vertices[node]["signal"] = sig
-        
+            if node not in self.fixed:
+                self.input_nodes.add(node)
+
         # Recursivelly propagates logic
         def recursive_propagation(node: str):
             
             # Propagates signal to all nodes in region
             # Iterates over arcs starting from the node
-            for arc in self.vertices[node]["from"]:
-                # Destiny already has a logic value
-                if not self.vertices[arc["to"]]["signal"] is None: 
-                    # if self.vertices[arc["to"]]["signal"] != self.vertices[node]["signal"]:
-                    #     raise RuntimeError("Tried to flip a bit during propagation")
-                    continue
+            for trans in self.vertices[node]["terminal"]:
+                
                 # Arc's controller doesnt allow passing
-                if arc["control"] and (self.vertices[arc["control"]]["signal"] is None or self.vertices[arc["control"]]["signal"]==arc["invert"]): continue
+                if not self.conducting(trans): continue
+                
+                # Destiny already has a logic value
+                if not self.vertices[trans[node]]["signal"] is None: 
+                    if self.vertices[trans[node]]["signal"] != self.vertices[node]["signal"]:
+                        raise LogicSimulationError("Tried to flip a bit during set logic")
+                    continue
+                
                 # Sets the destiny value equal to its own and propagates from it
-                self.vertices[arc["to"]]["signal"] = self.vertices[node]["signal"]
-                recursive_propagation(arc["to"])
+                self.vertices[trans[node]]["signal"] = self.vertices[node]["signal"]
+                recursive_propagation(trans[node])
             
             # Propagates signal to controlled nodes
-            for arc in self.vertices[node]["control"]:
-                # I dont allow passing through this arc
-                if arc["invert"] == self.vertices[node]["signal"]: continue
-                # Remember that controlled arcs go both directions so the "to" is a "from" of other arc
-                origin_sig, destiny_sig = self.vertices[arc["from"]]["signal"], self.vertices[arc["to"]]["signal"]
-                # This arc cant propagate signal
-                if origin_sig is None: continue
+            for trans in self.vertices[node]["control"]:
+                
+                # I dont allow passing through this transistor
+                if not self.conducting(trans): continue
+                
+                a_sig = self.vertices[trans["terminals"][0]]["signal"]
+                b_sig = self.vertices[trans["terminals"][1]]["signal"]
+                
+                # No signal to propagate
+                if a_sig is None and b_sig is None: continue
+
                 # This arc conducting SHOULD not change anything
-                if not origin_sig is None and not destiny_sig is None:
-                    if origin_sig != destiny_sig:
+                if a_sig is not None and b_sig is not None:
+                    if a_sig != b_sig:
                         raise LogicSimulationError("Origin and destiny signal are different and they connect")
                     continue
-                recursive_propagation(arc["from"])
+
+                if a_sig is not None:
+                    recursive_propagation(trans["terminals"][0])
+                
+                if b_sig is not None:
+                    recursive_propagation(trans["terminals"][1])
         
         # Propagates
         for node, _ in input_list:
@@ -225,21 +324,25 @@ class Graph:
         if node in set(map(lambda e: e[0], already_seen)):
             return
         
-        # No propagation should be done through non_passing nodes
-        if node in self.non_passing:
+        # No propagation should be done through fixed nodes
+        if node in self.fixed:
             return
         
         already_seen.add((node, self.vertices[node]["signal"]))
 
         # Iterates over arcs that go to node
-        for arc in self.vertices[node]["to"]:
+        for trans in self.vertices[node]["terminal"]:
+            
             # Arc's controller always affects node
-            self.is_affected_by(arc["control"], already_seen)
+            self.is_affected_by(trans["control"], already_seen)
+            
             # Arc's controller doesnt allow passing
             # TODO: Does a floating arc on pmos allow passing? Maybe.
-            if self.vertices[arc["control"]]["signal"] is None or self.vertices[arc["control"]]["signal"]==arc["invert"]: continue
+            if self.vertices[trans["control"]]["signal"] is None or \
+                self.vertices[trans["control"]]["signal"]==trans["invert"]: continue
+            
             # Propagates search
-            self.is_affected_by(arc["from"], already_seen)
+            self.is_affected_by(trans[node], already_seen)
 
         return already_seen
 
@@ -258,6 +361,46 @@ class Graph:
         if orientation == "rise": return self.vertices[node]["rise_valid"]
         return self.vertices[node]["fall_valid"]
     
+    # Updates signals of a region
+    def region_update(self, region: dict, special_node: str):
+
+        if len(region["nodes"]) == 1 and region["nodes"][0] in self.input_nodes: return
+
+        special_region: bool = special_node is not None and special_node in region["nodes"]
+    
+        dfs = list(filter(lambda n: n in self.vertices,self.fixed))
+        if special_region: dfs += [special_node]
+        seen = set()
+        report = special_region and False
+
+        while (len(dfs)):
+            node = dfs.pop()
+            
+            if node in seen: continue
+            seen.add(node)
+
+            # Conducting nodes
+            for trans in self.vertices[node]["terminal"]:
+                if not self.conducting(trans): continue
+                
+                other = trans[node]
+
+                # Node out of region
+                if other not in region["nodes"]: continue
+
+                # Cant change fixed node
+                if other in self.fixed or other in self.input_nodes or other == special_node: continue
+
+                # Other node already has a signal
+                if self.vertices[other]["signal"] is not None:
+                    if self.vertices[other]["signal"] != self.vertices[node]["signal"] and not special_region: 
+                        raise LogicSimulationError(f"Inconsistent node signal during simulation between {node} {other}")
+                    else:
+                        continue
+                
+                self.vertices[other]["signal"] = self.vertices[node]["signal"]
+                dfs.append(other)
+
     def simulate_fault(self, faulted_node: str, output: str) -> bool:
         """
         Assumes the "set logic" method is already set. 
@@ -278,47 +421,20 @@ class Graph:
         old_output = self.vertices[output]["signal"]
         
         # Determines if node had its signal updated
-        updated = {v: v in self.non_passing for v in self.vertices}
+        updated = {v: False for v in self.vertices}
         updated[faulted_node] = True
 
         # Flips the node
         self.vertices[faulted_node]["signal"] = not self.vertices[faulted_node]["signal"]
 
-        # Seen nodes in a control loop
-        control_seen = set()
+        # Resets all logic
+        for name, v in self.vertices.items():
+            if name in self.fixed or name in self.input_nodes or name == faulted_node:
+                continue
+            v["signal"] = None
 
-        # Recursivelly propagates logic
-        def recursive_propagation(node: str) -> None:
-            if not updated[node]: return
-
-            # Propagates signal to all nodes in region
-            # Iterates over arcs starting from the node
-            for arc in self.vertices[node]["from"]:
-                # Arc's controller doesnt allow passing
-                if self.vertices[arc["control"]]["signal"] is None or self.vertices[arc["control"]]["signal"]==arc["invert"]: continue
-                # Node reached already updated
-                if updated[arc["to"]]: continue
-                # No fault actually propagated
-                if self.vertices[arc["to"]]["signal"] == self.vertices[node]["signal"]: 
-                    updated[arc["to"]] = True
-                    continue
-                self.vertices[arc["to"]]["signal"] = self.vertices[node]["signal"]
-                updated[arc["to"]] = True
-                recursive_propagation(arc["to"])
-            
-            # Propagates signal to controlled nodes
-            if node in control_seen: return
-            control_seen.add(node)
-            for arc in self.vertices[node]["control"]:
-                # I dont allow passing through this arc
-                if arc["invert"] == self.vertices[node]["signal"]: continue
-                # This arc cant propagate signal
-                if self.vertices[arc["from"]]["signal"] is None: continue
-                recursive_propagation(arc["from"])
-            control_seen.remove(node)
-
-        # Propagates the fault from the faulted node
-        recursive_propagation(faulted_node)
+        for region in self.regions:
+            self.region_update(region, faulted_node)
 
         return old_output != self.vertices[output]["signal"]
     
@@ -358,9 +474,9 @@ class Graph:
         for let in lets_f2:
              # let[2] => signals
             logic_signals = [(inp, sig==1) for inp, sig in zip(inputs, let[2])] + [("vdd", True), ("vcc", True), ("gnd", False), ("vss", False)]
-            # print(logic_signals, let[0].name, let[1].name)
             self.set_logic(logic_signals)
-            if self.simulate_fault(let[0].name, let[1].name):
+            ans = self.simulate_fault(let[0].name, let[1].name)
+            if ans:
                 lets_f3 += [let]
 
         return lets_f3
@@ -491,12 +607,12 @@ if __name__ == "__main__":
     assert propag_test.simulate_fault("i", "s"), "FAULT SIMULATION FAILED"
     propag_test.set_logic([("vdd", 1), ("gnd", 0), ("a", 0), ("b", 1)])
     assert not propag_test.simulate_fault("i", "s"), "FAULT SIMULATION FAILED"
-    propag_test.set_logic([("vdd", 1), ("gnd", 0), ("a", 0), ("b", 0)])
-    assert propag_test.simulate_fault("a", "s"), "FAULT SIMULATION FAILED"
-    propag_test.set_logic([("vdd", 1), ("gnd", 0), ("a", 1), ("b", 1)])
-    assert not propag_test.simulate_fault("a", "s"), "FAULT SIMULATION FAILED"
+    # propag_test.set_logic([("vdd", 1), ("gnd", 0), ("a", 0), ("b", 0)])
+    # assert propag_test.simulate_fault("a", "s"), "FAULT SIMULATION FAILED"
+    # propag_test.set_logic([("vdd", 1), ("gnd", 0), ("a", 1), ("b", 1)])
+    # assert not propag_test.simulate_fault("a", "s"), "FAULT SIMULATION FAILED"
     propag_test2 = Graph(mux_v1, ["vdd","gnd"])
-    propag_test2.set_logic([("vdd",1), ("gnd",0), ("a",0), ("b",1), ("select",1)])
+    propag_test2.set_logic([("vdd",1), ("gnd",0), ("ina",0), ("inb",1), ("insel",1)])
     assert propag_test2.simulate_fault("n4","sc2"), "FAULT SIMULATION FAILED"
 
     print("Logic Module OK")

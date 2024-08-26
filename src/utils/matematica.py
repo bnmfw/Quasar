@@ -117,6 +117,38 @@ def current_to_let(current: float) -> float:
     if current is None: return None
     return (current * 1e-6) * (164 * 1e-12 - (50 * 1e-12)) / ((1.08 * 1e-14) * 21* 1e-9)
 
+def compare_fault_config_lists(a: list, b: list, tolerance_percent = 0.1) -> bool:
+
+    def prepare(obj: list):
+        line: list
+        for line in obj:
+            deleted = []
+            for index, num in enumerate(line):
+                if not type(num) in {int, float}: continue
+                deleted.append((index, num))
+            for i, (index, _) in enumerate(deleted):
+                line.pop(index - i)
+            for (_, val) in deleted:
+                line.append(val)
+        return sorted(obj)
+
+    a = prepare(a)
+    b = prepare(b)
+
+    def comp_line(lina: list, linb: list) -> bool:
+        for ea, eb in zip(lina, linb):
+            if type(ea) in {int, float}:
+                if 1 - max(ea,eb)/min(ea,eb) > tolerance_percent:
+                    return False
+            elif ea != eb: 
+                return False
+        return True
+
+    for lina, linb in zip(a,b):
+        if not comp_line(lina, linb):
+            return False
+    return True
+
 if __name__ == "__main__":
     print("Testing Math Module...")
     assert spice_to_float("  24.56u ") == (24.56 * 10 ** -6), "convert_value FAILED"
