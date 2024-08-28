@@ -2,7 +2,6 @@
 venv/
 project/circuits/*
 !project/circuits/.gitkeep
-debug/project/circuits/*
 !debug/project/circuits/.gitkeep
 *output.txt
 work/*
