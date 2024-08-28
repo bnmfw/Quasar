@@ -1,2 +1,2 @@
 *SET faults
-Iseu g1 gnd EXP(0 156.25u 2n 50p 2.05n 164p)
+Iseu gnd i1 EXP(0 115.39579129055456u 2n 50p 2.05n 164p)
