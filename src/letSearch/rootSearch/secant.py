@@ -8,7 +8,7 @@ class Secant(RootSearch):
                  root_guess_image: float = None,
                  x_precision: float = 0.1, 
                  y_precision: float = 0.001, 
-                 perturbation: float = 0.01,
+                 perturbation: float = 0.03,
                  report: bool = False, 
                  iteration_limit: int = 50) -> None:
         """
@@ -56,10 +56,12 @@ class Secant(RootSearch):
 
         x1 = self.__guess
         direction = 1 if (self.__increasing and f0 < 0) or (not self.__increasing and f0 > 0) else -1
-        x1 += self.__perturbation * x0 * direction
+        offset = self.__perturbation * x0 * direction
+        x1 += offset
         f1 = self.__f(x1)
         f_calls += 1
 
+        out_of_offset_loop = False
         for i in range(self.__iteration_limit):
             
             self._log(f"{i}\tcurrent: {x1:.1f}\tpeak_tension: {f1:.3f}\tlastX: {x0:.1f}\tlastf(X): {f0:.3f}")
@@ -69,14 +71,23 @@ class Secant(RootSearch):
                 return f_calls, x1
             
             if f1 == f0:
-                self._log("Let approached Nonsense")
-                return f_calls, None
+                if out_of_offset_loop:
+                    self._log(f"Let approached Nonsense {f1}")
+                    return f_calls, None
+                x1 += offset * 4
+                f1 = self.__f(x1)
+                f_calls += 1
+                continue
+
+            out_of_offset_loop = True
 
             if abs(x1-x0) < self.__x_precision:
                 self._log("Minimal Let Found - Convergence")
                 return f_calls, x1
 
-            x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
+            step = f1 * (x1 - x0) / (f1 - f0)
+            step = max(-30, min(step, 30))
+            x2 = x1 - step
             x0, f0 = (x0, f0) if abs(f0) < abs(f1) else (x1, f1) 
             x1, f1 = x2, self.__f(x2)
             f_calls += 1

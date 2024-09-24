@@ -242,35 +242,46 @@ class LetFinder:
 if __name__ == "__main__":
 
     from ..circuit.circuito import Circuito
-    from ..spiceInterface.spiceRunner import NGSpiceRunner
+    from ..spiceInterface.spiceRunner import NGSpiceRunner, HSpiceRunner
     from ..utils.matematica import InDir
     from os import path
+    sim_config.runner_type = HSpiceRunner
+    hspice_is_working = not sim_config.runner.test_spice()
 
     with InDir("debug"):
 
         print("Testing LET finder...")
+
+        print("\tTesting Finding Current of safe Let...")
+        if hspice_is_working:
+            inv = Circuito("radhardinv").from_json()
+            sim_config.circuit = inv
+            sim_config.vdd = 0.7
+            valid_input = [0]
+            target = 162.7
+            let = LET(target, 0.7, "ina", "sout", ["fall", "rise"], valid_input)
+            measured = LetFinder(inv, report=False).minimal_LET(let, valid_input, safe=True)[1]
+            assert abs(measured-target) <= 10e-1, f"LET FINDING FAILED simulated:{measured} expected:{target}"
+
+        
         sim_config.runner_type = NGSpiceRunner
+        sim_config.vdd = 0.9
         nand = Circuito("nand").from_json()
         sim_config.circuit = nand
-        
-        print("\tTesting Finding Current of safe Let...")
+
         valid_input = [1,1]
-        # target = 111.2548828125
         target = 59.7290039062
         let = LET(target, 0.9, "g1", "g1", [None, None], valid_input)
         measured = LetFinder(nand, report=False).minimal_LET(let, valid_input, safe=True)[1]
         assert abs(measured-target) <= 10e-1, f"LET FINDING FAILED simulated:{measured} expected:{target}"
 
-        # print("\tTesting Finding Current of invalid unsafe Let...")
-        # invalid_let = LET(314.152, 0.7, "g1", "g1", [None, None], valid_input)
-        # print(LetFinder(nand, "debug/test_circuits", False).minimal_LET(invalid_let, valid_input, safe=False))
-
         print("\tTesting Finding Current of valid unsafe Let...")
+        sim_config.circuit = nand
         valid_input = [1,1]
         # target = 140.625
         target = 115.2
         unsafe_valid_let = LET(target, 0.9, "i1", "g1", [None, None], valid_input)
         measured = LetFinder(nand, report=False).minimal_LET(unsafe_valid_let, valid_input, safe=False)[1]
         assert abs(measured- target) < 1,  f"LET FINDING FAILED simulated:{measured} expected:{target}"
-        
+
         print("LET Finder OK")

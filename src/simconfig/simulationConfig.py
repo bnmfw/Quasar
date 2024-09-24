@@ -27,15 +27,25 @@ class SimulationConfig:
             fault_model (FaultModel, optional): Fault model. Defaults to a new instance FinFETMessengerStandard.
             transistor_model (Transistor, optional): Transistor Model. Defaults to a new instance FinFET.
         """
-        self.vdd: float = vdd
+        self.__vdd: float = vdd
         self.fault_model: FaultModel = fault_model
         self.transistor_model: Transistor = transistor_model
         self.__circuit = circuit
         self.__runner_type = runner_type
         if runner_type is not None:
-            self.runner__ = runner_type()
+            self.runner = runner_type()
         self.__model_manager = None
         self.model_obsolete = False
+
+    @property
+    def vdd(self):
+        return self.__vdd
+    
+    @vdd.setter
+    def vdd(self, value):
+        self.__vdd = value
+        with self.runner.Vdd(value):
+            pass
 
     @property
     def runner_type(self):
@@ -80,7 +90,7 @@ class SimulationConfig:
 
     def dump(self, path_to_folder: str) -> None:
         with open(path.join(path_to_folder,"config"), "w") as file:
-            file.write(f"vdd={self.vdd}\n"
+            file.write(f"vdd={self.__vdd}\n"
                        f"colection_time={self.fault_model.colect_time}\n"
                        f"track_establishment={self.fault_model.track_estab}\n"
                        f"transistor_depth={self.transistor_model.charge_collection_depth_nano}\n"
@@ -94,7 +104,7 @@ class SimulationConfig:
             for line in file:
                 a, b = line.split("=")
                 tokens[a] = b
-        self.vdd = float(tokens["vdd"])
+        self.__vdd = float(tokens["vdd"])
         self.fault_model = DoubleExponential(float(tokens["colection_time"]), float(tokens["track_establishment"]))
         self.transistor_model = Transistor(float(tokens["transistor_depth"]))
         from ..spiceInterface.spiceRunner import NGSpiceRunner, HSpiceRunner

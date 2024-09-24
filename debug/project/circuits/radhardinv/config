@@ -1,0 +1,5 @@
+vdd=0.7
+colection_time=164
+track_establishment=50
+transistor_depth=21.0
+runner=HSpiceRunner
