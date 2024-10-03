@@ -9,6 +9,7 @@ from ..utils.concorrencia import ProcessMaster
 from ..variability.predictor import Predictor
 from .components import LET, Node
 from .circuito import Circuito
+from .graph import LogicSimulationError
 relatorio = False
 
 class CircuitManager:
@@ -40,15 +41,15 @@ class CircuitManager:
         Returns:
             list: A list of all possible lets.
         """
-        if self.circuit.graph is None:
+        try:
+            # Generates all valid lets from the circuit graph model
+            f = lambda l: list(map(lambda n: n.name, l))
+            lets = self.circuit.graph.generate_valid_let_configs(f(nodes), f(outputs), f(inputs), self.circuit.get_node)
+        except LogicSimulationError:
             lets = [[node, output, signals, None, None]\
                     for node in nodes\
                     for output in outputs\
                     for signals in all_vector_n_bits(len(inputs))]
-        else:
-            # Generates all valid lets from the circuit graph model
-            f = lambda l: list(map(lambda n: n.name, l))
-            lets = self.circuit.graph.generate_valid_let_configs(f(nodes), f(outputs), f(inputs), self.circuit.get_node)
 
         # Enumerates lets
         return lets
