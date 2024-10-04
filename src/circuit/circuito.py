@@ -63,7 +63,7 @@ class Circuito():
             outputs (list[str]): List of node names to be interpreted as outputs.
         """
         self.inputs = [Signal_Input(input) for input in inputs]
-        nodes_set, self.graph = sim_config.runner.get_nodes(self.name)
+        nodes_set, self.graph = sim_config.runner.get_nodes(self.name, inputs=inputs)
         self.nodes = [Node(nodo) for nodo in nodes_set]
         self.saidas = [self.get_node(output) for output in outputs]
         return self

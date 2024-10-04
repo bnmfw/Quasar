@@ -390,18 +390,21 @@ class SpiceFileManager:
             sys.exit(1)
         return {measure.label: measure}
 
-    def get_nodes(self, circuit_name: str, tension_sources: list = None) -> set:
+    def get_nodes(self, circuit_name: str, tension_sources: list = None, inputs: list = None) -> set:
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
         Args:
             curcuit_name (str): name of the circuit to be parsed.
             tension_sources (list[str]): List of tesion sources.
+            inputs (list[str]): List of circuit input names
 
         Returns:
             set: a set containing the label of all nodes and a Graph object.
         """
         nodes = {"vdd", "gnd"}
+        if inputs is None:
+            inputs = []
         if tension_sources is None:
             tension_sources = ["vcc", "vdd", "gnd", "vss"]
         with open(
@@ -426,7 +429,7 @@ class SpiceFileManager:
                     for node in [source, gate, drain]:
                         nodes.add(node)
         return {node for node in nodes if node not in tension_sources}, Graph(
-            transistor_list, tension_sources
+            transistor_list, tension_sources + inputs
         )
 
     def get_output(self) -> dict:

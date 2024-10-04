@@ -482,6 +482,9 @@ class Graph:
             bool: Wether or not flipping the node logical value flipped the outputs.
         """
 
+        if faulted_node in self.fixed:
+            return False
+        
         # Floating node will never affect an output
         # TODO: It actually can as it can switch a gate on or off
         if self.vertices[faulted_node]["signal"] is None:

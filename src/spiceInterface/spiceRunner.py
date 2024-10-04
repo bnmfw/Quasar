@@ -171,18 +171,19 @@ class SpiceRunner(ABC):
         self.file_manager.set_pulse(LET(0, vdd, "none", "none", [None, None]))
         self.file_manager.set_monte_carlo(0)
 
-    def get_nodes(self, circ_name: str, tension_sources: list = None) -> set:
+    def get_nodes(self, circ_name: str, tension_sources: list = None, inputs: list = None) -> set:
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
         Args:
             curcuit_name (str): name of the circuit to be parsed.
             tension_sources (list[str]): Nodes that should be ignored.
+            inputs (list[str]): List of circuit input names.
 
         Returns:
             set: The label of all nodes.
         """
-        return SpiceRunner.file_manager.get_nodes(circ_name, tension_sources)
+        return SpiceRunner.file_manager.get_nodes(circ_name, tension_sources, inputs)
 
     def run_delay(self, input_name: str, output_name: str, inputs: list) -> float:
         """
