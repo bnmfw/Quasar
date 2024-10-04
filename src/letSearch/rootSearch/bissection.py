@@ -1,14 +1,18 @@
 from typing import Callable
 from .rootSearch import RootSearch
 
+
 class Bissection(RootSearch):
-    def __init__(self, f: Callable, 
-                 lower_bound: float, 
-                 upper_bound: float,
-                 x_precision: float = 0.1,
-                 y_precision: float = 0.001, 
-                 report: bool = False, 
-                 iteration_limit: int = 50) -> None:
+    def __init__(
+        self,
+        f: Callable,
+        lower_bound: float,
+        upper_bound: float,
+        x_precision: float = 0.1,
+        y_precision: float = 0.001,
+        report: bool = False,
+        iteration_limit: int = 50,
+    ) -> None:
         """
         Constructor
 
@@ -32,7 +36,7 @@ class Bissection(RootSearch):
     def root(self) -> float:
         """
         Finds the approximation for the root
-        
+
         Returns:
             float: the root
         """
@@ -47,7 +51,7 @@ class Bissection(RootSearch):
 
         # Guarantees the upper and lower bound are in different sides
         it = 0
-        while f_out_up/f_out_lw > 0:
+        while f_out_up / f_out_lw > 0:
             self.__upper_bound += step_up
             step_up += 100
             upper = self.__upper_bound
@@ -59,41 +63,45 @@ class Bissection(RootSearch):
 
         # Actual binary search
         for i in range(self.__iteration_limit):
-            
-            f_in = float((lower + upper)/2)
+
+            f_in = float((lower + upper) / 2)
 
             # Function call
             f_out = self.__f(f_in)
             f_calls += 1
-            self._log(f"{i}\tcurrent: {f_in:.1f}\tpeak_tension: {f_out:.3f}\tbottom: {lower:.1f}\ttop: {upper:.1f}")
+            self._log(
+                f"{i}\tcurrent: {f_in:.1f}\tpeak_tension: {f_out:.3f}\tbottom: {lower:.1f}\ttop: {upper:.1f}"
+            )
 
             # Precision satisfied
             if abs(f_out) < self.__y_precision:
-                    self._log("Minimal Let Found - Convergence\n")
-                    return f_calls, f_in
+                self._log("Minimal Let Found - Convergence\n")
+                return f_calls, f_in
 
             # Upper and Lower convergence
-            if abs(upper-lower) < self.__x_precision:
+            if abs(upper - lower) < self.__x_precision:
                 # To the lower bound
-                if f_in <= self.__lower_bound+1:
+                if f_in <= self.__lower_bound + 1:
                     self._log("Minimal Let NOT Found - Lower Divergence\n")
                     return f_calls, None
-                
+
                 # To the upper bound (Increase)
-                elif f_in >= self.__upper_bound-1:
+                elif f_in >= self.__upper_bound - 1:
                     self._log("Upper Divergence - Upper Bound Increased\n")
                     self.__upper_bound += step_up
                     step_up += 100
                     upper = self.__upper_bound
-            
-            if f_out_up/f_out_lw > 0:
-                raise RuntimeError(f"Both bounds of binary search in the same side {f_out_up} and {f_out_lw}")
-            if f_out_up/f_out > 0:
+
+            if f_out_up / f_out_lw > 0:
+                raise RuntimeError(
+                    f"Both bounds of binary search in the same side {f_out_up} and {f_out_lw}"
+                )
+            if f_out_up / f_out > 0:
                 f_out_up = f_out
                 upper = f_in
-            elif f_out_lw/f_out > 0:
+            elif f_out_lw / f_out > 0:
                 f_out_lw = f_out
                 lower = f_in
-        
+
         self._log("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
         return f_calls, None

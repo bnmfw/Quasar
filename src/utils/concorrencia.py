@@ -3,6 +3,7 @@ Concurrent Framework.
 This is the only module in the project that knows cuncurrency exists, as it should be transparent to other modules.
 The interface provided is of a function executed multiple times with a queue of its inputs.
 """
+
 import os
 from collections.abc import Callable
 import multiprocessing as mp
@@ -12,28 +13,34 @@ import json
 from time import sleep, perf_counter
 from os import path, sep
 
+
 class ProcessFolder:
     """
     Context manager that creates a directory for a process that is a copy of the circuits directory. These copys are created in the work directory.
     As the context manager is exited said folder is deleted.
     """
+
     def __init__(self, dir: str, circuit: str = None):
         self.pid = None
         self.dir = dir
         self.first_dir = self.dir.split(sep)[0]
-        self.depth = self.dir.count(sep)+1
+        self.depth = self.dir.count(sep) + 1
         self.circuit_name = circuit
 
     def __enter__(self):
         self.pid = os.getpid()
-        os.mkdir(path.join("work",str(self.pid)))
-        os.mkdir(path.join("work",str(self.pid),self.first_dir))
+        os.mkdir(path.join("work", str(self.pid)))
+        os.mkdir(path.join("work", str(self.pid), self.first_dir))
         if self.circuit_name:
             for target in {"dis", "include.cir", "include", self.circuit_name}:
-                os.system(f"cp -R {path.join(self.first_dir,target)} {path.join('work',str(self.pid),self.first_dir,target)}")
+                os.system(
+                    f"cp -R {path.join(self.first_dir,target)} {path.join('work',str(self.pid),self.first_dir,target)}"
+                )
         else:
-            os.system(f"cp -R {self.first_dir} {path.join('work',str(self.pid),self.first_dir)}")
-        os.chdir(path.join("work",str(self.pid),self.dir,".."))
+            os.system(
+                f"cp -R {self.first_dir} {path.join('work',str(self.pid),self.first_dir)}"
+            )
+        os.chdir(path.join("work", str(self.pid), self.dir, ".."))
 
     def __exit__(self, type, value, traceback):
         for _ in range(self.depth):
@@ -41,11 +48,20 @@ class ProcessFolder:
         os.system(f"rm -r {self.pid}")
         os.chdir(f"..")
 
+
 class ProcessWorker:
     """
     Executes some function multiple times with different inputs. The static_args+job define the inputs.
     """
-    def __init__(self, work_func: Callable, static_args: list, max_work: int, work_dir: str = path.join("project","circuits"),  target_circuit: str = None) -> None:
+
+    def __init__(
+        self,
+        work_func: Callable,
+        static_args: list,
+        max_work: int,
+        work_dir: str = path.join("project", "circuits"),
+        target_circuit: str = None,
+    ) -> None:
         """
         Constructor.
 
@@ -67,7 +83,7 @@ class ProcessWorker:
         Handles the termination signal.
         """
         sys.exit(0)
-    
+
     def run(self, master: object) -> None:
         """
         Executes multiple jobs and posts its results.
@@ -79,7 +95,7 @@ class ProcessWorker:
 
         # Changes the worker execution to its own folder
         with ProcessFolder(self.work_dir, self.target_circuit):
-            
+
             # While True limited by the max_work load
             for _ in range(self.max_work):
 
@@ -98,11 +114,19 @@ class ProcessWorker:
                 master.post_result(result, job["id"], end_time - start_time)
         return
 
+
 class ProcessMaster:
     """
     Handles the multiple workers, jobs and sync.
     """
-    def __init__(self, func: Callable, jobs: list or None, work_dir: str = path.join("project","circuits"), progress_report: Callable = None) -> None:
+
+    def __init__(
+        self,
+        func: Callable,
+        jobs: list or None,
+        work_dir: str = path.join("project", "circuits"),
+        progress_report: Callable = None,
+    ) -> None:
         """
         Constructor.
 
@@ -112,18 +136,23 @@ class ProcessMaster:
             work_dir (str): Main circuits directory.
             progress_report (Callable): Function that the progress is to be reported to.
         """
-        self.func = func # Function to be executed
-        self.work_dir =  work_dir.split(sep)[0]
-        self.target_circuit = None if not work_dir.count(sep) else work_dir.split(sep)[1]
+        self.func = func  # Function to be executed
+        self.work_dir = work_dir.split(sep)[0]
+        self.target_circuit = (
+            None if not work_dir.count(sep) else work_dir.split(sep)[1]
+        )
         self.done_copy = []
-        self.progress_report = progress_report # Function that Master should report its progress to
-        if jobs is not None: self.total_jobs = len(jobs)
+        self.progress_report = (
+            progress_report  # Function that Master should report its progress to
+        )
+        if jobs is not None:
+            self.total_jobs = len(jobs)
         # else: print("HUH")
 
         # Sync
         self.lock_jobs = mp.Lock()
         self.lock_done = mp.Lock()
-        self.lock_inpg = mp.Lock() #inpg = in progress
+        self.lock_inpg = mp.Lock()  # inpg = in progress
 
         self.jobs = mp.Queue()
         self.done = mp.Queue()
@@ -139,7 +168,7 @@ class ProcessMaster:
         if not jobs is None:
             for i, job in enumerate(jobs):
                 self.jobs.put({"id": i, "job": job})
-       
+
     def __terminate_work(self, workers: list):
         """
         Terminated all the process
@@ -149,14 +178,14 @@ class ProcessMaster:
         """
         for worker in workers:
             worker.terminate()
-    
+
     def smart_sleep(self):
         """
         Sleeps for a variable amount of time depending on the time workers post jobs.
         """
 
         # Actually sleeps zzzzz
-        sleep(self.sleep_time*0.8)
+        sleep(self.sleep_time * 0.8)
 
         # Maintanance of sleep_time
         with self.lock_time:
@@ -190,7 +219,7 @@ class ProcessMaster:
 
                 # Report progress if there is something to report progress to
                 if not self.progress_report is None:
-                    self.progress_report(self.done.qsize()/self.total_jobs)
+                    self.progress_report(self.done.qsize() / self.total_jobs)
 
                 # Continues working if there still are jobs to be done
                 if self.done.qsize() != self.total_jobs:
@@ -199,9 +228,9 @@ class ProcessMaster:
                 # No job to be done, just gets all jobs in self.done_copy wich will be returned
                 while not self.done.empty():
                     self.done_copy.append(self.done.get())
-                
+
                 return
-    
+
     def __remove_from_queue(self, queue: mp.Queue, id: int):
         """
         Recieves a Queue and an id and removes the item from the Queue (kinda evil).
@@ -224,23 +253,23 @@ class ProcessMaster:
             list or -1: Returns a job to be done or -1 if there are none left
         """
         with self.lock_jobs:
-            
+
             # If there are no jobs left returns -1
             if self.jobs.empty():
                 job = -1
-            
+
             # Gets a job and puts it in progress
             else:
                 job = self.jobs.get()
                 with self.lock_inpg:
                     self.inpg.put(job)
         return job
-    
+
     def post_result(self, output, id: int, total_time: float):
         """
         Posts the output of a function. Called by workers.
 
-        Args:    
+        Args:
             :output: Output of the function.
             :id (int): Id of the job completed.
             :total_time (float): Time taken to complete the job.
@@ -255,12 +284,12 @@ class ProcessMaster:
         # Puts time used to run job in its queue
         with self.lock_time:
             self.job_time.put(total_time)
-    
+
     def return_done(self):
         """
         Returns all completed jobs.
 
-        Returns:    
+        Returns:
             lsit: Complete jobs.
         """
         return self.done_copy
@@ -269,17 +298,29 @@ class ProcessMaster:
         """
         Creates all workers and runs all workers.
 
-        Args:    
+        Args:
             :static_args (list): List containing the static arguments of the jobs, that dont change in between jobs.
-            :n_workers (int): Number of workers to be created, will take the cpu count as standard. 
+            :n_workers (int): Number of workers to be created, will take the cpu count as standard.
         """
         try:
             # Initial progress report
             if not self.progress_report is None:
-                self.progress_report(self.done.qsize()/self.total_jobs)
+                self.progress_report(self.done.qsize() / self.total_jobs)
 
             # Creates all workers
-            workers = [mp.Process(target=ProcessWorker(self.func, static_args, self.jobs.qsize(), work_dir=self.work_dir, target_circuit=self.target_circuit).run, args = (self,)) for _ in range(n_workers)]
+            workers = [
+                mp.Process(
+                    target=ProcessWorker(
+                        self.func,
+                        static_args,
+                        self.jobs.qsize(),
+                        work_dir=self.work_dir,
+                        target_circuit=self.target_circuit,
+                    ).run,
+                    args=(self,),
+                )
+                for _ in range(n_workers)
+            ]
 
             # Starts all workers
             for worker in workers:
@@ -289,32 +330,44 @@ class ProcessMaster:
             self.master_routine()
 
             # This should never happen
-            if self.done.qsize(): print(f"ERROR: Queue done finished with {self.done.qsize()} items")
-            if self.jobs.qsize(): print(f"ERROR: Queue jobs finished with {self.jobs.qsize()} items")
-            if self.inpg.qsize(): print(f"ERROR: Queue inpg finished with {self.inpg.qsize()} items")
+            if self.done.qsize():
+                print(f"ERROR: Queue done finished with {self.done.qsize()} items")
+            if self.jobs.qsize():
+                print(f"ERROR: Queue jobs finished with {self.jobs.qsize()} items")
+            if self.inpg.qsize():
+                print(f"ERROR: Queue inpg finished with {self.inpg.qsize()} items")
 
             # Joins all workers
             for worker in workers:
                 worker.join()
-            
+
             # Should never happen
             if len(os.listdir("work")):
                 raise ChildProcessError("Master Process Joined Without Child Finishing")
-        
+
             # Reports progress completion
             if not self.progress_report is None:
                 self.progress_report(-1)
-        
+
         # Whenever a Keyboard interrupt happens it also terminates all child processes
         except KeyboardInterrupt as e:
             self.__terminate_work(workers)
             raise KeyboardInterrupt(e)
 
+
 class PersistentProcessMaster(ProcessMaster):
     """
     Specialization of ProcessMaster that also backups jobs in its routine.
     """
-    def __init__(self, func: Callable, jobs: list or None, backup_prefix: str, work_dir: str = path.join("project","circuits"), progress_report: Callable = None) -> None:
+
+    def __init__(
+        self,
+        func: Callable,
+        jobs: list or None,
+        backup_prefix: str,
+        work_dir: str = path.join("project", "circuits"),
+        progress_report: Callable = None,
+    ) -> None:
         """
         Constructor.
 
@@ -323,17 +376,17 @@ class PersistentProcessMaster(ProcessMaster):
             jobs (list or None): List of jobe to be run.
             work_dir (str): Main circuits directory.
             backup_prefix (str): Path and prefix from root to backup, in the format path/.../filename excluding extensions.
-            progress_report (Callable): Function that the progress is to be reported to. 
+            progress_report (Callable): Function that the progress is to be reported to.
         """
         super().__init__(func, jobs, work_dir=work_dir, progress_report=progress_report)
 
         self.prefix = backup_prefix
-        
+
         # Copias dos conteudos das queues usados para dump e load
         self.jobs_copy = []
         self.done_copy = []
-        self.inpg_copy = []   
-    
+        self.inpg_copy = []
+
     def check_backup(self) -> bool:
         """
         Checks whether of not a backup exists.
@@ -342,7 +395,7 @@ class PersistentProcessMaster(ProcessMaster):
             bool: A boolean informing whether or not said backup exists.
         """
         return os.path.exists(f"{self.prefix}_jobs.json")
-    
+
     def empty_queue(self, queue: mp.Queue):
         """
         Emptys a queue.
@@ -353,7 +406,7 @@ class PersistentProcessMaster(ProcessMaster):
         """
         while not queue.empty():
             queue.get()
-    
+
     def delete_backup(self):
         """
         Deletes backups.
@@ -365,9 +418,11 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Dumps all jobs into backup files.
         """
-        json.dump(list(self.inpg_copy+self.jobs_copy), open(f"{self.prefix}_jobs.json", "w"))
+        json.dump(
+            list(self.inpg_copy + self.jobs_copy), open(f"{self.prefix}_jobs.json", "w")
+        )
         json.dump(list(self.done_copy), open(f"{self.prefix}_done.json", "w"))
-    
+
     def load_backup(self):
         """
         Loads jobs from backup.
@@ -375,7 +430,8 @@ class PersistentProcessMaster(ProcessMaster):
         Return:
             bool: A boolean informing whether or not backups were read
         """
-        if not self.check_backup(): return False
+        if not self.check_backup():
+            return False
         self.jobs_copy = json.load(open(f"{self.prefix}_jobs.json", "r"))
         self.done_copy = json.load(open(f"{self.prefix}_done.json", "r"))
         self.total_jobs = len(self.jobs_copy) + len(self.done_copy)
@@ -390,7 +446,7 @@ class PersistentProcessMaster(ProcessMaster):
         """
         Alternative for passing jobs in the construction of the object.
 
-        Args:    
+        Args:
             jobs (list): List containing jobs to be done.
         """
 
@@ -406,17 +462,17 @@ class PersistentProcessMaster(ProcessMaster):
         self.jobs_copy = jobs
         self.done_copy = []
         self.inpg_copy = []
-    
+
         self.dump_backup()
 
     def __read_queue(self, queue: mp.Queue) -> list:
         """
         Reads the contents of a queue.
 
-        Args:    
+        Args:
             queue (mp.Queue): Queue to be read.
 
-        Returns:    
+        Returns:
             list: the contents of the queue.
         """
         contents = []
@@ -425,7 +481,7 @@ class PersistentProcessMaster(ProcessMaster):
             contents.append(value)
             queue.put(value)
         return contents
-    
+
     def master_routine(self):
         """
         Routine of Process Master, including sleeping, reporting progress and backuping.
@@ -444,7 +500,7 @@ class PersistentProcessMaster(ProcessMaster):
 
                 # Updates progress through a callback
                 if not self.progress_report is None:
-                    self.progress_report(self.done.qsize()/self.total_jobs)
+                    self.progress_report(self.done.qsize() / self.total_jobs)
 
                 # Continues if there are still jobs to be done
                 if len(self.done_copy) != self.total_jobs:
@@ -453,6 +509,7 @@ class PersistentProcessMaster(ProcessMaster):
                 # Empties the queue in order to join (python quirk)
                 self.empty_queue(self.done)
                 break
+
 
 if __name__ == "__main__":
     print("Testing Concurrent Module...")
@@ -467,6 +524,7 @@ if __name__ == "__main__":
     # os.chdir("..")
 
     print("\tTesting Simple Parallel execution...")
+
     def function(a, x):
         return x * a
 
@@ -474,15 +532,22 @@ if __name__ == "__main__":
 
     manager = ProcessMaster(function, test_jobs)
     manager.work((10,))
-    assert set(manager.return_done()) == {i*10 for i in range(10)}, "SIMPLE PARALLEL MANAGER FAILED"
+    assert set(manager.return_done()) == {
+        i * 10 for i in range(10)
+    }, "SIMPLE PARALLEL MANAGER FAILED"
 
     print("\tTesting Backuping Parallel execution...")
+
     def sleeper(a, x):
         sleep(1)
         return x * a
-    
-    backuper = PersistentProcessMaster(sleeper, test_jobs, path.join("debug","backup_test","test"))
+
+    backuper = PersistentProcessMaster(
+        sleeper, test_jobs, path.join("debug", "backup_test", "test")
+    )
     backuper.work((10,))
-    assert set(backuper.return_done()) == {i*10  for i in range(10)}, "BACKUPING PARALLEL MANAGER FAILED"
+    assert set(backuper.return_done()) == {
+        i * 10 for i in range(10)
+    }, "BACKUPING PARALLEL MANAGER FAILED"
 
     print("Concurrent Module OK.")

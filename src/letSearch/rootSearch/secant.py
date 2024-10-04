@@ -1,16 +1,20 @@
 from typing import Callable
 from .rootSearch import RootSearch
 
+
 class Secant(RootSearch):
-    def __init__(self, f: Callable,
-                 root_guess: float,
-                 increasing: bool,
-                 root_guess_image: float = None,
-                 x_precision: float = 0.1, 
-                 y_precision: float = 0.001, 
-                 perturbation: float = 0.03,
-                 report: bool = False, 
-                 iteration_limit: int = 50) -> None:
+    def __init__(
+        self,
+        f: Callable,
+        root_guess: float,
+        increasing: bool,
+        root_guess_image: float = None,
+        x_precision: float = 0.1,
+        y_precision: float = 0.001,
+        perturbation: float = 0.03,
+        report: bool = False,
+        iteration_limit: int = 50,
+    ) -> None:
         """
         Constructor
 
@@ -38,7 +42,7 @@ class Secant(RootSearch):
     def root(self) -> float:
         """
         Finds the approximation for the root
-        
+
         Returns:
             float: the root
         """
@@ -49,13 +53,16 @@ class Secant(RootSearch):
         if f0 is None:
             f0 = self.__f(x0)
             f_calls += 1
-        if (abs(f0) < self.__y_precision):
+        if abs(f0) < self.__y_precision:
             self._log("Minimal Let Found - Convergence")
             return f_calls, x0
-        
 
         x1 = self.__guess
-        direction = 1 if (self.__increasing and f0 < 0) or (not self.__increasing and f0 > 0) else -1
+        direction = (
+            1
+            if (self.__increasing and f0 < 0) or (not self.__increasing and f0 > 0)
+            else -1
+        )
         offset = self.__perturbation * x0 * direction
         x1 += offset
         f1 = self.__f(x1)
@@ -63,13 +70,15 @@ class Secant(RootSearch):
 
         out_of_offset_loop = False
         for i in range(self.__iteration_limit):
-            
-            self._log(f"{i}\tcurrent: {x1:.1f}\tpeak_tension: {f1:.3f}\tlastX: {x0:.1f}\tlastf(X): {f0:.3f}")
 
-            if (abs(f1) < self.__y_precision):
+            self._log(
+                f"{i}\tcurrent: {x1:.1f}\tpeak_tension: {f1:.3f}\tlastX: {x0:.1f}\tlastf(X): {f0:.3f}"
+            )
+
+            if abs(f1) < self.__y_precision:
                 self._log("Minimal Let Found - Convergence")
                 return f_calls, x1
-            
+
             if f1 == f0:
                 if out_of_offset_loop:
                     self._log(f"Let approached Nonsense {f1}")
@@ -81,13 +90,13 @@ class Secant(RootSearch):
 
             out_of_offset_loop = True
 
-            if abs(x1-x0) < self.__x_precision:
+            if abs(x1 - x0) < self.__x_precision:
                 self._log("Minimal Let Found - Convergence")
                 return f_calls, x1
 
             step = f1 * (x1 - x0) / (f1 - f0)
             step = max(-30, min(step, 30))
             x2 = x1 - step
-            x0, f0 = (x0, f0) if abs(f0) < abs(f1) else (x1, f1) 
+            x0, f0 = (x0, f0) if abs(f0) < abs(f1) else (x1, f1)
             x1, f1 = x2, self.__f(x2)
             f_calls += 1

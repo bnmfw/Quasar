@@ -6,6 +6,7 @@ from .distribution import RandomDistributor, Distribution
 from ...simconfig.simulationConfig import sim_config
 from dataclasses import dataclass
 
+
 @dataclass
 class SpiceGaussianDist(Distribution):
     model: str
@@ -13,6 +14,7 @@ class SpiceGaussianDist(Distribution):
     mean: float
     sigmas: int
     std_dev: float
+
 
 class SpiceDistributor(RandomDistributor):
     def __init__(self) -> None:
@@ -22,14 +24,16 @@ class SpiceDistributor(RandomDistributor):
 
         points = sim_config.runner.run_MC_var(n_points, distributions)
         treated_points = [[] for _ in points[0]]
-        
+
         dist: SpiceGaussianDist
         for i, dist in enumerate(distributions):
             model = dist.model
             param = dist.var
             mean: float = sim_config.model_manager[model][param]
             for j, p in enumerate(points[i]):
-                treated_points[j].append((model, param, mean + p * (dist.std_dev * mean)/dist.sigmas))
-    
+                treated_points[j].append(
+                    (model, param, mean + p * (dist.std_dev * mean) / dist.sigmas)
+                )
+
         treated_points = list(map(lambda p: tuple(p), treated_points))
         return treated_points

@@ -1,9 +1,11 @@
 from ..simconfig.simulationConfig import sim_config
 
+
 class Signal_Input:
     """
     Object that represent an input signal, has a name and a logical signal
     """
+
     def __init__(self, name: str):
         self.name = name
         self.signal = "setup"
@@ -22,7 +24,7 @@ class Signal_Input:
 
     def decodec(self, dic: dict) -> None:
         """
-        Decodifies the object. Codec method reciprocal. 
+        Decodifies the object. Codec method reciprocal.
 
         Args:
             dic (dict): Dictionary from wich the object will be decodified
@@ -33,10 +35,12 @@ class Signal_Input:
     def __repr__(self):
         return f"{self.name}:{self.signal}"
 
+
 class Node:
     """
     Represents a circuit node. Has the collection of valid LETs that originate from it.
     """
+
     def __init__(self, name: str):
         self.name = name
         self.LETs = []
@@ -76,29 +80,41 @@ class Node:
         dic["lets"] = let_list
         return dic
 
-    def decodec(self, dic:dict):
+    def decodec(self, dic: dict):
         """
-        Decodifies the object. Codec method reciprocal. 
+        Decodifies the object. Codec method reciprocal.
 
         Args:
             dic (dict): Dictionary from wich the object will be decodified
         """
-        if not isinstance(dic, dict) or not isinstance(sim_config.vdd,(int, float)): 
-            raise TypeError(f"dic (dict): {type(dic)}, vdd (float): {type(sim_config.vdd)}")
+        if not isinstance(dic, dict) or not isinstance(sim_config.vdd, (int, float)):
+            raise TypeError(
+                f"dic (dict): {type(dic)}, vdd (float): {type(sim_config.vdd)}"
+            )
         self.name = dic["name"]
         self.delay = dic["delay"]
         for dicionario_let in dic["lets"]:
-            let = LET(None, sim_config.vdd, "node", "output", ["edge","edge"])
+            let = LET(None, sim_config.vdd, "node", "output", ["edge", "edge"])
             let.decodec(dicionario_let)
             self.LETs.append(let)
 
+
 class LET:
     """
-    LET object. 
+    LET object.
     Has the current or value of the fault, node where the fault originated and output interface to wich the fault propagates.
     Has all input states in wich the let is the same and the fault edge at the node struck and output.
     """
-    def __init__(self, current: float, vdd: float, node_name: str, output_name: list, edges: list, input_states: list = None):
+
+    def __init__(
+        self,
+        current: float,
+        vdd: float,
+        node_name: str,
+        output_name: list,
+        edges: list,
+        input_states: list = None,
+    ):
         """_summary_
         Args:
             current (float): Let current in micro amps. Can be None
@@ -129,7 +145,11 @@ class LET:
         self.value = sim_config.current_to_let(current)
 
     def __eq__(self, other):
-        return (self.node_name == other.node_name and self.output_name == other.output_name and self.orientacao == other.orientacao)
+        return (
+            self.node_name == other.node_name
+            and self.output_name == other.output_name
+            and self.orientacao == other.orientacao
+        )
 
     def __repr__(self):
         return f"{self.node_name} {self.output_name} {self.orientacao} {self.current}"
@@ -139,10 +159,10 @@ class LET:
 
     def __lt__(self, other):
         return self.current < other.current
-    
+
     def __le__(self, other):
         return self.current <= other.current
-    
+
     def __gt__(self, other):
         return self.current > other.current
 
@@ -156,9 +176,10 @@ class LET:
         Returns:
             dict: Codifies the object
         """
-        if type(input_state) != list: raise TypeError("Validacao nao eh uma lista")
+        if type(input_state) != list:
+            raise TypeError("Validacao nao eh uma lista")
         if not input_state in self.input_states:
-            self.input_states.append(input_state)  
+            self.input_states.append(input_state)
 
     def codec(self) -> dict:
         """
@@ -177,17 +198,19 @@ class LET:
 
     def decodec(self, dic: dict) -> None:
         """
-        Decodifies the object. Codec method reciprocal. 
+        Decodifies the object. Codec method reciprocal.
 
         Args:
             dic (dict): Dictionary from wich the object will be decodified
         """
-        if type(dic) != dict: raise TypeError(f"Nao recebi um dicionario, recebi {type(dic)}: {dic}")
+        if type(dic) != dict:
+            raise TypeError(f"Nao recebi um dicionario, recebi {type(dic)}: {dic}")
         self.current = dic["corr"]
         self.orientacao = dic["orie"]
         self.node_name = dic["nodo"]
         self.output_name = dic["said"]
         self.input_states = dic["val"]
+
 
 if __name__ == "__main__":
 

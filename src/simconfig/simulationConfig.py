@@ -4,21 +4,28 @@ Configurations of the simulation, such as the modeled fault, transistor model an
 
 from .transistorModel import Transistor, FinFET, Bulk32
 from .faultModel import FaultModel, FinFETMessengerStandard, DoubleExponential
+
 # from .spiceInterface import SpiceRunner, NGSpiceRunner, HSpiceRunner
 from ..spiceInterface.spiceModelManager import SpiceModelManager
+
 # from ..circuit.circuito import Circuito
 from typing import Type
 from os import path
+
 
 class SimulationConfig:
     """
     Simulation data
     """
-    def __init__(self, vdd: float = 0.9,
-                 fault_model: FaultModel = FinFETMessengerStandard(), 
-                 transistor_model: Transistor = Bulk32(),
-                 runner_type = None,
-                 circuit = None) -> None:
+
+    def __init__(
+        self,
+        vdd: float = 0.9,
+        fault_model: FaultModel = FinFETMessengerStandard(),
+        transistor_model: Transistor = Bulk32(),
+        runner_type=None,
+        circuit=None,
+    ) -> None:
         """
         Main simulation parameters
 
@@ -40,7 +47,7 @@ class SimulationConfig:
     @property
     def vdd(self):
         return self.__vdd
-    
+
     @vdd.setter
     def vdd(self, value):
         self.__vdd = value
@@ -50,7 +57,7 @@ class SimulationConfig:
     @property
     def runner_type(self):
         return self.__runner_type
-    
+
     @runner_type.setter
     def runner_type(self, rt):
         self.__runner_type = rt
@@ -59,11 +66,13 @@ class SimulationConfig:
     @property
     def circuit(self):
         return self.__circuit
-    
+
     @circuit.setter
     def circuit(self, mm):
         self.__circuit = mm
-        self.__model_manager = SpiceModelManager(path.join(self.circuit.path_to_my_dir, self.circuit.file))
+        self.__model_manager = SpiceModelManager(
+            path.join(self.circuit.path_to_my_dir, self.circuit.file)
+        )
         self.model_obsolete = True
 
     @property
@@ -89,27 +98,33 @@ class SimulationConfig:
         return self.fault_model.current_to_let(current_micro, self.transistor_model)
 
     def dump(self, path_to_folder: str) -> None:
-        with open(path.join(path_to_folder,"config"), "w") as file:
-            file.write(f"vdd={self.__vdd}\n"
-                       f"colection_time={self.fault_model.colect_time}\n"
-                       f"track_establishment={self.fault_model.track_estab}\n"
-                       f"transistor_depth={self.transistor_model.charge_collection_depth_nano}\n"
-                       f"runner={self.runner_type.__name__}")
+        with open(path.join(path_to_folder, "config"), "w") as file:
+            file.write(
+                f"vdd={self.__vdd}\n"
+                f"colection_time={self.fault_model.colect_time}\n"
+                f"track_establishment={self.fault_model.track_estab}\n"
+                f"transistor_depth={self.transistor_model.charge_collection_depth_nano}\n"
+                f"runner={self.runner_type.__name__}"
+            )
 
     def load(self, path_to_folder: str) -> bool:
-        if not path.exists(path.join(path_to_folder,"config")):
+        if not path.exists(path.join(path_to_folder, "config")):
             return False
-        with open(path.join(path_to_folder,"config")) as file:
+        with open(path.join(path_to_folder, "config")) as file:
             tokens: dict = {}
             for line in file:
                 a, b = line.split("=")
                 tokens[a] = b
         self.__vdd = float(tokens["vdd"])
-        self.fault_model = DoubleExponential(float(tokens["colection_time"]), float(tokens["track_establishment"]))
+        self.fault_model = DoubleExponential(
+            float(tokens["colection_time"]), float(tokens["track_establishment"])
+        )
         self.transistor_model = Transistor(float(tokens["transistor_depth"]))
         from ..spiceInterface.spiceRunner import NGSpiceRunner, HSpiceRunner
+
         runners = {classe.__name__: classe for classe in [NGSpiceRunner, HSpiceRunner]}
         self.runner_type = runners[tokens["runner"]]
         return True
+
 
 sim_config = SimulationConfig()
