@@ -251,18 +251,18 @@ class LetFinder:
             lower: float = 0
             upper: float = self.__upper_bound
 
-            root_finder = Bissection(f, lower, upper, report=self.__report)
+            # root_finder = Bissection(f, lower, upper, report=self.__report)
             # root_finder = Secant(f, 110, report=self.__report)
 
             if self.__report:
                 print(f"f_calls={sim_num}")
-            # root_finder = Hybrid(f, 150, let.orientacao[1] == "rise", vdd/2, -vdd/2, report=self.__report)
+            root_finder = Hybrid(f, 150, let.orientacao[1] == "rise", vdd/2, -vdd/2, report=self.__report)
             n_sim, current = root_finder.root()
             sim_num += n_sim
-            # if current is None:
-            #     root_finder = Bissection(f, lower, upper, let.orientacao[1] == "rise", report=self.__report)
-            #     n_sim, current = root_finder.root()
-            #     sim_num += n_sim
+            if current is None:
+                root_finder = Bissection(f, lower, upper, let.orientacao[1] == "rise", report=self.__report)
+                n_sim, current = root_finder.root()
+                sim_num += n_sim
 
             if self.__report:
                 print(f"f_calls={sim_num}")

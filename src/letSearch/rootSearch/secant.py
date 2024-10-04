@@ -72,7 +72,10 @@ class Secant(RootSearch):
         for i in range(self.__iteration_limit):
 
             self._log(
-                f"{i}\tcurrent: {x1:.1f}\tpeak_tension: {f1:.3f}\tlastX: {x0:.1f}\tlastf(X): {f0:.3f}"
+                f"{i}\tcurrent: {x1:.1f}"
+                f"\tpeak_tension: {f1:.3f}"
+                f"\tlastX: {x0:.1f}"
+                f"\tlastf(X): {f0:.3f}"
             )
 
             if abs(f1) < self.__y_precision:
@@ -100,3 +103,5 @@ class Secant(RootSearch):
             x0, f0 = (x0, f0) if abs(f0) < abs(f1) else (x1, f1)
             x1, f1 = x2, self.__f(x2)
             f_calls += 1
+
+        return f_calls, None
