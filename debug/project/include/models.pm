@@ -11,7 +11,7 @@
 +lw      = 0.0       	ww      = 0.0       	lwn     = 1.0       	wwn     = 1.0       
 +lwl     = 0.0       	wwl     = 0.0       	xpart   = 0.0       	toxref  = 1.15e-09  
 +xl	     = -1.4e-08  
-+vth0    = vth0_nmos_param	k1      = 0.4       	k2      = 0.0       	k3      = 0.0       
++vth0    = 0.49396   	k1      = 0.4       	k2      = 0.0       	k3      = 0.0       
 +k3b     = 0.0       	w0      = 2.5e-06   	dvt0    = 1.0       	dvt1    = 2.0       
 +dvt2    = 0.0       	dvt0w   = 0.0       	dvt1w   = 0.0       	dvt2w   = 0.0       
 +dsub    = 0.1       	minv    = 0.05      	voffl   = 0.0       	dvtp0   = 1e-11     
@@ -70,7 +70,7 @@
 +lw      = 0.0       	ww      = 0.0       	lwn     = 1.0       	wwn     = 1.0       
 +lwl     = 0.0       	wwl     = 0.0       	xpart   = 0.0       	toxref  = 1.2e-09   
 +xl	     = -1.4e-08  
-+vth0    = vth0_pmos_param	k1      = 0.4       	k2      = -0.01     	k3      = 0.0       
++vth0    = -0.49155  	k1      = 0.4       	k2      = -0.01     	k3      = 0.0       
 +k3b     = 0.0       	w0      = 2.5e-06   	dvt0    = 1.0       	dvt1    = 2.0       
 +dvt2    = -0.032    	dvt0w   = 0.0       	dvt1w   = 0.0       	dvt2w   = 0.0       
 +dsub    = 0.1       	minv    = 0.05      	voffl   = 0.0       	dvtp0   = 1e-11     

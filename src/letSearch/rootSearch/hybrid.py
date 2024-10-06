@@ -16,6 +16,7 @@ class Hybrid(RootSearch):
         report: bool = False,
         iteration_limit: int = 50,
     ) -> None:
+
         super().__init__(f, report)
         self.__f: Callable = f
         self.__guess: float = root_guess
@@ -44,14 +45,12 @@ class Hybrid(RootSearch):
         Returns:
             float: The point in the linear zone
         """
-        f_calls = 0
         x0: float = self.__guess
         f0: float = self.__f(x0)
-        f_calls += 1
 
         # f0 happens to be in linear zone
         if self.linear_zone(f0):
-            return f_calls, x0, f0
+            return x0, f0
 
         direction = (
             1
@@ -61,7 +60,6 @@ class Hybrid(RootSearch):
         step_up = x0 * 0.8 * direction
         x1: float = max(x0 + step_up, 0)
         f1: float = self.__f(x1)
-        f_calls += 1
 
         self._log(f"Starting Border Search")
         # Guarantees oposite borders
@@ -73,7 +71,7 @@ class Hybrid(RootSearch):
 
             # f1 happens to be in linear zone
             if self.linear_zone(f1):
-                return f_calls, x1, f1
+                return x1, f1
 
             # x1 and x0 in oposite sides
             if f1 / f0 < 0:
@@ -83,7 +81,6 @@ class Hybrid(RootSearch):
             x1 += step_up
             x1 = max(0, x1)
             f1 = self.__f(x1)
-            f_calls += 1
 
         upper, f_out_up, lower, f_out_lw = (
             (x0, f0, x1, f1) if x0 > x1 else (x1, f1, x0, f0)
@@ -91,17 +88,16 @@ class Hybrid(RootSearch):
 
         self._log(f"Starting Binary Search for Linear Zone")
         # binary search
-        for i in range(self.__iteration_limit - f_calls):
+        for i in range(self.__iteration_limit):
 
             x = (lower + upper) / 2
             y = self.__f(x)
-            f_calls += 1
             self._log(
                 f"{i}\tcurrent: {x:.1f}\tpeak_tension: {y:.3f}\tbottom: {lower:.1f}\ttop: {upper:.1f}"
             )
 
             if self.linear_zone(y):
-                return f_calls, x, y
+                return x, y
 
             if f_out_up / f_out_lw > 0:
                 raise RuntimeError(
@@ -114,7 +110,7 @@ class Hybrid(RootSearch):
                 f_out_lw = y
                 lower = x
 
-        return f_calls, None, None
+        return None, None
 
     def root(self) -> float:
         """
@@ -123,13 +119,13 @@ class Hybrid(RootSearch):
         Returns:
             float: the root
         """
-        f_calls, x0, fx0 = self.get_to_linear()
+        x0, fx0 = self.get_to_linear()
 
         if x0 is None:
-            return f_calls, None
+            return None
 
         if abs(fx0) < self.__y_precision:
-            return f_calls, x0
+            return x0
 
         self._log("Start Secant Root Finding")
         secant_finder = Secant(
@@ -142,6 +138,4 @@ class Hybrid(RootSearch):
             report=self.__report,
         )
 
-        n_sim, ret = secant_finder.root()
-        f_calls += n_sim
-        return f_calls, ret
+        return secant_finder.root()

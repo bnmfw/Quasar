@@ -7,6 +7,7 @@ from ..circuit.components import LET
 from .rootSearch.bissection import Bissection
 from .rootSearch.secant import Secant
 from .rootSearch.hybrid import Hybrid
+from .rootSearch.falsePosition import FalsePosition
 from typing import Callable
 
 
@@ -30,6 +31,7 @@ class LetFinder:
         # 200 é um numero bem razoavel de quanto é uma falha real
         # Pede pro rafael o tga ou tfa ?
         self.__limite_sim: int = 50
+        self.__simulations: int = 0
 
     def __fault_inclination(self, node_name: str, vdd: float, let: LET) -> str:
         """
@@ -43,6 +45,7 @@ class LetFinder:
         Returns:
             str: A string representing the inclination, either 'rise' or 'fall'
         """
+        self.__simulations += 1
         with sim_config.runner.SET(let, 0):
             min_ten, max_ten = sim_config.runner.run_nodes_value([node_name])[node_name]
         if (max_ten - min_ten) > 0.1 * vdd:
@@ -60,7 +63,7 @@ class LetFinder:
             let (LET): Let being validated.
 
         Returns:
-            tuple: A tuple with a boolean informing the validity of the let and the number of Spice runs.
+            bool: If the Fault configuration is valid.
         """
         node_inclination, output_inclination = let.orientacao
 
@@ -68,6 +71,7 @@ class LetFinder:
         lower_tolerance: float = 0.2
         upper_tolerance: float = 0.8
 
+        self.__simulations += 1
         node_peak, output_peak = sim_config.runner.run_SET(let, self.__upper_bound)
 
         if self.__report:
@@ -82,14 +86,14 @@ class LetFinder:
         ):
             if self.__report:
                 print("Invalid Let - Masked Fault\n")
-            return (False, 1)
+            return False
 
         # Greater then 10*vdd, weird stuff
         if abs(node_peak / vdd) > 10:
             print(f"Let too great {node_peak/vdd} times! {let} {self.debug_signals}\n")
-            return (False, 1)
+            return False
 
-        return (True, 1)
+        return True
 
     def __find_maximal_current(self, let: LET) -> float:
         """
@@ -180,6 +184,7 @@ class LetFinder:
     def __root_function(self, let, target: float = sim_config.vdd / 2) -> Callable:
 
         def f(current) -> float:
+            self.__simulations += 1
             _, peak_tension = sim_config.runner.run_SET(let, current)
             return peak_tension - target
 
@@ -210,7 +215,6 @@ class LetFinder:
         """
         vdd: float = sim_config.vdd
         inputs: list = self.circuito.inputs
-        sim_num = 0
 
         # Sets the input signals
         self.debug_signals = input_signals
@@ -222,10 +226,10 @@ class LetFinder:
             # Figures the inclination of the simulation
             if let.orientacao[0] is None or not safe:
                 let.orientacao[0] = self.__fault_inclination(let.node_name, vdd, let)
-                sim_num += 1
+
             if let.orientacao[1] is None or not safe:
                 let.orientacao[1] = self.__fault_inclination(let.output_name, vdd, let)
-                sim_num += 1
+
             # debugging report
 
             if self.__report:
@@ -239,10 +243,10 @@ class LetFinder:
 
             # Checks if the Let configuration is valid
             if not safe:
-                valid_let, sim_num = self.__verify_let_validity(vdd, let)
+                valid_let = self.__verify_let_validity(vdd, let)
                 if not valid_let:
                     let.current = None
-                    return sim_num, None
+                    return self.__simulations, None
 
             # Binary search variables
             # cinf: float = 0 if not delay else self.__find_minimal_current(let)
@@ -250,28 +254,29 @@ class LetFinder:
             f: Callable = self.__root_function(let)
             lower: float = 0
             upper: float = self.__upper_bound
+            function_increases: bool = let.orientacao[1] == "rise"
 
             # root_finder = Bissection(f, lower, upper, report=self.__report)
             # root_finder = Secant(f, 110, report=self.__report)
+            # root_finder = Hybrid(f, 150, function_increases, vdd/2, -vdd/2, report=self.__report)
+            guess: float = 150
+            root_finder = FalsePosition(f, guess-50, guess+50, function_increases, report=self.__report)
 
             if self.__report:
-                print(f"f_calls={sim_num}")
-            root_finder = Hybrid(f, 150, let.orientacao[1] == "rise", vdd/2, -vdd/2, report=self.__report)
-            n_sim, current = root_finder.root()
-            sim_num += n_sim
+                print(f"f_calls={self.__simulations}")
+
+            current = root_finder.root()
             if current is None:
-                root_finder = Bissection(f, lower, upper, let.orientacao[1] == "rise", report=self.__report)
-                n_sim, current = root_finder.root()
-                sim_num += n_sim
-
+                raise RuntimeError("Current not found")
+            
             if self.__report:
-                print(f"f_calls={sim_num}")
+                print(f"f_calls={self.__simulations}")
 
             let.current = current
             if current is not None:
                 let.append(input_signals)
-            return n_sim, current
 
+            return self.__simulations, current
 
 if __name__ == "__main__":
 

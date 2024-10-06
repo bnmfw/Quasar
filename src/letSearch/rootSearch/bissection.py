@@ -42,12 +42,10 @@ class Bissection(RootSearch):
         """
         lower = self.__lower_bound
         upper = self.__upper_bound
-        f_calls = 0
         step_up = 100
 
         f_out_up = self.__f(upper)
         f_out_lw = self.__f(lower)
-        f_calls += 2
 
         # Guarantees the upper and lower bound are in different sides
         it = 0
@@ -56,7 +54,6 @@ class Bissection(RootSearch):
             step_up += 100
             upper = self.__upper_bound
             f_out_up = self.__f(upper)
-            f_calls += 1
             it += 1
             if it > 5:
                 raise RuntimeError(f"Current higher than {upper}")
@@ -68,7 +65,6 @@ class Bissection(RootSearch):
 
             # Function call
             f_out = self.__f(f_in)
-            f_calls += 1
             self._log(
                 f"{i}\tcurrent: {f_in:.1f}\tpeak_tension: {f_out:.3f}\tbottom: {lower:.1f}\ttop: {upper:.1f}"
             )
@@ -76,14 +72,14 @@ class Bissection(RootSearch):
             # Precision satisfied
             if abs(f_out) < self.__y_precision:
                 self._log("Minimal Let Found - Convergence\n")
-                return f_calls, f_in
+                return f_in
 
             # Upper and Lower convergence
             if abs(upper - lower) < self.__x_precision:
                 # To the lower bound
                 if f_in <= self.__lower_bound + 1:
                     self._log("Minimal Let NOT Found - Lower Divergence\n")
-                    return f_calls, None
+                    return None
 
                 # To the upper bound (Increase)
                 elif f_in >= self.__upper_bound - 1:
@@ -104,4 +100,4 @@ class Bissection(RootSearch):
                 lower = f_in
 
         self._log("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
-        return f_calls, None
+        return None
