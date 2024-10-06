@@ -1,4 +1,2 @@
 *Quasar compiled params file
 
-.param phig_nmos_rvt_param = gauss(4.372, 0.05, 3)
-.param phig_pmos_rvt_param = gauss(4.8108, 0.05, 3)

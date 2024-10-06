@@ -79,6 +79,7 @@ class Hybrid(RootSearch):
             if f1 / f0 < 0:
                 break
 
+            x0, f0 = x1, f1
             x1 += step_up
             x1 = max(0, x1)
             f1 = self.__f(x1)

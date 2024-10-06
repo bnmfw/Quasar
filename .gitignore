@@ -3,6 +3,7 @@ venv/
 
 project/circuits/*
 !project/circuits/.gitkeep
+project/include/*
 
 !debug/project/circuits/.gitkeep
 debug/project/include/*
