@@ -34,6 +34,7 @@ class FalsePosition(RootSearch):
         f1: float = self._f(x1)
 
         x0, f0, x1, f1 = self.define_bounds(x0, f0, x1, f1)
+        self._log("Root in Bounds, False Position Search")
 
         if x0 is None:
             return None
@@ -41,21 +42,20 @@ class FalsePosition(RootSearch):
         for i in range(self._iteration_limit):
 
             self._log(
-                f"{i}"
-                f"\tcurrent: {x1:.1f}"
-                f"\tpeak_tension: {f1:.3f}"
-                f"\tlastX: {x0:.1f}"
-                f"\tlastf(X): {f0:.3f}"
+                f"{i}".ljust(4)
+                + f"current: {x1:.1f}".ljust(20)
+                + f"error: {f1:.3f}".ljust(20)
+                + f"lastX: {x0:.1f}".ljust(20)
+                + f"lastf(X): {f0:.3f}".ljust(20)
+                + f"best error: {min(abs(f0),abs(f1)):.3f}"
             )
 
             for f, x in [(f0, x0), (f1, x1)]:
                 if abs(f) < self.__y_precision:
-                    self._log("Minimal Let Found - Convergence")
+                    self._log(
+                        f"Minimal Let Found:" f"\tcurrent: {x:.3f}" f"\terror: {f:.3f}"
+                    )
                     return x
-
-            if abs(x1 - x0) < self.__x_precision:
-                self._log("Minimal Let Found - Convergence")
-                return (x1 + x0) / 2
 
             x2 = x0 - f0 * (x1 - x0) / (f1 - f0)
             f2 = self._f(x2)
