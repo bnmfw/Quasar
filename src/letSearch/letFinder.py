@@ -213,6 +213,7 @@ class LetFinder:
         Returns:
             tuple: A tuple containing the simulation number and the current found, if any.
         """
+        self.__simulations = 0
         vdd: float = sim_config.vdd
         inputs: list = self.circuito.inputs
 
@@ -256,9 +257,6 @@ class LetFinder:
             upper: float = self.__upper_bound
             function_increases: bool = let.orientacao[1] == "rise"
 
-            # root_finder = Bissection(f, lower, upper, report=self.__report)
-            # root_finder = Secant(f, 110, report=self.__report)
-            # root_finder = Hybrid(f, 150, function_increases, vdd/2, -vdd/2, report=self.__report)
             guess: float = 150
             root_finder = FalsePosition(f, guess-50, guess+50, function_increases, report=self.__report)
 
@@ -268,7 +266,7 @@ class LetFinder:
             current = root_finder.root()
             if current is None:
                 raise RuntimeError("Current not found")
-            
+
             if self.__report:
                 print(f"f_calls={self.__simulations}")
 
@@ -277,6 +275,7 @@ class LetFinder:
                 let.append(input_signals)
 
             return self.__simulations, current
+
 
 if __name__ == "__main__":
 

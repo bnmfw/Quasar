@@ -17,7 +17,7 @@ class Hybrid(RootSearch):
         iteration_limit: int = 50,
     ) -> None:
 
-        super().__init__(f, report)
+        super().__init__(f, increasing, iteration_limit, report)
         self.__f: Callable = f
         self.__guess: float = root_guess
         self.__increasing: bool = increasing

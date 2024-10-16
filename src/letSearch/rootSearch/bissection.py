@@ -8,6 +8,7 @@ class Bissection(RootSearch):
         f: Callable,
         lower_bound: float,
         upper_bound: float,
+        increasing: bool,
         x_precision: float = 0.1,
         y_precision: float = 0.001,
         report: bool = False,
@@ -20,18 +21,17 @@ class Bissection(RootSearch):
             f (Callable): function to be minimized
             lower_bound (float): lower bound of the binary search
             upper_bound (float): upper bound of the binary search
+            increasing (bool): whether the function is increasing or decreasing
             x_precision (float): tolerance for final upper-lower
             y_precision (float): tolerance for f(root) value
             report (bool): Whether report should be printed
             iteration_limit (float): A limit of function iterations
         """
-        super().__init__(f, report)
-        self.__f: Callable = f
+        super().__init__(f, increasing, iteration_limit, report)
         self.__lower_bound: float = lower_bound
         self.__upper_bound: float = upper_bound
         self.__x_precision: float = x_precision
         self.__y_precision: float = y_precision
-        self.__iteration_limit: int = iteration_limit
 
     def root(self) -> float:
         """
@@ -40,64 +40,39 @@ class Bissection(RootSearch):
         Returns:
             float: the root
         """
-        lower = self.__lower_bound
-        upper = self.__upper_bound
-        step_up = 100
+        x0: float = self.__lower_bound
+        x1: float = self.__upper_bound
+        f0: float = self._f(x0)
+        f1: float = self._f(x1)
 
-        f_out_up = self.__f(upper)
-        f_out_lw = self.__f(lower)
-
-        # Guarantees the upper and lower bound are in different sides
-        it = 0
-        while f_out_up / f_out_lw > 0:
-            self.__upper_bound += step_up
-            step_up += 100
-            upper = self.__upper_bound
-            f_out_up = self.__f(upper)
-            it += 1
-            if it > 5:
-                raise RuntimeError(f"Current higher than {upper}")
+        x0, f0, x1, f1 = self.define_bounds(x0, f0, x1, f1)
 
         # Actual binary search
-        for i in range(self.__iteration_limit):
+        for i in range(self._iteration_limit):
 
-            f_in = float((lower + upper) / 2)
+            x2 = float((x0 + x1) / 2)
 
             # Function call
-            f_out = self.__f(f_in)
+            f2 = self._f(x2)
             self._log(
-                f"{i}\tcurrent: {f_in:.1f}\tpeak_tension: {f_out:.3f}\tbottom: {lower:.1f}\ttop: {upper:.1f}"
+                f"{i}\tcurrent: {x2:.1f}\tpeak_tension: {f2:.3f}\tbottom: {x0:.1f}\ttop: {x1:.1f}"
             )
 
             # Precision satisfied
-            if abs(f_out) < self.__y_precision:
+            if abs(f2) < self.__y_precision or abs(x1 - x0) < self.__x_precision:
                 self._log("Minimal Let Found - Convergence\n")
-                return f_in
+                return x2
 
-            # Upper and Lower convergence
-            if abs(upper - lower) < self.__x_precision:
-                # To the lower bound
-                if f_in <= self.__lower_bound + 1:
-                    self._log("Minimal Let NOT Found - Lower Divergence\n")
-                    return None
-
-                # To the upper bound (Increase)
-                elif f_in >= self.__upper_bound - 1:
-                    self._log("Upper Divergence - Upper Bound Increased\n")
-                    self.__upper_bound += step_up
-                    step_up += 100
-                    upper = self.__upper_bound
-
-            if f_out_up / f_out_lw > 0:
+            if f1 / f0 > 0:
                 raise RuntimeError(
-                    f"Both bounds of binary search in the same side {f_out_up} and {f_out_lw}"
+                    f"Both bounds of binary search in the same side {f1} and {f0}"
                 )
-            if f_out_up / f_out > 0:
-                f_out_up = f_out
-                upper = f_in
-            elif f_out_lw / f_out > 0:
-                f_out_lw = f_out
-                lower = f_in
+            if f1 / f2 > 0:
+                f1 = f2
+                x1 = x2
+            elif f0 / f2 > 0:
+                f0 = f2
+                x0 = x2
 
         self._log("Minimal Let NOT Found - Maximum Simulation Number Reached\n")
         return None
