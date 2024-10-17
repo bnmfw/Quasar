@@ -29,7 +29,7 @@ The .cir file must be included in ```project/circuits/<filename>/```.
 ### Netlist and Model Constraints
 Netlist and Model files must follow a template.
 - Model files must be of the .pm format, .lib is not supported currently
-- Netlist files must follow include follow the template:
+- Netlist files must follow the template:
   ``` spice
   .include ../../include.cir
   <netlist>
