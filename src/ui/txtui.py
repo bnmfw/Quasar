@@ -261,9 +261,9 @@ class TXTUI:
         if pulse != "":
             inputs["pulses"] = pulse.split()
         # Pmos e Nmos
-        var = input(f"Pmos and Nmos Var (4.8108, 4.372): ")
-        if var != "":
-            inputs["pmos"], inputs["nmos"] = [float(v) for v in var.split()]
+        # var = input(f"Pmos and Nmos Var (4.8108, 4.372): ")
+        # if var != "":
+        #     inputs["pmos"], inputs["nmos"] = [float(v) for v in var.split()]
         print(barra_comprida + "\n")
         return "main", inputs
 
