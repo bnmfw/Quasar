@@ -27,9 +27,7 @@ class LetFinder:
         """
         self.circuito = circuit
         self.__report = report
-        self.__upper_bound: float = 300  # Valor maximo considerado da falha
-        # 200 é um numero bem razoavel de quanto é uma falha real
-        # Pede pro rafael o tga ou tfa ?
+        self.__upper_bound: float = 300
         self.__limite_sim: int = 50
         self.__simulations: int = 0
 
@@ -136,19 +134,16 @@ class LetFinder:
             float: The minimal current for the Let.
         """
 
-        # Variables for the minary search of the current
         limite_sup: float = self.__upper_bound
         csup: float = self.__upper_bound
         cinf: float = 0
         current: float = (csup + cinf) / 2
 
-        # Busca binaria para largura de pulso
         diferenca_largura: float = 100
         precisao_largura: float = 0.05e-9
 
-        # Binary search for minimal current
+        # Search for minimal current
         for _ in range(self.__limite_sim):
-            # Encontra a largura minima de pulso pra vencer o delay
             largura = sim_config.runner.run_pulse_width(let, current)
             diferenca_largura: float = (
                 None if largura is None else largura - self.circuito.SPdelay

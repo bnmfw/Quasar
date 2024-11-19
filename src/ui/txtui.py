@@ -46,10 +46,10 @@ class TXTUI:
 
         # Circuito a ser analisado
         print(barra_comprida)
-        inputs["circ"] = input("Circuito a ser analisado: ")
+        inputs["circ"] = input("Analyzed Circuit: ")
         while not path.exists(path.join("project", "circuits", f"{inputs['circ']}")):
             inputs["circ"] = input(
-                "Circuito nao encontrado na pasta 'circuitos' por favor insira um circuito valido:\n"
+                "Circuit not found on 'project circuito' folder, please insert a valid circuit name:\n"
             )
 
         # Informacao sobre o cadastro
@@ -59,9 +59,9 @@ class TXTUI:
             )
         )
         if inputs["cadastro"]:
-            print("\nCadastro do circuito encontrado")
+            print("\nCircuit log found")
         else:
-            print("\nCadastro do circuito nao encontrado, tera de ser feito")
+            print("\nCircuit log not found, input bacis info")
             print("Configure simulation before determining SETs:")
 
         # Requisita o vdd
@@ -77,10 +77,10 @@ class TXTUI:
         inputs = {"nodos": None, "entradas": None, "saidas": None}
         print(barra_comprida)
         inputs["entradas"] = [
-            entrada.lower() for entrada in input("Entradas de sinal: ").split()
+            entrada.lower() for entrada in input("Signal Inputs: ").split()
         ]
         inputs["saidas"] = [
-            entrada.lower() for entrada in input("Saidas analisadas: ").split()
+            entrada.lower() for entrada in input("Outputs analyzed: ").split()
         ]
         inputs["nodos"] = [nodo for nodo in HSRunner.get_nodes(circ_nome)[0]]
         return "main", inputs
@@ -108,17 +108,17 @@ class TXTUI:
         inputs["acao"] = acao[
             int(
                 input(
-                    f"Trabalhando com o {circuito.name} em {sim_config.vdd} volts\n"
-                    f"Modelo de falhas: alpha={sim_config.fault_model.colect_time} beta={sim_config.fault_model.track_estab}\n"
-                    f"Transistor com profundidade em {sim_config.transistor_model.charge_collection_depth_nano}\n"
-                    "O que deseja fazer?\n"
-                    "0. Atualizar LETs\n"
-                    "1. Gerar CSV de LETs\n"
-                    "2. Analise Monte Carlo\n"
-                    "3. Analisar LET unico\n"
-                    "4. Configurar Simulacao\n"
-                    "5. Sair\n"
-                    "Resposta: "
+                    f"Working with {circuito.name} in {sim_config.vdd} volts\n"
+                    f"Fault Model: alpha={sim_config.fault_model.colect_time} beta={sim_config.fault_model.track_estab}\n"
+                    f"Transistor colection depth: {sim_config.transistor_model.charge_collection_depth_nano}\n"
+                    "What to do?\n"
+                    "0. Update LETs\n"
+                    "1. Generate LETs CSV\n"
+                    "2. Variability Analysis\n"
+                    "3. Analyze a single Fault Configuration\n"
+                    "4. Configure Simulation\n"
+                    "5. Exit\n"
+                    "Choice: "
                 )
             )
         ]
@@ -158,7 +158,7 @@ class TXTUI:
         if path.exists(
             path.join("project", "circuits", f"{circuito.name}", "MC_jobs.json")
         ):
-            print("\nSimulacao em andamento encontrada, continuando de onde parou...\n")
+            print("\nOngoing simulation found, continuing from where it stopped...\n")
             inputs["continue"] = True
             return "main", inputs
 
@@ -242,18 +242,18 @@ class TXTUI:
             f"Nodo atingido {list(map(lambda n: n.name, circuit.nodes))}: "
         )
         while inputs["node"] not in list(map(lambda n: n.name, circuit.nodes)):
-            inputs["node"] = input("Nodo invalido, insira novamente: ")
+            inputs["node"] = input("Invalido node, insert again: ")
         # Output
         inputs["output"] = input(
             f"Nodo propagado {list(map(lambda n: n.name, circuit.nodes))}: "
         )
         while inputs["output"] not in list(map(lambda n: n.name, circuit.nodes)):
-            inputs["output"] = input("Nodo invalido, insira novamente: ")
+            inputs["output"] = input("Invalid node, insert again: ")
         # Input signals
         inputs["input"] = [
             int(s)
             for s in input(
-                f"Sinais de entrada em 0s e 1s <{', '.join(map(lambda n: n.name, circuit.inputs))}>: "
+                f"Input signals in 0s and 1s <{', '.join(map(lambda n: n.name, circuit.inputs))}>: "
             ).split()
         ]
         # Pulses
@@ -261,7 +261,7 @@ class TXTUI:
         if pulse != "":
             inputs["pulses"] = pulse.split()
         # Pmos e Nmos
-        var = input(f"Pmos e Nmos Var (4.8108, 4.372): ")
+        var = input(f"Pmos and Nmos Var (4.8108, 4.372): ")
         if var != "":
             inputs["pmos"], inputs["nmos"] = [float(v) for v in var.split()]
         print(barra_comprida + "\n")

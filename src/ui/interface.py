@@ -22,15 +22,15 @@ class GUI:
         self.quasarAPI = API()
 
         # Determina a interface a ser usada
-        if psgui_is_working:
-            self.ui = PSGUI()
-        else:
-            print(
-                "\nUm problema foi encontrado com o modulo psgui:\n"
-                f"{gui_error}\n"
-                "portanto a interface de texto sera usada em seu lugar"
-            )
-            self.ui = TXTUI()
+        # if psgui_is_working:
+        #     self.ui = PSGUI()
+        # else:
+        #     print(
+        #         "\nUm problema foi encontrado com o modulo psgui:\n"
+        #         f"{gui_error}\n"
+        #         "portanto a interface de texto sera usada em seu lugar"
+        #     )
+        self.ui = TXTUI()
 
         current_screen = "start"
 

@@ -46,7 +46,7 @@ class CSVManager:
                         for num in validacao:
                             sets.write(f"{num}")
                     sets.write("\n")
-        print(f"\nTabela {circuito.name}.csv gerada com sucesso\n")
+        print(f"\nTable {circuito.name}.csv generated successfully\n")
 
 
 class JsonManager:
@@ -91,7 +91,7 @@ class JsonManager:
                 ),
             )
 
-        print("Carregamento do Json realizado com sucesso")
+        print("Json log dumped")
 
     def decodify(self, circuito, path_to_circuits=path.join("project", "circuits")):
         circuito_codificado: dict = json.load(

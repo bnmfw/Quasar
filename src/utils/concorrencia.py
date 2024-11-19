@@ -159,7 +159,7 @@ class ProcessMaster:
         self.inpg = mp.Queue()
 
         # Queue for smart sleep
-        self.sleep_time = 10
+        self.sleep_time = 0.1
         self.__starting_sleep_time = True
         self.job_time = mp.Queue()
         self.lock_time = mp.Lock()
