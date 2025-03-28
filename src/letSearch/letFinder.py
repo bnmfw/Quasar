@@ -253,14 +253,17 @@ class LetFinder:
             function_increases: bool = let.orientacao[1] == "rise"
 
             guess: float = 150
-            root_finder = FalsePosition(f, guess-50, guess+50, function_increases, report=self.__report)
+            root_finder = FalsePosition(
+                f, guess - 50, guess + 50, function_increases, report=self.__report
+            )
 
             if self.__report:
                 print(f"f_calls={self.__simulations}")
 
             current = root_finder.root()
             if current is None:
-                raise RuntimeError("Current not found")
+                return self.__simulations, None
+                raise RuntimeError(f"Current not found {let}")
 
             if self.__report:
                 print(f"f_calls={self.__simulations}")

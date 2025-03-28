@@ -63,7 +63,7 @@ class RootSearch(ABC):
             if f1 / f0 < 0:
                 return x0, f0, x1, f1
 
-        return None * 4
+        return [None] * 4
 
     def root() -> float:
         pass
