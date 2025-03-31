@@ -256,7 +256,16 @@ class CircuitManager:
                 work_dir=self.circuit.path_to_my_dir,
                 progress_report=progress_report,
             )
-            manager.work((delay,))
+            error = manager.work((delay,))
+            if error:
+
+                print(
+                    "\n\nAn error was raised during let root search, here is the search in detail:\n"
+                )
+
+                problem_job, _ = error
+                self.let_manager.report = True
+                self.run_let_job(*problem_job)
 
         lets = manager.return_done()
 

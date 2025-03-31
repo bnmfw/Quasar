@@ -209,6 +209,9 @@ class ProcessMaster:
     def master_routine(self):
         """
         Routine of Process Master, including sleeping, reporting progress and finishing parallel execution.
+
+        Returns:
+            None if no exceptions were raised, (problem job, exception) if exceptions were raised.
         """
 
         # Sets the response to being terminated
@@ -224,7 +227,8 @@ class ProcessMaster:
                 # Stops and throws any exceptions
                 if self.excp.qsize():
                     self.__terminate_work()
-                    job, exception = self.excp.get(True)
+                    return self.excp.get(True)
+
                     raise type(exception)(f"{exception} (Job: {job})")
 
                 # Report progress if there is something to report progress to
@@ -322,6 +326,11 @@ class ProcessMaster:
         Args:
             :static_args (list): List containing the static arguments of the jobs, that dont change in between jobs.
             :n_workers (int): Number of workers to be created, will take the cpu count as standard.
+
+        Returns:
+
+        Returns:
+            None if no exceptions were raised, (problem job, exception) if exceptions were raised.
         """
         # Initial progress report
         if not self.progress_report is None:
@@ -347,7 +356,11 @@ class ProcessMaster:
             worker.start()
 
         # Master rountine executed
-        self.master_routine()
+        job_excp = self.master_routine()
+
+        # Returns a problem job exception pair if exceptions were raised
+        if job_excp:
+            return job_excp
 
         # This should never happen
         if self.done.qsize():

@@ -31,6 +31,14 @@ class LetFinder:
         self.__limite_sim: int = 50
         self.__simulations: int = 0
 
+    @property
+    def report(self):
+        return self.__report
+
+    @report.setter
+    def report(self, value: bool):
+        self.__report = value
+
     def __fault_inclination(self, node_name: str, vdd: float, let: LET) -> str:
         """
         Returns the fault inclination on the given node.
