@@ -6,6 +6,7 @@ The interface provided is of a function executed multiple times with a queue of 
 
 import os
 from collections.abc import Callable
+from traceback import format_exc
 import multiprocessing as mp
 import signal
 import sys
@@ -107,7 +108,11 @@ class ProcessWorker:
 
                 # Does the job and times it as well
                 start_time = perf_counter()
-                result = self.func(*job["job"], *self.args)
+                try:
+                    result = self.func(*job["job"], *self.args)
+                except Exception as excp:
+                    master.throw_exception([*job["job"]] + [*self.args], excp)
+                    return
                 end_time = perf_counter()
 
                 # Posts a job to master
@@ -153,10 +158,12 @@ class ProcessMaster:
         self.lock_jobs = mp.Lock()
         self.lock_done = mp.Lock()
         self.lock_inpg = mp.Lock()  # inpg = in progress
+        self.lock_excp = mp.Lock()
 
         self.jobs = mp.Queue()
         self.done = mp.Queue()
         self.inpg = mp.Queue()
+        self.excp = mp.Queue()
 
         # Queue for smart sleep
         self.sleep_time = 0.1
@@ -169,14 +176,11 @@ class ProcessMaster:
             for i, job in enumerate(jobs):
                 self.jobs.put({"id": i, "job": job})
 
-    def __terminate_work(self, workers: list):
+    def __terminate_work(self):
         """
         Terminated all the process
-
-        Args:
-            workers (list): List of workers to be terminated
         """
-        for worker in workers:
+        for worker in self.workers:
             worker.terminate()
 
     def smart_sleep(self):
@@ -216,6 +220,12 @@ class ProcessMaster:
             self.smart_sleep()
 
             with self.lock_done:
+
+                # Stops and throws any exceptions
+                if self.excp.qsize():
+                    self.__terminate_work()
+                    job, exception = self.excp.get(True)
+                    raise type(exception)(f"{exception} (Job: {job})")
 
                 # Report progress if there is something to report progress to
                 if not self.progress_report is None:
@@ -294,6 +304,17 @@ class ProcessMaster:
         """
         return self.done_copy
 
+    def throw_exception(self, problem_job: list, exception: Exception) -> None:
+        """
+        Sends the generated exception to the master process
+
+        Args:
+            problem_job (list): list of arguments that raised an exception
+            exception (Exception): the exception
+        """
+        with self.lock_excp:
+            self.excp.put((problem_job, exception))
+
     def work(self, static_args: list, n_workers: int = mp.cpu_count()):
         """
         Creates all workers and runs all workers.
@@ -302,57 +323,51 @@ class ProcessMaster:
             :static_args (list): List containing the static arguments of the jobs, that dont change in between jobs.
             :n_workers (int): Number of workers to be created, will take the cpu count as standard.
         """
-        try:
-            # Initial progress report
-            if not self.progress_report is None:
-                self.progress_report(self.done.qsize() / self.total_jobs)
+        # Initial progress report
+        if not self.progress_report is None:
+            self.progress_report(self.done.qsize() / self.total_jobs)
 
-            # Creates all workers
-            workers = [
-                mp.Process(
-                    target=ProcessWorker(
-                        self.func,
-                        static_args,
-                        self.jobs.qsize(),
-                        work_dir=self.work_dir,
-                        target_circuit=self.target_circuit,
-                    ).run,
-                    args=(self,),
-                )
-                for _ in range(n_workers)
-            ]
+        # Creates all workers
+        self.workers = [
+            mp.Process(
+                target=ProcessWorker(
+                    self.func,
+                    static_args,
+                    self.jobs.qsize(),
+                    work_dir=self.work_dir,
+                    target_circuit=self.target_circuit,
+                ).run,
+                args=(self,),
+            )
+            for _ in range(n_workers)
+        ]
 
-            # Starts all workers
-            for worker in workers:
-                worker.start()
+        # Starts all workers
+        for worker in self.workers:
+            worker.start()
 
-            # Master rountine executed
-            self.master_routine()
+        # Master rountine executed
+        self.master_routine()
 
-            # This should never happen
-            if self.done.qsize():
-                print(f"ERROR: Queue done finished with {self.done.qsize()} items")
-            if self.jobs.qsize():
-                print(f"ERROR: Queue jobs finished with {self.jobs.qsize()} items")
-            if self.inpg.qsize():
-                print(f"ERROR: Queue inpg finished with {self.inpg.qsize()} items")
+        # This should never happen
+        if self.done.qsize():
+            print(f"ERROR: Queue done finished with {self.done.qsize()} items")
+        if self.jobs.qsize():
+            print(f"ERROR: Queue jobs finished with {self.jobs.qsize()} items")
+        if self.inpg.qsize():
+            print(f"ERROR: Queue inpg finished with {self.inpg.qsize()} items")
 
-            # Joins all workers
-            for worker in workers:
-                worker.join()
+        # Joins all workers
+        for worker in self.workers:
+            worker.join()
 
-            # Should never happen
-            if len(os.listdir("work")):
-                raise ChildProcessError("Master Process Joined Without Child Finishing")
+        # Should never happen
+        if len(os.listdir("work")):
+            raise ChildProcessError("Master Process Joined Without Child Finishing")
 
-            # Reports progress completion
-            if not self.progress_report is None:
-                self.progress_report(-1)
-
-        # Whenever a Keyboard interrupt happens it also terminates all child processes
-        except KeyboardInterrupt as e:
-            self.__terminate_work(workers)
-            raise KeyboardInterrupt(e)
+        # Reports progress completion
+        if not self.progress_report is None:
+            self.progress_report(-1)
 
 
 class PersistentProcessMaster(ProcessMaster):
