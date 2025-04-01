@@ -484,7 +484,7 @@ class Graph:
 
         if faulted_node in self.fixed:
             return False
-        
+
         # Floating node will never affect an output
         # TODO: It actually can as it can switch a gate on or off
         if self.vertices[faulted_node]["signal"] is None:
@@ -510,7 +510,11 @@ class Graph:
         for region in self.regions:
             self.region_update(region, faulted_node)
 
-        return old_output != self.vertices[output]["signal"]
+        # Output changed signal and is not floating
+        return (
+            old_output != self.vertices[output]["signal"]
+            and self.vertices[output]["signal"] != None
+        )
 
     def generate_valid_let_configs(
         self, nodes: list, outputs: list, inputs: list, get_node_callback: Callable
@@ -568,15 +572,15 @@ class Graph:
         # Filter lets that only actually propagate a fault to output
         lets_f3 = []
         for let in lets_f2:
-            # let[2] => signals
-            logic_signals = [(inp, sig == 1) for inp, sig in zip(inputs, let[2])] + [
+            faulty_node, output, signals, *_ = let
+            logic_signals = [(inp, sig == 1) for inp, sig in zip(inputs, signals)] + [
                 ("vdd", True),
                 ("vcc", True),
                 ("gnd", False),
                 ("vss", False),
             ]
             self.set_logic(logic_signals)
-            ans = self.simulate_fault(let[0].name, let[1].name)
+            ans = self.simulate_fault(faulty_node.name, output.name)
             if ans:
                 lets_f3 += [let]
 
