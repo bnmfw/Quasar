@@ -1,3 +1,0 @@
-*File with the vdd tension used by all circuits
-Vvdd vdd gnd 0.9
-Vvcc vcc gnd 0.9

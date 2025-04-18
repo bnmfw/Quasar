@@ -1,3 +1,0 @@
-.include dis/logica.cir
-.include dis/DFF.cir
-.include include/all.cir

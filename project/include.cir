@@ -1,4 +1,0 @@
-.include dis/sg13g2_moslv_mod.lib
-.include dis/logica.cir
-.include dis/DFF.cir
-.include include/all.cir
