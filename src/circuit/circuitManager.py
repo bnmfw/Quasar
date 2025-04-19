@@ -103,6 +103,7 @@ class CircuitManager:
 
                 if self.circuit.LETth is None or let < self.circuit.LETth:
                     self.circuit.LETth = let
+        print(sim_num)
 
     def run_let_job(
         self,

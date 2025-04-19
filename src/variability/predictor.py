@@ -85,6 +85,10 @@ class Predictor:
         except queue.Empty:
             return False
         if let_identity == -1:
+            for key, value in self.let_map.items():
+                print(key)
+                for v in value:
+                    print(v)
             return True
         if let_identity not in self.let_map.keys():
             self.let_map[let_identity] = set()
@@ -104,7 +108,14 @@ class Predictor:
         response_queue.put(prediction)
 
     def __predict(self, let_identity, var) -> float:
-        return None
+        if let_identity not in self.let_map.keys():
+            self.let_map[let_identity] = set()
+            return None
+        print(self.let_map[let_identity])
+        points: set = self.let_map[let_identity]
+        if not len(points):
+            return None
+        return sum(map(lambda point: point[1], points)) / len(points)
 
     def work(self):
         while True:

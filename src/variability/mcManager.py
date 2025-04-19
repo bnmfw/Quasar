@@ -135,7 +135,7 @@ class MCManager:
 
         # Concurrent execution, where the magic happens.
         with self.predictor:
-            manager.work((delay,))
+            manager.work((delay,), 1)
             # Dumps data into a csv.
             saida = manager.return_done()
         CManager.tup_to_csv(
