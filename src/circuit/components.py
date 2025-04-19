@@ -36,69 +36,6 @@ class Signal_Input:
         return f"{self.name}:{self.signal}"
 
 
-class Node:
-    """
-    Represents a circuit node. Has the collection of valid LETs that originate from it.
-    """
-
-    def __init__(self, name: str):
-        self.name = name
-        self.LETs = []
-        # Eh um dicionario de dicionarios
-        self.delay = {}
-
-    def add_let(self, let) -> None:
-        """
-        Args:
-            let (LET): Adds a let to the circuit's let list
-        """
-        for let_ in self.LETs:
-            # The exact same let, diferent inputs
-            if let_ == let and let_.current == let.current:
-                for input_state in let.input_states:
-                    let_.append(input_state)
-                return
-        self.LETs.append(let)
-
-    def __repr__(self):
-        return f"<N>{self.name}"
-
-    def codec(self) -> dict:
-        """
-        Codifies the object into a dict.
-
-        Returns:
-            dict: Codifies the object
-        """
-        dic = {}
-        dic["name"] = self.name
-        dic["delay"] = self.delay
-        let_list = []
-        let: LET
-        for let in self.LETs:
-            let_list.append(let.codec())
-        dic["lets"] = let_list
-        return dic
-
-    def decodec(self, dic: dict):
-        """
-        Decodifies the object. Codec method reciprocal.
-
-        Args:
-            dic (dict): Dictionary from wich the object will be decodified
-        """
-        if not isinstance(dic, dict) or not isinstance(sim_config.vdd, (int, float)):
-            raise TypeError(
-                f"dic (dict): {type(dic)}, vdd (float): {type(sim_config.vdd)}"
-            )
-        self.name = dic["name"]
-        self.delay = dic["delay"]
-        for dicionario_let in dic["lets"]:
-            let = LET(None, sim_config.vdd, "node", "output", ["edge", "edge"])
-            let.decodec(dicionario_let)
-            self.LETs.append(let)
-
-
 class LET:
     """
     LET object.
@@ -134,6 +71,7 @@ class LET:
             self.input_states = []
         else:
             self.input_states = input_states
+        self.var_table = {}
 
     @property
     def current(self) -> float:
@@ -145,11 +83,9 @@ class LET:
         self.value = sim_config.current_to_let(current)
 
     def __eq__(self, other):
-        return (
-            self.node_name == other.node_name
-            and self.output_name == other.output_name
-            and self.orientacao == other.orientacao
-        )
+        if self.semi_fault_config != other.semi_fault_config:
+            return False
+        return len(self.input_set & other.input_set)
 
     def __repr__(self):
         return f"{self.node_name} {self.output_name} {self.orientacao} {self.current}"
@@ -168,6 +104,37 @@ class LET:
 
     def __ge__(self, other):
         return self.current >= other.current
+
+    @property
+    def input_set(self) -> set:
+        return {"".join(inputs) for inputs in self.input_states}
+
+    @property
+    def semi_fault_config(self) -> tuple:
+        """
+        Returns:
+            tuple: the semi fault configuration of the let
+        """
+        return (
+            self.node_name,
+            self.output_name,
+            self.orientacao[0],
+            self.orientacao[1],
+        )
+
+    @property
+    def fault_config(self) -> tuple:
+        """
+        Returns:
+            tuple: the fault configuration of the let
+        """
+        return (
+            self.node_name,
+            self.output_name,
+            self.orientacao[0],
+            self.orientacao[1],
+            tuple(["".join(inputs) for inputs in self.input_states]),
+        )
 
     def append(self, input_state: list):
         """
@@ -210,6 +177,87 @@ class LET:
         self.node_name = dic["nodo"]
         self.output_name = dic["said"]
         self.input_states = dic["val"]
+
+
+class Node:
+    """
+    Represents a circuit node. Has the collection of valid LETs that originate from it.
+    """
+
+    def __init__(self, name: str):
+        self.name = name
+        self.LETs: list[LET] = []
+        # Eh um dicionario de dicionarios
+        self.delay = {}
+
+    def filter_let(self, let: LET) -> LET:
+        """
+        Runs through all the LETs already in the node. If it detects that the let already exists it returns that let, otherwise it just returns the input let
+
+        Args:
+            let (LET): The let analysed
+
+        Returns:
+            LET: Either the input let or an equivalent already in the circuit
+        """
+        for let_ in self.LETs:
+            if let == let:
+                return let_
+        return let
+
+    def add_let(self, let: LET) -> None:
+        """
+        Args:
+            let (LET): Adds a let to the circuit's let list
+        """
+        for let_ in self.LETs:
+            # The exact same let, diferent inputs
+            if (
+                let_.semi_fault_config == let.semi_fault_config
+                and let_.current == let.current
+            ):
+                for input_state in let.input_states:
+                    let_.append(input_state)
+                return
+        self.LETs.append(let)
+
+    def __repr__(self):
+        return f"<N>{self.name}"
+
+    def codec(self) -> dict:
+        """
+        Codifies the object into a dict.
+
+        Returns:
+            dict: Codifies the object
+        """
+        dic = {}
+        dic["name"] = self.name
+        dic["delay"] = self.delay
+        let_list = []
+        let: LET
+        for let in self.LETs:
+            let_list.append(let.codec())
+        dic["lets"] = let_list
+        return dic
+
+    def decodec(self, dic: dict):
+        """
+        Decodifies the object. Codec method reciprocal.
+
+        Args:
+            dic (dict): Dictionary from wich the object will be decodified
+        """
+        if not isinstance(dic, dict) or not isinstance(sim_config.vdd, (int, float)):
+            raise TypeError(
+                f"dic (dict): {type(dic)}, vdd (float): {type(sim_config.vdd)}"
+            )
+        self.name = dic["name"]
+        self.delay = dic["delay"]
+        for dicionario_let in dic["lets"]:
+            let = LET(None, sim_config.vdd, "node", "output", ["edge", "edge"])
+            let.decodec(dicionario_let)
+            self.LETs.append(let)
 
 
 if __name__ == "__main__":

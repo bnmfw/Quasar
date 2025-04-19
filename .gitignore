@@ -1,13 +1,13 @@
 *__pycache__*
 venv/
 
-project/circuits/*
+*project/circuits/*
 !project/circuits/.gitkeep
-!project/circuits/nand
 project/include/*
 
 !debug/project/circuits/.gitkeep
 debug/project/include/*
+debug/project/include/models.pm
 
 work/*
 !work/.gitkeep
@@ -18,12 +18,18 @@ debug/work*
 invisible/
 .idea/
 
+*.cir
 *.png
 *.csv
 *.sh
 *.ic0
 *.st0
 *.tr0
+*.annotate
+*.hm
+*.log
+*.ava.*
+*.user.*
 *output.txt
 *MC_done.json
 *MC_jobs.json

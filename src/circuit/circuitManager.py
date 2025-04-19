@@ -190,24 +190,24 @@ class CircuitManager:
         Returns:
             tuple: A tuple with the minimal let and the input signals run.
         """
-        let_analisado = LET(
+        target_let = LET(
             None, sim_config.vdd, node.name, output.name, [in_dir, out_dir]
         )
-        sim_num = self.let_manager.minimal_LET(
-            let_analisado, input_signals, delay=delay, safe=True
-        )[0]
-        if let_analisado.current is not None:
+        sim_num, _ = self.let_manager.minimal_LET(
+            target_let, input_signals, delay=delay, safe=True
+        )
+        if target_let.current is not None:
             self.min_let_predictor.submit_data(
                 {
                     "node": node.name,
                     "output": output.name,
                     "in_dir": in_dir,
                     "out_dir": out_dir,
-                    "current": let_analisado.current,
+                    "current": target_let.current,
                     "input": "".join(map(lambda e: str(e), input_signals)),
                 }
             )
-        return (let_analisado, input_signals, sim_num)
+        return (target_let, input_signals, sim_num)
 
     def determine_LETs(self, delay: bool = False, progress_report=None):
         """

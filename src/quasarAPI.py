@@ -214,10 +214,10 @@ class API:
         """
         self.check_circuit()
         # with sim_config.runner.MC_Instance(pmos_var, nmos_var):
-        let_analisado = LET(None, sim_config.vdd, node, output, [pulse_in, pulse_out])
+        target_let = LET(None, sim_config.vdd, node, output, [pulse_in, pulse_out])
         LetFinder(
             self.circuit, path_to_folder=self.circuit.path_to_folder, report=report
-        ).minimal_LET(let_analisado, logical_input, safe=True)
+        ).minimal_LET(target_let, logical_input, safe=True)
 
 
 if __name__ == "__main__":
