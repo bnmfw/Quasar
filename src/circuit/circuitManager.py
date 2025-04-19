@@ -34,7 +34,9 @@ class CircuitManager:
         self.min_let_predictor = (
             Predictor(circuit.path_to_my_dir) if predictor is None else predictor
         )
-        self.let_manager = LetFinder(circuit, report=report)
+        self.let_manager = LetFinder(
+            circuit, report=report, predictor=self.min_let_predictor
+        )
 
     def __all_possible_LETs(self, nodes: list, outputs: list, inputs: list) -> list:
         """

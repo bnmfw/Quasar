@@ -5,6 +5,11 @@ Each class is responsible for its own synchronization as
 """
 
 import multiprocessing as mp
+from multiprocessing import Manager
+
+manager = Manager()
+response_q = manager.Queue()
+
 import queue
 from os import path
 
@@ -62,7 +67,7 @@ class Predictor:
         """
         # This function will be called by another process, each process has their own queue stored on self.client_queue
         if self.client_queue is None:
-            self.client_queue == mp.Queue()
+            self.client_queue = Manager().Queue()
 
         self.request_queue.put((self.client_queue, let_identity, var))
 
@@ -90,17 +95,20 @@ class Predictor:
         """
         Process the requests for predictions
         """
-        response_queue: mp.Queue
-        response_queue, let_identity, var = self.request_queue.get()
+        try:
+            response_queue, let_identity, var = self.request_queue.get(block=False)
+        except queue.Empty:
+            return
         prediction: float = self.__predict(let_identity, var)
+        print(f"{let_identity} {var} = {prediction}")
         response_queue.put(prediction)
 
-    def __predict(let_identity, var) -> float:
+    def __predict(self, let_identity, var) -> float:
         return None
 
     def work(self):
         while True:
-            if not self.__process_submission():
+            if self.__process_submission():
                 return
             self.__process_request()
 
