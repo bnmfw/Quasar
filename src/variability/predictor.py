@@ -5,6 +5,7 @@ Each class is responsible for its own synchronization as
 """
 
 import multiprocessing as mp
+import queue
 from os import path
 
 
@@ -18,8 +19,9 @@ class Predictor:
         self.let_map = {}
 
         # submit sync
-        self.submit_lock = mp.Lock()
         self.submit_queue = mp.Queue()
+        self.request_queue = mp.Queue()
+        self.client_queue: mp.Queue = None  # Janky
 
         self.process = mp.Process(target=self.work, args=())
 
@@ -43,29 +45,63 @@ class Predictor:
         Submits the result of a LET job
 
         Args:
-            let_identity (tuple): te property let.identity of a let
+            let_identity (tuple): the property let.identity of a let
             var (tuple[float]): a tuple of type (var_1_value, var_2_value, .. var_n_value)
             current (float): the current value
         """
-        with self.submit_lock:
-            self.submit_queue.put((let_identity, var, current))
+        self.submit_queue.put((let_identity, var, current))
 
-    def predict(self, input: dict) -> dict:
+    def request_prediction(self, let_identity: tuple, var: tuple) -> float:
+        """
+        Args:
+            let_identity (tuple): the property let.identity of a let
+            var (tuple): a tuple of type (var_1_value, var_2_value, .. var_n_value)
+
+        Returns:
+            dict: the predicted current
+        """
+        # This function will be called by another process, each process has their own queue stored on self.client_queue
+        if self.client_queue is None:
+            self.client_queue == mp.Queue()
+
+        self.request_queue.put((self.client_queue, let_identity, var))
+
+        return self.client_queue.get()
+
+    def process_submission(self) -> bool:
+        """
+        Process the submissions
+
+        Returns:
+            bool: True if the submission is done signal has been sent
+        """
+        try:
+            let_identity, var, current = self.submit_queue.get(block=False)
+        except queue.Empty:
+            return False
+        if let_identity == -1:
+            return True
+        if let_identity not in self.let_map.keys():
+            self.let_map[let_identity] = set()
+        self.let_map[let_identity].add((var, current))
+        return False
+
+    def process_request(self) -> None:
+        """
+        Process the requests for predictions
+        """
+        response_queue: mp.Queue
+        response_queue, let_identity, var = self.request_queue.get()
+        prediction: float = self.predict(let_identity, var)
+        response_queue.put(prediction)
+
+    def predict(let_identity, var) -> float:
         return None
 
     def work(self):
-        with open(path.join(self.file_dir, "Raw_data.csv"), "a") as file:
-            while True:
-                let_identity, var, current = self.submit_queue.get()
-                if let_identity == -1:
-                    for let_id, pts in self.let_map.items():
-                        print(f"{let_id}:")
-                        for pt in pts:
-                            print(pt)
-                    return
-                if let_identity not in self.let_map.keys():
-                    self.let_map[let_identity] = set()
-                self.let_map[let_identity].add((var, current))
+        while True:
+            if not self.process_submission():
+                return
 
     def __enter__(self):
         self.start()
