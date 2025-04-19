@@ -36,7 +36,7 @@ class CircuitManager:
             Predictor(circuit.path_to_my_dir) if predictor is None else predictor
         )
 
-    def __possible_LETs(self, nodes: list, outputs: list, inputs: list) -> list:
+    def __all_possible_LETs(self, nodes: list, outputs: list, inputs: list) -> list:
         """
         Recieves a list of nodes, outputs and the number of inputs and returns all possible lets.
 
@@ -65,43 +65,6 @@ class CircuitManager:
         # Enumerates lets
         return lets
 
-    def get_atrasoCC(self):
-        """
-        Sets the delay of shortest path of the circuit.
-        """
-        critical_input = None
-        critical_output = None
-        self.circuit.SPdelay = 0
-        sim_num: int = 0
-
-        # Todas as inputs em todas as saidas com todas as combinacoes
-        for entrada_analisada in self.circuit.inputs:
-            for output in self.circuit.saidas:
-                for validacao in all_vector_n_bits(len(self.circuit.inputs)):
-
-                    # Probabilly a better way to do it, but it is not just enumerate
-                    index = 0
-                    for entrada in self.circuit.inputs:
-                        if entrada != entrada_analisada:
-                            entrada.signal = validacao[index]
-                            index += 1
-                    entrada_analisada.signal = "delay"
-
-                    # Etapa de medicao de delay
-                    delay: float = sim_config.runner.run_delay(
-                        entrada_analisada.name, output.name, self.circuit.inputs
-                    )
-
-                    sim_num += 1
-
-                    if delay > self.circuit.SPdelay:
-                        self.circuit.SPdelay = delay
-                        critical_output = output.name
-                        critical_input = entrada.name
-        # with open("SPdelay.txt", "a") as arq:
-        #     arq.write(f"entrada: {critical_input}\t saida: {critical_output}\n")
-        print(f"Atraso CC do file: {self.circuit.SPdelay} simulacoes: {sim_num}")
-
     def update_LETs(
         self, delay: bool = False, only_lowest: bool = False, var: dict = None
     ):
@@ -120,20 +83,9 @@ class CircuitManager:
         for nodo in self.circuit.nodes:
             let: LET
             for let in nodo.LETs:
-                ##### ATUALIZA OS LETHts COM A PRIMEIRA VALIDACAO #####
-                if relatorio:
-                    print(
-                        let.node_name,
-                        let.output_name,
-                        let.orientacao,
-                        let.input_states[0],
-                    )
-
-                # Determines a lower threshold
-                # upperth = None if not only_lowest or self.circuit.LETth is None else self.circuit.LETth.current * 1.3
 
                 sim, current = self.let_manager.minimal_LET(
-                    let, let.input_states[0], safe=True, delay=delay
+                    let, let.input_states[0], safe=True
                 )
 
                 let.current = current
@@ -141,27 +93,13 @@ class CircuitManager:
 
                 if let.current is None:
                     continue
-                if relatorio:
-                    print(f"current: {let.current}\n")
 
-                # submits raw data
-                for input_sig in let.input_states:
-                    data = {
-                        "node": let.node_name,
-                        "output": let.output_name,
-                        "in_dir": let.orientacao[0],
-                        "out_dir": let.orientacao[1],
-                        "let": let.current,
-                        "input": "".join(map(lambda e: str(e), input_sig)),
-                    }
-                    if var is not None:
-                        data.update(var)
+                if var is not None:
+                    self.min_let_predictor.submit_data(
+                        let.identity, tuple(var.values()), current
+                    )
 
-                    self.min_let_predictor.submit_data(data)
-
-                if self.circuit.LETth is None and current is not None:
-                    self.circuit.LETth = let
-                elif let < self.circuit.LETth:
+                if self.circuit.LETth is None or let < self.circuit.LETth:
                     self.circuit.LETth = let
 
     def run_let_job(
@@ -193,20 +131,7 @@ class CircuitManager:
         target_let = LET(
             None, sim_config.vdd, node.name, output.name, [in_dir, out_dir]
         )
-        sim_num, _ = self.let_manager.minimal_LET(
-            target_let, input_signals, delay=delay, safe=True
-        )
-        if target_let.current is not None:
-            self.min_let_predictor.submit_data(
-                {
-                    "node": node.name,
-                    "output": output.name,
-                    "in_dir": in_dir,
-                    "out_dir": out_dir,
-                    "current": target_let.current,
-                    "input": "".join(map(lambda e: str(e), input_signals)),
-                }
-            )
+        sim_num, _ = self.let_manager.minimal_LET(target_let, input_signals, safe=True)
         return (target_let, input_signals, sim_num)
 
     def determine_LETs(self, delay: bool = False, progress_report=None):
@@ -235,7 +160,7 @@ class CircuitManager:
 
         else:
             self.circuit.loaded = True
-            jobs = self.__possible_LETs(
+            jobs = self.__all_possible_LETs(
                 self.circuit.nodes, self.circuit.saidas, self.circuit.inputs
             )
 

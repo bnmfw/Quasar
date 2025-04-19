@@ -28,7 +28,6 @@ class LetFinder:
         self.circuito = circuit
         self.__report = report
         self.__upper_bound: float = 300
-        self.__limite_sim: int = 50
         self.__simulations: int = 0
 
     @property
@@ -60,7 +59,7 @@ class LetFinder:
             )
         return "rise" if max_ten < 0.5 * vdd else "fall"
 
-    def __verify_let_validity(self, vdd: float, let: LET) -> tuple:
+    def __is_let_validity(self, vdd: float, let: LET) -> tuple:
         """
         Verifies the validity of the Let, if in this configuration a fault in the node will have an effect on the output.
 
@@ -101,89 +100,6 @@ class LetFinder:
 
         return True
 
-    def __find_maximal_current(self, let: LET) -> float:
-        """
-        Finds the upper limit for the current of the Let.
-
-        Args:
-            let (LET): Let to have the upper limit found.
-
-        Returns:
-            float: The maximal current for the Let.
-        """
-        self.__upper_bound = 400
-
-        output_inclination = let.orientacao[1]
-
-        for _ in range(10):
-            _, output_peak = sim_config.runner.run_SET(let, self.__upper_bound)
-
-            # Fault effect on the output was found
-            if (output_inclination == "rise" and output_peak > sim_config.vdd / 2) or (
-                output_inclination == "fall" and output_peak < sim_config.vdd / 2
-            ):
-                if self.__report:
-                    print(f"Upper current bound: ({self.__upper_bound})")
-                return self.__upper_bound
-
-            self.__upper_bound += 100
-
-        print("Upper current too big")
-        return 800
-
-    def __find_minimal_current(self, let: LET) -> float:
-        """
-        Finds the lower limit for the current of the Let.
-
-        Args:
-            let (LET): Let to have the upper limit found.
-
-        Returns:
-            float: The minimal current for the Let.
-        """
-
-        limite_sup: float = self.__upper_bound
-        csup: float = self.__upper_bound
-        cinf: float = 0
-        current: float = (csup + cinf) / 2
-
-        diferenca_largura: float = 100
-        precisao_largura: float = 0.05e-9
-
-        # Search for minimal current
-        for _ in range(self.__limite_sim):
-            largura = sim_config.runner.run_pulse_width(let, current)
-            diferenca_largura: float = (
-                None if largura is None else largura - self.circuito.SPdelay
-            )
-
-            # checks if minimal width is satisfied
-            if (
-                diferenca_largura
-                and -precisao_largura < diferenca_largura < precisao_largura
-            ):
-                if self.__report:
-                    print(f"PULSO MINIMO ENCONTRADO - PRECISAO SATISFEITA ({current})")
-                return current
-
-            if abs(csup - cinf) < 1:
-                if self.__report:
-                    print(
-                        f"PULSO MINIMO ENCONTRADO - DIFERENCA DE BORDAS PEQUENA ({current})"
-                    )
-                return current
-            if diferenca_largura == None:
-                cinf = current
-            elif diferenca_largura > precisao_largura:
-                csup = current
-            elif diferenca_largura < -precisao_largura:
-                cinf = current
-            current = (csup + cinf) / 2
-
-        if self.__report:
-            print(f"PULSO MINIMO NAO ENCONTRADO - LIMITE DE SIMULACOES ATINGIDO")
-        return None
-
     def __root_function(self, let, target: float = sim_config.vdd / 2) -> Callable:
 
         def f(current) -> float:
@@ -193,15 +109,7 @@ class LetFinder:
 
         return f
 
-    def minimal_LET(
-        self,
-        let: LET,
-        input_signals: list,
-        safe: bool = False,
-        delay: bool = False,
-        lowerth: float = None,
-        upperth: float = None,
-    ) -> tuple:
+    def minimal_LET(self, let: LET, input_signals: list, safe: bool = False) -> tuple:
         """
         Returns the minimal current of a modeled Set to propagate a fault from the node to the output.
 
@@ -209,9 +117,6 @@ class LetFinder:
             let (LET): Let modeled including node and output.
             input_signals (list): Logical value of each input.
             safe (bool): Whether the Let is already known to be valid.
-            delay (bool): Whether the delay of the circuit will be taken into consideration.
-            lowerth (float, optional): The lowest value the current can get. Defaults to None.
-            upperth (float, optional): The highest value the current can get. Defaults to None.
 
         Returns:
             tuple: A tuple containing the simulation number and the current found, if any.
@@ -247,20 +152,16 @@ class LetFinder:
 
             # Checks if the Let configuration is valid
             if not safe:
-                valid_let = self.__verify_let_validity(vdd, let)
-                if not valid_let:
+                if not self.__is_let_validity(vdd, let):
                     let.current = None
                     return self.__simulations, None
 
-            # Binary search variables
-            # cinf: float = 0 if not delay else self.__find_minimal_current(let)
-
             f: Callable = self.__root_function(let)
-            lower: float = 0
-            upper: float = self.__upper_bound
             function_increases: bool = let.orientacao[1] == "rise"
 
             guess: float = 150
+            if guess is None:
+                guess = 150
             root_finder = FalsePosition(
                 f, guess - 50, guess + 50, function_increases, report=self.__report
             )
@@ -271,7 +172,6 @@ class LetFinder:
             current = root_finder.root()
             if current is None:
                 return self.__simulations, None
-                raise RuntimeError(f"Current not found {let}")
 
             if self.__report:
                 print(f"f_calls={self.__simulations}")

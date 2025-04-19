@@ -156,7 +156,7 @@ if __name__ == "__main__":
     if sim_config.runner.test_spice():
         exit(1)
     sim_config.vdd = 0.9
-    exit(0)
+    # exit(0)
     print("Testing MC Manager...")
 
     print("\tTesting MC simulation...")

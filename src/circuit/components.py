@@ -71,7 +71,7 @@ class LET:
             self.input_states = []
         else:
             self.input_states = input_states
-        self.var_table = {}
+        self.var_points = set()
 
     @property
     def current(self) -> float:
@@ -88,7 +88,7 @@ class LET:
         return len(self.input_set & other.input_set)
 
     def __repr__(self):
-        return f"{self.node_name} {self.output_name} {self.orientacao} {self.current}"
+        return f"{self.node_name} {self.output_name} {self.orientacao} {''.join(map(lambda e: str(e), self.input_states[0]))}"
 
     def __len__(self):
         return len(self.input_states)
@@ -108,6 +108,13 @@ class LET:
     @property
     def input_set(self) -> set:
         return {"".join(inputs) for inputs in self.input_states}
+
+    @property
+    def identity(self) -> tuple:
+        return (
+            *self.semi_fault_config,
+            "".join(map(lambda e: str(e), self.input_states[0])),
+        )
 
     @property
     def semi_fault_config(self) -> tuple:
@@ -201,7 +208,8 @@ class Node:
             LET: Either the input let or an equivalent already in the circuit
         """
         for let_ in self.LETs:
-            if let == let:
+            if let_ == let:
+                print("Actually have them!!")
                 return let_
         return let
 

@@ -13,9 +13,9 @@ class Predictor:
     Abstract predictor
     """
 
-    def __init__(self, file_dir: str, data_template: dict = None) -> None:
-        self.data = data_template
+    def __init__(self, file_dir: str) -> None:
         self.file_dir = file_dir
+        self.let_map = {}
 
         # submit sync
         self.submit_lock = mp.Lock()
@@ -38,36 +38,40 @@ class Predictor:
         """
         self.process.join()
 
-    def submit_data(self, data: dict) -> None:
+    def submit_data(self, let_identity: tuple, var: tuple, current: float) -> None:
         """
-        Gets data
+        Submits the result of a LET job
 
         Args:
-            data (dict): data to be submitted
+            let_identity (tuple): te property let.identity of a let
+            var (tuple[float]): a tuple of type (var_1_value, var_2_value, .. var_n_value)
+            current (float): the current value
         """
         with self.submit_lock:
-            self.submit_queue.put(data)
+            self.submit_queue.put((let_identity, var, current))
 
     def predict(self, input: dict) -> dict:
         return None
 
     def work(self):
-        header: bool = False
         with open(path.join(self.file_dir, "Raw_data.csv"), "a") as file:
             while True:
-                data: dict = self.submit_queue.get()
-                if data == -1:
+                let_identity, var, current = self.submit_queue.get()
+                if let_identity == -1:
+                    for let_id, pts in self.let_map.items():
+                        print(f"{let_id}:")
+                        for pt in pts:
+                            print(pt)
                     return
-                if not header:
-                    file.write(",".join(data.keys()) + "\n")
-                    header = True
-                file.write(",".join(map(lambda e: str(e), data.values())) + "\n")
+                if let_identity not in self.let_map.keys():
+                    self.let_map[let_identity] = set()
+                self.let_map[let_identity].add((var, current))
 
     def __enter__(self):
         self.start()
 
     def __exit__(self, a, b, c):
-        self.submit_data(-1)
+        self.submit_data(-1, -1, -1)
         self.join()
 
 
