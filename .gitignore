@@ -8,6 +8,7 @@ project/include/*
 !debug/project/circuits/.gitkeep
 debug/project/include/*
 debug/project/include/models.pm
+debug/backup_test/test_jobs.json
 
 work/*
 !work/.gitkeep

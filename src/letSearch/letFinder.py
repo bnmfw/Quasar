@@ -14,15 +14,13 @@ class LetFinder:
     Responsible for finding the minimal LET value from a faulted node to an output.
     """
 
-    def __init__(self, circuit, predictor: Predictor = None, report: bool = False):
+    def __init__(self, predictor: Predictor = None, report: bool = False):
         """
         Constructor.
 
         Args:
-            circuit (Circuit): A Circuit object to have its let found.
             report (bool): Whether or not the run will report to terminal with prints.
         """
-        self.circuito = circuit
         self.predictor = predictor
         self.__report = report
         self.__upper_bound: float = 300
@@ -124,7 +122,7 @@ class LetFinder:
         """
         self.__simulations = 0
         vdd: float = sim_config.vdd
-        inputs: list = self.circuito.inputs
+        inputs: list = sim_config.circuit.inputs
 
         # Sets the input signals
         self.debug_signals = input_signals
@@ -217,9 +215,9 @@ if __name__ == "__main__":
             valid_input = [0]
             target = 162.7
             let = LET(target, 0.7, "ina", "sout", ["fall", "rise"], valid_input)
-            measured = LetFinder(inv, report=False).minimal_LET(
-                let, valid_input, safe=True
-            )[1]
+            measured = LetFinder(report=False).minimal_LET(let, valid_input, safe=True)[
+                1
+            ]
             assert (
                 abs(measured - target) <= 10e-1
             ), f"LET FINDING FAILED simulated:{measured} expected:{target}"
@@ -232,9 +230,7 @@ if __name__ == "__main__":
         valid_input = [1, 1]
         target = 59.7290039062
         let = LET(target, 0.9, "g1", "g1", [None, None], valid_input)
-        _, measured = LetFinder(nand, report=False).minimal_LET(
-            let, valid_input, safe=True
-        )
+        _, measured = LetFinder(report=False).minimal_LET(let, valid_input, safe=True)
         assert (
             abs(measured - target) <= 10e-1
         ), f"LET FINDING FAILED simulated:{measured} expected:{target}"
@@ -245,7 +241,7 @@ if __name__ == "__main__":
         # target = 140.625
         target = 115.2
         unsafe_valid_let = LET(target, 0.9, "i1", "g1", [None, None], valid_input)
-        measured = LetFinder(nand, report=False).minimal_LET(
+        measured = LetFinder(report=False).minimal_LET(
             unsafe_valid_let, valid_input, safe=False
         )[1]
         assert (

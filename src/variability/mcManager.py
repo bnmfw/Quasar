@@ -18,7 +18,7 @@ class MCManager:
     Responsible for Monte Carlo simulations.
     """
 
-    def __init__(self, circuit, delay: bool = False):
+    def __init__(self, delay: bool = False):
         """
         Constructor.
 
@@ -26,14 +26,12 @@ class MCManager:
             circuit (Circuito): Circuit to be simulated.
             delay (bool): Whether or not delay will be taken into consideration.
         """
-        self.circuito = circuit
         # TODO o processo do preditor é inicializado na instanciação, ent o componente circ_man n eh reutilizavel pra multiplas chamadas de analise MC
-        self.predictor = Predictor(circuit.path_to_my_dir)
-        self.circ_man = CircuitManager(circuit, self.predictor)
+        self.predictor = Predictor(sim_config.circuit.path_to_my_dir)
+        self.circ_man = CircuitManager(self.predictor)
         self.delay = delay
 
         # Estado de simulacoes MC
-        self.em_analise: bool = False
         self.total_jobs: int = None
         self.done_jobs: int = 0
 
@@ -87,7 +85,7 @@ class MCManager:
             delay=delay,
             var={f"{model}_{param}_param": value for model, param, value in point},
         )
-        LETth = self.circuito.LETth
+        LETth = sim_config.circuit.LETth
         result += [
             LETth.node_name,
             LETth.output_name,
@@ -123,9 +121,9 @@ class MCManager:
         manager = PersistentProcessMaster(
             self.run_mc_iteration,
             None,
-            path.join(self.circuito.path_to_my_dir, "MC"),
+            path.join(sim_config.circuit.path_to_my_dir, "MC"),
             progress_report=progress_report,
-            work_dir=self.circuito.path_to_my_dir,
+            work_dir=sim_config.circuit.path_to_my_dir,
         )
 
         # If there is a backup continues from where it stopped.
@@ -139,7 +137,9 @@ class MCManager:
             # Dumps data into a csv.
             saida = manager.return_done()
         CManager.tup_to_csv(
-            f"{self.circuito.path_to_my_dir}", f"{self.circuito.name}_mc_LET.csv", saida
+            f"{sim_config.circuit.path_to_my_dir}",
+            f"{sim_config.circuit.name}_mc_LET.csv",
+            saida,
         )
 
         # Deletes the backup files.
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         nvar = SpiceGaussianDist(
             "nmos_rvt", "phig", sim_config.model_manager["nmos_rvt"]["phig"], 3, 0.05
         )
-        MCManager(nand).full_mc_analysis(n, [pvar, nvar])
+        MCManager().full_mc_analysis(n, [pvar, nvar])
         with open(
             path.join("project", "circuits", "nand_fin", "nand_fin_mc_LET.csv"), "r"
         ) as file:
@@ -351,7 +351,7 @@ if __name__ == "__main__":
         nvar = SpiceGaussianDist(
             "nmos", "vth0", sim_config.model_manager["nmos"]["vth0"], 3, 0.01
         )
-        MCManager(nand).full_mc_analysis(n, [pvar, nvar])
+        MCManager().full_mc_analysis(n, [pvar, nvar])
         with open(
             path.join("project", "circuits", "nand", "Raw_data.csv"), "r"
         ) as file:

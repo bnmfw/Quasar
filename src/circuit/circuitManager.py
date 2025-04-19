@@ -2,7 +2,7 @@
 Circuit level simulation (Lvl 2) manager.
 """
 
-from ..utils.matematica import all_vector_n_bits, InDir, Time
+from ..utils.matematica import all_vector_n_bits, InDir
 from .components import *
 from ..letSearch.letFinder import LetFinder
 from ..utils.concorrencia import ProcessMaster
@@ -10,6 +10,7 @@ from ..variability.predictor import Predictor
 from .components import LET, Node
 from .circuito import Circuito
 from .graph import LogicSimulationError
+from ..simconfig.simulationConfig import sim_config
 
 relatorio = False
 
@@ -19,24 +20,20 @@ class CircuitManager:
     Circuit level simulations manager.
     """
 
-    def __init__(
-        self, circuit: Circuito, predictor: Predictor = None, report: bool = False
-    ):
+    def __init__(self, predictor: Predictor = None, report: bool = False):
         """
         Constructor.
 
         Args:
-            circuit (Circuit): Circuit subject to the simulations.
             report (bool, optional): Whether or not print reports will be done.
         """
-        self.circuit: Circuito = circuit
         self.report: bool = report
         self.min_let_predictor = (
-            Predictor(circuit.path_to_my_dir) if predictor is None else predictor
+            Predictor(sim_config.circuit.path_to_my_dir)
+            if predictor is None
+            else predictor
         )
-        self.let_manager = LetFinder(
-            circuit, report=report, predictor=self.min_let_predictor
-        )
+        self.let_manager = LetFinder(report=report, predictor=self.min_let_predictor)
 
     def __all_possible_LETs(self, nodes: list, outputs: list, inputs: list) -> list:
         """
@@ -53,8 +50,8 @@ class CircuitManager:
         try:
             # Generates all valid lets from the circuit graph model
             f = lambda l: list(map(lambda n: n.name, l))
-            lets = self.circuit.graph.generate_valid_let_configs(
-                f(nodes), f(outputs), f(inputs), self.circuit.get_node
+            lets = sim_config.circuit.graph.generate_valid_let_configs(
+                f(nodes), f(outputs), f(inputs), sim_config.circuit.get_node
             )
         except LogicSimulationError:
             lets = [
@@ -79,10 +76,10 @@ class CircuitManager:
             var (dict, optional): Dict containing variability
         """
         sim_num: int = 0
-        self.circuit.LETth = None
+        sim_config.circuit.LETth = None
         ##### BUSCA DO LETs DO CIRCUITO #####
         nodo: Node
-        for nodo in self.circuit.nodes:
+        for nodo in sim_config.circuit.nodes:
             let: LET
             for let in nodo.LETs:
 
@@ -101,8 +98,8 @@ class CircuitManager:
                         let.identity, tuple(var.values()), current
                     )
 
-                if self.circuit.LETth is None or let < self.circuit.LETth:
-                    self.circuit.LETth = let
+                if sim_config.circuit.LETth is None or let < sim_config.circuit.LETth:
+                    sim_config.circuit.LETth = let
         print(sim_num)
 
     def run_let_job(
@@ -145,16 +142,16 @@ class CircuitManager:
             delay (bool): Whether or not delay will be taken into consideration.
             progress_report (Callable): Optional function that progress can be reported to.
         """
-        if self.circuit.loaded:
+        if sim_config.circuit.loaded:
             # Gathers all jobs
             jobs = []
-            for node in self.circuit.nodes:
+            for node in sim_config.circuit.nodes:
                 for let in node.LETs:
                     for input_config in let.input_states:
                         jobs.append(
                             [
                                 node,
-                                self.circuit.get_node(let.output_name),
+                                sim_config.circuit.get_node(let.output_name),
                                 input_config,
                                 let.orientacao[0],
                                 let.orientacao[1],
@@ -162,15 +159,17 @@ class CircuitManager:
                         )
 
         else:
-            self.circuit.loaded = True
+            sim_config.circuit.loaded = True
             jobs = self.__all_possible_LETs(
-                self.circuit.nodes, self.circuit.saidas, self.circuit.inputs
+                sim_config.circuit.nodes,
+                sim_config.circuit.saidas,
+                sim_config.circuit.inputs,
             )
 
         for i, job in enumerate(jobs):
             job.insert(0, i)
 
-        for node in self.circuit.nodes:
+        for node in sim_config.circuit.nodes:
             node.LETs = []
 
         if self.report or True:
@@ -181,7 +180,7 @@ class CircuitManager:
             manager = ProcessMaster(
                 self.run_let_job,
                 jobs,
-                work_dir=self.circuit.path_to_my_dir,
+                work_dir=sim_config.circuit.path_to_my_dir,
                 progress_report=progress_report,
             )
             error = manager.work((delay,))
@@ -209,11 +208,11 @@ class CircuitManager:
             if let.current is None:
                 continue
 
-            node = self.circuit.get_node(let.node_name)
+            node = sim_config.circuit.get_node(let.node_name)
 
             # Updates circuits LETth
-            if self.circuit.LETth is None or let < self.circuit.LETth:
-                self.circuit.LETth = let
+            if sim_config.circuit.LETth is None or let < sim_config.circuit.LETth:
+                sim_config.circuit.LETth = let
 
             node.add_let(let)
 
@@ -239,7 +238,7 @@ if __name__ == "__main__":
     with InDir("debug"):
         nor_test = Circuito("nor").from_nodes(["a", "b"], ["g1"])
         sim_config.circuit = nor_test
-        manager = CircuitManager(nor_test, report=False)
+        manager = CircuitManager(report=False)
         manager.determine_LETs()
         with open(path.join("project", "circuits", "nor", "Raw_data.csv"), "r") as file:
             data = sorted(list(map(lambda e: e.split(","), file.read().split()[1:])))

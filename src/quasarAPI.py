@@ -24,12 +24,6 @@ class API:
     API object, this is the only object of the project the interface should interact with
     """
 
-    def __init__(self) -> None:
-        """
-        Constructor object
-        """
-        self.circuit = None
-
     def set_sim_config(
         self,
         vdd: float,
@@ -62,7 +56,6 @@ class API:
         Args:
             circuit (Circuito): circuit to be simulated.
         """
-        self.circuit = circuit
         sim_config.circuit = circuit
         sim_config.model_manager.writeModelFile()
         return self
@@ -71,7 +64,7 @@ class API:
         """
         Checks whether or not a circuit is set. Raises a ValueError if one is not
         """
-        if self.circuit is None:
+        if sim_config.circuit is None:
             raise ValueError("Circuit not informed")
 
     def determine_LETs(
@@ -91,11 +84,11 @@ class API:
         """
         self.check_circuit()
         with Time():
-            CircuitManager(self.circuit, report=report).determine_LETs(
+            CircuitManager(report=report).determine_LETs(
                 delay=delay, progress_report=progress_report
             )
         if log_circuit:
-            JManager.codify(self.circuit, self.circuit.path_to_circuits)
+            JManager.codify(sim_config.circuit, sim_config.circuit.path_to_circuits)
 
     def save_let_data(self, path_to_folder: str):
         """
@@ -105,7 +98,7 @@ class API:
             path_to_folder (str): Path to folder where the file is to be saved.
         """
         self.check_circuit()
-        CManager.write_full_csv(self.circuit, path_to_folder)
+        CManager.write_full_csv(sim_config.circuit, path_to_folder)
 
     def mc_analysis(
         self,
@@ -127,7 +120,7 @@ class API:
         """
         self.check_circuit()
         with Time():
-            MCManager(self.circuit).full_mc_analysis(
+            MCManager().full_mc_analysis(
                 n_simu,
                 distribution,
                 continue_backup=continue_backup,
@@ -147,7 +140,10 @@ class API:
         }
 
         with open(
-            path.join(self.circuit.path_to_my_dir, f"{self.circuit.name}_mc_LET.csv")
+            path.join(
+                sim_config.circuit.path_to_my_dir,
+                f"{sim_config.circuit.name}_mc_LET.csv",
+            )
         ) as file:
             for linha in file:
                 pmos, nmos, node, output, pulse_in, pulse_out, current, let, *inputs = (
@@ -170,23 +166,30 @@ class API:
                 )
                 scatter_data["input"].append(inputs)
         analist = DataAnalist()
-        analist.describe(scatter_data, self.circuit.path_to_my_dir)
+        analist.describe(scatter_data, sim_config.circuit.path_to_my_dir)
         analist.quantitative_scatter(
-            scatter_data, "PMOS", "NMOS", "LETth", self.circuit.path_to_my_dir, "winter"
+            scatter_data,
+            "PMOS",
+            "NMOS",
+            "LETth",
+            sim_config.circuit.path_to_my_dir,
+            "winter",
         )
         analist.qualitative_scatter(
-            scatter_data, "PMOS", "NMOS", "node", self.circuit.path_to_my_dir
+            scatter_data, "PMOS", "NMOS", "node", sim_config.circuit.path_to_my_dir
         )
         analist.qualitative_scatter(
-            scatter_data, "PMOS", "NMOS", "pulse_in", self.circuit.path_to_my_dir
+            scatter_data, "PMOS", "NMOS", "pulse_in", sim_config.circuit.path_to_my_dir
         )
         analist.qualitative_scatter(
-            scatter_data, "PMOS", "NMOS", "pulse_out", self.circuit.path_to_my_dir
+            scatter_data, "PMOS", "NMOS", "pulse_out", sim_config.circuit.path_to_my_dir
         )
         analist.qualitative_scatter(
-            scatter_data, "PMOS", "NMOS", "input", self.circuit.path_to_my_dir
+            scatter_data, "PMOS", "NMOS", "input", sim_config.circuit.path_to_my_dir
         )
-        analist.count_unique(scatter_data, "pulse_out", self.circuit.path_to_my_dir)
+        analist.count_unique(
+            scatter_data, "pulse_out", sim_config.circuit.path_to_my_dir
+        )
 
     def find_single_let(
         self,
@@ -215,9 +218,7 @@ class API:
         self.check_circuit()
         # with sim_config.runner.MC_Instance(pmos_var, nmos_var):
         target_let = LET(None, sim_config.vdd, node, output, [pulse_in, pulse_out])
-        LetFinder(self.circuit, report=report).minimal_LET(
-            target_let, logical_input, safe=True
-        )
+        LetFinder(report=report).minimal_LET(target_let, logical_input, safe=True)
 
 
 if __name__ == "__main__":
