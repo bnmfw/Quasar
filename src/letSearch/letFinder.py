@@ -4,11 +4,9 @@ Module with LetFinder a Level 1 simulation responsible for calculating the minim
 
 from ..simconfig.simulationConfig import sim_config
 from ..circuit.components import LET
-from .rootSearch.bissection import Bissection
-from .rootSearch.secant import Secant
-from .rootSearch.hybrid import Hybrid
 from .rootSearch.falsePosition import FalsePosition
 from typing import Callable
+from ..variability.predictor import Predictor
 
 
 class LetFinder:
@@ -16,16 +14,16 @@ class LetFinder:
     Responsible for finding the minimal LET value from a faulted node to an output.
     """
 
-    def __init__(self, circuit, path_to_folder: str = "project", report: bool = False):
+    def __init__(self, circuit, predictor: Predictor = None, report: bool = False):
         """
         Constructor.
 
         Args:
             circuit (Circuit): A Circuit object to have its let found.
-            path_to_folder (str): relative path into the folder that contain spice files.
             report (bool): Whether or not the run will report to terminal with prints.
         """
         self.circuito = circuit
+        self.predictor = predictor
         self.__report = report
         self.__upper_bound: float = 300
         self.__simulations: int = 0
@@ -109,7 +107,9 @@ class LetFinder:
 
         return f
 
-    def minimal_LET(self, let: LET, input_signals: list, safe: bool = False) -> tuple:
+    def minimal_LET(
+        self, let: LET, input_signals: list, safe: bool = False, vars: dict = None
+    ) -> tuple:
         """
         Returns the minimal current of a modeled Set to propagate a fault from the node to the output.
 
@@ -117,6 +117,7 @@ class LetFinder:
             let (LET): Let modeled including node and output.
             input_signals (list): Logical value of each input.
             safe (bool): Whether the Let is already known to be valid.
+            var (dict, optional): Dict containing variability
 
         Returns:
             tuple: A tuple containing the simulation number and the current found, if any.
@@ -159,7 +160,11 @@ class LetFinder:
             f: Callable = self.__root_function(let)
             function_increases: bool = let.orientacao[1] == "rise"
 
-            guess: float = 150
+            guess: float = None
+            if self.predictor is not None and vars is not None:
+                guess = self.predictor.request_prediction(
+                    let.identity, tuple(vars.values())
+                )
             if guess is None:
                 guess = 150
             root_finder = FalsePosition(
@@ -220,9 +225,9 @@ if __name__ == "__main__":
         valid_input = [1, 1]
         target = 59.7290039062
         let = LET(target, 0.9, "g1", "g1", [None, None], valid_input)
-        measured = LetFinder(nand, report=False).minimal_LET(
+        _, measured = LetFinder(nand, report=False).minimal_LET(
             let, valid_input, safe=True
-        )[1]
+        )
         assert (
             abs(measured - target) <= 10e-1
         ), f"LET FINDING FAILED simulated:{measured} expected:{target}"

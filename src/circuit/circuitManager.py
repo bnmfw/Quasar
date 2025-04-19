@@ -30,11 +30,11 @@ class CircuitManager:
             report (bool, optional): Whether or not print reports will be done.
         """
         self.circuit: Circuito = circuit
-        self.let_manager = LetFinder(circuit, circuit.path_to_folder, report=report)
         self.report: bool = report
         self.min_let_predictor = (
             Predictor(circuit.path_to_my_dir) if predictor is None else predictor
         )
+        self.let_manager = LetFinder(circuit, report=report)
 
     def __all_possible_LETs(self, nodes: list, outputs: list, inputs: list) -> list:
         """
@@ -85,7 +85,7 @@ class CircuitManager:
             for let in nodo.LETs:
 
                 sim, current = self.let_manager.minimal_LET(
-                    let, let.input_states[0], safe=True
+                    let, let.input_states[0], safe=True, vars=var
                 )
 
                 let.current = current

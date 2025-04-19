@@ -68,7 +68,7 @@ class Predictor:
 
         return self.client_queue.get()
 
-    def process_submission(self) -> bool:
+    def __process_submission(self) -> bool:
         """
         Process the submissions
 
@@ -86,22 +86,23 @@ class Predictor:
         self.let_map[let_identity].add((var, current))
         return False
 
-    def process_request(self) -> None:
+    def __process_request(self) -> None:
         """
         Process the requests for predictions
         """
         response_queue: mp.Queue
         response_queue, let_identity, var = self.request_queue.get()
-        prediction: float = self.predict(let_identity, var)
+        prediction: float = self.__predict(let_identity, var)
         response_queue.put(prediction)
 
-    def predict(let_identity, var) -> float:
+    def __predict(let_identity, var) -> float:
         return None
 
     def work(self):
         while True:
-            if not self.process_submission():
+            if not self.__process_submission():
                 return
+            self.__process_request()
 
     def __enter__(self):
         self.start()
