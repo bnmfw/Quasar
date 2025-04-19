@@ -9,7 +9,7 @@ from ..utils.arquivos import CManager
 from ..simconfig.simulationConfig import sim_config
 from ..circuit.circuitManager import CircuitManager
 from .distribution.spiceDistribution import SpiceDistributor, SpiceGaussianDist
-from .predictor import Predictor
+from .predictionServer import PredictionServer
 from os import path
 
 
@@ -27,7 +27,7 @@ class MCManager:
             delay (bool): Whether or not delay will be taken into consideration.
         """
         # TODO o processo do preditor é inicializado na instanciação, ent o componente circ_man n eh reutilizavel pra multiplas chamadas de analise MC
-        self.predictor = Predictor(sim_config.circuit.path_to_my_dir)
+        self.predictor = PredictionServer(sim_config.circuit.path_to_my_dir)
         self.circ_man = CircuitManager(self.predictor)
         self.delay = delay
 

@@ -6,7 +6,7 @@ from ..utils.matematica import all_vector_n_bits, InDir
 from .components import *
 from ..letSearch.letFinder import LetFinder
 from ..utils.concorrencia import ProcessMaster
-from ..variability.predictor import Predictor
+from ..variability.predictionServer import PredictionServer
 from .components import LET, Node
 from .circuito import Circuito
 from .graph import LogicSimulationError
@@ -20,7 +20,7 @@ class CircuitManager:
     Circuit level simulations manager.
     """
 
-    def __init__(self, predictor: Predictor = None, report: bool = False):
+    def __init__(self, predictor: PredictionServer = None, report: bool = False):
         """
         Constructor.
 
@@ -29,7 +29,7 @@ class CircuitManager:
         """
         self.report: bool = report
         self.min_let_predictor = (
-            Predictor(sim_config.circuit.path_to_my_dir)
+            PredictionServer(sim_config.circuit.path_to_my_dir)
             if predictor is None
             else predictor
         )

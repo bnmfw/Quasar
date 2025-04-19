@@ -14,7 +14,7 @@ import queue
 from os import path
 
 
-class Predictor:
+class PredictionServer:
     """
     Abstract predictor
     """
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     print("Testing Prediction Module...")
 
     print("\tTesting Data Gattering...")
-    pred = Predictor(".")
+    pred = PredictionServer(".")
     with pred:
         pred.submit_data({"a": 0, "b": 1, "c": 2})
         pred.submit_data({"a": 00, "b": 10, "c": 20})
