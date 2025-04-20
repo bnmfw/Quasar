@@ -81,7 +81,7 @@ class MCManager:
         if delay:
             self.circ_man.get_atrasoCC()
 
-        self.circ_man.update_LETs(
+        sim_num = self.circ_man.update_LETs(
             delay=delay,
             var={f"{model}_{param}_param": value for model, param, value in point},
         )
@@ -94,7 +94,7 @@ class MCManager:
             LETth.value,
             LETth.input_states,
         ]
-        return tuple(result)
+        return tuple(result), sim_num
 
     def full_mc_analysis(
         self,
@@ -135,11 +135,20 @@ class MCManager:
         with self.predictor:
             manager.work((delay,), 1)
             # Dumps data into a csv.
-            saida = manager.return_done()
+            output = manager.return_done()
+        true_output = []
+        total_sim_num = 0
+        for this_output, sim_num in output:
+            true_output.append(this_output)
+            total_sim_num += sim_num
         CManager.tup_to_csv(
             f"{sim_config.circuit.path_to_my_dir}",
             f"{sim_config.circuit.name}_mc_LET.csv",
-            saida,
+            true_output,
+        )
+
+        print(
+            f"simulations per fault config = {total_sim_num/(n_analysis*sim_config.circuit.distinct_fault_config_num):.2f}"
         )
 
         # Deletes the backup files.
@@ -163,7 +172,7 @@ if __name__ == "__main__":
     with InDir("debug"):
         nand = Circuito("nand_fin").from_json()
         sim_config.circuit = nand
-        n = 4
+        n = 30
         pvar = SpiceGaussianDist(
             "pmos_rvt", "phig", sim_config.model_manager["pmos_rvt"]["phig"], 3, 0.05
         )
@@ -344,7 +353,7 @@ if __name__ == "__main__":
         sim_config.vdd = 0.9
         nand = Circuito("nand").from_json()
         sim_config.circuit = nand
-        n = 4
+        # n = 4
         pvar = SpiceGaussianDist(
             "pmos", "vth0", sim_config.model_manager["pmos"]["vth0"], 3, 0.1
         )

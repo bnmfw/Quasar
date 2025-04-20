@@ -165,7 +165,7 @@ class LetFinder:
                     let.identity, tuple(vars.values())
                 )
                 margin = 5
-            if guess is None or True:
+            if guess is None:
                 guess = 150
                 margin = 50
             root_finder = FalsePosition(

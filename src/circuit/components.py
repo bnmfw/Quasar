@@ -229,6 +229,10 @@ class Node:
                 return
         self.LETs.append(let)
 
+    @property
+    def distinct_fault_config_num(self):
+        return len(self.LETs)
+
     def __repr__(self):
         return f"<N>{self.name}"
 

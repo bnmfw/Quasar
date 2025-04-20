@@ -1,22 +1,18 @@
 """
-Prediction Unit.
-Classes on this file are responsible for gathering and predicting data.
-Each class is responsible for its own synchronization as
+Prediction Server Unit.
+The class on this file is responsible for receiving data submissions and prediction requests.
+Data is forwarded to the responsible agent.
 """
 
 import multiprocessing as mp
 from multiprocessing import Manager
-
-manager = Manager()
-response_q = manager.Queue()
-
 import queue
 from os import path
 
 
 class PredictionServer:
     """
-    Abstract predictor
+    Prediction Server
     """
 
     def __init__(self, file_dir: str) -> None:
@@ -85,10 +81,10 @@ class PredictionServer:
         except queue.Empty:
             return False
         if let_identity == -1:
-            for key, value in self.let_map.items():
-                print(key)
-                for v in value:
-                    print(v)
+            # for key, value in self.let_map.items():
+            #     print(key)
+            #     for v in value:
+            #         print(v)
             return True
         if let_identity not in self.let_map.keys():
             self.let_map[let_identity] = set()
@@ -104,14 +100,14 @@ class PredictionServer:
         except queue.Empty:
             return
         prediction: float = self.__predict(let_identity, var)
-        print(f"{let_identity} {var} = {prediction}")
+        # print(f"{let_identity} {var} = {prediction}")
         response_queue.put(prediction)
 
     def __predict(self, let_identity, var) -> float:
         if let_identity not in self.let_map.keys():
             self.let_map[let_identity] = set()
             return None
-        print(self.let_map[let_identity])
+        # print(self.let_map[let_identity])
         points: set = self.let_map[let_identity]
         if not len(points):
             return None

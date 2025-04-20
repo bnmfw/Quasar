@@ -66,7 +66,7 @@ class CircuitManager:
 
     def update_LETs(
         self, delay: bool = False, only_lowest: bool = False, var: dict = None
-    ):
+    ) -> int:
         """
         Updates the minimal LETs of the circuit.
 
@@ -74,6 +74,9 @@ class CircuitManager:
             delay (bool, optional): Whether the delay will be considered in the simulations. Defaults to False.
             only_lowest (bool, optional): Whether LETs higher than the lowest should be ignored. Deafults to False
             var (dict, optional): Dict containing variability
+
+        Returns:
+            int: The number of simulations done
         """
         sim_num: int = 0
         sim_config.circuit.LETth = None
@@ -100,7 +103,7 @@ class CircuitManager:
 
                 if sim_config.circuit.LETth is None or let < sim_config.circuit.LETth:
                     sim_config.circuit.LETth = let
-        print(sim_num)
+        return sim_num
 
     def run_let_job(
         self,
@@ -172,7 +175,7 @@ class CircuitManager:
         for node in sim_config.circuit.nodes:
             node.LETs = []
 
-        if self.report or True:
+        if self.report:
             [print(j) for j in jobs]
             print()
 
