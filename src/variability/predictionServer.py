@@ -8,6 +8,8 @@ import multiprocessing as mp
 from multiprocessing import Manager
 import queue
 from os import path
+from .prediction.predictor import AbstractPredictor
+from .prediction.averagePredictor import AveragePredictor
 
 
 class PredictionServer:
@@ -17,7 +19,8 @@ class PredictionServer:
 
     def __init__(self, file_dir: str) -> None:
         self.file_dir = file_dir
-        self.let_map = {}
+        self.prediction_model = {}
+        self.predictor_type = AveragePredictor
 
         # submit sync
         self.submit_queue = mp.Queue()
@@ -81,14 +84,14 @@ class PredictionServer:
         except queue.Empty:
             return False
         if let_identity == -1:
-            # for key, value in self.let_map.items():
+            # for key, value in self.prediction_model.items():
             #     print(key)
             #     for v in value:
             #         print(v)
             return True
-        if let_identity not in self.let_map.keys():
-            self.let_map[let_identity] = set()
-        self.let_map[let_identity].add((var, current))
+        if let_identity not in self.prediction_model.keys():
+            self.prediction_model[let_identity] = self.predictor_type()
+        self.prediction_model[let_identity].add_data(var, current)
         return False
 
     def __process_request(self) -> None:
@@ -104,14 +107,9 @@ class PredictionServer:
         response_queue.put(prediction)
 
     def __predict(self, let_identity, var) -> float:
-        if let_identity not in self.let_map.keys():
-            self.let_map[let_identity] = set()
-            return None
-        # print(self.let_map[let_identity])
-        points: set = self.let_map[let_identity]
-        if not len(points):
-            return None
-        return sum(map(lambda point: point[1], points)) / len(points)
+        if let_identity not in self.prediction_model.keys():
+            self.prediction_model[let_identity] = self.predictor_type()
+        return self.prediction_model[let_identity].predict(var)
 
     def work(self):
         while True:
