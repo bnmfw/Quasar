@@ -5,7 +5,7 @@ No other file in the Project should know how to interact with Spice.
 Both classes in this file are stateless, therefore the classes are instantiated and its instances are accessed 
 """
 
-from ..utils.matematica import spice_to_float, InDir
+from ..utils.math import spice_to_float, InDir
 from ..circuit.components import LET
 from ..circuit.graph import Graph
 from ..simconfig.simulationConfig import sim_config
@@ -224,8 +224,8 @@ class SpiceFileManager:
             current (float): current of the fault. If left as None let.current will be used.
         """
 
-        if not let.orientacao[0] in {"fall", "rise", None}:
-            raise ValueError(f"Recieved: {let.orientacao[0]} instead of a edge")
+        if not let.orient[0] in {"fall", "rise", None}:
+            raise ValueError(f"Recieved: {let.orient[0]} instead of a edge")
         if current == None:
             current = let.current
 
@@ -233,7 +233,7 @@ class SpiceFileManager:
             sets.write("*SET faults\n")
             sets.write(
                 sim_config.fault_model.spice_string(
-                    let.node_name, current, let.orientacao[0]
+                    let.node_name, current, let.orient[0]
                 )
                 + "\n"
             )
@@ -390,7 +390,9 @@ class SpiceFileManager:
             sys.exit(1)
         return {measure.label: measure}
 
-    def get_nodes(self, circuit_name: str, tension_sources: list = None, inputs: list = None) -> set:
+    def get_nodes(
+        self, circuit_name: str, tension_sources: list = None, inputs: list = None
+    ) -> set:
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 

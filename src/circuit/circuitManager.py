@@ -2,13 +2,13 @@
 Circuit level simulation (Lvl 2) manager.
 """
 
-from ..utils.matematica import all_vector_n_bits, InDir
+from ..utils.math import all_vector_n_bits, InDir
 from .components import *
 from ..letSearch.letFinder import LetFinder
-from ..utils.concorrencia import ProcessMaster
+from ..utils.parallel import ProcessMaster
 from ..variability.predictionServer import PredictionServer
 from .components import LET, Node
-from .circuito import Circuito
+from .circuit import Circuito
 from .graph import LogicSimulationError
 from ..simconfig.simulationConfig import sim_config
 
@@ -156,8 +156,8 @@ class CircuitManager:
                                 node,
                                 sim_config.circuit.get_node(let.output_name),
                                 input_config,
-                                let.orientacao[0],
-                                let.orientacao[1],
+                                let.orient[0],
+                                let.orient[1],
                             ]
                         )
 
@@ -165,7 +165,7 @@ class CircuitManager:
             sim_config.circuit.loaded = True
             jobs = self.__all_possible_LETs(
                 sim_config.circuit.nodes,
-                sim_config.circuit.saidas,
+                sim_config.circuit.outputs,
                 sim_config.circuit.inputs,
             )
 
@@ -225,12 +225,12 @@ class CircuitManager:
 if __name__ == "__main__":
     from os import path
     from ..spiceInterface.spiceRunner import NGSpiceRunner
-    from ..utils.matematica import compare_fault_config_lists
+    from ..utils.math import compare_fault_config_lists
 
     sim_config.runner_type = NGSpiceRunner
     print("Testing Circuit Manager...")
 
-    from .circuito import Circuito
+    from .circuit import Circuito
 
     # print("\tTesting update of minimal LETs...")
     # nand_test = Circuito("nand", ptf, 0.7).from_json()

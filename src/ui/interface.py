@@ -1,8 +1,8 @@
 # O python acha que tem um erro nesses imports, mas nao tem, deixa quieto
 from ..quasarAPI import API
 from ..spiceInterface.spiceRunner import HSRunner
-from ..circuit.circuito import Circuito
-from ..utils.arquivos import CManager
+from ..circuit.circuit import Circuito
+from ..utils.files import CManager
 from ..simconfig.simulationConfig import sim_config
 from os import path
 

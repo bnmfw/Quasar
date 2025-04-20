@@ -3,8 +3,8 @@ Circuit object module. The Circuit object only tracks its nodes, delay, inputs, 
 The actual circuit is fully described in the .cir file and simulated by Spice.
 """
 
-from ..utils.arquivos import JManager
-from ..utils.matematica import InDir
+from ..utils.files import JManager
+from ..utils.math import InDir
 from ..simconfig.simulationConfig import sim_config
 from .graph import Graph
 from .components import Node, Signal_Input, LET
@@ -33,7 +33,7 @@ class Circuito:
         self.file = f"{name}.cir"
         self.graph: Graph = None
         self.inputs: list[Signal_Input] = []
-        self.saidas: list[Node] = []
+        self.outputs: list[Node] = []
         self.nodes: list[Node] = []
         # self.vdd: float = vdd
         self.SPdelay: float = 0
@@ -63,7 +63,7 @@ class Circuito:
         self.inputs = [Signal_Input(input) for input in inputs]
         nodes_set, self.graph = sim_config.runner.get_nodes(self.name, inputs=inputs)
         self.nodes = [Node(nodo) for nodo in nodes_set]
-        self.saidas = [self.get_node(output) for output in outputs]
+        self.outputs = [self.get_node(output) for output in outputs]
         return self
 
     def set_signals(self, sig_values: list):
@@ -119,7 +119,7 @@ if __name__ == "__main__":
             2,
             2,
         ], "CIRCUIT DECODE FAILED FOR NUMBER OS LETS"
-        assert list(map(lambda e: e.name, decodec_test.saidas)) == [
+        assert list(map(lambda e: e.name, decodec_test.outputs)) == [
             "g1"
         ], "CIRCUIT DECODE FAILED FOR OUTPUTS"
 

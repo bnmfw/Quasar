@@ -11,12 +11,15 @@ class AveragePredictor(AbstractPredictor):
     """
 
     def __init__(self):
-        self.points = set()
+        self.points = 0
+        self.average = 0
 
     def add_data(self, var: tuple, current: float) -> None:
-        self.points.add((var, current))
+        self.average = self.average * self.points + current
+        self.points += 1
+        self.average /= self.points
 
     def predict(self, var):
-        if not len(self.points):
+        if not self.points:
             return None
-        return sum(map(lambda point: point[1], self.points)) / len(self.points)
+        return self.average

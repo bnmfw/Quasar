@@ -2,10 +2,10 @@
 Monte Carlo Simulations Module.
 """
 
-from ..utils.matematica import InDir, Time
+from ..utils.math import InDir, Time
 from ..circuit.components import *
-from ..utils.concorrencia import PersistentProcessMaster
-from ..utils.arquivos import CManager
+from ..utils.parallel import PersistentProcessMaster
+from ..utils.files import CManager
 from ..simconfig.simulationConfig import sim_config
 from ..circuit.circuitManager import CircuitManager
 from .distribution.spiceDistribution import SpiceDistributor, SpiceGaussianDist
@@ -89,7 +89,7 @@ class MCManager:
         result += [
             LETth.node_name,
             LETth.output_name,
-            LETth.orientacao,
+            LETth.orient,
             LETth.current,
             LETth.value,
             LETth.input_states,
@@ -133,7 +133,7 @@ class MCManager:
 
         # Concurrent execution, where the magic happens.
         with self.predictor:
-            manager.work((delay,), 1)
+            manager.work((delay,))
             # Dumps data into a csv.
             output = manager.return_done()
         true_output = []
@@ -158,8 +158,8 @@ class MCManager:
 if __name__ == "__main__":
 
     from ..spiceInterface.spiceRunner import HSpiceRunner
-    from ..circuit.circuito import Circuito
-    from ..utils.matematica import compare_fault_config_lists
+    from ..circuit.circuit import Circuito
+    from ..utils.math import compare_fault_config_lists
 
     sim_config.runner_type = HSpiceRunner
     if sim_config.runner.test_spice():
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     with InDir("debug"):
         nand = Circuito("nand_fin").from_json()
         sim_config.circuit = nand
-        n = 30
+        n = 50
         pvar = SpiceGaussianDist(
             "pmos_rvt", "phig", sim_config.model_manager["pmos_rvt"]["phig"], 3, 0.05
         )

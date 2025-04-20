@@ -131,9 +131,9 @@ if __name__ == "__main__":
     print("Testing Fault Model...")
 
     print("\tTesting Standard Double Exponential Generation...")
-    modelo = FinFETMessengerStandard()
+    model = FinFETMessengerStandard()
     assert (
-        modelo.spice_string("test", 100, "rise")
+        model.spice_string("test", 100, "rise")
         == "Iseu gnd test EXP(0 100u 2n 50p 2.05n 164p)"
     ), "STANDARD DOUBLE EXPONENTIAL GENERATION"
 
@@ -141,6 +141,6 @@ if __name__ == "__main__":
 
     print("\tTesting Current to LET Conversion...")
     assert (
-        modelo.current_to_let(100, FinFET()) == 50264550.26455026
+        model.current_to_let(100, FinFET()) == 50264550.26455026
     ), "current_to_let FAILED"  # DEFINIDO PELA PROPRIA FUNCAO
     print("Fault Model OK")

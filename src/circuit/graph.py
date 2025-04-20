@@ -2,7 +2,7 @@
 Graph Module. Used to model wich nodes of a circuit can propagate a fault to and logically simulate a circuit.
 """
 
-from ..utils.matematica import all_vector_n_bits
+from ..utils.math import all_vector_n_bits
 from typing import Callable
 
 

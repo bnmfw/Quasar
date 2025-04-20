@@ -66,7 +66,7 @@ class LetFinder:
         Returns:
             bool: If the Fault configuration is valid.
         """
-        node_inclination, output_inclination = let.orientacao
+        node_inclination, output_inclination = let.orient
 
         # Checks if the fault is logically masked
         lower_tolerance: float = 0.2
@@ -132,11 +132,11 @@ class LetFinder:
         with sim_config.runner.Inputs(inputs, vdd):
 
             # Figures the inclination of the simulation
-            if let.orientacao[0] is None or not safe:
-                let.orientacao[0] = self.__fault_inclination(let.node_name, vdd, let)
+            if let.orient[0] is None or not safe:
+                let.orient[0] = self.__fault_inclination(let.node_name, vdd, let)
 
-            if let.orientacao[1] is None or not safe:
-                let.orientacao[1] = self.__fault_inclination(let.output_name, vdd, let)
+            if let.orient[1] is None or not safe:
+                let.orient[1] = self.__fault_inclination(let.output_name, vdd, let)
 
             # debugging report
 
@@ -145,7 +145,7 @@ class LetFinder:
                     "Starting a LET finding job\n"
                     + f"node: {let.node_name}\toutput: {let.output_name}\n"
                     + f"vdd: {vdd}\tsafe: {safe}\n"
-                    + f"inc1: {let.orientacao[0]}\tinc2: {let.orientacao[1]}\n"
+                    + f"inc1: {let.orient[0]}\tinc2: {let.orient[1]}\n"
                     + f"input vector: {' '.join([inp.name+':'+str(inp.signal) for inp in inputs])}"
                 )
 
@@ -156,7 +156,7 @@ class LetFinder:
                     return self.__simulations, None
 
             f: Callable = self.__root_function(let)
-            function_increases: bool = let.orientacao[1] == "rise"
+            function_increases: bool = let.orient[1] == "rise"
 
             guess: float = None
             margin: float = None
@@ -195,9 +195,9 @@ class LetFinder:
 
 if __name__ == "__main__":
 
-    from ..circuit.circuito import Circuito
+    from ..circuit.circuit import Circuito
     from ..spiceInterface.spiceRunner import NGSpiceRunner, HSpiceRunner
-    from ..utils.matematica import InDir
+    from ..utils.math import InDir
     from os import path
 
     sim_config.runner_type = HSpiceRunner

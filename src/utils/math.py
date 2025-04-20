@@ -21,15 +21,15 @@ class Time:
     def __exit__(self, a, b, c):
         end = perf_counter()
         tempo = int(end - self.__start)
-        dias: int = tempo // 86400
-        horas: int = (tempo % 86400) // 3600
-        minutos: int = (tempo % 3600) // 60
-        if dias:
-            print(f"{dias} days, ", end="")
-        if horas:
-            print(f"{horas} hours, ", end="")
-        if minutos:
-            print(f"{minutos} minutes and ", end="")
+        days: int = tempo // 86400
+        hours: int = (tempo % 86400) // 3600
+        minutes: int = (tempo % 3600) // 60
+        if days:
+            print(f"{days} days, ", end="")
+        if hours:
+            print(f"{hours} hours, ", end="")
+        if minutes:
+            print(f"{minutes} minutes and ", end="")
         print(f"{tempo % 60} seconds of execution")
 
 
@@ -125,23 +125,6 @@ def spice_to_float(value: str) -> float:
     raise ValueError(f'Recieved "{value}" as an input os spice_to_float')
 
 
-def current_to_let(current: float) -> float:
-    """
-    Converts a current value to a let value in its weird unit.
-
-    Args:
-        current (float): Current to be converted.
-
-    Returns:
-        float: The Let value.
-    """
-    if current is None:
-        return None
-    return (
-        (current * 1e-6) * (164 * 1e-12 - (50 * 1e-12)) / ((1.08 * 1e-14) * 21 * 1e-9)
-    )
-
-
 def compare_fault_config_lists(a: list, b: list, tolerance_percent=0.1) -> bool:
 
     def prepare(obj: list):
@@ -180,8 +163,4 @@ if __name__ == "__main__":
     print("Testing Math Module...")
     assert spice_to_float("  24.56u ") == (24.56 * 10**-6), "convert_value FAILED"
     assert spice_to_float("2.349e-02") == 0.02349, "convert_value FAILED"
-    # assert converter_binario("0b10", ["x","x","x","x","x"], 5) == [0,0,0,1,0], "converter_binario FALHOU"
-    assert (
-        current_to_let(100) == 50264550.26455026
-    ), "current_to_let FAILED"  # DEFINIDO PELA PROPRIA FUNCAO
     print("Math Module OK")

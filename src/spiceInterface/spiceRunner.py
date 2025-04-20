@@ -7,7 +7,7 @@ This is the only class that knows Spice File Manager
 from .spiceFileManager import SpiceFileManager
 from ..circuit.components import LET
 from ..simconfig.simulationConfig import sim_config
-from ..utils.matematica import InDir
+from ..utils.math import InDir
 from os import path, system
 from typing import Callable
 from abc import ABC
@@ -171,7 +171,9 @@ class SpiceRunner(ABC):
         self.file_manager.set_pulse(LET(0, vdd, "none", "none", [None, None]))
         self.file_manager.set_monte_carlo(0)
 
-    def get_nodes(self, circ_name: str, tension_sources: list = None, inputs: list = None) -> set:
+    def get_nodes(
+        self, circ_name: str, tension_sources: list = None, inputs: list = None
+    ) -> set:
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
@@ -225,10 +227,8 @@ class SpiceRunner(ABC):
             # Runs the simulation
             self._run_spice(["minout", "maxout", "minnod", "maxnod"])
             # Gets the peak tensions in the node and output
-            peak_node = SpiceRunner.file_manager.get_peak_tension(
-                let.orientacao[0], True
-            )
-            peak_output = SpiceRunner.file_manager.get_peak_tension(let.orientacao[1])
+            peak_node = SpiceRunner.file_manager.get_peak_tension(let.orient[0], True)
+            peak_output = SpiceRunner.file_manager.get_peak_tension(let.orient[1])
         return (peak_node, peak_output)
 
     def run_pulse_width(self, let: LET, current: float = None) -> float:
@@ -340,7 +340,7 @@ sim_config.runner_type = NGSpiceRunner
 if __name__ == "__main__":
     print("Testing Spice Runner")
     ptf = path.join("project")
-    from ..circuit.circuito import Circuito
+    from ..circuit.circuit import Circuito
 
     sim_config.runner_type = NGSpiceRunner
     TestManager = SpiceFileManager(path_to_folder=ptf)

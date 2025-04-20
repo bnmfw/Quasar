@@ -3,18 +3,18 @@ API module, responsible for acting as an interface to the other files in the pac
 """
 
 from .circuit.components import LET
-from .circuit.circuito import Circuito
+from .circuit.circuit import Circuito
 from .circuit.circuitManager import CircuitManager
 from .variability.mcManager import MCManager
 from .variability.dataAnalysis import DataAnalist
 from .variability.distribution.distribution import Distribution
-from .utils.arquivos import JManager, CManager
+from .utils.files import JManager, CManager
 from .letSearch.letFinder import LetFinder
 from .spiceInterface.spiceRunner import SpiceRunner
 from .simconfig.simulationConfig import sim_config
 from .simconfig.transistorModel import Transistor
 from .simconfig.faultModel import DoubleExponential
-from .utils.matematica import Time
+from .utils.math import Time
 from typing import Callable, Type
 from os import path
 
@@ -223,7 +223,7 @@ class API:
 
 if __name__ == "__main__":
 
-    from utils.matematica import InDir
+    from src.utils.math import InDir
 
     print("Testing API...")
 

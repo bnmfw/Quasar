@@ -7,9 +7,9 @@ requirements:
 	@pip install -r .piprequirements
 
 test:
-	@python3 -m src.utils.matematica
-	@python3 -m src.utils.arquivos
-	@python3 -m src.utils.concorrencia
+	@python3 -m src.utils.math
+	@python3 -m src.utils.files
+	@python3 -m src.utils.parallel
 	@python3 -m src.spiceInterface.spiceRunner
 	@python3 -m src.spiceInterface.spiceFileManager
 	@python3 -m src.simconfig.faultModel
@@ -18,7 +18,7 @@ test:
 	@python3 -m src.letSearch.letFinder
 	@python3 -m src.circuit.graph
 	@python3 -m src.circuit.components
-	@python3 -m src.circuit.circuito
+	@python3 -m src.circuit.circuit
 	@python3 -m src.circuit.circuitManager
 	@python3 -m src.variability.mcManager
 

@@ -63,7 +63,7 @@ class LET:
         """
         self.value: float = None
         self.__current: float = current
-        self.orientacao: list = edges
+        self.orient: list = edges
         self.vdd: float = vdd
         self.node_name: str = node_name
         self.output_name: str = output_name
@@ -88,7 +88,7 @@ class LET:
         return len(self.input_set & other.input_set)
 
     def __repr__(self):
-        return f"{self.node_name} {self.output_name} {self.orientacao} {''.join(map(lambda e: str(e), self.input_states[0]))}"
+        return f"{self.node_name} {self.output_name} {self.orient} {''.join(map(lambda e: str(e), self.input_states[0]))}"
 
     def __len__(self):
         return len(self.input_states)
@@ -125,8 +125,8 @@ class LET:
         return (
             self.node_name,
             self.output_name,
-            self.orientacao[0],
-            self.orientacao[1],
+            self.orient[0],
+            self.orient[1],
         )
 
     @property
@@ -138,8 +138,8 @@ class LET:
         return (
             self.node_name,
             self.output_name,
-            self.orientacao[0],
-            self.orientacao[1],
+            self.orient[0],
+            self.orient[1],
             tuple(["".join(inputs) for inputs in self.input_states]),
         )
 
@@ -164,7 +164,7 @@ class LET:
         """
         dic = {}
         dic["corr"] = self.current
-        dic["orie"] = self.orientacao
+        dic["orie"] = self.orient
         dic["nodo"] = self.node_name
         dic["said"] = self.output_name
         dic["val"] = self.input_states
@@ -180,7 +180,7 @@ class LET:
         if type(dic) != dict:
             raise TypeError(f"Nao recebi um dicionario, recebi {type(dic)}: {dic}")
         self.current = dic["corr"]
-        self.orientacao = dic["orie"]
+        self.orient = dic["orie"]
         self.node_name = dic["nodo"]
         self.output_name = dic["said"]
         self.input_states = dic["val"]
