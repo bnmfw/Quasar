@@ -12,6 +12,9 @@ from .distribution.spiceDistribution import SpiceDistributor, SpiceGaussianDist
 from .predictionServer import PredictionServer
 from os import path
 
+single_threaded: bool = False
+var_points: int = 20
+
 
 class MCManager:
     """
@@ -133,7 +136,10 @@ class MCManager:
 
         # Concurrent execution, where the magic happens.
         with self.predictor:
-            manager.work((delay,))
+            if single_threaded:
+                manager.work((delay,), 1)
+            else:
+                manager.work((delay,))
             # Dumps data into a csv.
             output = manager.return_done()
         true_output = []
@@ -172,7 +178,7 @@ if __name__ == "__main__":
     with InDir("debug"):
         nand = Circuito("nand_fin").from_json()
         sim_config.circuit = nand
-        n = 50
+        n = var_points
         pvar = SpiceGaussianDist(
             "pmos_rvt", "phig", sim_config.model_manager["pmos_rvt"]["phig"], 3, 0.05
         )

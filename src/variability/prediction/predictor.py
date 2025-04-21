@@ -1,11 +1,13 @@
 """
-Abstract Predictor classe. This class recieve data, builds models and return predictions.
+Abstract Predictor class. This class recieve data, builds models and return predictions.
 """
+
 
 class AbstractPredictor:
     """
     Abstract Predictor
     """
+
     def __init__(self):
         pass
 
