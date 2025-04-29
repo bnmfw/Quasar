@@ -14,4 +14,5 @@ python-dateutil==2.9.0.post0
 pytz==2024.1
 six==1.16.0
 tzdata==2024.1
+wheel==0.45.1
 zipp==3.18.1
