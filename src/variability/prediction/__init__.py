@@ -1,0 +1,2 @@
+from .averagePredictor import AveragePredictor
+from .knnRegPredictor import KnnRegPredictor

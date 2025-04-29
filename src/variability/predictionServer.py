@@ -8,8 +8,7 @@ import multiprocessing as mp
 from multiprocessing import Manager
 import queue
 from os import path
-from .prediction.predictor import AbstractPredictor
-from .prediction.averagePredictor import AveragePredictor
+from .prediction import AveragePredictor, KnnRegPredictor
 
 
 class PredictionServer:
@@ -20,7 +19,7 @@ class PredictionServer:
     def __init__(self, file_dir: str) -> None:
         self.file_dir = file_dir
         self.prediction_model = {}
-        self.predictor_type = AveragePredictor
+        self.predictor_type = KnnRegPredictor #AveragePredictor
 
         # submit sync
         self.submit_queue = mp.Queue()
