@@ -1,0 +1,4 @@
+*Quasar compiled params file
+
+.param vth0_nmos_param = gauss(0.49396, 0.01, 3)
+.param vth0_pmos_param = gauss(-0.49155, 0.1, 3)
