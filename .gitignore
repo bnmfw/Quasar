@@ -4,10 +4,6 @@ venv/
 !project/circuits/.gitkeep
 project/circuits/*
 
-!debug/project/circuits/.gitkeep
-debug/project/circuits/*
-!debug/project/circuits/nand
-!debug/project/circuits/nand/*
 debug/project/include/models.pm
 debug/backup_test/test_jobs.json
 
