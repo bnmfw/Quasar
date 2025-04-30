@@ -1,14 +1,16 @@
 *__pycache__*
 venv/
 
-*project/circuits/*
 !project/circuits/.gitkeep
+project/circuits/*
+!project/circuits/nand
+!project/circuits/nand/nand.cir
 project/include/*
 
 !debug/project/circuits/.gitkeep
 debug/project/include/*
 debug/project/circuits/*
-!debug/project/circuits/nand/nand.cir*
+!debug/project/circuits/nand/*
 debug/project/include/models.pm
 debug/backup_test/test_jobs.json
 
