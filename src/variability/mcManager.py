@@ -356,12 +356,23 @@ if __name__ == "__main__":
             ]
             assert compare_fault_config_lists(data, ans), "MC MANAGER FAILED"
 
+        c17v3 = Circuito("c17v3").from_json()
+        sim_config.circuit = c17v3
+        n = var_points
+        pvar = SpiceGaussianDist(
+            "pmos_rvt", "phig", sim_config.model_manager["pmos_rvt"]["phig"], 3, 0.05
+        )
+        nvar = SpiceGaussianDist(
+            "nmos_rvt", "phig", sim_config.model_manager["nmos_rvt"]["phig"], 3, 0.05
+        )
+        MCManager().full_mc_analysis(n, [pvar, nvar])
+
         sim_config.vdd = 0.9
         nand = Circuito("nand").from_json()
         sim_config.circuit = nand
         # n = 4
         pvar = SpiceGaussianDist(
-            "pmos", "vth0", sim_config.model_manager["pmos"]["vth0"], 3, 0.1
+            "pmos", "vth0", sim_config.model_manager["pmos"]["vth0"], 3, 0.01
         )
         nvar = SpiceGaussianDist(
             "nmos", "vth0", sim_config.model_manager["nmos"]["vth0"], 3, 0.01
@@ -531,5 +542,17 @@ if __name__ == "__main__":
                 ],
             ]
             assert compare_fault_config_lists(data, ans), "MC MANAGER FAILED"
+
+        sim_config.vdd = 0.7
+        fadder = Circuito("fadder").from_json()
+        sim_config.circuit = fadder
+        n = var_points
+        pvar = SpiceGaussianDist(
+            "pmos_rvt", "phig", sim_config.model_manager["pmos_rvt"]["phig"], 3, 0.05
+        )
+        nvar = SpiceGaussianDist(
+            "nmos_rvt", "phig", sim_config.model_manager["nmos_rvt"]["phig"], 3, 0.05
+        )
+        MCManager().full_mc_analysis(n, [pvar, nvar])
 
     print("MC Manager OK")

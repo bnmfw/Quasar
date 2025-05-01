@@ -1,13 +1,9 @@
 *__pycache__*
 venv/
 
-*project/circuits/*
 !project/circuits/.gitkeep
-project/include/*
+project/circuits/*
 
-!debug/project/circuits/.gitkeep
-debug/project/include/*
-debug/project/circuits/*
 debug/project/include/models.pm
 debug/backup_test/test_jobs.json
 
@@ -20,7 +16,6 @@ debug/work*
 invisible/
 .idea/
 
-*.cir
 *.png
 *.csv
 *.sh
@@ -36,6 +31,5 @@ invisible/
 *MC_done.json
 *MC_jobs.json
 *Raw_data.csv
-*test_done.json
 
 project/include/*
