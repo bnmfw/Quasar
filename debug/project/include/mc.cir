@@ -1,0 +1,5 @@
+* Analise MC
+.param phig_var_p = 4.8108
+.param phig_var_n = 4.372
+.param vth0_var_p = -0.49155
+.param vth0_var_n = 0.49396
