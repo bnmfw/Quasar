@@ -12,7 +12,7 @@ class SpiceGaussianDist(Distribution):
     model: str
     var: str
     mean: float
-    sigmas: int
+    sigmas: float
     std_dev: float
 
 

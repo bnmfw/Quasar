@@ -29,7 +29,6 @@ class Circuito:
         self.name = name
         self.path_to_folder = path_to_folder
         self.path_to_circuits = path.join(path_to_folder, "circuits")
-        self.path_to_my_dir = path.join(self.path_to_circuits, name)
         self.file = f"{name}.cir"
         self.graph: Graph = None
         self.inputs: list[Signal_Input] = []
@@ -39,6 +38,10 @@ class Circuito:
         self.SPdelay: float = 0
         self.LETth: LET = None
         self.loaded: bool = False
+
+    @property
+    def path_to_my_dir(self):
+        return path.join(self.path_to_circuits, self.name)
 
     @property
     def distinct_fault_config_num(self):
