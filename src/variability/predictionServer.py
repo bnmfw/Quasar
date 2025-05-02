@@ -8,7 +8,10 @@ import multiprocessing as mp
 from multiprocessing import Manager
 import queue
 from os import path
-from .prediction import AbstractPredictor, KnnRegPredictor
+from .prediction.predictor import AbstractPredictor
+from .prediction.knnRegPredictor import KnnRegPredictor
+
+# from .prediction import AbstractPredictor, KnnRegPredictor
 
 
 class PredictionServer:
