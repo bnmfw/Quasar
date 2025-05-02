@@ -8,8 +8,7 @@ import multiprocessing as mp
 from multiprocessing import Manager
 import queue
 from os import path
-from .prediction.predictor import AbstractPredictor
-from .prediction.averagePredictor import AveragePredictor
+from .prediction import AbstractPredictor, KnnRegPredictor
 
 
 class PredictionServer:
@@ -17,10 +16,16 @@ class PredictionServer:
     Prediction Server
     """
 
-    def __init__(self, file_dir: str) -> None:
+    def __init__(
+        self,
+        file_dir: str,
+        predictor_type: AbstractPredictor = KnnRegPredictor,
+        predictor_kwargs: dict = {},
+    ) -> None:
         self.file_dir = file_dir
         self.prediction_model = {}
-        self.predictor_type = AveragePredictor
+        self._predictor_type = predictor_type
+        self._predictor_kwargs = predictor_kwargs.copy()
 
         # submit sync
         self.submit_queue = mp.Queue()
@@ -89,9 +94,7 @@ class PredictionServer:
             #     for v in value:
             #         print(v)
             return True
-        if let_identity not in self.prediction_model.keys():
-            self.prediction_model[let_identity] = self.predictor_type()
-        self.prediction_model[let_identity].add_data(var, current)
+        self.__get_predictor(let_identity).add_data(var, current)
         return False
 
     def __process_request(self) -> None:
@@ -106,10 +109,15 @@ class PredictionServer:
         # print(f"{let_identity} {var} = {prediction}")
         response_queue.put(prediction)
 
-    def __predict(self, let_identity, var) -> float:
+    def __get_predictor(self, let_identity):
         if let_identity not in self.prediction_model.keys():
-            self.prediction_model[let_identity] = self.predictor_type()
-        return self.prediction_model[let_identity].predict(var)
+            self.prediction_model[let_identity] = self._predictor_type(
+                **self._predictor_kwargs
+            )
+        return self.prediction_model[let_identity]
+
+    def __predict(self, let_identity, var) -> float:
+        return self.__get_predictor(let_identity).predict(var)
 
     def work(self):
         while True:
