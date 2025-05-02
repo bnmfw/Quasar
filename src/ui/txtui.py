@@ -290,6 +290,9 @@ class TXTUI:
         spice = input(
             f"Simulator to be used ({'NGSPICE' if sim_config.runner_type == NGSpiceRunner else 'HSPICE'}): "
         )
+        spice = spice.upper()
+        if spice not in {"NGSPICE", "HSPICE"}:
+            raise ValueError("Spice Simulator not supported")
         if spice != "":
             inputs["spice"] = NGSpiceRunner if spice == "NGSPICE" else HSpiceRunner
         return "main", inputs
