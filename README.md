@@ -38,7 +38,7 @@ Netlist and Model files must follow a template.
   .include ../../include.cir
 
   .option measform = 3 
-  .option post = 0
+  .option post = 2
 
   <netlist>
   .end
@@ -83,7 +83,7 @@ The CSV will be name <circuit name>.csv and can be found on project/circuits/<ci
 ### 2 - Variability Analysis
 Allows to asses physicial parameter variability on radiation robustness.
 
-First insert the number of points on the dirtributions
+First insert the number of points on the distributions
 
 Select a model, a physicial parameters and the gaussian distribution parameters.
 
