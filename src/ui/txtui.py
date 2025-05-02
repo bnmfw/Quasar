@@ -1,6 +1,8 @@
 from os import path
 from ..spiceInterface.spiceRunner import HSRunner, HSpiceRunner, NGSpiceRunner
-from ..variability.distribution import SpiceGaussianDist
+from ..variability.distribution.spiceDistribution import SpiceGaussianDist
+
+# from ..variability.distribution import SpiceGaussianDist
 from ..simconfig.simulationConfig import sim_config
 from progress.bar import Bar
 
