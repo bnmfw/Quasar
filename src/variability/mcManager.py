@@ -8,7 +8,7 @@ from ..utils.parallel import PersistentProcessMaster
 from ..utils.files import CManager
 from ..simconfig.simulationConfig import sim_config
 from ..circuit.circuitManager import CircuitManager
-from .distribution.spiceDistribution import SpiceDistributor, SpiceGaussianDist
+from .distribution import SpiceDistributor, SpiceGaussianDist
 from .predictionServer import PredictionServer
 from os import path
 

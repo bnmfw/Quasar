@@ -6,7 +6,7 @@ from ..utils.math import all_vector_n_bits, InDir
 from .components import *
 from ..letSearch.letFinder import LetFinder
 from ..utils.parallel import ProcessMaster
-from ..variability.predictionServer import PredictionServer
+from ..variability import PredictionServer
 from .components import LET, Node
 from .circuit import Circuito
 from .graph import LogicSimulationError

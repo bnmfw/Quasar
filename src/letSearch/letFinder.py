@@ -6,7 +6,7 @@ from ..simconfig.simulationConfig import sim_config
 from ..circuit.components import LET
 from .rootSearch.falsePosition import FalsePosition
 from typing import Callable
-from ..variability.predictionServer import PredictionServer
+from ..variability import PredictionServer
 
 
 class LetFinder:

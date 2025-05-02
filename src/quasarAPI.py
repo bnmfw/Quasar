@@ -5,9 +5,8 @@ API module, responsible for acting as an interface to the other files in the pac
 from .circuit.components import LET
 from .circuit.circuit import Circuito
 from .circuit.circuitManager import CircuitManager
-from .variability.mcManager import MCManager
-from .variability.dataAnalysis import DataAnalist
-from .variability.distribution.distribution import Distribution
+from .variability import MCManager, DataAnalist
+from .variability.distribution import Distribution
 from .utils.files import JManager, CManager
 from .letSearch.letFinder import LetFinder
 from .spiceInterface.spiceRunner import SpiceRunner
