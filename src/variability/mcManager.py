@@ -21,7 +21,7 @@ class MCManager:
     Responsible for Monte Carlo simulations.
     """
 
-    def __init__(self, delay: bool = False):
+    def __init__(self, delay: bool = False, PredictionServer_kwargs: dict = {}):
         """
         Constructor.
 
@@ -30,11 +30,13 @@ class MCManager:
             delay (bool): Whether or not delay will be taken into consideration.
         """
         # TODO o processo do preditor é inicializado na instanciação, ent o componente circ_man n eh reutilizavel pra multiplas chamadas de analise MC
-        self.predictor = PredictionServer(sim_config.circuit.path_to_my_dir)
+        self.predictor = PredictionServer(
+            sim_config.circuit.path_to_my_dir, **PredictionServer_kwargs
+        )
         self.circ_man = CircuitManager(self.predictor)
         self.delay = delay
 
-        # Estado de simulacoes MC
+        # MC simulation states
         self.total_jobs: int = None
         self.done_jobs: int = 0
 
