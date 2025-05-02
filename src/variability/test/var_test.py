@@ -77,7 +77,7 @@ if __name__ == "__main__":
         "nvar_std": 0.05,
         "mcManager_kwargs": {},
         "single_threaded": True,
-        "var_points": 1,
+        "var_points": 20,
         "ans_file": path.join("src", "variability", "test", "data", "nand_fin_fault_config_list.json"),
     }
     run_test(**test_config)
