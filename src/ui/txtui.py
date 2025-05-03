@@ -1,6 +1,8 @@
 from os import path
 from ..spiceInterface.spiceRunner import HSRunner, HSpiceRunner, NGSpiceRunner
 from ..variability.distribution.spiceDistribution import SpiceGaussianDist
+
+# from ..variability.distribution import SpiceGaussianDist
 from ..simconfig.simulationConfig import sim_config
 from progress.bar import Bar
 
@@ -290,6 +292,9 @@ class TXTUI:
         spice = input(
             f"Simulator to be used ({'NGSPICE' if sim_config.runner_type == NGSpiceRunner else 'HSPICE'}): "
         )
+        spice = spice.upper()
+        if spice not in {"NGSPICE", "HSPICE", ""}:
+            raise ValueError("Spice Simulator not supported")
         if spice != "":
             inputs["spice"] = NGSpiceRunner if spice == "NGSPICE" else HSpiceRunner
         return "main", inputs

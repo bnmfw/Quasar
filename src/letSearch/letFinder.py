@@ -6,7 +6,8 @@ from ..simconfig.simulationConfig import sim_config
 from ..circuit.components import LET
 from .rootSearch.falsePosition import FalsePosition
 from typing import Callable
-from ..variability.predictionServer import PredictionServer
+# TODO: fix annotation
+# from ..variability.predictionServer import PredictionServer
 
 
 class LetFinder:
@@ -14,7 +15,10 @@ class LetFinder:
     Responsible for finding the minimal LET value from a faulted node to an output.
     """
 
-    def __init__(self, predictor: PredictionServer = None, report: bool = False):
+    def __init__(
+            self,
+            predictor = None, #PredictionServer
+            report: bool = False):
         """
         Constructor.
 

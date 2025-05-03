@@ -32,34 +32,15 @@ class DataAnalist:
 
         # plt.scatter(data[x], data[y], marker='o', c=data[target], cmap=cmap)
 
-        # Separate positive and negative values
-        data[target] = data[target] * 1e-6
-        positive_data = data[data[target] >= 0]
-        negative_data = data[data[target] < 0]
-
         vmin = data[target].min()
         vmax = data[target].max()
 
-        # Plot positive values with 'X' marker
-        scatter1 = plt.scatter(
-            positive_data[x],
-            positive_data[y],
-            marker="1",
-            c=positive_data[target],
-            cmap=cmap,
-            label="TG",
-            vmin=vmin,
-            vmax=vmax,
-        )
-
-        # Plot negative values with 'O' marker
-        scatter2 = plt.scatter(
-            negative_data[x],
-            negative_data[y],
+        scatter = plt.scatter(
+            data[x],
+            data[y],
             marker="o",
-            c=negative_data[target],
+            c=data[target],
             cmap=cmap,
-            label="CMOS",
             vmin=vmin,
             vmax=vmax,
         )
@@ -68,7 +49,7 @@ class DataAnalist:
         plt.ylabel(y)
         plt.legend(loc="lower right", fontsize="x-large")
         plt.title(target)
-        plt.colorbar(scatter1)
+        plt.colorbar(scatter)
         plt.savefig(
             path.join(directory, f"{target}_scatter.png"), format="png", dpi=300
         )

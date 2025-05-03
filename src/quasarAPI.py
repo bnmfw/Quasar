@@ -8,6 +8,9 @@ from .circuit.circuitManager import CircuitManager
 from .variability.mcManager import MCManager
 from .variability.dataAnalysis import DataAnalist
 from .variability.distribution.distribution import Distribution
+
+# from .variability import MCManager, DataAnalist
+# from .variability.distribution import Distribution
 from .utils.files import JManager, CManager
 from .letSearch.letFinder import LetFinder
 from .spiceInterface.spiceRunner import SpiceRunner
@@ -127,9 +130,12 @@ class API:
                 delay=delay,
                 progress_report=progress_report,
             )
+        print(distribution)
+        x_axis_label = distribution[0].model.upper()
+        y_axis_label = distribution[1].model.upper()
         scatter_data = {
-            "PMOS": [],
-            "NMOS": [],
+            x_axis_label: [],
+            y_axis_label: [],
             "node": [],
             "output": [],
             "current": [],
@@ -149,8 +155,8 @@ class API:
                 pmos, nmos, node, output, pulse_in, pulse_out, current, let, *inputs = (
                     linha.split(",")
                 )
-                scatter_data["PMOS"].append(float(pmos))
-                scatter_data["NMOS"].append(float(nmos))
+                scatter_data[x_axis_label].append(float(pmos))
+                scatter_data[y_axis_label].append(float(nmos))
                 scatter_data["node"].append(node)
                 scatter_data["output"].append(output)
                 scatter_data["current"].append(float(current))
@@ -169,24 +175,20 @@ class API:
         analist.describe(scatter_data, sim_config.circuit.path_to_my_dir)
         analist.quantitative_scatter(
             scatter_data,
-            "PMOS",
-            "NMOS",
+            x_axis_label,
+            y_axis_label,
             "LETth",
             sim_config.circuit.path_to_my_dir,
             "winter",
         )
-        analist.qualitative_scatter(
-            scatter_data, "PMOS", "NMOS", "node", sim_config.circuit.path_to_my_dir
-        )
-        analist.qualitative_scatter(
-            scatter_data, "PMOS", "NMOS", "pulse_in", sim_config.circuit.path_to_my_dir
-        )
-        analist.qualitative_scatter(
-            scatter_data, "PMOS", "NMOS", "pulse_out", sim_config.circuit.path_to_my_dir
-        )
-        analist.qualitative_scatter(
-            scatter_data, "PMOS", "NMOS", "input", sim_config.circuit.path_to_my_dir
-        )
+        for variable in ["node", "pulse_in", "pulse_out", "input"]:
+            analist.qualitative_scatter(
+                scatter_data,
+                x_axis_label,
+                y_axis_label,
+                variable,
+                sim_config.circuit.path_to_my_dir,
+            )
         analist.count_unique(
             scatter_data, "pulse_out", sim_config.circuit.path_to_my_dir
         )

@@ -4,11 +4,6 @@ Schimitt Trigger
 
 .include ../../include.cir
 
-****** HGSPICE ******
-
-.option measform = 3
-.option post = 0
-
 ****** Circuito ******
 
 MpST1 vdd in out vdd PMOS_RVT nfin=3

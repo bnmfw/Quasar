@@ -7,6 +7,8 @@ from .components import *
 from ..letSearch.letFinder import LetFinder
 from ..utils.parallel import ProcessMaster
 from ..variability.predictionServer import PredictionServer
+
+# from ..variability import PredictionServer
 from .components import LET, Node
 from .circuit import Circuito
 from .graph import LogicSimulationError
@@ -186,7 +188,7 @@ class CircuitManager:
                 work_dir=sim_config.circuit.path_to_my_dir,
                 progress_report=progress_report,
             )
-            error = manager.work((delay,))
+            error = manager.work((delay,), 1)
             if error:
 
                 print(

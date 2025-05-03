@@ -4,11 +4,6 @@ Test Nand
 
 .include ../../include.cir
 
-****** HGSPICE ******
-
-.option measform = 3
-.option post = 0
-
 ****** Circuito ******
 
 Xinva1 vcc gnd a fa NOT

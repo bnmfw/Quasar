@@ -4,11 +4,6 @@ Full Adder do Rafael Neves
 
 .include ../../include.cir
 
-****** HGSPICE ******
-
-.option measform = 3
-.option post = 0
-
 ***** FAN IN ******
 Mp1inva4 vdd a na vdd          		pmos_rvt w=27.0n l=20n nfin=3
 Mn1inva4 na a vss gnd   			nmos_rvt w=27.0n l=20n nfin=3 
