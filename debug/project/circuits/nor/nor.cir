@@ -4,11 +4,6 @@ Nor
 
 .include ../../include.cir
 
-****** HGSPICE ******
-
-.option measform = 3
-.option post = 0
-
 ****** Circuito ******
 
 Mp1 vdd a i1 vdd PMOS W=140n L=32n

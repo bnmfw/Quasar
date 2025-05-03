@@ -4,11 +4,6 @@ Nand Parsing Test
 
 .include ../../include.cir
 
-****** HGSPICE ******
-
-.option measform = 3
-.option post = 0
-
 ****** START QUASAR ******
 
 Mp11 vdd a g1 vdd PMOS_RVT nfin=3

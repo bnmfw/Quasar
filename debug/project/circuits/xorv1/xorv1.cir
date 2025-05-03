@@ -4,11 +4,6 @@ Xor v1
 
 .include ../../include.cir
 
-****** HGSPICE ******
-
-.option measform = 3
-.option post = 0
-
 ****** Circuito ******
 
 Mp1 vdd a na vdd PMOS_RVT nfin=3

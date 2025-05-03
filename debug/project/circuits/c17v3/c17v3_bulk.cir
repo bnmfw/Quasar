@@ -4,11 +4,6 @@ Benchmark C17 V3 (C17_Nand)
 
 .include ../../include.cir
 
-****** HSPICE ******
-
-.option measform = 3
-.option post = 0
-
 ****** Circuito ******
 
 Mp11 vdd a e1 a PMOS_BULK w=140n l=32n

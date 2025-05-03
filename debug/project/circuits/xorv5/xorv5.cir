@@ -4,11 +4,6 @@ Xor v5
 
 .include ../../include.cir
 
-****** HGSPICE ******
-
-.option measform = 3
-.option post = 0
-
 ****** Circuito ******
 
 * Not

@@ -1,4 +1,5 @@
 * Facilitador de includes
+.include option.cir
 .include fontes.cir
 .include params.cir
 .include measure.cir

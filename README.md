@@ -31,14 +31,10 @@ The .cir file must be included in ```project/circuits/<filename>/```.
 
 ### Netlist and Model Constraints
 Netlist and Model files must follow a template.
-- Model files must be of the .pm format.option measform = 3
-.option post = 0, .lib is not supported currently.
+- Model files must be of the .pm format. lib is not supported currently.
 - Netlist files must follow the template, there is a nand2 template in the project/circuits folder:
   ``` spice
   .include ../../include.cir
-
-  .option measform = 3 
-  .option post = 2
 
   <netlist>
   .end
