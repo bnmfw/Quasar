@@ -11,7 +11,8 @@ test:
 	@python3 -m src.utils.files
 	@python3 -m src.utils.parallel
 	@python3 -m src.spiceInterface.spiceRunner
-	@python3 -m src.spiceInterface.spiceFileManager
+	@python3 -m src.spiceInterface.spiceFileReader
+	@python3 -m src.spiceInterface.spiceFileWriter
 	@python3 -m src.simconfig.faultModel
 	@python3 -m src.simconfig.simulationConfig
 	@python3 -m src.simconfig.transistorModel
