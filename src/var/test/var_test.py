@@ -1,7 +1,7 @@
-from ...utils.math import InDir, Time, compare_fault_config_lists
-from ...simconfig.simulationConfig import sim_config
-from ...spiceInterface.spiceRunner import HSpiceRunner
-from ...circuit.circuit import Circuito
+from ...utl.math import InDir, Time, compare_fault_config_lists
+from ...cfg.simulationConfig import sim_config
+from ...spi.spiceRunner import HSpiceRunner
+from ...ckt.circuit import Circuito
 from ..distribution import SpiceGaussianDist
 from ..mcManager import MCManager
 from os import path

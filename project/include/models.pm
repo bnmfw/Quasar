@@ -6,7 +6,7 @@
 +rgatemod= 0.0       	rgeomod = 0.0       	shmod   = 0.0       	nqsmod  = 0.0       
 +coremod = 0.0       	cgeomod = 0.0       	capmod  = 0.0       	tnom    = 25.0      
 +eot     = 7.5e-10   	eotbox  = 1.4e-07   	eotacc  = 1e-10     	tfin    = 7e-09     
-+toxp    = 2.1e-09   	nbody   = 1e+22     	phig    = 4.372     	epsrox  = 3.9       
++toxp    = 2.1e-09   	nbody   = 1e+22     	phig    = phig_nmos_rvt_param	epsrox  = 3.9       
 +epsrsub = 11.9      	easub   = 4.05      	ni0sub  = 1.1e+16   	bg0sub  = 1.17      
 +nc0sub  = 2.86e+25  	nsd     = 2e+26     	ngate   = 0.0       	nseg    = 5.0       
 +l       = 2.1e-08   	xl      = -5e-10    	lint    = -2e-09    	dlc     = 0.0       
@@ -44,7 +44,7 @@
 +rgatemod= 0.0       	rgeomod = 0.0       	shmod   = 0.0       	nqsmod  = 0.0       
 +coremod = 0.0       	cgeomod = 0.0       	capmod  = 0.0       	tnom    = 25.0      
 +eot     = 7.5e-10   	eotbox  = 1.4e-07   	eotacc  = 3e-10     	tfin    = 7e-09     
-+toxp    = 2.1e-09   	nbody   = 1e+22     	phig    = 4.8108    	epsrox  = 3.9       
++toxp    = 2.1e-09   	nbody   = 1e+22     	phig    = phig_pmos_rvt_param	epsrox  = 3.9       
 +epsrsub = 11.9      	easub   = 4.05      	ni0sub  = 1.1e+16   	bg0sub  = 1.17      
 +nc0sub  = 2.86e+25  	nsd     = 2e+26     	ngate   = 0.0       	nseg    = 5.0       
 +l       = 2.1e-08   	xl      = -5e-10    	lint    = -2.5e-09  	dlc     = 0.0       

@@ -6,7 +6,7 @@ from .transistorModel import Transistor, FinFET, Bulk32
 from .faultModel import FaultModel, FinFETMessengerStandard, DoubleExponential
 
 # from .spiceInterface import SpiceRunner, NGSpiceRunner, HSpiceRunner
-from ..spiceInterface.spiceModelManager import SpiceModelManager
+from ..spi.spiceModelManager import SpiceModelManager
 
 # from ..circuit.circuito import Circuito
 from typing import Type
@@ -120,7 +120,7 @@ class SimulationConfig:
             float(tokens["colection_time"]), float(tokens["track_establishment"])
         )
         self.transistor_model = Transistor(float(tokens["transistor_depth"]))
-        from ..spiceInterface.spiceRunner import NGSpiceRunner, HSpiceRunner
+        from ..spi.spiceRunner import NGSpiceRunner, HSpiceRunner
 
         runners = {classe.__name__: classe for classe in [NGSpiceRunner, HSpiceRunner]}
         self.runner_type = runners[tokens["runner"]]

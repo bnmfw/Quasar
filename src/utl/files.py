@@ -2,7 +2,7 @@
 Auxillary files manager. Responsible for saving simulation data.
 """
 
-from ..circuit.components import Node, Signal_Input
+from ..ckt.components import Node, Signal_Input
 import json
 from os import path
 

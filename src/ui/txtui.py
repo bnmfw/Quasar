@@ -1,9 +1,9 @@
 from os import path
-from ..spiceInterface.spiceRunner import HSRunner, HSpiceRunner, NGSpiceRunner
-from ..variability.distribution.spiceDistribution import SpiceGaussianDist
+from ..spi.spiceRunner import HSRunner, HSpiceRunner, NGSpiceRunner
+from ..var.distribution.spiceDistribution import SpiceGaussianDist
 
 # from ..variability.distribution import SpiceGaussianDist
-from ..simconfig.simulationConfig import sim_config
+from ..cfg.simulationConfig import sim_config
 from progress.bar import Bar
 
 barra_comprida = "---------------------------"

@@ -6,9 +6,9 @@ This is the only class that knows Spice File Manager
 
 from .spiceFileReader import SpiceFileReader
 from .spiceFileWriter import SpiceFileWriter
-from ..circuit.components import LET
-from ..simconfig.simulationConfig import sim_config
-from ..utils.math import InDir
+from ..ckt.components import LET
+from ..cfg.simulationConfig import sim_config
+from ..utl.math import InDir
 from os import path, system
 from typing import Callable
 from abc import ABC
@@ -360,7 +360,7 @@ sim_config.runner_type = NGSpiceRunner
 if __name__ == "__main__":
     print("Testing Spice Runner")
     ptf = path.join("project")
-    from ..circuit.circuit import Circuito
+    from ..ckt.circuit import Circuito
 
     sim_config.runner_type = NGSpiceRunner
     TestManager = SpiceFileReader(path_to_folder=ptf)
