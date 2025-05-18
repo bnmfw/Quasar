@@ -2,17 +2,17 @@
 Circuit level simulation (Lvl 2) manager.
 """
 
-from ..utils.math import all_vector_n_bits, InDir
+from ..utl.math import all_vector_n_bits, InDir
 from .components import *
-from ..letSearch.letFinder import LetFinder
-from ..utils.parallel import ProcessMaster
-from ..variability.predictionServer import PredictionServer
+from ..let.letFinder import LetFinder
+from ..utl.parallel import ProcessMaster
+from ..var.predictionServer import PredictionServer
 
 # from ..variability import PredictionServer
 from .components import LET, Node
 from .circuit import Circuito
 from .graph import LogicSimulationError
-from ..simconfig.simulationConfig import sim_config
+from ..cfg.simulationConfig import sim_config
 
 relatorio = False
 
@@ -226,8 +226,8 @@ class CircuitManager:
 
 if __name__ == "__main__":
     from os import path
-    from ..spiceInterface.spiceRunner import NGSpiceRunner
-    from ..utils.math import compare_fault_config_lists
+    from ..spi.spiceRunner import NGSpiceRunner
+    from ..utl.math import compare_fault_config_lists
 
     sim_config.runner_type = NGSpiceRunner
     print("Testing Circuit Manager...")

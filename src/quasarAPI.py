@@ -2,22 +2,22 @@
 API module, responsible for acting as an interface to the other files in the package
 """
 
-from .circuit.components import LET
-from .circuit.circuit import Circuito
-from .circuit.circuitManager import CircuitManager
-from .variability.mcManager import MCManager
-from .variability.dataAnalysis import DataAnalist
-from .variability.distribution.distribution import Distribution
+from .ckt.components import LET
+from .ckt.circuit import Circuito
+from .ckt.circuitManager import CircuitManager
+from .var.mcManager import MCManager
+from .var.dataAnalysis import DataAnalist
+from .var.distribution.distribution import Distribution
 
 # from .variability import MCManager, DataAnalist
 # from .variability.distribution import Distribution
-from .utils.files import JManager, CManager
-from .letSearch.letFinder import LetFinder
-from .spiceInterface.spiceRunner import SpiceRunner
-from .simconfig.simulationConfig import sim_config
-from .simconfig.transistorModel import Transistor
-from .simconfig.faultModel import DoubleExponential
-from .utils.math import Time
+from .utl.files import JManager, CManager
+from .let.letFinder import LetFinder
+from .spi.spiceRunner import SpiceRunner
+from .cfg.simulationConfig import sim_config
+from .cfg.transistorModel import Transistor
+from .cfg.faultModel import DoubleExponential
+from .utl.math import Time
 from typing import Callable, Type
 from os import path
 
@@ -225,7 +225,7 @@ class API:
 
 if __name__ == "__main__":
 
-    from src.utils.math import InDir
+    from src.utl.math import InDir
 
     print("Testing API...")
 

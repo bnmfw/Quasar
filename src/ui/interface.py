@@ -1,9 +1,9 @@
 # O python acha que tem um erro nesses imports, mas nao tem, deixa quieto
 from ..quasarAPI import API
-from ..spiceInterface.spiceRunner import HSRunner
-from ..circuit.circuit import Circuito
-from ..utils.files import CManager
-from ..simconfig.simulationConfig import sim_config
+from ..spi.spiceRunner import HSRunner
+from ..ckt.circuit import Circuito
+from ..utl.files import CManager
+from ..cfg.simulationConfig import sim_config
 from os import path
 
 # module_error = False

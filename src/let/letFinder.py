@@ -2,8 +2,8 @@
 Module with LetFinder a Level 1 simulation responsible for calculating the minimal Let for a fault given some parameters.
 """
 
-from ..simconfig.simulationConfig import sim_config
-from ..circuit.components import LET
+from ..cfg.simulationConfig import sim_config
+from ..ckt.components import LET
 from .rootSearch.falsePosition import FalsePosition
 from typing import Callable
 
@@ -198,9 +198,9 @@ class LetFinder:
 
 if __name__ == "__main__":
 
-    from ..circuit.circuit import Circuito
-    from ..spiceInterface.spiceRunner import NGSpiceRunner, HSpiceRunner
-    from ..utils.math import InDir
+    from ..ckt.circuit import Circuito
+    from ..spi.spiceRunner import NGSpiceRunner, HSpiceRunner
+    from ..utl.math import InDir
     from os import path
 
     sim_config.runner_type = HSpiceRunner

@@ -1,4 +1,4 @@
-from ..simconfig.simulationConfig import sim_config
+from ..cfg.simulationConfig import sim_config
 
 
 class Signal_Input:

@@ -2,12 +2,12 @@
 Monte Carlo Simulations Module.
 """
 
-from ..utils.math import InDir, Time
-from ..circuit.components import *
-from ..utils.parallel import PersistentProcessMaster
-from ..utils.files import CManager
-from ..simconfig.simulationConfig import sim_config
-from ..circuit.circuitManager import CircuitManager
+from ..utl.math import InDir, Time
+from ..ckt.components import *
+from ..utl.parallel import PersistentProcessMaster
+from ..utl.files import CManager
+from ..cfg.simulationConfig import sim_config
+from ..ckt.circuitManager import CircuitManager
 from .distribution.spiceDistribution import SpiceDistributor, SpiceGaussianDist
 
 # from .distribution import SpiceDistributor, SpiceGaussianDist

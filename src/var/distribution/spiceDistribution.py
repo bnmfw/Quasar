@@ -3,7 +3,7 @@ Uses the built in Spice distribution generation
 """
 
 from .distribution import RandomDistributor, Distribution
-from ...simconfig.simulationConfig import sim_config
+from ...cfg.simulationConfig import sim_config
 from dataclasses import dataclass
 
 

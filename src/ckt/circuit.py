@@ -3,9 +3,9 @@ Circuit object module. The Circuit object only tracks its nodes, delay, inputs, 
 The actual circuit is fully described in the .cir file and simulated by Spice.
 """
 
-from ..utils.files import JManager
-from ..utils.math import InDir
-from ..simconfig.simulationConfig import sim_config
+from ..utl.files import JManager
+from ..utl.math import InDir
+from ..cfg.simulationConfig import sim_config
 from .graph import Graph
 from .components import Node, Signal_Input, LET
 from os import path
@@ -94,7 +94,7 @@ class Circuito:
 
 
 if __name__ == "__main__":
-    from ..spiceInterface.spiceRunner import HSpiceRunner
+    from ..spi.spiceRunner import HSpiceRunner
 
     sim_config.runner_type = HSpiceRunner
 

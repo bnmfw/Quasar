@@ -2,8 +2,8 @@
 This is the class responsible for writing .cir files. 
 """
 
-from ..circuit.components import LET
-from ..simconfig.simulationConfig import sim_config
+from ..ckt.components import LET
+from ..cfg.simulationConfig import sim_config
 from os import path
 from typing import TextIO
 from contextlib import contextmanager

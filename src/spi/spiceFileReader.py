@@ -5,10 +5,10 @@ No other file in the Project should know how to interact with Spice.
 Both classes in this file are stateless, therefore the classes are instantiated and its instances are accessed 
 """
 
-from ..utils.math import spice_to_float, InDir
-from ..circuit.components import LET
-from ..circuit.graph import Graph
-from ..simconfig.simulationConfig import sim_config
+from ..utl.math import spice_to_float, InDir
+from ..ckt.components import LET
+from ..ckt.graph import Graph
+from ..cfg.simulationConfig import sim_config
 from os import path
 from dataclasses import dataclass
 from typing import TextIO
