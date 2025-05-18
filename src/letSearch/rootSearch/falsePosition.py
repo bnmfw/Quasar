@@ -7,6 +7,7 @@ class FalsePosition(RootSearch):
         self,
         f: Callable,
         lower_bound: float,
+        initial_guess: float,
         upper_bound: float,
         increasing: bool,
         x_precision: float = 0.1,
@@ -18,6 +19,7 @@ class FalsePosition(RootSearch):
         super().__init__(f, increasing, iteration_limit, report)
         self.__lower_bound: float = lower_bound
         self.__upper_bound: float = upper_bound
+        self.__inital_guess: float = initial_guess
         self.__x_precision: float = x_precision
         self.__y_precision: float = y_precision
 
@@ -28,9 +30,19 @@ class FalsePosition(RootSearch):
         Returns:
             float: the root
         """
-        x0: float = self.__lower_bound
-        x1: float = self.__upper_bound
+        x0: float = self.__inital_guess
         f0: float = self._f(x0)
+
+        if abs(f0) < self.__y_precision:
+            self._log(
+                f"Initial Guess is Correct:" f"\tcurrent: {x0:.3f}" f"\terror: {f0:.3f}"
+            )
+            return x0
+
+        if (self._increasing and f0 < 0) or (not self._increasing and f0 > 0):
+            x1: float = self.__upper_bound
+        else:
+            x1: float = self.__lower_bound
         f1: float = self._f(x1)
 
         x0, f0, x1, f1 = self.define_bounds(x0, f0, x1, f1)

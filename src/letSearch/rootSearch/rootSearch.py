@@ -29,6 +29,9 @@ class RootSearch(ABC):
             list[float]: bounds
         """
 
+        if x0 > x1:
+            x0, x1, f0, f1 = x1, x0, f1, f0
+
         step = 50
 
         # x1 and x0 in oposite sides
