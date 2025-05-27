@@ -188,7 +188,7 @@ class CircuitManager:
                 work_dir=sim_config.circuit.path_to_my_dir,
                 progress_report=progress_report,
             )
-            error = manager.work((delay,), 1)
+            error = manager.work((delay,))
             if error:
 
                 print(
