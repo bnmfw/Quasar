@@ -109,7 +109,7 @@ class PredictionServer:
         except queue.Empty:
             return
         prediction: float = self.__predict(let_identity, var)
-        # print(f"{let_identity} {var} = {prediction}")
+
         response_queue.put(prediction)
 
     def __get_predictor(self, let_identity):

@@ -4,7 +4,7 @@ Monte Carlo Simulations Module.
 
 from ..utl.math import InDir, Time
 from ..ckt.components import *
-from ..utl.parallel import PersistentProcessMaster
+from ..utl.parallel import ProcessMaster
 from ..utl.files import CManager
 from ..cfg.simulationConfig import sim_config
 from ..ckt.circuitManager import CircuitManager
@@ -123,18 +123,14 @@ class MCManager:
             None: Nothing, puts data in <path>/<circuit_name>_mc_LET.csv.
         """
 
-        manager = PersistentProcessMaster(
+        jobs = self.determine_variability(n_analysis, distributions)
+
+        manager = ProcessMaster(
             self.run_mc_iteration,
-            None,
-            path.join(sim_config.circuit.path_to_my_dir, "MC"),
+            jobs,
             progress_report=progress_report,
             work_dir=sim_config.circuit.path_to_my_dir,
         )
-
-        # If there is a backup continues from where it stopped.
-        if not continue_backup or not manager.load_backup():
-            jobs = self.determine_variability(n_analysis, distributions)
-            manager.load_jobs(jobs)
 
         # Concurrent execution, where the magic happens.
         with self.predictor:
@@ -146,9 +142,20 @@ class MCManager:
             output = manager.return_done()
         true_output = []
         total_sim_num = 0
+        sim_numbers = []
         for this_output, sim_num in output:
             true_output.append(this_output)
             total_sim_num += sim_num
+            sim_numbers.append(sim_num)
+
+        with open(
+            f"{f'{sim_config.circuit.path_to_my_dir}/{sim_config.circuit.name}_sim_num.csv'}",
+            "w",
+        ) as file:
+            file.write("sim_num\n")
+            for sim_num in sim_numbers:
+                file.write(f"{sim_num/sim_config.circuit.distinct_fault_config_num}\n")
+
         CManager.tup_to_csv(
             f"{sim_config.circuit.path_to_my_dir}",
             f"{sim_config.circuit.name}_mc_LET.csv",
@@ -158,9 +165,6 @@ class MCManager:
         print(
             f"simulations per fault config = {total_sim_num/(n_analysis*sim_config.circuit.distinct_fault_config_num):.2f}"
         )
-
-        # Deletes the backup files.
-        manager.delete_backup()
 
     @property
     def results_file(self):

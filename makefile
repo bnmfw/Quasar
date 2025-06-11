@@ -7,24 +7,24 @@ requirements:
 	@pip install -r .piprequirements
 
 test:
-	@python3 -m src.utils.math
-	@python3 -m src.utils.files
-	@python3 -m src.utils.parallel
-	@python3 -m src.spiceInterface.spiceRunner
-	@python3 -m src.spiceInterface.spiceFileReader
-	@python3 -m src.spiceInterface.spiceFileWriter
-	@python3 -m src.simconfig.faultModel
-	@python3 -m src.simconfig.simulationConfig
-	@python3 -m src.simconfig.transistorModel
-	@python3 -m src.letSearch.letFinder
-	@python3 -m src.circuit.graph
-	@python3 -m src.circuit.components
-	@python3 -m src.circuit.circuit
-	@python3 -m src.circuit.circuitManager
-	@python3 -m src.variability.test.var_test
+	@python3 -m src.utl.math
+	@python3 -m src.utl.files
+	@python3 -m src.utl.parallel
+	@python3 -m src.spi.spiceRunner
+	@python3 -m src.spi.spiceFileReader
+	@python3 -m src.spi.spiceFileWriter
+	@python3 -m src.cfg.faultModel
+	@python3 -m src.cfg.simulationConfig
+	@python3 -m src.cfg.transistorModel
+	@python3 -m src.let.letFinder
+	@python3 -m src.ckt.graph
+	@python3 -m src.ckt.components
+	@python3 -m src.ckt.circuit
+	@python3 -m src.ckt.circuitManager
+	@python3 -m src.var.test.var_test
 
 test_var:
-	@python3 -m src.variability.test.var_test
+	@python3 -m src.var.test.var_test
 
 license:
 	@cd /backup_and_restore_scripts/setup_machine; ./synopsys_start_licenses.sh
