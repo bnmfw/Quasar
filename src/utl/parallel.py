@@ -165,12 +165,6 @@ class ProcessMaster:
         self.inpg = mp.Queue()
         self.excp = mp.Queue()
 
-        # Queue for smart sleep
-        self.sleep_time = 0.1
-        self.__starting_sleep_time = True
-        self.job_time = mp.Queue()
-        self.lock_time = mp.Lock()
-
         # Fills the job Queue
         if not jobs is None:
             for i, job in enumerate(jobs):
@@ -182,29 +176,6 @@ class ProcessMaster:
         """
         for worker in self.workers:
             worker.terminate()
-
-    def smart_sleep(self):
-        """
-        Sleeps for a variable amount of time depending on the time workers post jobs.
-        """
-
-        # Actually sleeps zzzzz
-        sleep(self.sleep_time * 0.8)
-
-        # Maintanance of sleep_time
-        with self.lock_time:
-
-            # If no job_time was reported no job has ended yet, so we just add 5 seconds because
-            if not self.job_time.empty():
-                self.__starting_sleep_time = False
-            if self.__starting_sleep_time:
-                self.sleep_time += 5
-
-            # New sleep_time is the longest job time yet
-            times = [self.sleep_time]
-            while not self.job_time.empty():
-                times.append(self.job_time.get())
-        self.sleep_time = max(times)
 
     def master_routine(self):
         """
@@ -219,31 +190,29 @@ class ProcessMaster:
 
         while True:
 
-            # Like sleep, but better
-            self.smart_sleep()
+            # sleeps
+            sleep(1)
 
-            with self.lock_done:
+            # Stops and throws any exceptions
+            if self.excp.qsize():
+                self.__terminate_work()
+                return self.excp.get(True)
 
-                # Stops and throws any exceptions
-                if self.excp.qsize():
-                    self.__terminate_work()
-                    return self.excp.get(True)
+                raise type(exception)(f"{exception} (Job: {job})")
 
-                    raise type(exception)(f"{exception} (Job: {job})")
+            # Report progress if there is something to report progress to
+            if not self.progress_report is None:
+                self.progress_report(self.done.qsize() / self.total_jobs)
 
-                # Report progress if there is something to report progress to
-                if not self.progress_report is None:
-                    self.progress_report(self.done.qsize() / self.total_jobs)
+            # Continues working if there still are jobs to be done
+            if self.done.qsize() != self.total_jobs:
+                continue
 
-                # Continues working if there still are jobs to be done
-                if self.done.qsize() != self.total_jobs:
-                    continue
+            # No job to be done, just gets all jobs in self.done_copy wich will be returned
+            while not self.done.empty():
+                self.done_copy.append(self.done.get())
 
-                # No job to be done, just gets all jobs in self.done_copy wich will be returned
-                while not self.done.empty():
-                    self.done_copy.append(self.done.get())
-
-                return
+            return
 
     def __remove_from_queue(self, queue: mp.Queue, id: int):
         """
@@ -295,9 +264,6 @@ class ProcessMaster:
         # Removes job from in progress queue
         with self.lock_inpg:
             self.__remove_from_queue(self.inpg, id)
-        # Puts time used to run job in its queue
-        with self.lock_time:
-            self.job_time.put(total_time)
 
     def return_done(self):
         """
@@ -515,41 +481,42 @@ class PersistentProcessMaster(ProcessMaster):
         Routine of Process Master, including sleeping, reporting progress and backuping.
         """
         # Periodicamente salva o progresso
+        total_sleeps = 1
+        max_sleeps = 300
         while True:
-            self.smart_sleep()
+            sleep(1)
+            total_sleeps += 1
+            total_sleeps % max_sleeps
 
-            with self.lock_jobs, self.lock_inpg, self.lock_done:
-                # Le todas as queues
-                self.jobs_copy = self.__read_queue(self.jobs)
-                self.inpg_copy = self.__read_queue(self.inpg)
-                self.done_copy = self.__read_queue(self.done)
-                # Realiza o backup
-                self.dump_backup()
+            # Updates progress through a callback
+            if not self.progress_report is None:
+                self.progress_report(self.done.qsize() / self.total_jobs)
 
-                # Updates progress through a callback
-                if not self.progress_report is None:
-                    self.progress_report(self.done.qsize() / self.total_jobs)
+            if not total_sleeps:
+                with self.lock_jobs, self.lock_inpg, self.lock_done:
+                    # Le todas as queues
+                    self.jobs_copy = self.__read_queue(self.jobs)
+                    self.inpg_copy = self.__read_queue(self.inpg)
+                    self.done_copy = self.__read_queue(self.done)
+                    # Realiza o backup
+                    self.dump_backup()
 
-                # Continues if there are still jobs to be done
-                if len(self.done_copy) != self.total_jobs:
-                    continue
+            # Continues if there are still jobs to be done
+            if self.done.qsize() != self.total_jobs:
+                continue
 
-                # Empties the queue in order to join (python quirk)
-                self.empty_queue(self.done)
-                break
+            self.done_copy = []
+            while not self.done.empty():
+                self.done_copy.append(self.done.get())
+
+            # Empties the queue in order to join (python quirk)
+            self.empty_queue(self.done)
+
+            break
 
 
 if __name__ == "__main__":
     print("Testing Concurrent Module...")
-
-    # print("\tTesting Process Folder...")
-    # os.chdir("debug")
-    # with ProcessFolder("folder_depth_test/deeper"):
-    #     sleep(10)
-    #     with open("deeper/deepest.txt", "r") as file:
-    #         assert file.read() == "test text.", "PROCESS FOLDER FAILED"
-    #     sleep(10)
-    # os.chdir("..")
 
     print("\tTesting Simple Parallel execution...")
 
