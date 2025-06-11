@@ -45,7 +45,7 @@ class Bissection(RootSearch):
         f0: float = self._f(x0)
         f1: float = self._f(x1)
 
-        x0, f0, x1, f1 = self.define_bounds(x0, f0, x1, f1)
+        x0, f0, x1, f1 = self.define_bounds(x0, f0, x1, f1, 50)
 
         # Actual binary search
         for i in range(self._iteration_limit):

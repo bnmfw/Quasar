@@ -39,13 +39,15 @@ class FalsePosition(RootSearch):
             )
             return x0
 
+        step: float = x0
         if (self._increasing and f0 < 0) or (not self._increasing and f0 > 0):
             x1: float = self.__upper_bound
         else:
             x1: float = self.__lower_bound
+        step = abs(step - x1)
         f1: float = self._f(x1)
 
-        x0, f0, x1, f1 = self.define_bounds(x0, f0, x1, f1)
+        x0, f0, x1, f1 = self.define_bounds(x0, f0, x1, f1, step)
         self._log("Root in Bounds, False Position Search")
 
         if x0 is None:
