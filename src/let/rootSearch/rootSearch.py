@@ -15,7 +15,9 @@ class RootSearch(ABC):
         self._increasing: bool = increasing
         self._iteration_limit: int = iteration_limit
 
-    def define_bounds(self, x0: float, f0: float, x1: float, f1: float) -> float:
+    def define_bounds(
+        self, x0: float, f0: float, x1: float, f1: float, step: float
+    ) -> float:
         """
         Guarantees f0 and f1 are in different sides of the linear zone
 
@@ -24,6 +26,7 @@ class RootSearch(ABC):
             f0 (float): lower bound image
             x1 (float): upper bound
             f1 (float): upper bound image
+            step (float): search step
 
         Returns:
             list[float]: bounds
@@ -31,8 +34,6 @@ class RootSearch(ABC):
 
         if x0 > x1:
             x0, x1, f0, f1 = x1, x0, f1, f0
-
-        step = 50
 
         # x1 and x0 in oposite sides
         if f1 / f0 < 0:
@@ -48,6 +49,8 @@ class RootSearch(ABC):
                 f"\tupper border: x={x1:.1f} y={f1:.3f}"
             )
 
+            step *= 2
+
             if (self._increasing and f0 > 0) or (not self._increasing and f0 < 0):
                 x1, f1 = x0, f0
                 x0 -= step
@@ -59,8 +62,6 @@ class RootSearch(ABC):
                 x1 += step
                 x1 = max(0, x1)
                 f1 = self._f(x1)
-
-            step *= 2
 
             # x1 and x0 in oposite sides
             if f1 / f0 < 0:

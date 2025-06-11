@@ -41,11 +41,19 @@ class KnnRegPredictor(AbstractPredictor):
         self._outputs = []
         self._model = None
         self._new_points = 0
+        self._max = 0
+        self._min = None
 
     def add_data(self, var: tuple, current: float) -> None:
         self._new_points += 1
         self._inputs.append(var)
         self._outputs.append(current)
+        self._max = max(self._max, current)
+        if self._min is None:
+            self._min = current
+        else:
+            self._min = min(self._min, current)
+        self.range = 5 if self._new_points < 10 else (self._max - self._min) * 0.05
 
     @property
     def model(self):
@@ -66,5 +74,6 @@ class KnnRegPredictor(AbstractPredictor):
     def predict(self, var: tuple) -> float:
         model = self.model
         if model is None:
-            return None
-        return model.predict([var])[0]
+            return None, None, None
+        prediction: float = model.predict([var])[0]
+        return prediction, prediction - self.range, prediction + self.range

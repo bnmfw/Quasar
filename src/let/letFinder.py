@@ -161,20 +161,22 @@ class LetFinder:
             function_increases: bool = let.orient[1] == "rise"
 
             guess: float = None
-            margin: float = None
+            min_margin: float = None
+            max_margin: float = None
             if self.predictor is not None and vars is not None:
-                guess = self.predictor.request_prediction(
+                guess, min_margin, max_margin = self.predictor.request_prediction(
                     let.identity, tuple(vars.values())
                 )
-                margin = 5
             if guess is None:
                 guess = 150
-                margin = 50
+                min_margin = guess - 50
+                max_margin = guess + 50
+
             root_finder = FalsePosition(
                 f,
-                guess - margin,
+                min_margin,
                 guess,
-                guess + margin,
+                max_margin,
                 function_increases,
                 report=self.__report,
             )
