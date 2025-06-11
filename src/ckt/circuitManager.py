@@ -14,7 +14,7 @@ from .circuit import Circuito
 from .graph import LogicSimulationError
 from ..cfg.simulationConfig import sim_config
 
-relatorio = False
+from random import shuffle
 
 
 class CircuitManager:
@@ -82,29 +82,36 @@ class CircuitManager:
         """
         sim_num: int = 0
         sim_config.circuit.LETth = None
-        ##### BUSCA DO LETs DO CIRCUITO #####
+
+        lets: list = []
+
         nodo: Node
         for nodo in sim_config.circuit.nodes:
             let: LET
             for let in nodo.LETs:
+                lets.append(let)
 
-                sim, current = self.let_manager.minimal_LET(
-                    let, let.input_states[0], safe=True, vars=var
+        shuffle(lets)
+
+        for let in lets:
+
+            sim, current = self.let_manager.minimal_LET(
+                let, let.input_states[0], safe=True, vars=var
+            )
+
+            let.current = current
+            sim_num += sim
+
+            if let.current is None:
+                continue
+
+            if var is not None:
+                self.min_let_predictor.submit_data(
+                    let.identity, tuple(var.values()), current
                 )
 
-                let.current = current
-                sim_num += sim
-
-                if let.current is None:
-                    continue
-
-                if var is not None:
-                    self.min_let_predictor.submit_data(
-                        let.identity, tuple(var.values()), current
-                    )
-
-                if sim_config.circuit.LETth is None or let < sim_config.circuit.LETth:
-                    sim_config.circuit.LETth = let
+            if sim_config.circuit.LETth is None or let < sim_config.circuit.LETth:
+                sim_config.circuit.LETth = let
         return sim_num
 
     def run_let_job(
