@@ -98,7 +98,10 @@ class LetFinder:
 
         return True
 
-    def __root_function(self, let, target: float = sim_config.vdd / 2) -> Callable:
+    def __root_function(self, let, target: float = None) -> Callable:
+
+        if target is None:
+            target = sim_config.vdd / 2
 
         def f(current) -> float:
             self.__simulations += 1
