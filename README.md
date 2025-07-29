@@ -25,9 +25,11 @@ make test
 ```
 
 ## Setting Up a Circuit
-To utilize Quasar a netlist of the circuit must as well as the model files must be provided.
+To use Quasar a netlist of the circuit as well as the model files must be provided.
+
 The model files must be included in ```project/models```.
-The .cir file must be included in ```project/circuits/<filename>/```.
+
+The .cir file must be included in ```project/circuits/<circuit name>/```. You should create this directory.
 
 ### Netlist and Model Constraints
 Netlist and Model files must follow a template.
