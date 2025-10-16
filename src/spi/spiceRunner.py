@@ -7,6 +7,7 @@ This is the only class that knows Spice File Manager
 from .spiceFileReader import SpiceFileReader
 from .spiceFileWriter import SpiceFileWriter
 from ..ckt.components import LET
+from ..ckt.graph import Graph
 from ..cfg.simulationConfig import sim_config
 from ..utl.math import InDir
 from os import path, system
@@ -208,6 +209,22 @@ class SpiceRunner(ABC):
             set: The label of all nodes.
         """
         return self.file_manager.get_nodes(circ_name, tension_sources, inputs)
+
+    def build_circuit_graph(
+        self, circ_name: str, tension_sources: list = None, inputs: list = None
+    ) -> Graph:
+        """
+        Parse a <circut_name>.cir file and build a circuit graph.
+
+        Args:
+            curcuit_name (str): name of the circuit to be parsed.
+            tension_sources (list[str]): Nodes that should be ignored.
+            inputs (list[str]): List of circuit input names.
+
+        Returns:
+            Graph: The circuit graph.
+        """
+        return self.file_manager.build_circuit_graph(circ_name, tension_sources, inputs)
 
     def run_delay(self, input_name: str, output_name: str, inputs: list) -> float:
         """
