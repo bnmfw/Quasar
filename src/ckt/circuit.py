@@ -6,7 +6,7 @@ The actual circuit is fully described in the .cir file and simulated by Spice.
 from ..utl.files import JManager
 from ..utl.math import InDir
 from ..cfg.simulationConfig import sim_config
-from .graph import Graph
+from .graph import Graph, LogicSimulationError
 from .components import Node, Signal_Input, LET
 from os import path
 
@@ -65,7 +65,10 @@ class Circuito:
         """
         self.inputs = [Signal_Input(input) for input in inputs]
         nodes_set = sim_config.runner.get_nodes(self.name, inputs=inputs)
-        self.graph = sim_config.runner.build_circuit_graph(self.name, inputs=inputs)
+        try:
+            self.graph = sim_config.runner.build_circuit_graph(self.name, inputs=inputs)
+        except LogicSimulationError:
+            self.graph = None
         self.nodes = [Node(nodo) for nodo in nodes_set]
         self.outputs = [self.get_node(output) for output in outputs]
         return self
