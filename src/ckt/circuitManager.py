@@ -55,7 +55,7 @@ class CircuitManager:
             lets = sim_config.circuit.graph.generate_valid_let_configs(
                 f(nodes), f(outputs), f(inputs), sim_config.circuit.get_node
             )
-        except LogicSimulationError:
+        except (LogicSimulationError, AttributeError):
             lets = [
                 [node, output, signals, None, None]
                 for node in nodes

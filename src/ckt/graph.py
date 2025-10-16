@@ -27,7 +27,7 @@ class Graph:
         self.transistors: list = []
         self.fixed: set = set(fixed)
         self.input_nodes: set = set()
-        self.regions: dict = []
+        self.regions: list = []
         # regions are groups of nodes that see each other through terminals only
 
         # Creates all nodes
