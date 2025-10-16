@@ -128,8 +128,7 @@ class SpiceFileReader:
         return {measure.label: measure}
 
     def get_nodes(
-        self, circuit_name: str, tension_sources: list = None, inputs: list = None
-    ) -> set:
+        self, circuit_name: str, tension_sources: list = None, inputs: list = None) -> set:
         """
         Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
 
@@ -167,7 +166,49 @@ class SpiceFileReader:
                     transistor_list.append((trantype[1] == "p", [source, gate, drain]))
                     for node in [source, gate, drain]:
                         nodes.add(node)
-        return {node for node in nodes if node not in tension_sources}, Graph(
+        node_set = {node for node in nodes if node not in tension_sources}
+        return node_set
+
+    def build_circuit_graph(
+        self, circuit_name: str, tension_sources: list = None, inputs: list = None) -> Graph:
+        """
+        Parse a <circut_name>.cir file and gets all nodes connected to transistor devices.
+
+        Args:
+            curcuit_name (str): name of the circuit to be parsed.
+            tension_sources (list[str]): List of tesion sources.
+            inputs (list[str]): List of circuit input names
+
+        Returns:
+            Graph: the logical graph model of the circuit.
+        """
+        nodes = {"vdd", "gnd"}
+        if inputs is None:
+            inputs = []
+        if tension_sources is None:
+            tension_sources = ["vcc", "vdd", "gnd", "vss"]
+        with open(
+            path.join(
+                self.path_to_folder, "circuits", circuit_name, f"{circuit_name}.cir"
+            ),
+            "r",
+        ) as file:
+            transistor_list: list = []
+            for i, line in enumerate(file):
+                line = line.strip()
+                if not i or not len(line):
+                    continue
+
+                # A line starting with M identifies a transistor, wich means its connected to available nodes
+                if "M" in line[0] or "X" in line[0]:
+                    # Im not sure if those are actually source and drain, but doesent matter to identifing them
+                    trantype, source, gate, drain, *_ = [
+                        token.lower() for token in line.split()
+                    ]
+                    transistor_list.append((trantype[1] == "p", [source, gate, drain]))
+                    for node in [source, gate, drain]:
+                        nodes.add(node)
+        return Graph(
             transistor_list, tension_sources + inputs
         )
 

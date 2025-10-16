@@ -221,7 +221,7 @@ if __name__ == "__main__":
             sim_config.circuit = inv
             sim_config.vdd = 0.7
             valid_input = [0]
-            target = 162.7
+            target = 160.89
             let = LET(target, 0.7, "ina", "sout", ["fall", "rise"], valid_input)
             measured = LetFinder(report=False).minimal_LET(let, valid_input, safe=True)[
                 1

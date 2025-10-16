@@ -84,7 +84,7 @@ class TXTUI:
         inputs["saidas"] = [
             entrada.lower() for entrada in input("Outputs analyzed: ").split()
         ]
-        inputs["nodos"] = [nodo for nodo in HSRunner.get_nodes(circ_nome)[0]]
+        inputs["nodos"] = list(HSRunner.get_nodes(circ_nome))
         return "main", inputs
 
     def tela_principal(self, circuito):

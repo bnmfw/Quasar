@@ -62,6 +62,7 @@ class CircuitManager:
                 for output in outputs
                 for signals in all_vector_n_bits(len(inputs))
             ]
+            
 
         # Enumerates lets
         return lets
