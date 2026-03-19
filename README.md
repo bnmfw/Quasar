@@ -6,7 +6,7 @@ It integrates with a SPICE simulator such as NGSPICE or HSPICE.
 Keep in mind the current version was fully developed by a single undergrad CS student, if you have any issues please report them in this github.
 
 ## Understanding and Citing Quasar
-Quasar and its results have been published. (Here)[https://www.mdpi.com/2079-9292/14/15/3131] you can find the MDPI paper that explains its functionality in detail. If you ever use Quasar in any study or comparison and want to cite is this is the appropriate paper. 
+Quasar and its results have been published. [Here](https://www.mdpi.com/2079-9292/14/15/3131) you can find the MDPI paper that explains its functionality in detail. If you ever use Quasar in any study or comparison and want to cite is this is the appropriate paper. 
 
 ## Requirements
 Quasar requires an instalation of either NGSPICE or HSPICE on the running computer.
